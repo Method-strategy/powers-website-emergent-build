@@ -40,6 +40,12 @@ python3 /app/scripts/convert_homepage.py
 - Foundation: routing, Layout/HomeLayout, SiteHeader + SiteFooter (canonical port of `site-nav.jsx`), legacy link intercept, scroll-to-top on nav.
 - 21 lossless legacy page modules + 1 homepage module + 1 404 page.
 - All static images and PDFs migrated to `/app/frontend/public/uploads/`.
+- LegacyPage component executes inline legacy `<script>` blocks via useRef-guarded injection that survives React.StrictMode and resets on real SPA remount.
+- Converter wraps inline JS in an IIFE and auto-hoists top-level function declarations to `window` so injected `onclick="..."` handlers still resolve.
+- Shared `useLegacyLinkIntercept` + `useScrollToTopOnNav` hooks in `/app/frontend/src/lib/navHooks.js`.
+
+## Testing
+- iteration_1 reported 96% pass with 1 MEDIUM bug (case-studies inline-script re-declaration); iteration_2 confirms FIXED with 100% pass and zero issues.
 
 ## Pending / Backlog
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
