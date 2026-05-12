@@ -1,0 +1,499 @@
+POWERS
+Make Performance Stick
+Website Copy and Design Specifications
+Approach  ·  Discovery Process
+Plus Design Handoff Prompt
+Method for POWERS
+May 2026  ·  Confidential
+[Heading1] Context for the Designer
+This document contains finalized website copy and design specifications for two pages on the POWERS website: Approach and Discovery Process. Both pages are part of the website revamp scoped under the May 2026 services agreement, executing against the Positioning Paper and the Framing Document developed earlier this year.
+These two pages function as a pair. Approach is the strategic page. Discovery Process is the operational page. Together they answer two distinct questions for two distinct reading modes: why does POWERS work, and what happens when we engage.
+[Heading2] How to use this document
+[ListParagraph] Each page is broken into numbered sections that map directly to the visual flow of the page from top to bottom.
+[ListParagraph] Within each section, copy is presented as it should appear on the page. Design specs sit alongside the copy in clearly labeled blocks.
+[ListParagraph] Every typographic detail, color token, spacing instruction, and widow watch note in this document is binding for the build. CLAUDE.md governs typography quality control, including text-wrap balance, widow watching, and the no-em-dash rule. None of those rules are flexible.
+[ListParagraph] The Design Handoff Prompt at the end of this document is the prompt to paste into Design when starting the page builds. It briefs the designer on the brand system, the typography rules, the layout grid, and the conventions both pages follow.
+[Heading2] Mega menu structure these pages live under
+The Results dropdown in the top nav uses two columns. These pages live in the left column. The right column holds the four Expertise Areas.
+[Heading4] Left column
+[ListParagraph] Approach
+[ListParagraph] Discovery Process
+[ListParagraph] Industries Served
+[ListParagraph] Case Studies
+[Heading4] Right column
+Header: Expertise Areas
+[ListParagraph] Operational Readiness and Discipline
+[ListParagraph] Frontline Capability and Workforce Readiness
+[ListParagraph] Equipment Reliability and Maintenance Performance
+[ListParagraph] Supply Chain and Distribution Performance
+[Heading2] Editorial conventions in force across both pages
+[ListParagraph] No em dashes. Periods, commas, or colons only. This rule is absolute.
+[ListParagraph] No use of the abstract word holds in either copy or microcopy. Concrete substitutes: sustains, scales, continues, transfers, does not degrade. The verb hold appears only in idiomatic uses such as we hold ourselves to a different one.
+[ListParagraph] No use of the soft-register word culture in copy. POWERS sells in verbs, not nouns. Behaviors, processes, systems, and operating discipline can be observed, measured, and improved. Culture cannot be tied to a P&amp;L line item, which is exactly why the repositioning moved away from Culture Powers Business as a tagline. Substitutes by context: organization, enterprise, operating environment, workplace, how the operation runs. The word behavior is fine and stays, behavior is observable, measurable, and POWERS improves it directly. Culture is the abstraction behavior gets confused with.
+[ListParagraph] Use sites, not facilities. POWERS speaks about sites internally and with clients. Site is the unit of operational scope, a single-site Discovery, a multi-site engagement, performance that transfers across sites. Facility appears in the existing brochures but is being retired across the new site copy.
+[ListParagraph] No use of the possessive Our in nav labels or page titles. The page is Approach, not Our Approach. Discovery Process, not Our Discovery Process.
+[ListParagraph] Sentence case throughout headlines and subheads. Title case is reserved for proper nouns and program names such as Discovery, Implementation, Evaluate ROI &amp; Savings, Management Operating System, Project Savings Commitment, Key Event Schedule.
+[ListParagraph] Apply text-wrap: balance to every H1, H2, and H3. Apply text-wrap: pretty to every body paragraph. Watch every section&apos;s closing line for orphans and widows. The widow watch notes embedded in this document call out the highest-risk lines.
+[Heading1] Approach Page
+Page slug: /approach
+Nav placement: Left column of Results mega menu, first position
+Strategic role: The strategic positioning page. Mechanism, Performance Arc, expertise architecture, durability argument, proof. The page that converts a curious executive into a qualified Discovery conversation.
+[Heading2] Section 1 — Hero
+Layout: Full-width hero, navy-800 background, no video. Min-height 70vh desktop, 60vh mobile.
+EYEBROW (GOLD-400, UPPERCASE, 0.18EM TRACKING, 12PX)
+APPROACH
+H1 (WHITE, HERO SCALE 64PX DESKTOP / 44PX MOBILE, WEIGHT 800, LINE-HEIGHT 1.0, TEXT-WRAP BALANCE)
+Where executive intent meets shop floor execution.
+SUBHEAD (WHITE AT 90% OPACITY, 22PX DESKTOP / 18PX MOBILE, WEIGHT 300, LINE-HEIGHT 1.5, MAX-WIDTH 60CH, TEXT-WRAP PRETTY)
+We build the operating architecture that makes manufacturing performance sustainable, and scalable across shifts, sites, and the next phase of your business.
+Visual treatment: No CTA button. A single hairline gold rule (1px, gold-400, 80px wide) sits below the subhead at 4rem margin-top. Below that, Read on caption (gray-400, 12px uppercase, 0.18em tracking) with a 1px down-chevron in gold-400.
+Widow watch: execution. cannot orphan. business. cannot orphan.
+[Heading2] Section 2 — The problem most engagements never close
+Layout: White background. Centered content column at 720px max-width. Section-lg padding (120px top and bottom).
+EYEBROW
+THE GAP
+H2 (NAVY-400, 30PX DESKTOP / 24PX MOBILE, WEIGHT 700, LINE-HEIGHT 1.2, TEXT-WRAP BALANCE)
+Strategy doesn&apos;t fail in the boardroom. It fails on the way to the floor.
+BODY (GRAY-700, 18PX, WEIGHT 300, LINE-HEIGHT 1.6)
+Every credible firm in this market can demonstrate that performance gets better when they engage. That&apos;s not differentiation anymore. It&apos;s the price of admission.
+The harder question, the one most engagements aren&apos;t designed to answer, is what happens after the consultant leaves. Whether the operation continues to perform when conditions change. Whether the gains transfer when leadership turns over. Whether what works at one site works at the next one.
+The reason most improvement does not sustain is structural. The operating architecture required to keep it in place was never fully built. Performance was achieved through external effort rather than internal design. When the external effort stops, the performance follows.
+We exist to close that gap.
+Widow watch: follows. and gap. cannot orphan.
+[Heading2] Section 3 — What POWERS builds
+Layout: Light navy tint background (navy-50, #f0f4f8). Section-lg padding. Two-column grid: left 40%, right 60%.
+[Heading4] Left column
+EYEBROW
+THE MECHANISM
+H2 (NAVY-800, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+We build the operating architecture that makes performance sustainable.
+BODY (GRAY-700, 16PX, WEIGHT 300, LINE-HEIGHT 1.6)
+The four disciplines below are not a service menu. They are an integrated system. A management operating system without leadership behavior produces documentation, not performance. Leadership development without a defined operating architecture produces individual improvement that walks out the door when the individual does.
+We build all four together, on the floor, until the operation runs by design rather than by effort.
+[Heading4] Right column — four discipline blocks
+Block layout: Vertical stack, 24px gap. Each block: 48px gold-400 numeral on left (01, 02, 03, 04 in light weight 200), then content stack to right. Each block separated by 1px gray-100 hairline rule.
+[Heading4] Block 01 — Management Operating System
+H3 (NAVY-800, 18PX, WEIGHT 600)
+Management operating system, built for your operation.
+BODY (GRAY-700, 15PX, LINE-HEIGHT 1.6)
+The cadence, signals, and accountability structures that make performance visible and manageable across shifts and sites. Not a product we install. A custom system, designed for how your business actually runs, that drives long-term, sustainable improvement.
+[Heading4] Block 02 — Process discipline
+H3
+Process discipline at the point of execution.
+BODY
+Standards that survive pressure. Routines that don&apos;t relax when the schedule tightens. The structural elimination of the variation that quietly erodes margin between Monday morning and Friday afternoon.
+[Heading4] Block 03 — Frontline leadership behavior
+H3
+Frontline leadership behavior, reinforced daily.
+BODY
+Capable supervisors on every shift, equipped with the skills, language, and standard work to lead consistently. Not a training event. A daily practice that becomes how the operation is run.
+[Heading4] Block 04 — Visibility across every level
+H3
+Visibility across every level of the organization.
+BODY
+The same operational truth available to the floor, the plant, and the executive team. Decisions made on the same data. Drift detected before it compounds. The Digital Production System enforces the discipline rather than just reporting it.
+Widow watch: watch H3s, especially your operation. and execution. Apply text-wrap balance to all H3s.
+[Heading2] Section 4 — The Performance Arc
+Layout: White background. Full-width section. Centered intro at 720px, then five-stage horizontal arc at 1200px max-width.
+EYEBROW
+HOW PERFORMANCE EVOLVES
+H2 (NAVY-400, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+Performance does not move in a straight line. It moves in stages.
+INTRO BODY (GRAY-700, 18PX, WEIGHT 300, MAX-WIDTH 720PX, CENTERED)
+Manufacturing operations evolve through five distinct stages. Each one carries different risks. The most common failure mode in this industry is attempting to skip a stage, scaling before performance is sustainable, sustaining before performance is consistent, optimizing before the system is stable.
+Our work begins with an honest read of where your operation actually is, not where the strategy deck says it should be.
+[Heading4] The five-stage visualization
+Treatment: Horizontal arc. Five stage cards across the width with a continuous gold-400 hairline running through center connecting them. Each card 220px wide, white background, 1px gray-100 border, 24px internal padding, anchored to the arc by a 12px gold-400 dot.
+Card structure: Small navy-400 stage numeral; H3 in navy-800 (16px, weight 600) for stage name; two-line body in gray-700 (13px, line-height 1.5) for operational character of the stage.
+[Heading4] Stage I — Underperformance
+Reactive execution. Effort consumed by problems a disciplined system would prevent.
+[Heading4] Stage II — Stability
+Variability reduced. Structure introduced. Still sensitive to staffing, demand, and leadership coverage.
+[Heading4] Stage III — High performance
+Consistent results under normal conditions. The stage where most engagements end and most improvement begins to drift.
+[Heading4] Stage IV — Sustainable performance
+Performance continues despite changes in conditions, schedules, and leadership. The architecture is doing the work.
+[Heading4] Stage V — Scaled performance
+What works at one site works at the next. Performance transfers across teams, sites, and holdings without degradation.
+CAPTION BELOW ARC (GRAY-400, 13PX, ITALIC, CENTERED, MAX-WIDTH 600PX)
+We diagnose the stage during Discovery. Every engagement is calibrated to move the operation one stage forward, structurally. Not faster than the architecture can support.
+Mobile treatment: Stack vertically. Gold rule becomes left-side vertical rule connecting cards.
+Note for designers: the Performance Arc is a strategic asset. Worth a small custom illustration treatment. The gold rule is the only flourish needed. Do not over-design it.
+[Heading2] Section 5 — How the work actually happens
+Layout: Navy-800 background. White type. Section-lg padding. Single centered column at 720px max-width.
+EYEBROW
+THE ENGAGEMENT
+H2 (WHITE, 30PX DESKTOP / 24PX MOBILE, WEIGHT 700, TEXT-WRAP BALANCE)
+We don&apos;t deliver a recommendation and exit.
+BODY (WHITE AT 90%, 18PX, WEIGHT 300, LINE-HEIGHT 1.6)
+The architecture above is not built from a deck. It is built on the floor, on every shift, under real operating conditions, alongside the leaders who will run it after we leave.
+Our engagement begins with a two-week Discovery, a paid assessment that maps the current state of your operation, quantifies the cost of the gaps your team has lived with long enough to consider normal, and delivers a custom roadmap with a results-based ROI commitment. From there, Implementation runs the roadmap. Evaluate ROI &amp; Savings closes the engagement against the financial commitment we made at the start.
+POWERS gets paid for results, not for time. That structure is the commercial expression of how seriously we take the work.
+[Heading4] In-line CTA block
+Treatment: Single line, gold-400 hairline rule above and below (each 80px wide, centered). Centered text, white at 100%, 17px, weight 500.
+See how the engagement runs →
+Link target: /discovery-process
+MICROCOPY BELOW (WHITE AT 70%, 13PX, ITALIC, CENTERED)
+Two weeks. Five deliverables. A defined commercial process.
+Widow watch: and exit. should land alone. made at the start. should land cleanly.
+[Heading2] Section 6 — The four expertise areas
+Layout: White background. Section-lg padding. Centered intro, then 2x2 grid at 1100px max-width.
+EYEBROW
+WHERE WE WORK
+H2 (NAVY-400, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+The four disciplines come together in four places.
+INTRO BODY (GRAY-700, 18PX, WEIGHT 300, MAX-WIDTH 720PX, CENTERED)
+Every engagement integrates all four disciplines, but the work has a center of gravity. The expertise areas below are how the architecture meets the operation. Each one links to a deeper view of the work, the proof, and the specific gaps it closes.
+Card spec: 2x2 grid, gap 24px. White background, 1px gray-100 border, 32px padding. Hover lifts border to gold-400 and shifts H3 from navy-800 to navy-600. Each card: gold-400 eyebrow (12px uppercase 0.18em tracking), H3 (navy-800 22px weight 600 text-wrap balance), body (gray-700 15px line-height 1.6, 4 lines max), footer link navy-600 14px See the work →
+[Heading4] Card 1
+Eyebrow: OPERATIONAL FOUNDATION
+H3: Operational readiness and discipline.
+BODY
+The management operating system, daily execution discipline, and the standard work that makes safety, quality, delivery, and cost manageable across every shift and every site. This is where most performance issues are actually solved, even when they look like something else.
+Link: See the work → /operational-readiness
+[Heading4] Card 2
+Eyebrow: PEOPLE AT THE EXECUTION LAYER
+H3: Frontline capability and workforce readiness.
+BODY
+Capable supervisors on every shift. Operators trained to production standard. The leadership behaviors that turn the operating system from a binder into how the floor actually runs. Includes Key Role Support during ramps, transitions, or leadership gaps.
+Link: See the work → /frontline-leadership
+[Heading4] Card 3
+Eyebrow: ASSET PERFORMANCE
+H3: Equipment reliability and maintenance performance.
+BODY
+OEE-driven maintenance discipline, advanced maintenance practices, and the operating cadence that keeps equipment performing when production schedules don&apos;t allow for unplanned downtime. Maintenance as a performance lever, not an expense category.
+Link: See the work → /equipment-reliability
+[Heading4] Card 4
+Eyebrow: FLOW AND DISTRIBUTION
+H3: Supply chain and distribution performance.
+BODY
+Warehouse operations, inventory control, distribution discipline, and the process architecture that keeps product moving from inputs to outputs without the silos that quietly cost margin. Where flow breaks down, performance follows.
+Link: See the work → /supply-chain
+Widow watch: watch every card body&apos;s last line.
+[Heading2] Section 7 — Why it sustains
+Layout: Light navy tint background (navy-50). Single column, 720px max-width, centered. Section-lg padding.
+EYEBROW
+DURABILITY
+H2 (NAVY-800, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+What&apos;s different after we leave.
+BODY (GRAY-700, 18PX, WEIGHT 300, LINE-HEIGHT 1.6)
+The standard most consultants are measured against is whether performance improves during an engagement. We hold ourselves to a different one. Whether it sustains after, and whether it scales when the next site needs it.
+The architecture we build does not depend on us being there. The operating system runs on its own cadence. The leadership behaviors are practiced daily. The visibility layer is producing the same operational truth at every level. Drift is detectable. Standards are reinforced. Performance is the output of a system, not the byproduct of effort.
+This is what twenty years of engagements taught us, and what the case studies on the next page are evidence of. Operations that built the architecture sustain their gains and transfer them across additional sites when growth requires it. Operations that did not, lose them, on a measurable timeline, regardless of how strong the original results were.
+Performance that does not sustain is not performance. It is a moment.
+Widow watch: moment. should sit alone on its closing line for emphasis.
+[Heading2] Section 8 — Proof
+Layout: White background. Section-lg padding. Eyebrow and H2 centered, then horizontal row of three case study cards (1100px max-width, gap 24px).
+EYEBROW
+THE EVIDENCE
+H2 (NAVY-400, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+The architecture, in the operations that ran it.
+SUBHEAD (GRAY-700, 17PX, WEIGHT 300, MAX-WIDTH 640PX, CENTERED)
+Three engagements. Different industries, different stages, the same architecture. The full library of seventy-plus case studies lives on the Results page.
+Card spec: White background, 1px gray-100 border, no top padding (image bleeds), 28px text region padding. Hover lifts border to gold-400. 16:9 image region with navy-50 fallback. Gold-400 eyebrow (industry tag, 11px uppercase 0.18em tracking), headline result (navy-800 26px weight 700 text-wrap balance), two-line description (gray-700 14px line-height 1.5), footer link navy-600 13px Read the case →
+[Heading4] Card 1
+Eyebrow: VALUE-ADDED MEATS
+Headline: $70M in total savings.
+DESCRIPTION
+A division of a global food manufacturer rebuilt execution discipline, lifted operating efficiency 19%, and cut equipment downtime 62% across multiple production lines.
+[Heading4] Card 2
+Eyebrow: INTERNATIONAL FOOD PROCESSING
+Headline: $42.2M in annualized savings.
+DESCRIPTION
+A structured management operating system replaced inconsistent execution, producing durable productivity and yield gains across the engagement and beyond.
+[Heading4] Card 3
+Eyebrow: INDUSTRIAL MANUFACTURING
+Headline: 23% productivity surge.
+DESCRIPTION
+During an ERP transition and pending plant relocation, POWERS stabilized operations and laid the foundation for sustainable operational excellence under pressure.
+BELOW CARDS, CENTERED LINK (NAVY-600, 16PX, WEIGHT 500)
+See the full case study library → /case-studies
+[Heading2] Section 9 — CTA / conversation invitation
+Layout: Navy-800 background. Single centered column at 720px max-width. Section-lg padding. White type. No form.
+EYEBROW
+WHEN YOU&apos;RE READY
+H2 (WHITE, 36PX DESKTOP / 28PX MOBILE, WEIGHT 700, TEXT-WRAP BALANCE)
+If you&apos;re working through a performance challenge, we should talk.
+BODY (WHITE AT 85%, 18PX, WEIGHT 300, LINE-HEIGHT 1.6, MAX-WIDTH 600PX, CENTERED)
+The Discovery is two weeks. The conversation that leads to it is shorter. If your operation is in one of the stages above and you want a clear-eyed read on where it actually is and what it would take to move forward, the next step is a call.
+Contact block treatment: Centered, 32px margin-top, gold-400 hairline rule between H2 region and contact block.
+Phone: +1 678-971-4711 — white, 22px, weight 500
+Email: info@thepowerscompany.com — gold-400, 18px, weight 400
+Button: Start the conversation → /contact. Spec: navy-900 bg, white text, 1px gold-400 border, 16px padding-y / 32px padding-x, 14px text uppercase 0.12em tracking weight 500. Hover: gold-400 bg, navy-900 text.
+Widow watch: we should talk. and is a call. should each land alone on their lines.
+[Heading2] Approach page — SEO meta and internal links
+Title: Approach | POWERS — Sustainable Manufacturing Performance
+Meta description: POWERS builds the operating architecture, the management operating system, process discipline, frontline leadership behavior, and visibility, that makes manufacturing performance sustainable and scalable across shifts, sites, and growth phases.
+Internal links from this page:
+[ListParagraph] Section 5: Discovery Process page
+[ListParagraph] Section 6: each of the four Expertise Area pages
+[ListParagraph] Section 8: Case Studies / Results
+[ListParagraph] Section 9: Contact
+[Heading1] Discovery Process Page
+Page slug: /discovery-process
+Nav placement: Left column of Results mega menu, second position under Approach
+Strategic role: The operational page. What POWERS actually does when engaged. The page a PE operating partner reads to confirm POWERS has a defined commercial process they can buy.
+[Heading2] Section 1 — Hero
+Layout: Full-width hero, navy-800 background. Static. Min-height 60vh desktop, 50vh mobile. Less tall than Approach hero, this page works harder below the fold.
+EYEBROW (GOLD-400, UPPERCASE, 0.18EM TRACKING, 12PX)
+DISCOVERY PROCESS
+H1 (WHITE, 56PX DESKTOP / 40PX MOBILE, WEIGHT 800, LINE-HEIGHT 1.0, TEXT-WRAP BALANCE)
+The roadmap to value creation, built in two weeks.
+SUBHEAD (WHITE AT 90%, 20PX DESKTOP / 17PX MOBILE, WEIGHT 300, LINE-HEIGHT 1.5, MAX-WIDTH 60CH, TEXT-WRAP PRETTY)
+Discovery is a paid, two-week assessment. Five deliverables. A line-item P&amp;L savings model. A results-based ROI commitment. Everything you need to decide whether to move forward, with the financial substance to take to your board.
+Visual treatment: Single hairline gold rule (1px, 80px wide) below subhead. No CTA button at top, the page wants to be read, not skipped.
+Widow watch: in two weeks. cannot orphan. your board. cannot orphan.
+[Heading2] Section 2 — What Discovery is, and what it is not
+Layout: White background. Centered column at 720px. Section-lg padding.
+EYEBROW
+THE STARTING POINT
+H2 (NAVY-400, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+A defined commercial engagement. Not a sales call.
+BODY (GRAY-700, 18PX, WEIGHT 300, LINE-HEIGHT 1.6)
+Most operational consulting firms offer a free assessment to win the work. POWERS does not. Discovery is the work. It is a paid two-week engagement with senior practitioners on the floor of your operation, conducting comprehensive studies across processes, systems and tools, and people and behaviors.
+The deliverable is not a recommendation. It is a quantified roadmap with five named outputs and a results-based savings commitment that POWERS will stand behind during implementation. Most clients are surprised by the magnitude of opportunity Discovery uncovers. Many are surprised that the magnitude is detailed by line item on their own P&amp;L.
+If after Discovery you decide not to move forward, you keep the assessment, the studies, the custom Management Operating System design, and the savings model. The relationship is structured so the value is delivered before the implementation decision is made.
+Widow watch: decision is made. cannot orphan.
+[Heading2] Section 2.5 — Discovery at multi-site scale
+Layout: Light navy tint background (navy-50). Centered column at 720px. Section padding (80px top/bottom, slightly tighter than section-lg to signal this is a meaningful aside, not a primary section).
+EYEBROW (GOLD-400, UPPERCASE, 0.18EM TRACKING, 12PX, WEIGHT 500)
+WHEN THE SCOPE IS LARGER
+H2 (NAVY-800, 28PX, WEIGHT 700, LINE-HEIGHT 1.2, TEXT-WRAP BALANCE)
+Multi-site Discovery. Four to eight weeks. Same architecture, larger scope.
+BODY (GRAY-700, 17PX, WEIGHT 300, LINE-HEIGHT 1.6)
+A two-week Discovery is the right scope for a single-site operation. For multi-site enterprises, PE-backed portfolios, and operations spanning multiple sites or regions, the assessment needs the time to do justice to the operating realities at each site and the architecture that has to work across all of them.
+Multi-site Discovery runs four to eight weeks, scaled to the number of sites in scope, the operational complexity, and the depth of the assessment your team needs to take to the board. Senior POWERS practitioners deploy across the operation in a coordinated sequence, conducting the same studies, building the same five named deliverables, and standing behind the same Project Savings Commitment that governs a standard Discovery.
+What changes is scope, not method. What scales is duration, practitioner deployment, and the size of the financial opportunity surfaced. What does not change is the commercial structure: paid engagement, results-based ROI, skin in the game.
+BELOW BODY, A SINGLE INLINE MICROCOPY LINE (GRAY-700, 14PX, ITALIC, CENTERED)
+If your operation runs across more than one site, the conversation about scope starts before Discovery does. Start it on the contact page → /contact
+Widow watch: larger scope. in H2 should not orphan. skin in the game. should land alone for emphasis.
+[Heading2] Section 3 — The three opportunity areas
+Layout: Light navy tint background (navy-50). Section-lg padding. Centered intro at 720px, then three-column grid at 1100px max-width.
+EYEBROW
+WHAT WE STUDY
+H2 (NAVY-800, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+Opportunities present themselves in three areas.
+INTRO BODY (GRAY-700, 17PX, WEIGHT 300, MAX-WIDTH 720PX, CENTERED)
+Discovery uses proven methods to perform comprehensive studies in three areas. The studies often surface chronic operating issues that have become ingrained in how the operation runs but have never been quantified, never connected to a financial cost, and never built into a roadmap for resolution.
+Column treatment: Three-column grid (gap 32px). Each column white background, 1px gray-100 border, 32px padding. Gold-400 eyebrow numeral (24px, light weight 200): 01 / 02 / 03. H3 (navy-800, 22px, weight 600, text-wrap balance) for area name. Bulleted list of what gets studied (gray-700, 15px, line-height 1.6, no bullet glyph, instead a 1px gold-400 left border on each list item, 8px padding-left).
+[Heading4] Column 01 — Processes.
+[ListParagraph] Bottlenecks
+[ListParagraph] Redundancies
+[ListParagraph] System integration issues
+[ListParagraph] Organization structure
+[ListParagraph] Process complexities
+[ListParagraph] Scheduling and planning
+[ListParagraph] Inventory control
+[Heading4] Column 02 — Systems and tools.
+[ListParagraph] What systems and tools exist
+[ListParagraph] Whether they are being utilized
+[ListParagraph] Level of understanding across the team
+[ListParagraph] Key Performance Indicators and standards
+[ListParagraph] Whether the KPIs and standards are correct
+[Heading4] Column 03 — People and behaviors.
+[ListParagraph] Process discipline gaps
+[ListParagraph] Human errors and rework
+[ListParagraph] Performance variation between employees
+[ListParagraph] Allocation of work and resources
+[ListParagraph] Frontline supervisor and middle management capability
+[ListParagraph] Labor coverage and capacity
+[Heading4] Below the three columns — consequences callout
+Treatment: Centered single-column callout block at 640px max-width, 1px navy-200 border, navy-50 fill, 32px padding.
+CAPTION (GRAY-700, 13PX, UPPERCASE, 0.18EM TRACKING, WEIGHT 500)
+THE COST OF LEAVING THIS UNRESOLVED
+BODY (NAVY-800, 17PX, WEIGHT 400, LINE-HEIGHT 1.5)
+Lost performance and productivity. Lagging production. Faulty product, poor service. Lost revenue, squandered resources. Increased cost, inefficient distribution of work. Compliance and security risk. Customer attrition.
+Visual treatment: one paragraph, sentences separated by periods, no bullets, reads as a list of consequences without formatting noise.
+Widow watch: watch all three column lists for orphan items.
+[Heading2] Section 4 — Week one: current state
+Layout: White background. Section-lg padding. Two-column split at 1100px max-width: left 45% holds the week label and headline, right 55% holds the body content.
+[Heading4] Left column
+EYEBROW (GOLD-400, 14PX, UPPERCASE, 0.18EM TRACKING, WEIGHT 500)
+WEEK ONE
+H2 (NAVY-800, 36PX, WEIGHT 700, LINE-HEIGHT 1.1, TEXT-WRAP BALANCE)
+Discovery Assessment.
+SUBHEAD (NAVY-400, 17PX, WEIGHT 400, ITALIC)
+Establishing the current state.
+[Heading4] Right column body (gray-700, 17px, weight 300, line-height 1.6)
+Senior POWERS practitioners deploy to your site for the first week and conduct comprehensive studies across operations and the support functions that surround them. Process flows are mapped. Operating data is analyzed. Inventory, labor utilization, equipment utilization, and the management cadence are all observed under live conditions, on every shift the operation runs.
+The findings are documented in a workbook that becomes the foundation for the second week. By the end of week one, your team will have an honest, quantified read on the operational gaps the studies surface, with the magnitude of the cost detailed by line item on your P&amp;L.
+[Heading4] Sub-block: week one output
+Treatment: Navy-50 background, 24px padding, hairline gold-400 left border.
+CAPTION (GOLD-400, 12PX, UPPERCASE, 0.18EM TRACKING, WEIGHT 500)
+WEEK ONE OUTPUT
+THREE LINES (NAVY-800, 15PX, WEIGHT 500, EACH LINE ON ITS OWN LINE)
+Comprehensive operational studies, with formal and informal observations
+Magnitude of savings, detailed line-by-line on the P&amp;L
+Results-based ROI and cash flow commitments
+Widow watch: the operation runs. and on your P&amp;L. cannot orphan.
+[Heading2] Section 5 — Week two: desired future state
+Layout: Navy-50 tint. Section-lg padding. Same two-column split as Section 4, left/right pattern repeated for visual rhythm and rhetorical parallel.
+[Heading4] Left column
+EYEBROW
+WEEK TWO
+H2 (NAVY-800, 36PX, WEIGHT 700, TEXT-WRAP BALANCE)
+Roadmap and approach.
+SUBHEAD (NAVY-400, 17PX, WEIGHT 400, ITALIC)
+From current state to desired future state.
+[Heading4] Right column body
+Week two is where the assessment becomes a plan. POWERS lays out the facts and connects the dots with your team to validate what the studies surfaced. From there, we set a course of action to bridge gaps, eliminate root causes, and build the roadmap from current state to the desired future state.
+Your business is unique. The roadmap is custom-built to fit your operation while maintaining the values and core beliefs that drive your organization. The output is not a templated playbook. It is a specific, sequenced plan for your site, with the financial commitment behind it.
+[Heading4] Sub-block: week two output
+CAPTION
+WEEK TWO OUTPUT
+THREE LINES
+Validated findings, presented to senior leadership
+Custom roadmap to the desired future state
+Approach, sequencing, and the case for moving forward
+THREAD-TIE LINE BELOW SUB-BLOCK (GRAY-700, 14PX, ITALIC)
+Multi-site Discovery extends this rhythm across the operation. Scope and duration are scaled to the assessment needed.
+Widow watch: drive your organization. cannot orphan.
+[Heading2] Section 6 — The five Discovery deliverables
+Layout: White background. Section-lg padding. Centered intro at 720px, then five-row stacked list at 960px max-width. Each row is a horizontal block: numeral on left, content right.
+EYEBROW
+WHAT YOU RECEIVE
+H2 (NAVY-400, 30PX, WEIGHT 700, TEXT-WRAP BALANCE)
+Five deliverables. One financial commitment.
+INTRO BODY (GRAY-700, 17PX, WEIGHT 300, MAX-WIDTH 720PX, CENTERED)
+Discovery ends with five named deliverables in your hands. They are the basis on which your team decides whether to move into Implementation, and the commercial framework that governs the engagement if you do.
+Row treatment: Five-row list. Each row separated by 1px gray-100 hairline rule. Each row 28px vertical padding. Left: 64px gold-400 numeral (light weight 200, line-height 1.0): 01 / 02 / 03 / 04 / 05. Right: H3 (navy-800, 20px, weight 600, text-wrap balance) on top line, body (gray-700, 16px, weight 300, line-height 1.6) below.
+[Heading4] Row 01 — Operations Studies.
+A complete report including the studies our practitioners conducted on the floor, plus the informal observations of operational problems, opportunities, and best practices exhibited across operations and support activities. The studies become source material for the senior leadership presentation at the end of Discovery.
+[Heading4] Row 02 — Custom Management Operating System Design.
+Not a template. A specific operating architecture designed for your site, defining the processes, the cadence, the meeting rhythm, the visual management, and the accountability structures that produce the right output, at the right time, at the right cost. The design accounts for your products, your people, and the conditions your operation actually runs under.
+[Heading4] Row 03 — Operational Cost Profile at Full Capacity Potential.
+Based on the observed and measured behavioral and performance gaps directly correlated to the current operating system, structure, skills, and operating environment, we identify the achievable performance levels and cost profiles your site could be operating at if the architecture above were in place.
+[Heading4] Row 04 — Project Savings Commitment.
+The difference between your current cost baseline and the operational cost profile at full capacity potential is the Project Savings Commitment that POWERS makes to your organization. This is not a projection. It is a commercial commitment that governs how POWERS gets compensated during Implementation.
+[Heading4] Row 05 — Project Cost Proposal.
+Based on the Key Event Schedule, the staffing and shift structure of your site, and the sequenced roadmap, we identify the number of weeks and the number of senior practitioners required to fully implement the custom Management Operating System. The cost proposal is built against the savings commitment, not against billable hours.
+Widow watch: watch row 02 and row 04 closely, longer bodies, more risk of awkward line breaks. Apply text-wrap pretty to all body text.
+[Heading2] Section 7 — The commercial structure
+Layout: Navy-800 background. White type. Section-lg padding. Single centered column at 720px max-width.
+EYEBROW
+SKIN IN THE GAME
+H2 (WHITE, 36PX DESKTOP / 28PX MOBILE, WEIGHT 700, TEXT-WRAP BALANCE)
+We get paid for results, not for time.
+BODY (WHITE AT 90%, 18PX, WEIGHT 300, LINE-HEIGHT 1.6)
+The Project Savings Commitment is the foundation of the commercial relationship that follows Discovery. POWERS earns its fee against the savings delivered, tracked weekly and reconciled against the model your team agreed to at the close of week two. If we miss the commitment, the commercial structure absorbs that. The risk is not transferred back to your organization.
+This is not how most consulting firms structure their work. We do it this way because we have done it more than 250 times across the manufacturing sectors that matter, and the structure is what allows our practitioners to do the job the way it actually needs to be done. On the floor. Under live conditions. For as long as the architecture takes to build.
+[Heading4] Three-stat row below the body
+Treatment: Centered three-stat row with gold-400 hairline rules between, max-width 600px. Each stat: white type, 28px weight 700 numeral on top, 12px gray-200 caption uppercase 0.18em tracking below.
+Stat 1: 250+ / Projects delivered
+Stat 2: 100% / Measurable returns
+Stat 3: 3 / Compensation milestones tracked weekly
+BENEATH THE STATS (WHITE AT 70%, 13PX, ITALIC, CENTERED)
+Annualized savings rate ROI. Weekly cash flow. Total project cost.
+Widow watch: for time. should land alone for emphasis.
+[Heading2] Section 8 — What follows Discovery
+Layout: White background. Section-lg padding. Two-column at 1100px: left 50% labeled IMPLEMENTATION, right 50% labeled EVALUATE ROI &amp; SAVINGS. Visual rhythm matches the week-one / week-two split earlier on the page.
+EYEBROW (GOLD-400, CENTERED ABOVE BOTH COLUMNS)
+PHASES TWO AND THREE
+H2 (NAVY-400, 30PX, WEIGHT 700, TEXT-WRAP BALANCE, CENTERED)
+Discovery is the decision point. What follows is the engagement.
+[Heading4] Left column — Implementation
+EYEBROW (GOLD-400, 12PX UPPERCASE 0.18EM TRACKING, WEIGHT 500)
+PHASE 2
+H3 (NAVY-800, 22PX, WEIGHT 600)
+Implementation.
+BODY (GRAY-700, 16PX, WEIGHT 300, LINE-HEIGHT 1.6)
+If your team approves the Discovery findings and the Project Savings Commitment, Implementation begins. POWERS practitioners deploy to your site for the duration defined by the Key Event Schedule. We work shoulder to shoulder with your frontline leaders, on every shift, under live operating conditions, until the custom Management Operating System is built, the leadership behaviors are reinforced, and the financial performance is tracking against the commitment.
+SHORT LIST (NO BULLET GLYPH, GOLD-400 LEFT BORDER)
+[ListParagraph] A defined Key Event Schedule
+[ListParagraph] A specified scope of engagement
+[ListParagraph] A weekly financial performance tracking methodology
+[ListParagraph] A defined partnership duration
+[Heading4] Right column — Evaluate ROI &amp; Savings
+EYEBROW
+PHASE 3
+H3
+Evaluate ROI &amp; Savings.
+BODY
+The success of the engagement is measured against your numbers, on your P&amp;L, using the savings model your team validated at the end of Discovery. Not against fuzzy outcomes, not against activity, not against billable hours. POWERS provides a detailed analysis of the actual ROI and savings achieved, on the cadence agreed at engagement start.
+SHORT LIST
+[ListParagraph] Annualized savings rate ROI
+[ListParagraph] Weekly cash flow against the model
+[ListParagraph] Total project cost reconciled against savings delivered
+[ListParagraph] Final report on results achieved against commitment
+[Heading4] Below the two columns
+BODY (GRAY-700, 16PX, WEIGHT 300, LINE-HEIGHT 1.6, CENTERED)
+The architecture and the durability that follows are described on the Approach page. The case studies on the Results page are the evidence.
+Inline links: See the Approach → /approach   |   See the Results → /case-studies. Navy-600, 14px, weight 500. Vertical hairline divider between.
+Widow watch: tracking against the commitment. and the cadence agreed at engagement start. both want clean closes.
+[Heading2] Section 9 — CTA / conversation invitation
+Layout: Navy-800 background. Single centered column at 720px max-width. Section-lg padding. White type. No form.
+EYEBROW
+WHEN YOU&apos;RE READY
+H2 (WHITE, 36PX DESKTOP / 28PX MOBILE, WEIGHT 700, TEXT-WRAP BALANCE)
+A defined process. A roadmap that pays for itself.
+BODY (WHITE AT 85%, 18PX, WEIGHT 300, LINE-HEIGHT 1.6, MAX-WIDTH 600PX, CENTERED)
+The conversation that leads to Discovery is shorter than Discovery itself. If your operation has reached the point where the gaps are familiar but the cost has never been quantified, the next step is a call to talk through what Discovery would surface in your specific situation.
+Contact block treatment: Centered, 32px margin-top, gold-400 hairline rule above.
+Phone: +1 678-971-4711 — white, 22px, weight 500
+Email: info@thepowerscompany.com — gold-400, 18px, weight 400
+Button: Start the conversation → /contact. Spec matches Approach page CTA.
+Widow watch: pays for itself. should land alone. specific situation. should land alone.
+[Heading2] Discovery Process page — SEO meta and internal links
+Title: Discovery Process | POWERS — Two-Week Manufacturing Operations Assessment
+Meta description: POWERS Discovery is a paid two-week assessment of manufacturing operations, delivering five named outputs, a custom Management Operating System design, and a results-based Project Savings Commitment.
+Internal links from this page:
+[ListParagraph] Section 8: Approach page
+[ListParagraph] Section 8: Case Studies / Results
+[ListParagraph] Section 9: Contact
+[Heading1] Design Handoff Prompt
+The text below is the prompt to paste into Design at the start of the build session for these two pages. It briefs the designer on the brand system, the typography rules, and the conventions both pages follow. The page-specific copy and specs in this document are the source of truth for content and layout.
+[Heading2] Prompt to paste into Design
+You are designing two pages for the POWERS website: Approach and Discovery Process. Both pages live under the Results dropdown in the top navigation, and they function as a strategic and operational pair. Approach answers the question why does POWERS work. Discovery Process answers the question what happens when we engage. Build them with that distinction in mind. Approach is read top-to-bottom for argument. Discovery Process is scanned for substance, deliverables, and commercial structure.
+[Heading3] Brand system
+POWERS is a manufacturing performance consulting firm repositioning toward private equity operating partners, COOs, and VPs of Operations. The brand register is executive, substantive, and quietly confident. Not warm. Not playful. Not SaaS. Think professional services firm at the level of Bain, BCG, or McKinsey, with the operational depth of a firm that lives on factory floors.
+Tagline: Make Performance Stick. The retired tagline Culture Powers Business does not appear anywhere on these pages.
+[Heading3] Color tokens (canonical)
+[ListParagraph] navy-800 #183a61 — primary brand color, hero backgrounds, H1 on light backgrounds
+[ListParagraph] navy-900 #0d2442 — footer, button background, deep accents
+[ListParagraph] navy-400 #4a6a8a — H2 on light backgrounds (this rule is absolute, never use navy-800 for H2 on light)
+[ListParagraph] navy-200 #a8c0d6 — borders on dark backgrounds, italic captions on dark
+[ListParagraph] navy-50 #f0f4f8 — light tint section backgrounds
+[ListParagraph] gold-400 #eabb71 — eyebrows, hairline rules, hover states, single-line accents, decorative use only, never body type
+[ListParagraph] gold-600 #c9963e — button hover state, secondary gold accent
+[ListParagraph] gray-900 #1a1a18 — section heads on white where navy is not appropriate
+[ListParagraph] gray-700 #3a3a38 — body copy, never pure black, never navy
+[ListParagraph] gray-400 #888884 — captions, meta, italic detail
+[ListParagraph] gray-100 #e8e8e4 — default hairline rules and card borders
+[Heading3] Typography (canonical)
+[ListParagraph] Typeface: Proxima Nova throughout, via Adobe Fonts (Typekit dhv8kja). No alternates.
+[ListParagraph] Eyebrow labels: gold-400, uppercase, 0.18em tracking, weight 500, 12px
+[ListParagraph] H1 / page titles: navy-800 on light backgrounds, white on navy backgrounds. Hero scale 64px desktop / 44px mobile, weight 800, line-height 1.0.
+[ListParagraph] H2 / section heads: navy-400 on light backgrounds, white on navy backgrounds. 30px, weight 700, line-height 1.2. This rule is absolute, navy-400 never navy-800 for H2 on light.
+[ListParagraph] H3 / sub-section heads: navy-800 on light, white on navy. 18 to 22px, weight 600.
+[ListParagraph] Body copy: gray-700, 18px desktop / 16px mobile, weight 300, line-height 1.6.
+[ListParagraph] Captions: gray-400, 12 to 13px, often italic.
+[ListParagraph] Sentence case throughout. No title case in headlines or subheads.
+[Heading3] Typography quality control (binding)
+[ListParagraph] Apply text-wrap: balance to every H1, H2, and H3.
+[ListParagraph] Apply text-wrap: pretty to every body paragraph.
+[ListParagraph] Watch every section&apos;s closing line for orphans and widows. The widow watch notes embedded in the page specs call out the highest-risk lines.
+[ListParagraph] Every right-arrow is a true Unicode → glyph, not a hyphen-greater-than approximation.
+[ListParagraph] No em dashes anywhere. Periods, commas, or colons only.
+[Heading3] Layout grid and spacing
+[ListParagraph] Section-lg vertical padding: 120px top and bottom.
+[ListParagraph] Section default vertical padding: 80px top and bottom.
+[ListParagraph] Standard content max-widths: 720px for centered text columns, 1100 to 1200px for grid sections, 60ch for hero subheads.
+[ListParagraph] Standard card border: 1px gray-100. Hover state: lift to 1px gold-400. No box-shadows. No drop shadows. No scale transforms.
+[ListParagraph] Standard border-radius: 4px sm, 6px md, 10px lg, 16px xl. Use sparingly, the brand favors right angles for executive register.
+[Heading3] Conventions both pages share
+[ListParagraph] Hero treatment: navy-800 background, eyebrow in gold-400 above H1, hairline gold-400 rule below subhead at 4rem margin-top. No CTA button in either hero.
+[ListParagraph] CTA section (Section 9 on both pages): navy-800 background, no form, phone in white at 22px, email in gold-400 at 18px, single button in navy-900 with gold-400 border that inverts on hover.
+[ListParagraph] Eyebrow + H2 + body pattern: every major section opens with a gold-400 eyebrow above the H2. The eyebrow is always uppercase, 0.18em tracking, 12px, weight 500.
+[ListParagraph] Card hover state across all card sections: border lifts from gray-100 to gold-400, link/H3 shifts from navy-800 to navy-600. No other visual changes on hover.
+[Heading3] Where the gold accent appears (and where it does not)
+Gold-400 is the brand&apos;s only decorative color. Used sparingly, deliberately. It appears on hero hairline rules, eyebrow labels, Performance Arc spine, expertise card hover, contact email, CTA button border, three-stat row dividers, and the gold-400 left borders on numbered list items. It never appears in body copy. It never appears as a fill color on large surfaces. The brand reads navy and white at scale, with gold as the punctuation.
+[Heading3] Mobile treatment
+[ListParagraph] Hero scales: H1 from 64px to 44px (Approach), 56px to 40px (Discovery Process).
+[ListParagraph] All multi-column grids stack vertically. Two-column splits become single column.
+[ListParagraph] Performance Arc on Approach: horizontal arc becomes vertical with left-side gold rule connecting cards.
+[ListParagraph] Section padding scales from 120px to 80px on small breakpoints.
+[Heading3] Build order recommendation
+Build Approach first. It establishes the typographic and rhythmic patterns that Discovery Process inherits. Once Approach is in design and approved, Discovery Process should build faster because most of the visual conventions are settled. Both pages share Section 9 (CTA), so build that section once and instance it across both pages.
+[Heading3] Approval gates
+Per project brief: copy approval, then design approval, then build. Sean Hart (CEO) holds final authority on both pages. Justin Pethick (COO) handles day-to-day review. No section moves to build without written sign-off. The single biggest risk to timeline is approval latency, surface any open questions early.
+End of Design Handoff Prompt.
