@@ -16,7 +16,6 @@ import React, { useEffect, useRef } from 'react';
  * useLegacyLinkIntercept hook and re-routed through React Router.
  */
 export default function LegacyPage({ css, html, script, title, metaDescription }) {
-  const containerRef = useRef(null);
 
   useEffect(() => {
     if (title) document.title = title;
@@ -31,24 +30,36 @@ export default function LegacyPage({ css, html, script, title, metaDescription }
     }
   }, [title, metaDescription]);
 
-  // Run the page's inline JS once after the markup is in the DOM.
-  // Using a real <script> element (not eval) so it picks up document.getElementById
-  // and global function declarations the way the legacy page expected.
+  // Run the page's inline JS once per component instance after the markup is
+  // in the DOM. We use a real <script> element (not eval) so it picks up
+  // document.getElementById and registers global functions the way the
+  // legacy page expected.
+  //
+  // Idempotency: a useRef guard prevents StrictMode's dev double-invocation
+  // from running the script twice (which would, e.g., duplicate `<option>`
+  // children inside the case-studies filter selects). The ref resets
+  // naturally on a real component remount (e.g. SPA navigation away and
+  // back), so the script will re-execute against the fresh DOM.
+  //
+  // The converter additionally wraps the inline JS body in an IIFE so
+  // top-level `const`/`let` declarations are scoped to the function and
+  // can't collide in the shared global execution context.
+  const hasRunRef = useRef(false);
   useEffect(() => {
-    if (!script || !script.trim()) return;
+    if (!script || !script.trim()) return undefined;
+    if (hasRunRef.current) return undefined;
+    hasRunRef.current = true;
     const tag = document.createElement('script');
     tag.type = 'text/javascript';
     tag.text = script;
     document.body.appendChild(tag);
-    return () => {
-      try { document.body.removeChild(tag); } catch (e) { /* already gone */ }
-    };
+    return undefined; // intentionally leave script in DOM so injected handlers keep working
   }, [script]);
 
   return (
     <>
       {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
-      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: html }} />
+      <div dangerouslySetInnerHTML={{ __html: html }} />
     </>
   );
 }

@@ -537,7 +537,8 @@ const HTML = `<section class="library-hero">
   }
 </style>`;
 
-const SCRIPT = `const DATA = [
+const SCRIPT = `;(function(){
+const DATA = [
   {num:1, title:"How Honest Discovery Led To A Blind Deployment And A 17% Productivity Gain", industry:"Industrial Manufacturing", engagement:["MOS","Frontline Leadership Development"], challenges:["Inconsistent performance across shifts or sites","Supervisors firefighting instead of leading"], result:"17% productivity gain; 2M lbs additional output annually; zero headcount added", date:"2026-03-19", url:"https://www.thepowerscompany.com/resources/honest-discovery-blind-deployment-17-percent-productivity-gain/"},
   {num:2, title:"POWERS Turns Discipline into $6.3M in Annualized Savings for Manufacturing Giant", industry:"Industrial Manufacturing", engagement:["MOS","Frontline Leadership Development"], challenges:["Inconsistent performance across shifts or sites","Supervisors firefighting instead of leading"], result:"$6.3M annualized savings; 26.9% labor productivity gain; 40% Gemba score improvement", date:"2026-03-05", url:"https://www.thepowerscompany.com/resources/mos-transformation-turns-discipline-into-savings/"},
   {num:3, title:"When Zero Is the Only Acceptable Outcome: How POWERS Strengthened Food Manufacturing Safety And Quality Under Pressure", industry:"Food Manufacturing", engagement:["MOS","Frontline Leadership Development"], challenges:["Quality and safety gaps","Supervisors firefighting instead of leading"], result:"Zero tolerance safety and quality standard achieved under pressure", date:"2026-02-19", url:"https://www.thepowerscompany.com/resources/food-manufacturing-safety-quality-case-study/"},
@@ -766,7 +767,16 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 });
 
 // --- Init ---
-render();`;
+render();
+  try { window.unique = unique; } catch(_) {}
+  try { window.populate = populate; } catch(_) {}
+  try { window.formatDate = formatDate; } catch(_) {}
+  try { window.highlight = highlight; } catch(_) {}
+  try { window.render = render; } catch(_) {}
+  try { window.renderPills = renderPills; } catch(_) {}
+  try { window.clearFilter = clearFilter; } catch(_) {}
+  try { window.update = update; } catch(_) {}
+})();`;
 
 export default function CaseStudies() {
   return (

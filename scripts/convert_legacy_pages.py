@@ -97,6 +97,26 @@ def extract_body_content(body_html: str):
     return body.strip(), plain_js
 
 
+def wrap_inline_script(js: str) -> str:
+    """Wrap legacy inline JS so it can run idempotently on re-mount.
+
+    1. Find all top-level `function name(...)` declarations.
+    2. Wrap the whole body in an IIFE so top-level `const`/`let` (e.g. `DATA`,
+       `state`) are scoped to the function and don't collide on re-execution.
+    3. Inside the IIFE, after the body, expose each top-level function on
+       `window` so injected inline `onclick="funcName(...)"` handlers still
+       resolve. The legacy case-studies page relies on `clearFilter` being
+       globally callable from HTML it builds via `innerHTML`.
+    """
+    if not js or not js.strip():
+        return js
+    fn_names = re.findall(r'(?m)^\s*function\s+(\w+)\s*\(', js)
+    fn_names = list(dict.fromkeys(fn_names))  # de-dup, preserve order
+    hoist = '\n'.join(f'  try {{ window.{n} = {n}; }} catch(_) {{}}' for n in fn_names)
+    return ';(function(){\n' + js + '\n' + hoist + '\n})();'
+
+
+
 def js_string_literal(s: str) -> str:
     """Encode string as a JS backtick template literal-safe string."""
     return s.replace('\\', '\\\\').replace('`', '\\`').replace('${', '\\${')
@@ -112,6 +132,7 @@ def convert(src_path: pathlib.Path, component_name: str) -> str:
     title = extract_title(head_html)
     meta_desc = extract_meta(head_html, 'description')
     body_content, plain_js = extract_body_content(body_html)
+    plain_js = wrap_inline_script(plain_js)
 
     # Repath asset references: uploads/... -> /uploads/... (absolute from public/)
     body_content = re.sub(r'(src|href)=(["\'])uploads/', r'\1=\2/uploads/', body_content)

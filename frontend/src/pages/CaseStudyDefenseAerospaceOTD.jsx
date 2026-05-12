@@ -1429,11 +1429,14 @@ const HTML = `<!-- ─────────── SCREEN HERO (original, simp
 
 <!-- Set print filename hint via document title swap on print -->`;
 
-const SCRIPT = `(function() {
+const SCRIPT = `;(function(){
+(function() {
   const originalTitle = document.title;
   const printTitle = 'POWERS-Case-Study-Defense-Aerospace-OTD';
   window.addEventListener('beforeprint', () => { document.title = printTitle; });
   window.addEventListener('afterprint', () => { document.title = originalTitle; });
+})();
+
 })();`;
 
 export default function CaseStudyDefenseAerospaceOTD() {

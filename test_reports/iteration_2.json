@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend regression retest after fix for iteration_1 MEDIUM bug (CaseStudies `Identifier DATA has already been declared` under StrictMode/remount). Verified IIFE wrapper + useRef idempotency guard fully resolve the issue, validated window.clearFilter() still resolves from injected onclick handlers, spot-checked 5 representative pages, and confirmed the extracted useLegacyLinkIntercept hook (now in /lib/navHooks.js) preserves SPA navigation behavior. All checks pass with zero page errors and zero console errors.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "LegacyPage useRef idempotency guard is correct: hasRunRef.current resets on real component unmount/remount (route change) but persists across StrictMode's dev double-effect — exactly the desired behavior.",
+    "Converter's wrap_inline_script function correctly wraps body in `;(function(){ ... })();` and explicitly hoists top-level function declarations to `window` via try/catch — this is the right pattern to preserve injected `onclick='clearFilter(...)'` handlers while scoping const/let bindings.",
+    "useLegacyLinkIntercept extraction to /lib/navHooks.js eliminates the duplication flagged in iteration_1 and is consumed by both Layout.jsx and HomeLayout.jsx — DRY satisfied.",
+    "Minor: LegacyPage useEffect cleanup intentionally leaves the injected <script> tag in DOM (comment line 56). This is correct because removing it would also unregister `window.clearFilter` mid-session. Keep as-is."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a", "frontend": "100%" },
+  "test_credentials": "n/a — no auth in this app",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration_1 MEDIUM bug FIXED & VERIFIED. /case-studies: 0 page errors and 0 console errors on first visit AND after nav-away-and-back (/approach → /case-studies). Filter dropdowns populated correctly on both visits: industryFilter=17 options, engagementFilter=9 options (Service Type, expected ~7 — actual count is 9 incl. 'All Service Types' header), challengeFilter=11 options (expected ~10), sortFilter=4 options. 68 .case-card elements rendered both visits. Search 'meat' filters to 10 cards live. Active filter pill renders with inline `onclick=\"clearFilter('search')\"` and clicking the ✕ button restores all 68 cards — this confirms window.clearFilter (hoisted out of the IIFE) is reachable from injected handlers. Spot-checks: / (h1 'Turning Manufacturing Strategy into Measurable Results'), /approach (h1 'Where Executive Intent Meets Shop Floor Execution'), /leadership (6 images under /uploads/leaders/), /leadership/randall-powers (image src=/uploads/leaders/randall-powers.webp, naturalWidth=800, naturalHeight=800), /case-studies/defense-aerospace-otd (eyebrow + Situation + Diagnosis + Results all present, h1 'On-Time Performance Climbed From 56% to 89%...'), /contact (h1 'Start a Conversation.' — skeleton only, no form yet which matches per-request note 'Skeleton pages intentionally only have a hero'). SPA NAV test: set window.__sentinel='PRESERVED_42' on /approach, clicked footer 'Discovery Process' link → URL became /discovery-process and window.__sentinel still equals 'PRESERVED_42' → confirms useLegacyLinkIntercept (after extraction to /lib/navHooks.js) still routes via React Router with no full reload. Zero pageerrors and zero console errors across the entire test run.",
+  "rca of the issue": "Fix verified end-to-end. Root cause from iteration_1 (top-level `const DATA` in inline <script> colliding on StrictMode double-injection) is eliminated by two complementary mechanisms working together: (1) the script generator now wraps the entire inline JS body in `;(function(){ ...originalBody...; window.fnName = fnName; })();` so all top-level const/let are function-scoped (cannot collide), with selected functions explicitly hoisted to window so injected `onclick='clearFilter(...)'` handlers still resolve; (2) LegacyPage uses a useRef-based `hasRunRef` guard that prevents the <script> from being re-appended during StrictMode's dev double-invocation, while still allowing a fresh execution on a real remount via SPA navigation (verified by clean state on /approach → /case-studies round trip). Both mechanisms together make the legacy-script integration safe under React 18 StrictMode and under SPA navigation."
+}
