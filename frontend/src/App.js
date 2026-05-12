@@ -1,53 +1,68 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import HomeLayout from './components/HomeLayout';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import Home from './pages/Home';
+import Approach from './pages/Approach';
+import DiscoveryProcess from './pages/DiscoveryProcess';
+import IndustriesServed from './pages/IndustriesServed';
+import CaseStudies from './pages/CaseStudies';
+import OperationalReadiness from './pages/OperationalReadiness';
+import FrontlineLeadership from './pages/FrontlineLeadership';
+import EquipmentReliability from './pages/EquipmentReliability';
+import SupplyChain from './pages/SupplyChain';
+import History from './pages/History';
+import Leadership from './pages/Leadership';
+import CompanyNews from './pages/CompanyNews';
+import Careers from './pages/Careers';
+import Insights from './pages/Insights';
+import Contact from './pages/Contact';
+import BioRandallPowers from './pages/BioRandallPowers';
+import BioSeanHart from './pages/BioSeanHart';
+import BioSaulBautista from './pages/BioSaulBautista';
+import BioKenWiesinger from './pages/BioKenWiesinger';
+import BioJustinPethick from './pages/BioJustinPethick';
+import BioKevinSabany from './pages/BioKevinSabany';
+import CaseStudyDefenseAerospaceOTD from './pages/CaseStudyDefenseAerospaceOTD';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Homepage renders its own inline Header + Footer — no shared chrome */}
+        <Route element={<HomeLayout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+
+        {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
+        <Route element={<Layout />}>
+          <Route path="/approach" element={<Approach />} />
+          <Route path="/discovery-process" element={<DiscoveryProcess />} />
+          <Route path="/industries-served" element={<IndustriesServed />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
+          <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
+          <Route path="/operational-readiness" element={<OperationalReadiness />} />
+          <Route path="/frontline-leadership" element={<FrontlineLeadership />} />
+          <Route path="/equipment-reliability" element={<EquipmentReliability />} />
+          <Route path="/supply-chain" element={<SupplyChain />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/leadership" element={<Leadership />} />
+          <Route path="/leadership/randall-powers" element={<BioRandallPowers />} />
+          <Route path="/leadership/sean-hart" element={<BioSeanHart />} />
+          <Route path="/leadership/saul-bautista" element={<BioSaulBautista />} />
+          <Route path="/leadership/ken-wiesinger" element={<BioKenWiesinger />} />
+          <Route path="/leadership/justin-pethick" element={<BioJustinPethick />} />
+          <Route path="/leadership/kevin-sabany" element={<BioKevinSabany />} />
+          <Route path="/company-news" element={<CompanyNews />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

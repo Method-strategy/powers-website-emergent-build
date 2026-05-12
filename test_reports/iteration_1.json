@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend-only e2e of the powers-website React SPA port. Smoke-tested all 22 declared routes plus a 404 path, validated shared header/footer chrome, homepage inline header treatment, mega menus (Results 4+4, About 4), legacy .html href interception via React Router (no full reload), scroll-restoration on nav, static asset 200s, bio image rendering, case study library card population (68 cards), filter dropdowns, and case study detail sections. All 23 navigations rendered without page errors or blank pages except /case-studies which throws ONE non-blocking page error (cards still render correctly). No backend testing performed (per request).",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "CaseStudies page (/case-studies)",
+        "issue": "Page-level JS exception thrown on mount: \"Failed to execute 'appendChild' on 'Node': Identifier 'DATA' has already been declared\". Root cause: the legacy inline <script> embedded via dangerouslySetInnerHTML declares `const DATA = [...]` at script scope. Under React 18 StrictMode (or any remount), LegacyPage re-injects/re-executes the script tag, redeclaring the same lexical binding in the same global execution context and throwing. Cards still render (68 visible) because the throw happens after population, but every visit logs an error to the console. Fix options: (a) wrap the inline script body in an IIFE `(function(){ const DATA=...; ... })()` so identifiers are scoped, (b) guard with `if (!window.__POWERS_CS_INIT) { window.__POWERS_CS_INIT=true; ... }`, or (c) disable React.StrictMode for legacy-script pages. Recommended (a) for least invasive fix in LegacyPage / the generated case-studies module.",
+        "selector": "/case-studies",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Wrap the inline <script> body on the /case-studies page in an IIFE (or add a window-level init guard) so the `const DATA` declaration doesn't collide on remount/StrictMode double-render. This eliminates the page-error and is the only outstanding defect."
+  ],
+  "critical_code_review_comments": [
+    "LegacyPage pattern (dangerouslySetInnerHTML + inline <script>) is fragile under StrictMode/remount. Consider executing the inline JS inside an IIFE wrapper in the page generator to make legacy scripts re-entrant-safe.",
+    "Both Layout.jsx and HomeLayout.jsx duplicate the legacy-link-intercept effect. Extract into a shared `useLegacyLinkIntercept` hook in /lib to satisfy DRY (>10 lines duplicated)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a", "frontend": "96%" },
+  "test_credentials": "n/a — no auth in this app",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 22 routes + /does-not-exist render with status 200 and correct H1. Confirmed: shared header (data-testid=site-header) + footer (data-testid=site-footer) on every non-home route; homepage uses inline header (no shared chrome — correct per spec); mega-results shows 8 anchors (4 left topLinks + 4 right Expertise sub-links); mega-about shows History link; logo→/, Let's Talk→/contact (header-lets-talk-btn); SPA navigation preserved a window-set counter across nav (no full reload); footer Discovery Process link routes via React Router; scroll resets to 0 after nav; static assets /uploads/powers-logo-refined-2026.png and /uploads/leaders/randall-powers.webp return 200; randall bio img naturalWidth=800; case-studies has 68 .case-card elements; all four filter dropdowns are present (Industry, Service Type, Primary Challenge with `All Challenges`, Sort By with `Newest First`); case-study detail eyebrow `CASE STUDY · DEFENSE & AEROSPACE` and Situation/Diagnosis/Results sections all render; 404 page shows `Page Not Found` H1 + `Return Home` link. Only outstanding defect: pageerror on /case-studies from inline-script re-declaration of `const DATA`.",
+  "rca of the issue": "Reproduction: navigate to /case-studies and inspect DevTools console. Observed error: `Failed to execute 'appendChild' on 'Node': Identifier 'DATA' has already been declared`. Reason: LegacyPage component renders raw HTML+inline-JS via dangerouslySetInnerHTML; React 18 StrictMode mounts the component twice in development, which causes the same inline <script> to be appended to the DOM twice. The script declares `const DATA = [...]` at top-level script scope, and the second declaration collides with the first in the shared global execution context (since classic <script> tags share the document's global scope). Mitigation: wrap the inline body in an IIFE — `(function(){ const DATA=[...]; /* original code */ })();` — which scopes the binding to the function and makes the script idempotent across remounts. Alternative quick fix: in LegacyPage, before injecting, check `if (window.__POWERS_CS_DATA_LOADED) return;` and set the flag after first execution."
+}

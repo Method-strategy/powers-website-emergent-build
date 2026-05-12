@@ -1,0 +1,107 @@
+[
+  {
+    "file": "approach.html",
+    "component": "Approach",
+    "route": "/approach"
+  },
+  {
+    "file": "discovery-process.html",
+    "component": "DiscoveryProcess",
+    "route": "/discovery-process"
+  },
+  {
+    "file": "industries-served.html",
+    "component": "IndustriesServed",
+    "route": "/industries-served"
+  },
+  {
+    "file": "case-studies.html",
+    "component": "CaseStudies",
+    "route": "/case-studies"
+  },
+  {
+    "file": "operational-readiness.html",
+    "component": "OperationalReadiness",
+    "route": "/operational-readiness"
+  },
+  {
+    "file": "frontline-leadership.html",
+    "component": "FrontlineLeadership",
+    "route": "/frontline-leadership"
+  },
+  {
+    "file": "equipment-reliability.html",
+    "component": "EquipmentReliability",
+    "route": "/equipment-reliability"
+  },
+  {
+    "file": "supply-chain.html",
+    "component": "SupplyChain",
+    "route": "/supply-chain"
+  },
+  {
+    "file": "history.html",
+    "component": "History",
+    "route": "/history"
+  },
+  {
+    "file": "leadership.html",
+    "component": "Leadership",
+    "route": "/leadership"
+  },
+  {
+    "file": "company-news.html",
+    "component": "CompanyNews",
+    "route": "/company-news"
+  },
+  {
+    "file": "careers.html",
+    "component": "Careers",
+    "route": "/careers"
+  },
+  {
+    "file": "insights.html",
+    "component": "Insights",
+    "route": "/insights"
+  },
+  {
+    "file": "contact.html",
+    "component": "Contact",
+    "route": "/contact"
+  },
+  {
+    "file": "randall-powers.html",
+    "component": "BioRandallPowers",
+    "route": "/leadership/randall-powers"
+  },
+  {
+    "file": "sean-hart.html",
+    "component": "BioSeanHart",
+    "route": "/leadership/sean-hart"
+  },
+  {
+    "file": "saul-bautista.html",
+    "component": "BioSaulBautista",
+    "route": "/leadership/saul-bautista"
+  },
+  {
+    "file": "ken-wiesinger.html",
+    "component": "BioKenWiesinger",
+    "route": "/leadership/ken-wiesinger"
+  },
+  {
+    "file": "justin-pethick.html",
+    "component": "BioJustinPethick",
+    "route": "/leadership/justin-pethick"
+  },
+  {
+    "file": "kevin-sabany.html",
+    "component": "BioKevinSabany",
+    "route": "/leadership/kevin-sabany"
+  },
+  {
+    "file": "case-study-defense-aerospace-otd.html",
+    "component": "CaseStudyDefenseAerospaceOTD",
+    "route": "/case-studies/defense-aerospace-otd"
+  }
+]
