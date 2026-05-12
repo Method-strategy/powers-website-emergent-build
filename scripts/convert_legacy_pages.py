@@ -122,6 +122,84 @@ def js_string_literal(s: str) -> str:
     return s.replace('\\', '\\\\').replace('`', '\\`').replace('${', '\\${')
 
 
+def apply_page_patches(filename: str, js: str) -> str:
+    """Apply per-page semantic patches to the legacy inline JS.
+
+    Patches are kept here (not as edits to the source HTML) so the React
+    port stays in sync if/when the source HTML is regenerated.
+    """
+    if filename == 'case-studies.html':
+        # 1. Re-target the Defense & Aerospace card (#54) at the locked
+        #    internal detail route instead of the public-site PDF blurb.
+        js = js.replace(
+            'url:"https://www.thepowerscompany.com/resources/defense-industry/"',
+            'url:"/case-studies/defense-aerospace-otd"',
+        )
+
+        # 2. Render each card as an <a href> wrapper so the global
+        #    useLegacyLinkIntercept routes internal `/...` URLs via React
+        #    Router while external `http://...` URLs open in a new tab.
+        #    Replaces the original `<article onclick="window.open">` +
+        #    inner `<a class="card-link" target="_blank">` pattern (which
+        #    would force a full reload for the internal Defense detail
+        #    card and is also invalid nested-anchor HTML once we wrap).
+        old_render = '''grid.innerHTML = filtered.map((d, i) => `
+    <article class="case-card" style="animation-delay:${Math.min(i * 0.04, 0.4)}s" onclick="window.open('${d.url}','_blank')">
+      <div class="card-header">
+        <div class="card-industry">${d.industry}</div>
+        <div class="card-num">#${String(d.num).padStart(2,'0')}</div>
+      </div>
+      <h2 class="card-title">${highlight(d.title, s)}</h2>
+      <div class="card-result">${highlight(d.result, s)}</div>
+      <div class="card-tags">
+        ${d.engagement.map(e => `<span class="tag tag-engagement">${e}</span>`).join('')}
+        ${d.challenges.slice(0,2).map(c => `<span class="tag tag-challenge">${c}</span>`).join('')}
+      </div>
+      <div class="card-footer">
+        <span class="card-date">${formatDate(d.date)}</span>
+        <a class="card-link" href="${d.url}" target="_blank" onclick="event.stopPropagation()">
+          Read Case Study
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </article>
+  `).join('');'''
+
+        new_render = '''grid.innerHTML = filtered.map((d, i) => {
+    const isInternal = typeof d.url === 'string' && d.url.startsWith('/');
+    const targetAttr = isInternal ? '' : ' target="_blank" rel="noopener noreferrer"';
+    return `
+    <a class="case-card-link" href="${d.url}"${targetAttr} style="display:block;text-decoration:none;color:inherit;">
+      <article class="case-card" style="animation-delay:${Math.min(i * 0.04, 0.4)}s">
+        <div class="card-header">
+          <div class="card-industry">${d.industry}</div>
+          <div class="card-num">#${String(d.num).padStart(2,'0')}</div>
+        </div>
+        <h2 class="card-title">${highlight(d.title, s)}</h2>
+        <div class="card-result">${highlight(d.result, s)}</div>
+        <div class="card-tags">
+          ${d.engagement.map(e => `<span class="tag tag-engagement">${e}</span>`).join('')}
+          ${d.challenges.slice(0,2).map(c => `<span class="tag tag-challenge">${c}</span>`).join('')}
+        </div>
+        <div class="card-footer">
+          <span class="card-date">${formatDate(d.date)}</span>
+          <span class="card-link">
+            Read Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </article>
+    </a>
+  `;}).join('');'''
+
+        js = js.replace(old_render, new_render)
+    return js
+
+
 def convert(src_path: pathlib.Path, component_name: str) -> str:
     text = src_path.read_text(encoding='utf-8')
     head_m = re.search(r'<head[^>]*>(.*?)</head>', text, re.DOTALL | re.IGNORECASE)
@@ -132,6 +210,7 @@ def convert(src_path: pathlib.Path, component_name: str) -> str:
     title = extract_title(head_html)
     meta_desc = extract_meta(head_html, 'description')
     body_content, plain_js = extract_body_content(body_html)
+    plain_js = apply_page_patches(src_path.name, plain_js)
     plain_js = wrap_inline_script(plain_js)
 
     # Repath asset references: uploads/... -> /uploads/... (absolute from public/)

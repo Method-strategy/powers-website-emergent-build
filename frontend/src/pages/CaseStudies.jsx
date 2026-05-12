@@ -592,7 +592,7 @@ const DATA = [
   {num:51, title:"POWERS leads 26% Capacity Utilization Turnaround at Client's Newly Acquired Plant-Based Meat Processing Site", industry:"Meat Processing", engagement:["New Facility / Greenfield Launch","MOS","Frontline Leadership Development"], challenges:["Newly acquired or launched facility","Labor turnover and workforce instability"], result:"26% capacity utilization increase; 2% yield increase; 18% maintenance overtime reduction", date:"2021-12-13", url:"https://www.thepowerscompany.com/resources/powers-leads-26-capacity-utilization-turnaround-at-partners-newly-acquired-plant-based-meat-processing-site/"},
   {num:52, title:"POWERS Partners With World-Class Meat Processor for Huge Performance Gains: Productivity up 47%, Yield up .41%", industry:"Meat Processing", engagement:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], result:"47% productivity gain; 0.41% yield increase", date:"2021-09-16", url:"https://www.thepowerscompany.com/resources/powers-increases-yield-productivity-for-meat-processor/"},
   {num:53, title:"POWERS Energizes Bottom Line with $1.2M in Annualized Savings for Global Energy-Sector Manufacturer", industry:"Industrial Manufacturing", engagement:["MOS","Frontline Leadership Development"], challenges:["Supervisors firefighting instead of leading","Inconsistent performance across shifts or sites"], result:"$1.2M annualized savings", date:"2021-09-07", url:"https://www.thepowerscompany.com/resources/energy-sector-manufacturer/"},
-  {num:54, title:"POWERS Boosts On-time Performance by a Staggering 59% for Defense Industry Make-to-Order Manufacturer", industry:"Defense & Aerospace", engagement:["MOS","Supply Chain & Distribution","Frontline Leadership Development"], challenges:["Poor on-time delivery and schedule attainment","Inconsistent performance across shifts or sites"], result:"59% on-time performance improvement", date:"2021-08-18", url:"https://www.thepowerscompany.com/resources/defense-industry/"},
+  {num:54, title:"POWERS Boosts On-time Performance by a Staggering 59% for Defense Industry Make-to-Order Manufacturer", industry:"Defense & Aerospace", engagement:["MOS","Supply Chain & Distribution","Frontline Leadership Development"], challenges:["Poor on-time delivery and schedule attainment","Inconsistent performance across shifts or sites"], result:"59% on-time performance improvement", date:"2021-08-18", url:"/case-studies/defense-aerospace-otd"},
   {num:55, title:"POWERS Nearly Doubles Promised Savings for Our Pet Food Partner Fetching $13.8M Annualized Savings", industry:"Animal Food Manufacturing", engagement:["MOS","Yield & Throughput Improvement","Maintenance Transformation"], challenges:["Inconsistent performance across shifts or sites","Reactive maintenance and unplanned downtime"], result:"$13.8M annualized savings; nearly doubled promised savings", date:"2021-07-08", url:"https://www.thepowerscompany.com/resources/powers-crushes-promised-annualized-savings-rate-of-7-5m-for-pet-food-partner-fetching-13-8m-only-23-weeks-into-the-project/"},
   {num:56, title:"POWERS Drives 7% YOY Output Gain in Turnaround for Major Beverage Manufacturer", industry:"Beverage Manufacturing", engagement:["MOS","Yield & Throughput Improvement"], challenges:["Inconsistent performance across shifts or sites","Supervisors firefighting instead of leading"], result:"7% year-over-year output gain", date:"2021-04-16", url:"https://www.thepowerscompany.com/resources/powers-removes-performance-bottlenecks-from-major-beverage-manufacturer-facing-unprecedented-demand/"},
   {num:57, title:"POWERS Energizes Dairy and Coffee Beverage Company's Capacity and Capability While Lowering Costs", industry:"Dairy Manufacturing", engagement:["MOS","Labor & Workforce Optimization","Yield & Throughput Improvement"], challenges:["Scaling operations without losing performance","High overtime and labor costs"], result:"Capacity and capability increased; costs lowered simultaneously", date:"2020-06-16", url:"https://www.thepowerscompany.com/resources/dairy-beverage-capacity-capability/"},
@@ -677,29 +677,34 @@ function render() {
     return;
   }
 
-  grid.innerHTML = filtered.map((d, i) => \`
-    <article class="case-card" style="animation-delay:\${Math.min(i * 0.04, 0.4)}s" onclick="window.open('\${d.url}','_blank')">
-      <div class="card-header">
-        <div class="card-industry">\${d.industry}</div>
-        <div class="card-num">#\${String(d.num).padStart(2,'0')}</div>
-      </div>
-      <h2 class="card-title">\${highlight(d.title, s)}</h2>
-      <div class="card-result">\${highlight(d.result, s)}</div>
-      <div class="card-tags">
-        \${d.engagement.map(e => \`<span class="tag tag-engagement">\${e}</span>\`).join('')}
-        \${d.challenges.slice(0,2).map(c => \`<span class="tag tag-challenge">\${c}</span>\`).join('')}
-      </div>
-      <div class="card-footer">
-        <span class="card-date">\${formatDate(d.date)}</span>
-        <a class="card-link" href="\${d.url}" target="_blank" onclick="event.stopPropagation()">
-          Read Case Study
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
-    </article>
-  \`).join('');
+  grid.innerHTML = filtered.map((d, i) => {
+    const isInternal = typeof d.url === 'string' && d.url.startsWith('/');
+    const targetAttr = isInternal ? '' : ' target="_blank" rel="noopener noreferrer"';
+    return \`
+    <a class="case-card-link" href="\${d.url}"\${targetAttr} style="display:block;text-decoration:none;color:inherit;">
+      <article class="case-card" style="animation-delay:\${Math.min(i * 0.04, 0.4)}s">
+        <div class="card-header">
+          <div class="card-industry">\${d.industry}</div>
+          <div class="card-num">#\${String(d.num).padStart(2,'0')}</div>
+        </div>
+        <h2 class="card-title">\${highlight(d.title, s)}</h2>
+        <div class="card-result">\${highlight(d.result, s)}</div>
+        <div class="card-tags">
+          \${d.engagement.map(e => \`<span class="tag tag-engagement">\${e}</span>\`).join('')}
+          \${d.challenges.slice(0,2).map(c => \`<span class="tag tag-challenge">\${c}</span>\`).join('')}
+        </div>
+        <div class="card-footer">
+          <span class="card-date">\${formatDate(d.date)}</span>
+          <span class="card-link">
+            Read Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </article>
+    </a>
+  \`;}).join('');
 }
 
 // --- Active pills ---
