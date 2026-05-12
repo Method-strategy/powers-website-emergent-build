@@ -136,6 +136,20 @@ def apply_page_patches(filename: str, js: str) -> str:
             'url:"/case-studies/defense-aerospace-otd"',
         )
 
+        # 1b. Replace card #54's display copy with the canonical hero
+        #     fields from /app/frontend/src/data/caseStudies.js so the
+        #     library card and detail hero pull from the same content.
+        #     `title` -> canonical `headlineResult`; `result` -> the
+        #     concatenated stat-tiles summary.
+        js = js.replace(
+            'title:"POWERS Boosts On-time Performance by a Staggering 59% for Defense Industry Make-to-Order Manufacturer"',
+            'title:"On-time performance climbed from 56% to 89% inside a make-to-order defense operation that had been running on opinion."',
+        )
+        js = js.replace(
+            'result:"59% on-time performance improvement"',
+            'result:"59% on-time performance lift; 65% lead-time reduction; 69% lost-time reduction"',
+        )
+
         # 2. Render each card as an <a href> wrapper so the global
         #    useLegacyLinkIntercept routes internal `/...` URLs via React
         #    Router while external `http://...` URLs open in a new tab.
@@ -200,6 +214,29 @@ def apply_page_patches(filename: str, js: str) -> str:
     return js
 
 
+def apply_html_patches(filename: str, body: str, css: str) -> tuple:
+    """Apply per-page semantic patches to the legacy HTML body and CSS.
+
+    Returns (body, css). Patches live here so the React port stays in sync
+    if/when the source HTML is regenerated.
+    """
+    if filename == 'case-study-defense-aerospace-otd.html':
+        # The redesigned hero IS the legacy "dense" hero, which was hidden
+        # via inline style="display:none". Show it on screen and make sure
+        # @media print still hides it (the dedicated .print-doc drives the
+        # 2-page PDF).
+        body = body.replace(
+            '<section class="cs-hero-dense screen-only" data-hero="dense" style="display:none">',
+            '<section class="cs-hero-dense screen-only" data-hero="dense">',
+        )
+        css += (
+            '\n/* PW patch: hero redesign — show dense, hide simple, keep print path */\n'
+            '@media screen { .cs-hero[data-hero="simple"] { display: none !important; } }\n'
+            '@media print { .cs-hero-dense[data-hero="dense"] { display: none !important; } }\n'
+        )
+    return body, css
+
+
 def convert(src_path: pathlib.Path, component_name: str) -> str:
     text = src_path.read_text(encoding='utf-8')
     head_m = re.search(r'<head[^>]*>(.*?)</head>', text, re.DOTALL | re.IGNORECASE)
@@ -212,6 +249,7 @@ def convert(src_path: pathlib.Path, component_name: str) -> str:
     body_content, plain_js = extract_body_content(body_html)
     plain_js = apply_page_patches(src_path.name, plain_js)
     plain_js = wrap_inline_script(plain_js)
+    body_content, css = apply_html_patches(src_path.name, body_content, css)
 
     # Repath asset references: uploads/... -> /uploads/... (absolute from public/)
     body_content = re.sub(r'(src|href)=(["\'])uploads/', r'\1=\2/uploads/', body_content)

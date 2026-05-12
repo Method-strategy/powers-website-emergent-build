@@ -940,7 +940,12 @@ const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding
   .print-preview-mode .print-page {
     margin: 0 auto 24px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.10);
-  }`;
+  }
+
+  /* PW patch: hero redesign — show dense hero on screen, keep print path */
+  @media screen { .cs-hero[data-hero="simple"] { display: none !important; } }
+  @media print { .cs-hero-dense[data-hero="dense"] { display: none !important; } }
+  `;
 
 const HTML = `<!-- ─────────── SCREEN HERO (original, simple) ─────────── -->
 <section class="cs-hero screen-only" data-hero="simple">
@@ -965,7 +970,7 @@ const HTML = `<!-- ─────────── SCREEN HERO (original, simp
   8. Download PDF button
   Desktop layout: CSS Grid named areas rearranges into 2 columns.
 -->
-<section class="cs-hero-dense screen-only" data-hero="dense" style="display:none">
+<section class="cs-hero-dense screen-only" data-hero="dense">
   <div class="cs-hero-dense-inner">
 
     <div class="cs-hd-left">
