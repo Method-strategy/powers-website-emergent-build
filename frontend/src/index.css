@@ -56,6 +56,20 @@ body.pw-has-fixed-header { padding-top: 84px; }
   .tagline-text { display: none !important; }
 }
 
+/* ── Print suppression ──
+   The shared SPA chrome (SiteHeader, SiteFooter) is React, not part of the
+   case-study legacy HTML, so the page-level `@media print { .screen-only {
+   display:none } }` rule can't reach it. Hide both globally — site chrome
+   should never paint in printed output. The case-study detail page's
+   dedicated `.print-doc` still drives the 2-page PDF. */
+@media print {
+  [data-testid="site-header"],
+  [data-testid="site-footer"] {
+    display: none !important;
+  }
+  body.pw-has-fixed-header { padding-top: 0 !important; }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
