@@ -24,12 +24,14 @@ SRC_DIR = pathlib.Path('/tmp/powers-website/powers-website-evolution')
 OUT_DIR = pathlib.Path('/app/frontend/src/pages')
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Pages we generate as LegacyPage wrappers (everything except index.html).
+# Pages we generate as LegacyPage wrappers (everything except index.html,
+# the case-studies library, and case-study detail pages — those are real
+# React components in /app/frontend/src/pages/ that read from
+# /app/frontend/src/data/caseStudies.js).
 PAGES = {
     'approach.html': ('Approach', '/approach'),
     'discovery-process.html': ('DiscoveryProcess', '/discovery-process'),
     'industries-served.html': ('IndustriesServed', '/industries-served'),
-    'case-studies.html': ('CaseStudies', '/case-studies'),
     'operational-readiness.html': ('OperationalReadiness', '/operational-readiness'),
     'frontline-leadership.html': ('FrontlineLeadership', '/frontline-leadership'),
     'equipment-reliability.html': ('EquipmentReliability', '/equipment-reliability'),
@@ -46,7 +48,6 @@ PAGES = {
     'ken-wiesinger.html': ('BioKenWiesinger', '/leadership/ken-wiesinger'),
     'justin-pethick.html': ('BioJustinPethick', '/leadership/justin-pethick'),
     'kevin-sabany.html': ('BioKevinSabany', '/leadership/kevin-sabany'),
-    'case-study-defense-aerospace-otd.html': ('CaseStudyDefenseAerospaceOTD', '/case-studies/defense-aerospace-otd'),
 }
 
 
@@ -125,115 +126,24 @@ def js_string_literal(s: str) -> str:
 def apply_page_patches(filename: str, js: str) -> str:
     """Apply per-page semantic patches to the legacy inline JS.
 
-    Patches are kept here (not as edits to the source HTML) so the React
-    port stays in sync if/when the source HTML is regenerated.
+    Patches are kept here so the React port stays in sync if/when the
+    source HTML is regenerated. Currently empty — the case-studies library
+    page and the case-study detail page are no longer LegacyPage modules
+    (they were promoted to proper React components in
+    /app/frontend/src/pages/CaseStudies.jsx and
+    /app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx, both reading
+    from /app/frontend/src/data/caseStudies.js).
     """
-    if filename == 'case-studies.html':
-        # 1. Re-target the Defense & Aerospace card (#54) at the locked
-        #    internal detail route instead of the public-site PDF blurb.
-        js = js.replace(
-            'url:"https://www.thepowerscompany.com/resources/defense-industry/"',
-            'url:"/case-studies/defense-aerospace-otd"',
-        )
-
-        # 1b. Replace card #54's display copy with the canonical hero
-        #     fields from /app/frontend/src/data/caseStudies.js so the
-        #     library card and detail hero pull from the same content.
-        #     `title` -> canonical `headlineResult`; `result` -> the
-        #     concatenated stat-tiles summary.
-        js = js.replace(
-            'title:"POWERS Boosts On-time Performance by a Staggering 59% for Defense Industry Make-to-Order Manufacturer"',
-            'title:"On-time performance climbed from 56% to 89% inside a make-to-order defense operation that had been running on opinion."',
-        )
-        js = js.replace(
-            'result:"59% on-time performance improvement"',
-            'result:"59% on-time performance lift; 65% lead-time reduction; 69% lost-time reduction"',
-        )
-
-        # 2. Render each card as an <a href> wrapper so the global
-        #    useLegacyLinkIntercept routes internal `/...` URLs via React
-        #    Router while external `http://...` URLs open in a new tab.
-        #    Replaces the original `<article onclick="window.open">` +
-        #    inner `<a class="card-link" target="_blank">` pattern (which
-        #    would force a full reload for the internal Defense detail
-        #    card and is also invalid nested-anchor HTML once we wrap).
-        old_render = '''grid.innerHTML = filtered.map((d, i) => `
-    <article class="case-card" style="animation-delay:${Math.min(i * 0.04, 0.4)}s" onclick="window.open('${d.url}','_blank')">
-      <div class="card-header">
-        <div class="card-industry">${d.industry}</div>
-        <div class="card-num">#${String(d.num).padStart(2,'0')}</div>
-      </div>
-      <h2 class="card-title">${highlight(d.title, s)}</h2>
-      <div class="card-result">${highlight(d.result, s)}</div>
-      <div class="card-tags">
-        ${d.engagement.map(e => `<span class="tag tag-engagement">${e}</span>`).join('')}
-        ${d.challenges.slice(0,2).map(c => `<span class="tag tag-challenge">${c}</span>`).join('')}
-      </div>
-      <div class="card-footer">
-        <span class="card-date">${formatDate(d.date)}</span>
-        <a class="card-link" href="${d.url}" target="_blank" onclick="event.stopPropagation()">
-          Read Case Study
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
-    </article>
-  `).join('');'''
-
-        new_render = '''grid.innerHTML = filtered.map((d, i) => {
-    const isInternal = typeof d.url === 'string' && d.url.startsWith('/');
-    const targetAttr = isInternal ? '' : ' target="_blank" rel="noopener noreferrer"';
-    return `
-    <a class="case-card-link" href="${d.url}"${targetAttr} style="display:block;text-decoration:none;color:inherit;">
-      <article class="case-card" style="animation-delay:${Math.min(i * 0.04, 0.4)}s">
-        <div class="card-header">
-          <div class="card-industry">${d.industry}</div>
-          <div class="card-num">#${String(d.num).padStart(2,'0')}</div>
-        </div>
-        <h2 class="card-title">${highlight(d.title, s)}</h2>
-        <div class="card-result">${highlight(d.result, s)}</div>
-        <div class="card-tags">
-          ${d.engagement.map(e => `<span class="tag tag-engagement">${e}</span>`).join('')}
-          ${d.challenges.slice(0,2).map(c => `<span class="tag tag-challenge">${c}</span>`).join('')}
-        </div>
-        <div class="card-footer">
-          <span class="card-date">${formatDate(d.date)}</span>
-          <span class="card-link">
-            Read Case Study
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </div>
-      </article>
-    </a>
-  `;}).join('');'''
-
-        js = js.replace(old_render, new_render)
     return js
 
 
 def apply_html_patches(filename: str, body: str, css: str) -> tuple:
     """Apply per-page semantic patches to the legacy HTML body and CSS.
 
-    Returns (body, css). Patches live here so the React port stays in sync
-    if/when the source HTML is regenerated.
+    Returns (body, css). Currently empty — the case-study detail page is
+    now a real React component (see /app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx)
+    and no longer flows through this converter.
     """
-    if filename == 'case-study-defense-aerospace-otd.html':
-        # The redesigned hero IS the legacy "dense" hero, which was hidden
-        # via inline style="display:none". Show it on screen and make sure
-        # @media print still hides it (the dedicated .print-doc drives the
-        # 2-page PDF).
-        body = body.replace(
-            '<section class="cs-hero-dense screen-only" data-hero="dense" style="display:none">',
-            '<section class="cs-hero-dense screen-only" data-hero="dense">',
-        )
-        css += (
-            '\n/* PW patch: hero redesign — show dense, hide simple, keep print path */\n'
-            '@media screen { .cs-hero[data-hero="simple"] { display: none !important; } }\n'
-            '@media print { .cs-hero-dense[data-hero="dense"] { display: none !important; } }\n'
-        )
     return body, css
 
 

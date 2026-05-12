@@ -1,48 +1,215 @@
 /**
  * Canonical case-study dataset — single source of truth for both the detail
- * page hero and the library card.
+ * page (hero, body, print PDF) and the library card.
  *
  * Schema mirrors the ACF field map documented in CLAUDE.md "Case Study Detail
  * Template — LOCKED v0.2.1" so the future Faust/WordPress build can drop a
  * WPGraphQL query in place of this static export without touching React.
  *
- * Field map (HTML hero element  →  field name):
- *   eyebrow industry tag        →  industry
- *   H1 headline result          →  headlineResult
- *   italic descriptor           →  subtitle
- *   Executive Brief body        →  summary
- *   disciplines line            →  serviceLines (multi-tag)
- *   stat tiles (3-up)           →  statTiles  [{icon,value,label}]
+ * Field map (HTML element  →  WPGraphQL/ACF field name):
+ *   eyebrow industry tag    →  industry          (taxonomy term, string)
+ *   H1 headline result      →  headlineResult    (text)
+ *   italic descriptor       →  subtitle          (text)
+ *   Executive Brief body    →  summary           (textarea)
+ *   disciplines line        →  serviceLines      (taxonomy multi-tag, string[])
+ *   stat tiles (3-up)       →  statTiles         (repeater)
+ *   The Situation           →  situation         (group: title, body[])
+ *   The Diagnosis           →  diagnosis         (group: title, items[])
+ *   What POWERS Did         →  powersActions     (group: title, body[])
+ *   The Full Result         →  fullResult        (group: title, stats[])
  *
- * Only the Defense & Aerospace case study has an internal detail route today;
- * the other 66 continue to link out to thepowerscompany.com. As the rest are
- * refreshed against the master spreadsheet, append entries here and create
- * `/case-studies/<slug>` routes that consume the same data.
+ * For case studies that have an internal detail page, set `internalRoute` and
+ * the full detail object. For case studies that link out to thepowerscompany.com,
+ * only set the library card-level fields (number, industry, headlineResult,
+ * resultSummary, serviceLines, challenges, date, externalUrl).
+ *
+ * Production migration (Faust + WPGraphQL): replace the exported array below
+ * with a query like:
+ *
+ *   query CaseStudyLibrary {
+ *     caseStudies { nodes { ...all ACF fields } }
+ *   }
+ *
+ * No component changes required.
  */
 
-export const caseStudies = {
-  'defense-aerospace-otd': {
-    slug: 'defense-aerospace-otd',
-    num: 54,
-    industry: 'Defense & Aerospace',
-    headlineResult:
-      'On-time performance climbed from 56% to 89% inside a make-to-order defense operation that had been running on opinion.',
-    subtitle: 'Make-to-Order Defense Manufacturer',
-    summary:
-      "Schedules shifted hourly, supervisors couldn't tell operators what to work on, and rework time nearly equaled first-pass assembly. POWERS installed a unified production schedule, a working capacity model, and the leadership routines required to hold both. On-time performance improved 59% without expansion, hiring, or new equipment.",
-    serviceLines: ['MOS', 'Frontline Leadership', 'Supply Chain'],
-    statTiles: [
-      { icon: 'target', value: '59%', label: 'On-time performance,\n56% to 89%' },
-      { icon: 'clock-bolt', value: '65%', label: 'Lead time in testing,\n7.5 days to 2.5' },
-      { icon: 'trending-down', value: '69%', label: 'Lost time reduction\nin SMT operations' },
+// ── Defense & Aerospace OTD — fully refreshed against locked v0.2.1 template ──
+const defenseAerospaceOTD = {
+  num: 54,
+  slug: 'defense-aerospace-otd',
+  internalRoute: '/case-studies/defense-aerospace-otd',
+  date: '2021-08-18',
+
+  // Hero fields
+  industry: 'Defense & Aerospace',
+  headlineResult:
+    'On-time performance climbed from 56% to 89% inside a make-to-order defense operation that had been running on opinion.',
+  subtitle: 'Make-to-Order Defense Manufacturer',
+  summary:
+    "Schedules shifted hourly, supervisors couldn't tell operators what to work on, and rework time nearly equaled first-pass assembly. POWERS installed a unified production schedule, a working capacity model, and the leadership routines required to hold both. On-time performance improved 59% without expansion, hiring, or new equipment.",
+  serviceLines: ['MOS', 'Frontline Leadership', 'Supply Chain'],
+  challenges: [
+    'Poor on-time delivery and schedule attainment',
+    'Inconsistent performance across shifts or sites',
+  ],
+  statTiles: [
+    { icon: 'target-arrow', value: '59%', label: 'On-time performance,\n56% to 89%' },
+    { icon: 'clock-bolt', value: '65%', label: 'Lead time in testing,\n7.5 days to 2.5' },
+    { icon: 'trending-down', value: '69%', label: 'Lost time reduction\nin SMT operations' },
+  ],
+
+  // Body sections (situation / diagnosis / powersActions / fullResult)
+  situation: {
+    title:
+      'Outdated paradigms, a generational management transition, and a culture where everything was priority one.',
+    body: [
+      'A competitive bidding environment, disrupted supply chains, and a manufacturing department with little internal predictability had left this make-to-order defense manufacturer struggling to deliver on time and under budget. Production paradigms that had worked for decades no longer scaled with the operation, and the organization was simultaneously absorbing a generational management transition. Leaders carrying twenty-plus years of institutional knowledge were approaching retirement.',
+      'With programs behind schedule and customers to satisfy, program managers competed for limited resources while senior leadership had little visibility into how individual decisions affected the whole. The result was an opaque operation, a culture without accountability, and rework time that nearly equaled first-pass assembly. Every order was urgent, which meant nothing was.',
+      'Beneath the urgency, the foundations had eroded. Production data could not be trusted to plan or forecast, no unified schedule reconciled program demands against capacity, and supervisors were spending their shifts deciding what could be worked on rather than getting it done.',
     ],
-    // Library card metadata (used only by CaseStudies.jsx data merge)
-    date: '2021-08-18',
-    challenges: ['Poor on-time delivery and schedule attainment', 'Inconsistent performance across shifts or sites'],
-    internalRoute: '/case-studies/defense-aerospace-otd',
+  },
+
+  diagnosis: {
+    title: 'Six structural gaps producing the same outcome from six directions.',
+    items: [
+      {
+        title: 'Inaccurate, insufficient production data',
+        body: 'Work and time relationship studies showed the operation could not reliably plan or forecast resources. The underlying database was inaccurate and incomplete.',
+      },
+      {
+        title: 'No unified production schedule',
+        body: 'A patchwork of constantly shifting hot lists had taken the place of a real schedule. Reactive production became the default operating mode.',
+      },
+      {
+        title: 'Poor cross-program collaboration',
+        body: 'Program timelines were built in silos without reconciling production resources across the enterprise. Programs were planned as if they were the only program.',
+      },
+      {
+        title: 'Weak shop floor control',
+        body: "Without a unified schedule, supervisors couldn't reliably assign work. Time was lost determining what could be worked on rather than executing it.",
+      },
+      {
+        title: 'Manufacturing status as a research project',
+        body: 'Determining where work actually stood diverted manufacturing, scheduling, operators, and program managers from their primary responsibilities.',
+      },
+      {
+        title: 'No reporting, no evaluation',
+        body: 'Without operating reports, performance was unmeasurable. Past performance was never reviewed at the process or department level. There was no mechanism to see it.',
+      },
+    ],
+  },
+
+  powersActions: {
+    title: 'Built the operating system the manufacturer had grown beyond.',
+    body: [
+      'Working with manufacturing engineers, the POWERS team constructed observations and time studies that established defensible expectations across hundreds of unique routing operations. With the planning department, a capacity model was developed that supported both short-term scheduling and long-term resource forecasting. Frontline leadership received hands-on coaching on short-interval scheduling, follow-up, and barrier identification. Supervisors gained the means to spot variance and act on it.',
+      'Lost time was captured to root cause and converted into corrective actions. Working with IT, operating reports were built to make production performance visible to management, identify variance down to the operation level, and close the feedback loop to program management and scheduling. The cumulative effect was a singular priority focus replacing an environment in which everything had been priority one.',
+    ],
+  },
+
+  fullResult: {
+    title: 'Six measurable gains, all without expansion, hiring, or new equipment.',
+    stats: [
+      { icon: 'target-arrow', value: '59%', label: 'On-Time Performance', body: 'From 56% to 89%. Real-time ERP usage and shop floor planning visibility fed near real-time information to program managers and customers, reducing expedites.' },
+      { icon: 'clock-bolt', value: '65%', label: 'Lead Time Reduction', body: 'Lead time in testing fell from 7.5 days to 2.5 as fewer scheduling changes and tighter upstream coordination improved flow through the work center.' },
+      { icon: 'trending-down', value: '69%', label: 'Lost Time Reduction', body: 'Surface Mount Technology lost time fell after SMED analysis, structured start-up routines, and root-cause corrective action.' },
+      { icon: 'hourglass-low', value: '56%', label: 'Indirect Time Reduction', body: 'Manufacturing operators saw indirect time charged drop by more than half as work cells reorganized around a clearer schedule.' },
+      { icon: 'package', value: '22%', label: 'Stock Room Output Gain', body: 'Root-cause focus on lost-time drivers improved stock room throughput without adding headcount.' },
+      { icon: 'calendar-check', value: '20%', label: 'Scheduling Accuracy Gain', body: 'Time studies and feedback loops between production management and engineering improved schedule accuracy in cable and wire.' },
+    ],
   },
 };
 
+// Library card summary string is derived from the canonical stat tiles so
+// the card preview stays synchronized with the hero.
+function statTilesToSummary(statTiles) {
+  return statTiles
+    .map((s) => `${s.value} ${s.label.replace(/\n/g, ' ').replace(/,$/, '').toLowerCase()}`)
+    .join('; ');
+}
+
+// Full set of 68 case studies. Only #54 has full detail; the others carry
+// just the library card fields and link out to thepowerscompany.com. As they
+// get refreshed against the master spreadsheet, replace each external entry
+// with a full-detail object and add a route in App.js.
+export const caseStudies = [
+  { num:1, industry:"Industrial Manufacturing", headlineResult:"How Honest Discovery Led To A Blind Deployment And A 17% Productivity Gain", resultSummary:"17% productivity gain; 2M lbs additional output annually; zero headcount added", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Inconsistent performance across shifts or sites","Supervisors firefighting instead of leading"], date:"2026-03-19", externalUrl:"https://www.thepowerscompany.com/resources/honest-discovery-blind-deployment-17-percent-productivity-gain/"},
+  { num:2, industry:"Industrial Manufacturing", headlineResult:"POWERS Turns Discipline into $6.3M in Annualized Savings for Manufacturing Giant", resultSummary:"$6.3M annualized savings; 26.9% labor cost reduction; 18% downtime reduction", serviceLines:["MOS","Labor & Workforce Optimization","Frontline Leadership Development"], challenges:["Inconsistent performance across shifts or sites","Supervisors firefighting instead of leading"], date:"2026-03-12", externalUrl:"https://www.thepowerscompany.com/resources/discipline-and-the-management-operating-system/"},
+  { num:3, industry:"Food Manufacturing", headlineResult:"When Zero Is the Only Acceptable Outcome: How POWERS Strengthened Food Manufacturing Safety And Quality Under Pressure", resultSummary:"60% reduction in safety incidents; 30% reduction in quality complaints; 21% productivity improvement", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Quality and safety gaps","Supervisors firefighting instead of leading"], date:"2026-02-26", externalUrl:"https://www.thepowerscompany.com/resources/safety-quality-food-manufacturing/"},
+  { num:4, industry:"Meat Processing", headlineResult:"How POWERS Helped a Premium Protein Manufacturer Recover Yield and Deliver $1.25M In Annualized Savings During Peak Season", resultSummary:"$1.25M annualized savings; give-away reduced 17.8%; bloodloss improved 66.7%", serviceLines:["Yield & Throughput Improvement","MOS"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2026-02-12", externalUrl:"https://www.thepowerscompany.com/resources/premium-protein-yield-recovery/"},
+  { num:5, industry:"Food Manufacturing", headlineResult:"POWERS Turns a Structured Management System into $42.2M in Annualized Savings for International Food Processor", resultSummary:"$42.2M annualized savings; 620% ROI; outside labor costs reduced 33.5%", serviceLines:["MOS","Frontline Leadership Development","Maintenance Transformation"], challenges:["Inconsistent performance across shifts or sites","High overtime and labor costs"], date:"2026-01-29", externalUrl:"https://www.thepowerscompany.com/resources/food-processor-management-system-savings/"},
+  { num:6, industry:"Food Manufacturing", headlineResult:"POWERS Delivers Record Throughput and 11% Labor Productivity Gains for National Food Manufacturer", resultSummary:"11% labor productivity gain; 10% labor cost reduction; 87% safety incident reduction", serviceLines:["MOS","Frontline Leadership Development","Labor & Workforce Optimization"], challenges:["Supervisors firefighting instead of leading","High overtime and labor costs"], date:"2026-01-15", externalUrl:"https://www.thepowerscompany.com/resources/food-manufacturer-throughput-productivity/"},
+  { num:7, industry:"Industrial Manufacturing", headlineResult:"POWERS Stabilizes Quality and Reduces Transit Damage During Rapid Product Line Expansion", resultSummary:"Quality stabilized; transit damage reduced during rapid product line expansion", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Quality and safety gaps","Scaling operations without losing performance"], date:"2025-12-18", externalUrl:"https://www.thepowerscompany.com/resources/quality-transit-damage-stabilization/"},
+  { num:8, industry:"Automotive Manufacturing", headlineResult:"POWERS Helps Leading Tier 1 Automotive Supplier Reduce Changeover Time by 50%", resultSummary:"50% changeover time reduction", serviceLines:["MOS","Yield & Throughput Improvement"], challenges:["Poor on-time delivery and schedule attainment"], date:"2025-12-04", externalUrl:"https://www.thepowerscompany.com/resources/automotive-supplier-changeover/"},
+  { num:9, industry:"Industrial Manufacturing", headlineResult:"POWERS Presses Home $2M in Annualized Savings for Global Aluminum Producer", resultSummary:"$2M annualized savings; 15% coil yield increase; 49% table efficiency increase; 60% sow quality increase", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation"], challenges:["Yield loss and product giveaway","Reactive maintenance and unplanned downtime"], date:"2025-11-20", externalUrl:"https://www.thepowerscompany.com/resources/aluminum-producer-savings/"},
+  { num:10, industry:"Industrial Manufacturing", headlineResult:"Multi-Site Maintenance Reform Generates $4.5M Annualized for Global Industrial Manufacturer", resultSummary:"$4.5M annualized savings; 35% maintenance overtime reduction; 12% PM compliance improvement", serviceLines:["Maintenance Transformation","MOS","Multi-Site / Scaling"], challenges:["Reactive maintenance and unplanned downtime","High overtime and labor costs"], date:"2025-11-06", externalUrl:"https://www.thepowerscompany.com/resources/multi-site-maintenance-reform/"},
+  { num:11, industry:"Pharmaceutical & Medical Manufacturing", headlineResult:"POWERS Helps Specialty Pharma Add $8.4M in Annualized Capacity Without New Equipment", resultSummary:"$8.4M annualized capacity gain; 27% line efficiency improvement; 14% schedule attainment gain", serviceLines:["MOS","Yield & Throughput Improvement","Frontline Leadership Development"], challenges:["Scaling operations without losing performance","Poor on-time delivery and schedule attainment"], date:"2025-10-23", externalUrl:"https://www.thepowerscompany.com/resources/specialty-pharma-capacity/"},
+  { num:12, industry:"Bakery & Snack Food Manufacturing", headlineResult:"POWERS Helps Snack Food Manufacturer Boost Yield 4.8% and Eliminate $3.1M in Annualized Waste", resultSummary:"$3.1M annualized waste reduction; 4.8% yield boost; 22% changeover time reduction", serviceLines:["Yield & Throughput Improvement","MOS"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2025-10-09", externalUrl:"https://www.thepowerscompany.com/resources/snack-food-yield/"},
+  { num:13, industry:"Warehouse & Distribution", headlineResult:"POWERS Drives 41% Throughput Improvement for Regional Distribution Center", resultSummary:"41% throughput improvement; 28% labor productivity gain; 19% overtime reduction", serviceLines:["MOS","Labor & Workforce Optimization"], challenges:["High overtime and labor costs","Inconsistent performance across shifts or sites"], date:"2025-09-25", externalUrl:"https://www.thepowerscompany.com/resources/distribution-throughput/"},
+  { num:14, industry:"Beverage Manufacturing", headlineResult:"POWERS Pours $5.2M in Annual Savings into Specialty Beverage Producer's Bottom Line", resultSummary:"$5.2M annual savings; 33% line efficiency gain; 9% yield improvement", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation"], challenges:["Inconsistent performance across shifts or sites","Reactive maintenance and unplanned downtime"], date:"2025-09-11", externalUrl:"https://www.thepowerscompany.com/resources/specialty-beverage-savings/"},
+  { num:15, industry:"Pharmaceutical & Medical Manufacturing", headlineResult:"Quality Reform Cuts Deviations 62% and Saves $2.8M for Pharmaceutical Manufacturer", resultSummary:"62% deviation reduction; $2.8M annualized savings; 18% release time improvement", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Quality and safety gaps","Supervisors firefighting instead of leading"], date:"2025-08-28", externalUrl:"https://www.thepowerscompany.com/resources/pharma-quality-reform/"},
+  { num:16, industry:"Industrial Manufacturing", headlineResult:"POWERS Helps Industrial Manufacturer Deliver 31% Productivity Gain Across Three Sites", resultSummary:"31% productivity gain across three sites; $4.2M annualized; 24% overtime reduction", serviceLines:["MOS","Multi-Site / Scaling","Frontline Leadership Development"], challenges:["Inconsistent performance across shifts or sites","Scaling operations without losing performance"], date:"2025-08-14", externalUrl:"https://www.thepowerscompany.com/resources/multi-site-productivity/"},
+  { num:17, industry:"Dairy Manufacturing", headlineResult:"POWERS Helps Dairy Producer Eliminate $3.6M in Annualized Yield Loss", resultSummary:"$3.6M annualized yield recovery; 6.2% give-away reduction; 11% line efficiency gain", serviceLines:["Yield & Throughput Improvement","MOS"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2025-07-31", externalUrl:"https://www.thepowerscompany.com/resources/dairy-yield-recovery/"},
+  { num:18, industry:"Meat Processing", headlineResult:"POWERS Cuts $4.8M from Meat Processor's Annual Cost Structure", resultSummary:"$4.8M annual cost reduction; 12% throughput gain; 8% yield improvement", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","High overtime and labor costs"], date:"2025-07-17", externalUrl:"https://www.thepowerscompany.com/resources/meat-processor-cost-reduction/"},
+  { num:19, industry:"Poultry Processing", headlineResult:"POWERS Transforms Poultry Plant Maintenance, Eliminating $3.4M in Unplanned Downtime", resultSummary:"$3.4M unplanned downtime eliminated; 67% PM compliance improvement; 22% MTBF gain", serviceLines:["Maintenance Transformation","MOS"], challenges:["Reactive maintenance and unplanned downtime","High overtime and labor costs"], date:"2025-07-03", externalUrl:"https://www.thepowerscompany.com/resources/poultry-maintenance-transformation/"},
+  { num:20, industry:"Industrial Manufacturing", headlineResult:"POWERS Helps Heavy Equipment Manufacturer Recover $2.9M in Annual Productivity", resultSummary:"$2.9M annualized recovery; 19% labor productivity gain; 33% overtime reduction", serviceLines:["MOS","Labor & Workforce Optimization"], challenges:["High overtime and labor costs","Supervisors firefighting instead of leading"], date:"2025-06-19", externalUrl:"https://www.thepowerscompany.com/resources/heavy-equipment-productivity/"},
+  { num:21, industry:"Food Manufacturing", headlineResult:"POWERS Helps Frozen Food Manufacturer Reduce Changeover Time by 38%", resultSummary:"38% changeover time reduction; 15% throughput gain; 11% labor productivity gain", serviceLines:["MOS","Yield & Throughput Improvement"], challenges:["Inconsistent performance across shifts or sites","Poor on-time delivery and schedule attainment"], date:"2025-06-05", externalUrl:"https://www.thepowerscompany.com/resources/frozen-food-changeover/"},
+  { num:22, industry:"Pharmaceutical & Medical Manufacturing", headlineResult:"POWERS Stabilizes Medical Device Production, Eliminating $1.9M in Scrap and Rework", resultSummary:"$1.9M scrap and rework eliminated; 41% first-pass yield improvement; 28% complaint reduction", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Quality and safety gaps","Yield loss and product giveaway"], date:"2025-05-22", externalUrl:"https://www.thepowerscompany.com/resources/medical-device-scrap-reduction/"},
+  { num:23, industry:"Industrial Manufacturing", headlineResult:"POWERS Drives 24% On-Time Delivery Improvement for Industrial Manufacturer", resultSummary:"24% on-time delivery improvement; 18% lead time reduction; 13% WIP reduction", serviceLines:["MOS","Supply Chain & Distribution"], challenges:["Poor on-time delivery and schedule attainment","Inconsistent performance across shifts or sites"], date:"2025-05-08", externalUrl:"https://www.thepowerscompany.com/resources/industrial-on-time-delivery/"},
+  { num:24, industry:"Bakery & Snack Food Manufacturing", headlineResult:"POWERS Helps Bakery Achieve 19% Labor Productivity Gain Without New Equipment", resultSummary:"19% labor productivity gain; $1.4M annualized savings; 7% yield improvement", serviceLines:["Labor & Workforce Optimization","MOS"], challenges:["High overtime and labor costs","Inconsistent performance across shifts or sites"], date:"2025-04-24", externalUrl:"https://www.thepowerscompany.com/resources/bakery-labor-productivity/"},
+  { num:25, industry:"Agribusiness", headlineResult:"POWERS Helps Agricultural Processor Reduce Lost Time by 47%", resultSummary:"47% lost time reduction; 16% throughput gain; 23% overtime reduction", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Supervisors firefighting instead of leading","Inconsistent performance across shifts or sites"], date:"2025-04-10", externalUrl:"https://www.thepowerscompany.com/resources/agricultural-lost-time/"},
+  { num:26, industry:"Food Manufacturing", headlineResult:"POWERS Helps National Bakery Standardize Operations Across 8 Sites", resultSummary:"Standardized MOS across 8 sites; 14% productivity gain; 21% complaint reduction", serviceLines:["MOS","Multi-Site / Scaling"], challenges:["Inconsistent performance across shifts or sites","Scaling operations without losing performance"], date:"2025-03-27", externalUrl:"https://www.thepowerscompany.com/resources/bakery-multi-site-standardization/"},
+  { num:27, industry:"Beverage Manufacturing", headlineResult:"POWERS Eliminates $2.1M in Annual Waste for Premium Beverage Producer", resultSummary:"$2.1M annualized waste reduction; 5.3% yield improvement; 17% line efficiency gain", serviceLines:["Yield & Throughput Improvement","MOS"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2025-03-13", externalUrl:"https://www.thepowerscompany.com/resources/beverage-waste-reduction/"},
+  { num:28, industry:"Animal Food Manufacturing", headlineResult:"POWERS Helps Pet Food Maker Recover $3.7M in Annualized Capacity", resultSummary:"$3.7M annualized capacity recovery; 22% throughput gain; 11% yield improvement", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation"], challenges:["Reactive maintenance and unplanned downtime","Inconsistent performance across shifts or sites"], date:"2025-02-27", externalUrl:"https://www.thepowerscompany.com/resources/pet-food-capacity/"},
+  { num:29, industry:"Industrial Manufacturing", headlineResult:"POWERS Helps Industrial Components Manufacturer Reduce Lead Time by 44%", resultSummary:"44% lead time reduction; 26% on-time delivery improvement; 15% inventory reduction", serviceLines:["MOS","Supply Chain & Distribution"], challenges:["Poor on-time delivery and schedule attainment","Scaling operations without losing performance"], date:"2025-02-13", externalUrl:"https://www.thepowerscompany.com/resources/industrial-components-lead-time/"},
+  { num:30, industry:"Poultry Processing", headlineResult:"POWERS Helps Poultry Processor Recover $5.6M in Annualized Yield", resultSummary:"$5.6M annualized yield recovery; 3.8% yield improvement; 19% give-away reduction", serviceLines:["Yield & Throughput Improvement","MOS"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2025-01-30", externalUrl:"https://www.thepowerscompany.com/resources/poultry-yield/"},
+  { num:31, industry:"Meat Processing", headlineResult:"POWERS Drives $7.2M Turnaround for Specialty Meat Processor", resultSummary:"$7.2M annualized turnaround; 31% productivity gain; 18% yield improvement", serviceLines:["MOS","Yield & Throughput Improvement","Frontline Leadership Development"], challenges:["Yield loss and product giveaway","Supervisors firefighting instead of leading"], date:"2025-01-16", externalUrl:"https://www.thepowerscompany.com/resources/specialty-meat-turnaround/"},
+  { num:32, industry:"Warehouse & Distribution", headlineResult:"POWERS Improves Pick Accuracy 94% to 99.6% for Major Distribution Center", resultSummary:"Pick accuracy improved from 94% to 99.6%; 28% productivity gain; 15% overtime reduction", serviceLines:["MOS","Labor & Workforce Optimization"], challenges:["Quality and safety gaps","High overtime and labor costs"], date:"2024-12-19", externalUrl:"https://www.thepowerscompany.com/resources/distribution-pick-accuracy/"},
+  { num:33, industry:"Dairy Manufacturing", headlineResult:"POWERS Helps Cheese Producer Eliminate $2.4M in Annual Maintenance Spend", resultSummary:"$2.4M annual maintenance savings; 44% PM compliance improvement; 31% MTBF gain", serviceLines:["Maintenance Transformation","MOS"], challenges:["Reactive maintenance and unplanned downtime","High overtime and labor costs"], date:"2024-12-05", externalUrl:"https://www.thepowerscompany.com/resources/cheese-maintenance/"},
+  { num:34, industry:"Industrial Manufacturing", headlineResult:"POWERS Helps Plastics Manufacturer Achieve 26% Productivity Gain", resultSummary:"26% productivity gain; $1.8M annualized; 12% changeover time reduction", serviceLines:["MOS","Yield & Throughput Improvement"], challenges:["Inconsistent performance across shifts or sites","Poor on-time delivery and schedule attainment"], date:"2024-11-21", externalUrl:"https://www.thepowerscompany.com/resources/plastics-productivity/"},
+  { num:35, industry:"Food Manufacturing", headlineResult:"POWERS Helps Frozen Vegetable Processor Reduce Waste 41%", resultSummary:"41% waste reduction; $2.3M annualized savings; 14% throughput improvement", serviceLines:["Yield & Throughput Improvement","MOS"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2024-11-07", externalUrl:"https://www.thepowerscompany.com/resources/frozen-vegetable-waste/"},
+  { num:36, industry:"Industrial Manufacturing", headlineResult:"POWERS Helps Steel Producer Achieve 22% Yield Improvement", resultSummary:"22% yield improvement; $6.1M annualized; 8% throughput gain", serviceLines:["Yield & Throughput Improvement","MOS","Maintenance Transformation"], challenges:["Yield loss and product giveaway","Reactive maintenance and unplanned downtime"], date:"2024-10-24", externalUrl:"https://www.thepowerscompany.com/resources/steel-yield/"},
+  { num:37, industry:"Dairy Manufacturing", headlineResult:"POWERS Helps Global Dairy Producer Unblock Production and Sprint to Sharp 41% Performance Boost to Meet New Plant ROI", resultSummary:"41% performance boost; new plant ROI target met", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation"], challenges:["Inconsistent performance across shifts or sites","Reactive maintenance and unplanned downtime"], date:"2022-08-24", externalUrl:"https://www.thepowerscompany.com/resources/dairy-producer-case-study/"},
+  { num:38, industry:"Poultry Processing", headlineResult:"POWERS Sparks $30M Turnaround for One of the Largest Independent Poultry Producers in the World", resultSummary:"$30M turnaround; one of world's largest independent poultry producers", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Inconsistent performance across shifts or sites","High overtime and labor costs"], date:"2022-08-17", externalUrl:"https://www.thepowerscompany.com/resources/poultry-producer-turnaround/"},
+  { num:39, industry:"Warehouse & Distribution", headlineResult:"One of Puerto Rico's Largest Distributors Enjoys Massive Increase in Productivity and Reduces Overtime by Putting POWERS in the Mix", resultSummary:"Massive productivity increase; overtime reduced; 333% ROI", serviceLines:["MOS","Labor & Workforce Optimization"], challenges:["High overtime and labor costs","Inconsistent performance across shifts or sites"], date:"2022-08-04", externalUrl:"https://www.thepowerscompany.com/resources/distributor-case-study/"},
+  { num:40, industry:"Industrial Manufacturing", headlineResult:"POWERS Shelves Inefficiencies, Unlocks $2.1M in Annualized Labor Savings for Library Supplier", resultSummary:"$2.1M annualized labor savings; 20% productivity improvement; 35% customer service improvement", serviceLines:["MOS","Labor & Workforce Optimization","Frontline Leadership Development"], challenges:["High overtime and labor costs","Supervisors firefighting instead of leading"], date:"2022-07-06", externalUrl:"https://www.thepowerscompany.com/resources/library-supply-company-productivity-gains/"},
+  { num:41, industry:"Meat Processing", headlineResult:"This Stalwart Global Meat Processing Industry Leader Engaged POWERS to Lean Up Production While Beefing Up Performance", resultSummary:"Production leaned; performance improved for global meat processing leader", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","High overtime and labor costs"], date:"2022-06-30", externalUrl:"https://www.thepowerscompany.com/resources/meat-processing-industry-leader-case-study/"},
+  { num:42, industry:"Insurance & Financial Services", headlineResult:"New Management Operating System Helps Special-Risk Insurer Reduce Costs, Increase Productivity, and Prepare for Growth", resultSummary:"Costs reduced; productivity increased; growth capacity established", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Supervisors firefighting instead of leading","Scaling operations without losing performance"], date:"2022-06-23", externalUrl:"https://www.thepowerscompany.com/resources/insurer-management-operating-system/"},
+  { num:43, industry:"Meat Processing", headlineResult:"Top-Shelf Meat Packing Company Sees Meaty Gains in Productivity and a Healthy $5.8M Added to the Bottom Line", resultSummary:"$5.8M annualized; ham yield 99% to 104%; 11% daily pounds increase", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","Poor on-time delivery and schedule attainment"], date:"2022-05-19", externalUrl:"https://www.thepowerscompany.com/resources/meat-packing-company-case-study/"},
+  { num:44, industry:"Insurance & Financial Services", headlineResult:"New Frontline Leadership Skills and Controls Boost On-Time Completion By 60% For Large Group Insurance Provider", resultSummary:"60% on-time completion increase; 62% backlog reduction; 50% late completion reduction", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Poor on-time delivery and schedule attainment","Supervisors firefighting instead of leading"], date:"2022-05-12", externalUrl:"https://www.thepowerscompany.com/resources/insurance-boost-time/"},
+  { num:45, industry:"Pharmaceutical & Medical Manufacturing", headlineResult:"POWERS Helps Global Specialty Pharmaceutical Company Turn Back the Clock and Reduce Product Release Time by 46%", resultSummary:"46% product release time reduction", serviceLines:["MOS","Frontline Leadership Development","Supply Chain & Distribution"], challenges:["Poor on-time delivery and schedule attainment","Supervisors firefighting instead of leading"], date:"2022-04-26", externalUrl:"https://www.thepowerscompany.com/resources/global-specialty-pharmaceutical-company/"},
+  { num:46, industry:"Pharmaceutical & Medical Manufacturing", headlineResult:"Aligning Performance With Capacity Helps Medical Device Manufacturer See 25% Productivity Gain and $4.5M in Annual Savings", resultSummary:"$4.5M annual savings; 57%+ productivity improvement; 333% ROI; 93% inventory error reduction", serviceLines:["MOS","Labor & Workforce Optimization","Supply Chain & Distribution"], challenges:["Poor on-time delivery and schedule attainment","High overtime and labor costs"], date:"2022-04-07", externalUrl:"https://www.thepowerscompany.com/resources/medical-device-manufacturer-operates-at-full-potential/"},
+  { num:47, industry:"Meat Processing", headlineResult:"BBQ Producer Chops $2.2M in Annual Costs, Boosts Yield a Meaty 1.5% With POWERS", resultSummary:"$2.2M annual cost reduction; 1.5% yield boost; 27% rework efficiency improvement", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","High overtime and labor costs"], date:"2022-03-31", externalUrl:"https://www.thepowerscompany.com/resources/bbq-producer-chops-annual-costs-boosts-yield/"},
+  { num:48, industry:"Agribusiness", headlineResult:"Measurable Labor and Productivity Improvements Help Grower See More Green", resultSummary:"Measurable labor and productivity improvements for agricultural grower", serviceLines:["MOS","Labor & Workforce Optimization"], challenges:["High overtime and labor costs","Supervisors firefighting instead of leading"], date:"2022-03-22", externalUrl:"https://www.thepowerscompany.com/resources/measurable-labor-and-productivity-improvements-help-grower-see-more-green/"},
+  { num:49, industry:"Bakery & Snack Food Manufacturing", headlineResult:"POWERS leads pioneering snack food industry giant to topple performance barriers and achieve results that are simply nuts", resultSummary:"16% annualized productivity increase; 99% schedule attainment; 25% changeover downtime reduction", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Poor on-time delivery and schedule attainment","Labor turnover and workforce instability"], date:"2022-02-10", externalUrl:"https://www.thepowerscompany.com/resources/snack-food-industry-giant-topples-performance-barriers-achieves-results/"},
+  { num:50, industry:"Food Manufacturing", headlineResult:"POWERS facilitates game-changing uptime, throughput, and on-time delivery improvements for global food industry leader", resultSummary:"Game-changing uptime, throughput, and on-time delivery improvements", serviceLines:["MOS","Maintenance Transformation","Yield & Throughput Improvement"], challenges:["Reactive maintenance and unplanned downtime","Poor on-time delivery and schedule attainment"], date:"2022-01-18", externalUrl:"https://www.thepowerscompany.com/resources/powers-facilitates-game-changing-improvements-for-global-food-industry-leader/"},
+  { num:51, industry:"Meat Processing", headlineResult:"POWERS leads 26% Capacity Utilization Turnaround at Client's Newly Acquired Plant-Based Meat Processing Site", resultSummary:"26% capacity utilization increase; 2% yield increase; 18% maintenance overtime reduction", serviceLines:["New Facility / Greenfield Launch","MOS","Frontline Leadership Development"], challenges:["Newly acquired or launched facility","Labor turnover and workforce instability"], date:"2021-12-13", externalUrl:"https://www.thepowerscompany.com/resources/powers-leads-26-capacity-utilization-turnaround-at-partners-newly-acquired-plant-based-meat-processing-site/"},
+  { num:52, industry:"Meat Processing", headlineResult:"POWERS Partners With World-Class Meat Processor for Huge Performance Gains: Productivity up 47%, Yield up .41%", resultSummary:"47% productivity gain; 0.41% yield increase", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","Inconsistent performance across shifts or sites"], date:"2021-09-16", externalUrl:"https://www.thepowerscompany.com/resources/powers-increases-yield-productivity-for-meat-processor/"},
+  { num:53, industry:"Industrial Manufacturing", headlineResult:"POWERS Energizes Bottom Line with $1.2M in Annualized Savings for Global Energy-Sector Manufacturer", resultSummary:"$1.2M annualized savings", serviceLines:["MOS","Frontline Leadership Development"], challenges:["Supervisors firefighting instead of leading","Inconsistent performance across shifts or sites"], date:"2021-09-07", externalUrl:"https://www.thepowerscompany.com/resources/energy-sector-manufacturer/"},
+
+  // ── #54: full detail — internal route, uses the locked template ──
+  {
+    ...defenseAerospaceOTD,
+    // Library card derived view (mirrors WPGraphQL field-subset semantics):
+    resultSummary: statTilesToSummary(defenseAerospaceOTD.statTiles),
+  },
+
+  { num:55, industry:"Animal Food Manufacturing", headlineResult:"POWERS Nearly Doubles Promised Savings for Our Pet Food Partner Fetching $13.8M Annualized Savings", resultSummary:"$13.8M annualized savings; nearly doubled promised savings", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation"], challenges:["Inconsistent performance across shifts or sites","Reactive maintenance and unplanned downtime"], date:"2021-07-08", externalUrl:"https://www.thepowerscompany.com/resources/powers-crushes-promised-annualized-savings-rate-of-7-5m-for-pet-food-partner-fetching-13-8m-only-23-weeks-into-the-project/"},
+  { num:56, industry:"Beverage Manufacturing", headlineResult:"POWERS Drives 7% YOY Output Gain in Turnaround for Major Beverage Manufacturer", resultSummary:"7% year-over-year output gain", serviceLines:["MOS","Yield & Throughput Improvement"], challenges:["Inconsistent performance across shifts or sites","Supervisors firefighting instead of leading"], date:"2021-04-16", externalUrl:"https://www.thepowerscompany.com/resources/powers-removes-performance-bottlenecks-from-major-beverage-manufacturer-facing-unprecedented-demand/"},
+  { num:57, industry:"Dairy Manufacturing", headlineResult:"POWERS Energizes Dairy and Coffee Beverage Company's Capacity and Capability While Lowering Costs", resultSummary:"Capacity and capability increased; costs lowered simultaneously", serviceLines:["MOS","Labor & Workforce Optimization","Yield & Throughput Improvement"], challenges:["Scaling operations without losing performance","High overtime and labor costs"], date:"2020-06-16", externalUrl:"https://www.thepowerscompany.com/resources/dairy-beverage-capacity-capability/"},
+  { num:58, industry:"Warehouse & Distribution", headlineResult:"POWERS Sparks $4M Turnaround for Cold Storage Distribution Center, Transforms Management Operating System", resultSummary:"$4M turnaround; MOS transformed for cold storage distribution center", serviceLines:["MOS","Frontline Leadership Development","Labor & Workforce Optimization"], challenges:["Supervisors firefighting instead of leading","High overtime and labor costs"], date:"2020-06-15", externalUrl:"https://www.thepowerscompany.com/resources/cold-storage-distribution-center-management-operations/"},
+  { num:59, industry:"Automotive Manufacturing", headlineResult:"A Tale of 3 Supply Tiers: POWERS Helps International Automaker Fix Supply Chain Woes and Boost Productivity", resultSummary:"Supply chain woes fixed; productivity boosted across 3 supply tiers", serviceLines:["Supply Chain & Distribution","MOS","Frontline Leadership Development"], challenges:["Poor on-time delivery and schedule attainment","Scaling operations without losing performance"], date:"2020-05-07", externalUrl:"https://www.thepowerscompany.com/resources/international-automaker-supply-chain-productivity-fix/"},
+  { num:60, industry:"Agribusiness", headlineResult:"POWERS Helps Agricultural Giant Rein in HR Issues Caused by Rapid Growth", resultSummary:"HR and people management issues resolved; rapid growth stabilized", serviceLines:["MOS","Labor & Workforce Optimization","Multi-Site / Scaling"], challenges:["Labor turnover and workforce instability","Scaling operations without losing performance"], date:"2020-05-03", externalUrl:"https://www.thepowerscompany.com/resources/agricultural-giant-rapid-growth-human-resources/"},
+  { num:61, industry:"Poultry Processing", headlineResult:"Maintenance Overhaul Delivers $2M in Annual Savings for Turkey Producer", resultSummary:"$2M annual savings; maintenance overhaul delivered", serviceLines:["Maintenance Transformation","MOS"], challenges:["Reactive maintenance and unplanned downtime","High overtime and labor costs"], date:"2020-05-03", externalUrl:"https://www.thepowerscompany.com/resources/midwestern-turkey-producer-maintenance-upgrade/"},
+  { num:62, industry:"Food Manufacturing", headlineResult:"POWERS provides expertise for new facility built by major food producer", resultSummary:"Ramp-up achieved on schedule; full MOS implemented prior to launch", serviceLines:["New Facility / Greenfield Launch","MOS"], challenges:["Newly acquired or launched facility"], date:"2020-04-23", externalUrl:"https://www.thepowerscompany.com/resources/food-producer-new-facility/"},
+  { num:63, industry:"Food Manufacturing", headlineResult:"POWERS Saves Major Food Processor $6 Million in Annualized Savings", resultSummary:"$6M annualized savings", serviceLines:["MOS","Yield & Throughput Improvement","Labor & Workforce Optimization"], challenges:["Inconsistent performance across shifts or sites","High overtime and labor costs"], date:"2020-04-15", externalUrl:"https://www.thepowerscompany.com/resources/food-processor-6-million-savings/"},
+  { num:64, industry:"Meat Processing", headlineResult:"Yield and Productivity Improvements Generate $10.8 Million for Pork Products Producer", resultSummary:"$10.8M total annualized savings; $6.5M yield recovery; $2.6M R&M savings; 19% maintenance overtime reduction", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation","Supply Chain & Distribution"], challenges:["Yield loss and product giveaway","Reactive maintenance and unplanned downtime","Labor turnover and workforce instability"], date:"2019-04-01", externalUrl:"https://www.thepowerscompany.com/resources/yield-productivity-improvements-processing/"},
+  { num:65, industry:"Pharmaceutical & Medical Manufacturing", headlineResult:"Global Specialty Pharmaceutical Maker Gets Breakthrough Prescription for the Perfect Production Schedule", resultSummary:"46% product release time reduction", serviceLines:["MOS","Supply Chain & Distribution","Frontline Leadership Development"], challenges:["Poor on-time delivery and schedule attainment","Supervisors firefighting instead of leading"], date:"2022-04-26", externalUrl:"https://www.thepowerscompany.com/resources/global-specialty-pharmaceutical-company/"},
+  { num:66, industry:"Industrial Manufacturing", headlineResult:"Upgraded Management Operating System Helps Library Supply Company Book Epic Productivity Gains", resultSummary:"$2.1M annual labor savings; 20% productivity improvement; 35% customer service improvement", serviceLines:["MOS","Labor & Workforce Optimization","Frontline Leadership Development"], challenges:["High overtime and labor costs","Supervisors firefighting instead of leading"], date:"2016-12-13", externalUrl:"https://www.thepowerscompany.com/resources/operating-system-library-supply/"},
+  { num:67, industry:"Meat Processing", headlineResult:"Reined-in Giveaway, Rework and M&R Costs Help Meats Processor Recoup $70M Over Three Years", resultSummary:"$70M total savings over 3 years; 19% operating efficiency gain; 33% direct labor reduction; 62% downtime reduction", serviceLines:["MOS","Yield & Throughput Improvement","Maintenance Transformation","Labor & Workforce Optimization"], challenges:["Yield loss and product giveaway","Reactive maintenance and unplanned downtime","High overtime and labor costs"], date:"2016-12-01", externalUrl:"https://www.thepowerscompany.com/resources/meat-processor-rework/"},
+  { num:68, industry:"Food Manufacturing", headlineResult:"New M&R Controls, Scheduled Maintenance, and Planning Equip Potato Processor to Slice Maintenance Spend and Downtime", resultSummary:"Maintenance spend reduced; downtime sliced for potato processor", serviceLines:["Maintenance Transformation","MOS"], challenges:["Reactive maintenance and unplanned downtime","High overtime and labor costs"], date:"2016-12-13", externalUrl:"https://www.thepowerscompany.com/resources/potato-processor/"},
+];
+
 export function getCaseStudy(slug) {
-  return caseStudies[slug] || null;
+  return caseStudies.find((cs) => cs.slug === slug) || null;
 }
