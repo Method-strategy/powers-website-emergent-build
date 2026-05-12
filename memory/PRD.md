@@ -43,9 +43,30 @@ python3 /app/scripts/convert_homepage.py
 - LegacyPage component executes inline legacy `<script>` blocks via useRef-guarded injection that survives React.StrictMode and resets on real SPA remount.
 - Converter wraps inline JS in an IIFE and auto-hoists top-level function declarations to `window` so injected `onclick="..."` handlers still resolve.
 - Shared `useLegacyLinkIntercept` + `useScrollToTopOnNav` hooks in `/app/frontend/src/lib/navHooks.js`.
+- Netlify SPA fallback (`public/_redirects` + `netlify.toml`) so direct hits to `/approach` etc don't 404.
+
+## Implemented (2026-02-13) — Case Study Architecture (Single Source of Truth)
+- `/app/frontend/src/data/caseStudies.js` — canonical dataset for all 68 case studies. Schema mirrors WPGraphQL + ACF response shape per CLAUDE.md "LOCKED v0.2.1" field map (industry / headlineResult / subtitle / summary / serviceLines / statTiles / situation / diagnosis / powersActions / fullResult / num / date / internalRoute / externalUrl). Defense & Aerospace (#54) has full detail; other 67 have card-level fields.
+- New parametric React components in `/app/frontend/src/components/caseStudy/`:
+  - `CaseStudyHero.jsx` — dense screen hero (eyebrow, sentence-case H1, descriptor, results-at-a-glance with Tabler icon stat tiles, Executive Brief sidebar, disciplines line, Download PDF button)
+  - `CaseStudyBody.jsx` — screen body (Situation, Diagnosis 6-item grid, What POWERS Did, Full Result 6-stat grid) + CTA
+  - `CaseStudyPrintDoc.jsx` — 2-page print PDF (parametric masthead, hero, results, situation, continuation, diagnosis, powers, full result, footer with phone/address/page-indicator)
+  - `CaseStudyCard.jsx` — library card; internal routes use React Router `<Link>`, external use `<a target="_blank">`
+  - `caseStudyStyles.js` + `caseStudiesLibraryStyles.js` — extracted legacy CSS preserved verbatim
+- Library page (`/app/frontend/src/pages/CaseStudies.jsx`) rewritten as proper React with hooks (debounced search, filter state, sort, active-filter pills). No more inline-script + dangerouslySetInnerHTML.
+- Detail page (`/app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx`) is now a thin shell that loads the data and composes the three parametric components.
+- Verified end-to-end: changing one value in `caseStudies.js` propagates to library card, detail hero, and print PDF simultaneously.
 
 ## Testing
-- iteration_1 reported 96% pass with 1 MEDIUM bug (case-studies inline-script re-declaration); iteration_2 confirms FIXED with 100% pass and zero issues.
+- iteration_3 (case-study refactor): 100% pass, 0 issues, 0 console errors. Single-source-of-truth architecture validated by the testing agent reading the data file + components and confirming no parallel hardcoded copies anywhere.
+- iteration_2 (link routing + StrictMode fix): 100% pass.
+- iteration_1 (initial foundation): 96% pass, 1 medium bug fixed in iteration_2.
+
+## Production Migration Path
+The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGraphQL + ACF. Steps when ready:
+1. Author each case study as a `case_study` custom post type in WordPress with the ACF field group matching the schema in `caseStudies.js`.
+2. Replace `/app/frontend/src/data/caseStudies.js` with a WPGraphQL query returning the same JSON shape (the helper `getCaseStudy(slug)` becomes a `useQuery` call).
+3. No component edits required — `CaseStudyHero`, `CaseStudyBody`, `CaseStudyPrintDoc`, `CaseStudyCard` read from the same data object regardless of source.
 
 ## Pending / Backlog
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
