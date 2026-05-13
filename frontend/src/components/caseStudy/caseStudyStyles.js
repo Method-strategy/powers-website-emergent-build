@@ -679,27 +679,35 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     padding: 0 0.55in;
   }
 
-  /* ── PAGE 1 — FULL-BLEED NAVY MASTHEAD ─────────────────────────── */
+  /* ── PAGE 1 — SLIM FULL-BLEED NAVY MASTHEAD ───────────────────────
+     Masthead contains ONLY the POWERS logo (top-left) and the eyebrow
+     ("CASE STUDY | DEFENSE & AEROSPACE", right-justified). The H1
+     moves below the masthead into the white content area where it's
+     the dominant typographic moment in navy-800. The big "Results at
+     a Glance" stat block is then the strong navy color moment on the
+     page. ──────────────────────────────────────────────────────── */
   .pp-mast {
     background: var(--navy);
-    padding: 0.42in 0.55in 0.36in;
+    padding: 0.30in 0.55in;
     margin: 0;
     border-bottom: 3px solid var(--gold);
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  .pp-mast-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 18px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pp-mast-logo img {
+    height: 52px;
+    width: auto;
+    display: block;
   }
   .pp-mast-meta {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     font-weight: 600;
@@ -707,21 +715,6 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
   .pp-mast-meta .pp-tag      { color: var(--gold); }
   .pp-mast-meta .pp-bar      { color: rgba(234,187,113,0.55); font-weight: 400; }
   .pp-mast-meta .pp-industry { color: var(--gold); }
-  .pp-mast-logo img {
-    height: 28px;
-    width: auto;
-    display: block;
-  }
-  .pp-h1 {
-    font-size: 26px;
-    line-height: 1.10;
-    font-weight: 700;
-    color: var(--white);
-    margin: 0;
-    letter-spacing: -0.018em;
-    text-wrap: balance;
-    max-width: 7in;
-  }
 
   /* ── PAGE 1 — BODY ─────────────────────────────────────────────── */
   .pp-disciplines {
@@ -730,8 +723,21 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     font-weight: 600;
-    padding-top: 18px;
-    margin-bottom: 12px;
+    padding-top: 22px;
+    margin-bottom: 14px;
+  }
+
+  /* Dominant H1 — now sits on white between the slim masthead and the
+     navy stat block. Navy-800 (#183a61), large, sentence case. */
+  .pp-h1 {
+    font-size: 28px;
+    line-height: 1.10;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 18px;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+    max-width: 7in;
   }
 
   .pp-brief {

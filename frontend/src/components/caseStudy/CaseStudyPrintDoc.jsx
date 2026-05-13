@@ -47,21 +47,20 @@ export default function CaseStudyPrintDoc({ data }) {
       {/* ── PAGE 1 ── */}
       <div className="print-page">
         <div className="pp-mast">
-          <div className="pp-mast-top">
-            <div className="pp-mast-meta">
-              <span className="pp-tag">Case Study</span>
-              <span className="pp-bar">|</span>
-              <span className="pp-industry">{industry}</span>
-            </div>
-            <div className="pp-mast-logo">
-              <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" />
-            </div>
+          <div className="pp-mast-logo">
+            <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" />
           </div>
-          <h1 className="pp-h1">{headlineResult}</h1>
+          <div className="pp-mast-meta">
+            <span className="pp-tag">Case Study</span>
+            <span className="pp-bar">|</span>
+            <span className="pp-industry">{industry}</span>
+          </div>
         </div>
 
         <div className="pp-content">
           <div className="pp-disciplines">{disciplinesLine}</div>
+
+          <h1 className="pp-h1">{headlineResult}</h1>
 
           <div className="pp-brief">
             <div className="pp-brief-label">Executive Brief</div>
