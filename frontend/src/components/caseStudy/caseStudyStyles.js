@@ -859,9 +859,12 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
   .pp-section-p:last-child { margin: 0; }
 
   /* ── PAGE 2 — CONTINUATION NAVY BAND ───────────────────────────── */
+  /* Vertical height intentionally deepened so the band content sits
+     below typical printer hardware-margin clipping (~0.25–0.4in from
+     the top edge). Mirrors the bottom navy footer band. */
   .pp-cont-mast {
     background: var(--navy);
-    padding: 14px 0.55in;
+    padding: 0.40in 0.55in 0.20in;
     margin: 0;
     border-bottom: 2px solid var(--gold);
     display: flex;
@@ -956,14 +959,18 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     font-weight: 400;
   }
 
-  /* ── NAVY FOOTER BAND — full-bleed, both pages ─────────────────── */
+  /* ── NAVY FOOTER BAND — full-bleed, both pages ─────────────────────
+     Vertical height intentionally deepened so the band content (POWERS
+     brand, phone, email, address, page indicator) sits above typical
+     printer hardware-margin clipping (~0.25–0.4in from the bottom
+     edge). Mirrors the page-2 continuation header band. */
   .pp-foot {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     background: var(--navy);
-    padding: 12px 0.55in 14px;
+    padding: 0.20in 0.55in 0.40in;
     border-top: 2px solid var(--gold);
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
