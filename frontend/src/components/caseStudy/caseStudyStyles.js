@@ -17,9 +17,17 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
   }
 
   html, body {
-    font-family: 'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'proxima-nova', 'Proxima Nova', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     background: var(--white);
     color: var(--gray700);
+    /* Ensure proper kerning + ligatures even when the browser falls back from
+       Proxima Nova to Inter (or system) during a partial font load. Without
+       these declarations some browsers (notably headless Chromium during PDF
+       generation) skip kerning pairs, producing the uneven word spacing the
+       user reported in body paragraphs. */
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, .eyebrow { text-wrap: balance; }
@@ -656,10 +664,20 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
      ════════════════════════════════════════════════════════════════════ */
 
   .print-doc {
-    font-family: 'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'proxima-nova', 'Proxima Nova', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     color: var(--gray700);
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    /* Print-context kerning + feature settings — see comment on html/body
+       above. Doubled here so the rules apply even if the html/body cascade
+       is broken by a parent override during print rendering. */
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+  }
+  .print-doc * {
+    font-feature-settings: inherit;
+    font-kerning: inherit;
   }
 
   .print-page {

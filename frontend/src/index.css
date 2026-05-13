@@ -15,7 +15,7 @@
   --pw-gray50:  #f5f5f3;
   --pw-gray100: #e8e8e4;
   --pw-gray400: #888884;
-  --pw-font: 'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  --pw-font: 'proxima-nova','Proxima Nova','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,6 +26,14 @@ html, body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Force proper kerning + ligatures across all renderings (including the
+     Playwright headless PDF path). Without these, body paragraphs can pick
+     up uneven character spacing when Adobe Typekit's Proxima Nova hasn't
+     fully resolved and the browser falls back to Inter or a system font
+     mid-paragraph. */
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
 }
 
 /* Typography QC — global balancing per CLAUDE.md standing instruction */

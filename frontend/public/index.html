@@ -7,11 +7,14 @@
         <meta name="description" content="A product of emergent.sh" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet" />
-        <!-- Adobe Fonts (Typekit) — Proxima Nova, per CLAUDE.md design tokens -->
-        <link rel="stylesheet" href="https://use.typekit.net/dhv8kja.css" />
+        <link rel="preconnect" href="https://use.typekit.net" />
+        <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+        <!-- Inter as a comprehensive fallback for Proxima Nova; ALL body/display weights -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="all" />
+        <!-- Adobe Fonts (Typekit) — Proxima Nova, per CLAUDE.md design tokens. media="all" is explicit so the stylesheet loads in BOTH screen and print contexts (Playwright PDF generation otherwise can miss the print-only path). -->
+        <link rel="stylesheet" href="https://use.typekit.net/dhv8kja.css" media="all" />
         <!-- Tabler Icons — used by the case-study detail hero stat tiles (cs-hd-stat-icon, cs-result-icon, etc.) -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.0/dist/tabler-icons.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.0/dist/tabler-icons.min.css" media="all" />
         <!--
         manifest.json provides metadata used when your web app is installed on a
         user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
