@@ -73,11 +73,12 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     /* ── DENSE HERO (toggleable) ── */
     .cs-hero-dense {
       background: var(--navy);
-      padding: 96px 48px 80px;
+      padding: 96px 0 80px;  /* horizontal padding lives on the 1280 inner so content aligns with the site header */
     }
     .cs-hero-dense-inner {
       max-width: 1280px;
       margin: 0 auto;
+      padding: 0 48px;       /* matches SiteHeader.jsx: max-width 1280 + padding 0 48 → 1184px content area */
       display: grid;
       grid-template-columns: 1fr 320px;
       column-gap: 64px;
@@ -233,9 +234,10 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     /* ── Mobile: linear stack in priority order ── */
     @media (max-width: 860px) {
       .cs-hero-dense {
-        padding: 72px 32px 64px;
+        padding: 72px 0 64px;
       }
       .cs-hero-dense-inner {
+        padding: 0 32px;
         grid-template-columns: 1fr;
         grid-template-areas:
           "tags"
@@ -276,7 +278,10 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     /* ── Phone: stats stack vertically and center, hero padding tightens ── */
     @media (max-width: 540px) {
       .cs-hero-dense {
-        padding: 56px 24px 48px;
+        padding: 56px 0 48px;
+      }
+      .cs-hero-dense-inner {
+        padding: 0 24px;
       }
       .cs-hd-tags { gap: 8px 12px; font-size: 10px; }
       .cs-hd-h1 { font-size: clamp(26px, 7.5vw, 34px); }
