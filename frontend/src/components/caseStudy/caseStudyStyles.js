@@ -630,6 +630,8 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
       background: var(--white) !important;
       padding: 0 !important;
       margin: 0 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
     /* Hide all screen chrome */
     #site-header-root,
@@ -647,16 +649,23 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     }
   }
 
-  /* PRINT DOC STYLES — also visible in screen-preview wrapper if user wants */
+  /* ════════════════════════════════════════════════════════════════════
+     PRINT DOCUMENT — refined v0.3.1 (matches legacy Adobe Illustrator
+     design language: full-bleed navy masthead, navy stat block, gold
+     section rules, navy footer band). Density tightened ~25% vs v0.3.0.
+     ════════════════════════════════════════════════════════════════════ */
+
   .print-doc {
     font-family: 'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     color: var(--gray700);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .print-page {
     width: 8.5in;
     height: 11in;
-    padding: 0.55in 0.6in 0.55in 0.6in;
+    padding: 0;          /* full-bleed page; sections control their own padding */
     box-sizing: border-box;
     background: var(--white);
     position: relative;
@@ -665,72 +674,79 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
   }
   .print-page:last-child { page-break-after: auto; }
 
-  /* Print masthead */
-  .pp-mast {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 12px;
-    border-bottom: 0.5px solid var(--gray100);
+  /* Inner content area — every non-bleed section sits inside this padding */
+  .pp-content {
+    padding: 0 0.55in;
   }
-  .pp-mast-logo img {
-    height: 41px;
-    width: auto;
-    display: block;
+
+  /* ── PAGE 1 — FULL-BLEED NAVY MASTHEAD ─────────────────────────── */
+  .pp-mast {
+    background: var(--navy);
+    padding: 0.42in 0.55in 0.36in;
+    margin: 0;
+    border-bottom: 3px solid var(--gold);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pp-mast-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
   }
   .pp-mast-meta {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .pp-mast-meta .pp-tag {
-    color: var(--gray400);
-  }
-  .pp-mast-meta .pp-bar { color: var(--gold); }
-  .pp-mast-meta .pp-industry {
-    color: var(--navy);
-    font-weight: 600;
-  }
-
-  /* Page 1 hero */
-  .pp-hero {
-    display: grid;
-    grid-template-columns: 1fr 200px;
-    gap: 32px;
-    margin-top: 24px;
-  }
-  .pp-eyebrow {
-    font-size: 9.5px;
-    color: var(--navy400);
-    letter-spacing: 0.16em;
+    font-size: 10px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     font-weight: 600;
+  }
+  .pp-mast-meta .pp-tag      { color: var(--gold); }
+  .pp-mast-meta .pp-bar      { color: rgba(234,187,113,0.55); font-weight: 400; }
+  .pp-mast-meta .pp-industry { color: var(--gold); }
+  .pp-mast-logo img {
+    height: 28px;
+    width: auto;
+    display: block;
   }
   .pp-h1 {
-    font-size: 32px;
-    line-height: 1.06;
-    font-weight: 800;
-    color: var(--navy);
-    margin: 12px 0 0;
-    letter-spacing: -0.022em;
+    font-size: 26px;
+    line-height: 1.10;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
+    letter-spacing: -0.018em;
     text-wrap: balance;
+    max-width: 7in;
   }
+
+  /* ── PAGE 1 — BODY ─────────────────────────────────────────────── */
+  .pp-disciplines {
+    font-size: 9.5px;
+    color: var(--navy400);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-top: 18px;
+    margin-bottom: 12px;
+  }
+
   .pp-brief {
-    border-left: 2px solid var(--gold);
-    padding: 14px 16px 14px 16px;
+    border-left: 3px solid var(--gold);
+    padding: 12px 16px;
     background: #fdf6e8;
+    margin-bottom: 18px;
   }
   .pp-brief-label {
     font-size: 9px;
     color: var(--navy400);
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .pp-brief-body {
     font-size: 11px;
@@ -739,192 +755,217 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     font-weight: 400;
   }
 
-  .pp-rule-gold {
-    height: 2px;
-    background: var(--gold);
-    margin-top: 22px;
-    width: 100%;
-  }
-
-  /* Page 1 stat strip */
+  /* Stat strip — RESULTS AT A GLANCE — full-bleed navy block with white
+     stat values + gold accent labels per the legacy design language */
   .pp-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-    margin-top: 22px;
-    padding-bottom: 22px;
-    border-bottom: 0.5px solid var(--gray100);
+    gap: 18px;
+    background: var(--navy);
+    margin: 8px -0.55in 22px;
+    padding: 20px 0.55in 20px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   .pp-stat {
     display: flex;
-    gap: 12px;
+    gap: 11px;
     align-items: flex-start;
+    color: var(--white);
   }
   .pp-stat-icon {
-    font-size: 28px;
-    color: var(--navy);
+    font-size: 26px;
+    color: var(--gold);
     line-height: 1;
     margin-top: 4px;
   }
   .pp-stat-num {
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 800;
-    color: var(--navy);
-    color: var(--navy);
+    color: var(--white);
     letter-spacing: -0.025em;
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .pp-stat-label {
-    font-size: 10.5px;
-    color: var(--navy400);
-    line-height: 1.35;
+    font-size: 9.5px;
+    color: var(--gold);
+    line-height: 1.32;
     font-weight: 500;
+    letter-spacing: 0.02em;
   }
 
-  /* Section block (situation, diagnosis, etc.) */
-  .pp-section { margin-top: 24px; }
+  /* Section block (Situation, Diagnosis, etc.) — tighter spacing */
+  .pp-section { margin-top: 18px; }
   .pp-section-eyebrow {
-    font-size: 10px;
-    color: #eabb71;
-    letter-spacing: 0.16em;
+    font-size: 9.5px;
+    color: var(--gold);
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding-top: 0;
+  }
+  /* Gold rule above section eyebrows — the key "color blocking through the
+     document" treatment the user called for */
+  .pp-section-eyebrow--ruled::before {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 2px;
+    background: var(--gold);
     margin-bottom: 8px;
   }
   .pp-section-h2 {
-    font-size: 17px;
-    line-height: 1.2;
-    font-weight: 600;
-    color: var(--navy400);
-    margin: 0 0 12px;
-    letter-spacing: -0.01em;
+    font-size: 16px;
+    line-height: 1.22;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 9px;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
   }
   .pp-section-p {
-    font-size: 11.5px;
-    line-height: 1.55;
+    font-size: 11px;
+    line-height: 1.5;
     color: var(--gray700);
     font-weight: 400;
-    margin: 0 0 8px;
+    margin: 0 0 6px;
   }
   .pp-section-p:last-child { margin: 0; }
 
-  /* Page 2 diagnosis grid */
+  /* ── PAGE 2 — CONTINUATION NAVY BAND ───────────────────────────── */
+  .pp-cont-mast {
+    background: var(--navy);
+    padding: 14px 0.55in;
+    margin: 0;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pp-cont-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .pp-cont-meta .pp-cont-bar      { color: rgba(234,187,113,0.55); font-weight: 400; }
+  .pp-cont-meta .pp-cont-industry { color: var(--gold); }
+  .pp-cont-meta .pp-cont-tag      { color: var(--gold); }
+  .pp-cont-label {
+    font-size: 9px;
+    color: var(--white);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 0.85;
+  }
+
+  /* Page 2 diagnosis grid — gold rule above each card */
   .pp-diag-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px 28px;
+    gap: 12px 24px;
     margin-top: 4px;
   }
+  .pp-diag-grid > div {
+    padding-top: 8px;
+    border-top: 1.5px solid var(--gold);
+  }
   .pp-diag-title {
-    font-size: 11.5px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: var(--navy);
     margin-bottom: 4px;
     letter-spacing: -0.005em;
-    padding-bottom: 4px;
-    border-bottom: 1px solid var(--gold);
-    display: inline-block;
   }
   .pp-diag-body {
-    font-size: 11px;
-    line-height: 1.45;
+    font-size: 10.5px;
+    line-height: 1.42;
     color: var(--gray700);
     margin: 0;
     font-weight: 400;
   }
 
-  /* Page 2 result list */
+  /* Page 2 result list — gold rule above each stat card */
   .pp-results {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px 28px;
-    margin-top: 6px;
+    gap: 12px 24px;
+    margin-top: 4px;
   }
   .pp-result {
     display: flex;
     gap: 14px;
+    padding-top: 8px;
+    border-top: 1.5px solid var(--gold);
   }
   .pp-result-num {
     font-size: 22px;
     line-height: 1;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--navy);
     letter-spacing: -0.02em;
-    min-width: 56px;
-    padding: 2px 0 2px 10px;
-    border-left: 2px solid var(--gold);
+    min-width: 52px;
+    padding: 1px 0 0 0;
   }
   .pp-result-label {
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--navy);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     margin-bottom: 3px;
   }
   .pp-result-body {
-    font-size: 11px;
+    font-size: 10.5px;
     line-height: 1.4;
     color: var(--gray700);
     margin: 0;
     font-weight: 400;
   }
 
-  /* Print footer */
+  /* ── NAVY FOOTER BAND — full-bleed, both pages ─────────────────── */
   .pp-foot {
     position: absolute;
-    bottom: 0.4in;
-    left: 0.6in;
-    right: 0.6in;
-    padding-top: 10px;
-    border-top: 1px solid var(--gold);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--navy);
+    padding: 12px 0.55in 14px;
+    border-top: 2px solid var(--gold);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pp-foot-inner {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 9.5px;
-    color: var(--gray400);
-    letter-spacing: 0.04em;
-    flex-wrap: wrap;
-  }
-  .pp-foot-sep { color: var(--gold); }
-  .pp-foot-brand {
-    color: var(--navy);
-    font-weight: 700;
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.92);
     letter-spacing: 0.06em;
+    flex-wrap: nowrap;
   }
-  .pp-foot-mid {
-    text-align: center;
-    font-weight: 400;
-  }
-  .pp-foot-page {
-    font-weight: 500;
-    color: var(--navy400);
-  }
-
-  /* Page 2 continuation header */
-  .pp-cont-mast {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 0.5px solid var(--gray100);
+  .pp-foot-sep      { color: var(--gold); }
+  .pp-foot-brand {
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.14em;
     font-size: 10px;
   }
-  .pp-cont-title {
-    color: var(--navy);
-    font-weight: 500;
-  }
-  .pp-cont-title .pp-cont-tag {
-    color: var(--gray400);
-    font-weight: 300;
-  }
-  .pp-cont-label {
-    font-size: 9px;
-    color: var(--navy400);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+  .pp-foot-page {
+    margin-left: auto;
     font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.14em;
+    font-size: 9px;
   }
 
   /* SCREEN-ONLY preview wrapper for print pages
