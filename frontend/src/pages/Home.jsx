@@ -1435,6 +1435,8 @@ function SectionExecutionEngine() {
   const G = '#eabb71';      // gold
   const NAVY = '#183a61';
   const TEXT = '#3a3a38';
+  const RED   = '#b8392d';  // "red number" — pressure-side indicator
+  const GREEN = '#2d7a4f';  // "green number" — result-side indicator
 
   // Inline keyframes — kept here so the section is self-contained.
   const styles = `
@@ -1459,28 +1461,28 @@ function SectionExecutionEngine() {
       100% { transform: scaleX(1); }
     }
     @keyframes pw-carat-drift-1 {
-      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
-      18%  { opacity: 0.55; }
-      82%  { opacity: 0.55; }
-      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
+      14%  { opacity: 0.92; }
+      86%  { opacity: 0.92; }
+      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
     }
     @keyframes pw-carat-drift-2 {
-      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
-      22%  { opacity: 0.40; }
-      78%  { opacity: 0.40; }
-      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
+      18%  { opacity: 0.78; }
+      82%  { opacity: 0.78; }
+      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
     }
     @keyframes pw-carat-drift-3 {
-      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
-      26%  { opacity: 0.50; }
-      74%  { opacity: 0.50; }
-      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
+      22%  { opacity: 0.85; }
+      78%  { opacity: 0.85; }
+      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
     }
     @keyframes pw-carat-march {
-      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
-      14%  { opacity: 0.50; }
-      86%  { opacity: 0.50; }
-      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
+      12%  { opacity: 0.95; }
+      88%  { opacity: 0.95; }
+      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
     }
     @keyframes pw-pulse {
       0%, 100% { opacity: 0.45; transform: scale(1); }
@@ -1500,44 +1502,44 @@ function SectionExecutionEngine() {
   });
 
   // ── Carat particles ─────────────────────────────────────────────
-  // Left gutter: ~5 carats in muted slate-blue, each with its own randomized
-  // vertical position, duration, and start delay. Reads as unpredictable
-  // pressures arriving — never quite repeats.
-  // Right gutter: ~4 carats in gold, all on the same evenly-spaced cadence
-  // and a single vertical position. Reads as regimented, predictable output.
-  //
-  // Carats live ONLY in the column gutters so they never cross body text.
-  const SLATE = '#7c9ab8';   // muted slate-blue (subdued, not amber-tense)
+  // Left gutter: chaotic slate-blue arrows arriving at irregular intervals.
+  // Reads as unpredictable pressures arriving — never quite repeats.
+  // Right gutter: gold arrows leaving on a perfectly even cadence.
+  // Reads as regimented, predictable output.
+  const SLATE = '#7c9ab8';   // muted slate-blue
 
+  // Triple-chevron arrow (">>>") — reads as directional flow, much more
+  // legible than a single chevron at small sizes.
   const makeCarat = (color) => {
     const svg = encodeURIComponent(
-      `<svg xmlns='http://www.w3.org/2000/svg' width='10' height='12' viewBox='0 0 10 12'>` +
-      `<path d='M2 2 L7 6 L2 10' fill='none' stroke='${color}' ` +
-      `stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/>` +
+      `<svg xmlns='http://www.w3.org/2000/svg' width='44' height='18' viewBox='0 0 44 18'>` +
+      `<g fill='none' stroke='${color}' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>` +
+      `<path d='M3 3 L11 9 L3 15' opacity='0.45'/>` +
+      `<path d='M16 3 L24 9 L16 15' opacity='0.75'/>` +
+      `<path d='M29 3 L37 9 L29 15'/>` +
+      `</g>` +
       `</svg>`
     );
     return `url("data:image/svg+xml,${svg}")`;
   };
 
-  // Left gutter: 5 carats with pseudo-random vertical positions, durations,
-  // and per-carat staggered start delays. Three different keyframe variants
-  // (pw-carat-drift-1/2/3) give slightly different opacity profiles so the
-  // pattern doesn't repeat visually.
+  // Left gutter: 4 chaotic arrows with pseudo-random vertical positions,
+  // durations, and per-arrow staggered start delays. Three keyframe variants
+  // give slightly different opacity profiles so the pattern doesn't repeat.
   const LEFT_CARATS = [
-    { top: '12%', delay: 0,    duration: 5.8, kf: 'pw-carat-drift-1' },
-    { top: '34%', delay: 2.3,  duration: 7.2, kf: 'pw-carat-drift-2' },
-    { top: '58%', delay: 0.9,  duration: 6.5, kf: 'pw-carat-drift-3' },
-    { top: '76%', delay: 4.1,  duration: 8.0, kf: 'pw-carat-drift-1' },
-    { top: '46%', delay: 5.6,  duration: 5.3, kf: 'pw-carat-drift-2' },
+    { top: '14%', delay: 0,    duration: 4.6, kf: 'pw-carat-drift-1' },
+    { top: '38%', delay: 1.8,  duration: 5.9, kf: 'pw-carat-drift-2' },
+    { top: '62%', delay: 0.7,  duration: 5.2, kf: 'pw-carat-drift-3' },
+    { top: '84%', delay: 3.2,  duration: 6.4, kf: 'pw-carat-drift-1' },
   ];
 
-  // Right gutter: 4 carats, evenly distributed, identical duration, evenly
-  // staggered start delays. The cadence is the visible signal: stuff comes
-  // out on a beat. The four delays form a perfect 0/25/50/75 phase pattern.
+  // Right gutter: 4 arrows, evenly distributed top-to-bottom, identical
+  // duration, evenly staggered start delays. The cadence is the signal:
+  // output arrives on a beat.
   const RIGHT_CARATS_COUNT = 4;
-  const RIGHT_DURATION = 5.6;
+  const RIGHT_DURATION = 4.2;
   const RIGHT_CARATS = Array.from({ length: RIGHT_CARATS_COUNT }, (_, i) => ({
-    top: '50%',
+    top: `${18 + i * 22}%`,
     delay: (RIGHT_DURATION / RIGHT_CARATS_COUNT) * i,
     duration: RIGHT_DURATION,
     kf: 'pw-carat-march',
@@ -1545,10 +1547,10 @@ function SectionExecutionEngine() {
 
   const caratSpan = (color, { top, delay, duration, kf }, i) => (
     <span key={i} aria-hidden="true" style={{
-      position: 'absolute', top, left: 0, width: 10, height: 12,
+      position: 'absolute', top, left: 0, width: 44, height: 18,
       backgroundImage: makeCarat(color),
       backgroundRepeat: 'no-repeat', backgroundSize: 'contain',
-      transform: 'translate3d(-30%, 0, 0)',
+      transform: 'translate3d(-20%, 0, 0)',
       opacity: 0,
       animation: seen
         ? `${kf} ${duration}s linear ${T_FLOW / 1000 + delay}s infinite`
@@ -1588,54 +1590,55 @@ function SectionExecutionEngine() {
           marginTop: 40,
           display: 'grid',
           gridTemplateColumns: '1fr 1.18fr 1fr',
-          columnGap: 32,
+          columnGap: 72,
           alignItems: 'stretch',
           position: 'relative',
         }}>
-          {/* Carat particles, confined to the LEFT and RIGHT gutters only.
-              They no longer cross the column body copy. Left gutter is the
-              irregular slate-blue arrival. Right gutter is the regimented
+          {/* Animated flow arrows — live in the column gaps, full gap width,
+              so they read as actual directional flow rather than incidental
+              ornament. Left = chaotic slate arrival, right = regimented
               gold output. */}
           <div aria-hidden="true" className="pw-carat-gutter pw-carat-gutter-left" style={{
             position: 'absolute',
-            top: 0, bottom: 0, left: 'calc(33.33% - 16px)', width: 32,
+            top: 0, bottom: 0,
+            left: 'calc(33.33% - 60px)', width: 80,
             pointerEvents: 'none', zIndex: 0,
           }}>
             {LEFT_CARATS.map((c, i) => caratSpan(SLATE, c, i))}
           </div>
           <div aria-hidden="true" className="pw-carat-gutter pw-carat-gutter-right" style={{
             position: 'absolute',
-            top: 0, bottom: 0, right: 'calc(33.33% - 16px)', width: 32,
+            top: 0, bottom: 0,
+            right: 'calc(33.33% - 60px)', width: 80,
             pointerEvents: 'none', zIndex: 0,
           }}>
             {RIGHT_CARATS.map((c, i) => caratSpan(G, c, i))}
           </div>
 
-          {/* LEFT COLUMN — Varying Forces. Typography matches the right
-              column so left → engine → right reads as one continuous flow,
-              not three different categories. No icons here: chevrons next
-              to text read as expandable UI affordances, which is the wrong
-              signal. The forward-motion is carried by the animated carat
-              rails passing behind the columns. */}
+          {/* LEFT COLUMN — Varying Forces. Each line carries a red trend-
+              down marker. These are the "red numbers" CEOs and ops execs
+              are trying to convert. */}
           <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
-            <DiagramColHead label="Varying Forces" align="left" />
+            <DiagramColHead label="Varying Forces" />
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {VARYING_FORCES.map((item, i) => (
                 <li key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
                   fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
                   padding: '10px 0', borderBottom: '1px solid #e8e8e4',
                   ...willReveal(T_LEFT0 + i * T_LEFTGAP, 'pw-enter-left'),
                 }}>
-                  {item}
+                  <RedDownMarker color={RED} />
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* CENTER COLUMN — Execution Capability (load-bearing). Matching
-              column head above (consistent rule + label as left/right), then
-              a heavy navy panel beneath containing the live indicator and
-              the system definition. */}
+          {/* CENTER COLUMN — Execution Capability (load-bearing). The navy
+              panel is the engine that converts red inputs to green outputs.
+              No footer decoration: the column is intentionally clean so the
+              "System Active" badge and definition do all the talking. */}
           <div style={{
             position: 'relative', zIndex: 2,
             display: 'flex', flexDirection: 'column',
@@ -1681,43 +1684,32 @@ function SectionExecutionEngine() {
               }}>
                 {typo("The ability to execute at a high level regardless of conditions. The discipline, leadership, and accountability that turn variable inputs into reliable outputs.")}
               </p>
-
-              <div style={{ height: 1, background: 'rgba(234,187,113,0.30)', marginTop: 22, position: 'relative', zIndex: 1 }} />
-              <div style={{
-                fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: 'rgba(234,187,113,0.75)', fontWeight: 600, marginTop: 10,
-                fontFamily: 'inherit', position: 'relative', zIndex: 1,
-              }}>
-                Discipline · Leadership · Accountability
-              </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN — Consistent Results. Typography matches the left
-              column. No icons (same reasoning as left). The accent line
-              above the header is gold to mark "this is the output side." */}
+          {/* RIGHT COLUMN — Consistent Results. Each line carries a green
+              trend-up marker. These are the "green numbers" the engine
+              produces from the red ones on the left. */}
           <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
-            <DiagramColHead label="Consistent Results" align="left" accent />
+            <DiagramColHead label="Consistent Results" />
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {CONSISTENT_RESULTS.map((item, i) => (
                 <li key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
                   fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
                   padding: '10px 0', borderBottom: '1px solid #e8e8e4',
                   ...willReveal(T_RIGHT0 + i * T_RIGHTGAP, 'pw-enter-right'),
                 }}>
-                  {item}
+                  <GreenUpMarker color={GREEN} />
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Closing subhead — section-anchor declaration. Treated as display
-            type (not body), since it's the thesis statement closing the
-            diagram. Same gold rule used elsewhere on the page as the
-            "anchor" device above section closers. */}
+        {/* Closing subhead — section-anchor declaration. */}
         <div style={{ textAlign: 'center', marginTop: 56, ...willReveal(T_CLOSE) }}>
-          <div style={{ height: 1, width: 72, background: G, margin: '0 auto 22px' }} />
           <p style={{
             fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 700, lineHeight: 1.25,
             color: NAVY, fontFamily: 'inherit', margin: '0 auto', maxWidth: 760,
@@ -1747,6 +1739,38 @@ function DiagramColHead({ label }) {
         fontWeight: 600, fontFamily: 'inherit',
       }}>{label}</div>
     </div>
+  );
+}
+
+/* Red trend-down marker — appears next to every "Varying Forces" line.
+   Reads as "this is a red number." Filled triangle + small descending
+   tick gives it the feel of a financial dashboard down-indicator without
+   importing an icon library. */
+function RedDownMarker({ color }) {
+  return (
+    <span aria-hidden="true" style={{
+      flex: '0 0 auto', width: 14, height: 14, display: 'inline-block',
+      lineHeight: 0,
+    }}>
+      <svg width="14" height="14" viewBox="0 0 14 14">
+        <path d="M2 4 L12 4 L7 12 Z" fill={color} />
+      </svg>
+    </span>
+  );
+}
+
+/* Green trend-up marker — mirror of the red one. Reads as "this is a
+   green number." Same visual weight so the columns balance. */
+function GreenUpMarker({ color }) {
+  return (
+    <span aria-hidden="true" style={{
+      flex: '0 0 auto', width: 14, height: 14, display: 'inline-block',
+      lineHeight: 0,
+    }}>
+      <svg width="14" height="14" viewBox="0 0 14 14">
+        <path d="M7 2 L12 10 L2 10 Z" fill={color} />
+      </svg>
+    </span>
   );
 }
 
