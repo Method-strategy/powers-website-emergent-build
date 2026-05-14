@@ -538,7 +538,7 @@ function Header() {
             fontFamily: 'inherit',
             paddingTop: 1,
           }}>
-            What Strong Performance is Built On
+            Strong Foundation. Strong Performance.
           </span>
         </div>
 
