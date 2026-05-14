@@ -1424,19 +1424,16 @@ function SectionExecutionEngine() {
 
   // Stagger timings (ms after seen=true)
   const T_HEADER  = 0;
-  const T_LEFT0   = 250;
-  const T_LEFTGAP = 55;     // per-item stagger
-  const T_FLOW    = T_LEFT0 + VARYING_FORCES.length * T_LEFTGAP + 80;
-  const T_CENTER  = T_FLOW + 200;
-  const T_RIGHT0  = T_CENTER + 240;
-  const T_RIGHTGAP = 55;
-  const T_CLOSE   = T_RIGHT0 + CONSISTENT_RESULTS.length * T_RIGHTGAP + 120;
+  const T_LEFT0   = 220;
+  const T_LEFTGAP = 45;     // per-item stagger (tightened)
+  const T_FLOW    = T_LEFT0 + VARYING_FORCES.length * T_LEFTGAP + 60;
+  const T_CENTER  = T_FLOW + 180;
+  const T_RIGHT0  = T_CENTER + 200;
+  const T_RIGHTGAP = 45;
+  const T_CLOSE   = T_RIGHT0 + CONSISTENT_RESULTS.length * T_RIGHTGAP + 100;
 
   const G = '#eabb71';      // gold
-  const G_DIM = '#c9963e';  // gold dim
   const NAVY = '#183a61';
-  const NAVY900 = '#0d2442';
-  const AMBER = '#c47a2a';  // muted-amber for "tension" indicator on inputs
   const TEXT = '#3a3a38';
 
   // Inline keyframes — kept here so the section is self-contained.
@@ -1461,9 +1458,9 @@ function SectionExecutionEngine() {
       0%   { transform: scaleX(0); }
       100% { transform: scaleX(1); }
     }
-    @keyframes pw-flow-dash {
+    @keyframes pw-flow-step {
       0%   { background-position: 0 0; }
-      100% { background-position: -24px 0; }
+      100% { background-position: 28px 0; }
     }
     @keyframes pw-pulse {
       0%, 100% { opacity: 0.45; transform: scale(1); }
@@ -1482,39 +1479,57 @@ function SectionExecutionEngine() {
     animation: seen ? `${kf} 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards` : 'none',
   });
 
-  const flowLineStyle = (delayMs) => ({
-    height: 1,
-    width: '100%',
-    backgroundImage: `repeating-linear-gradient(to right, ${G} 0 6px, transparent 6px 12px)`,
-    backgroundSize: '12px 1px',
-    transformOrigin: 'left center',
-    transform: 'scaleX(0)',
-    opacity: 0.55,
-    animation: seen
-      ? `pw-flow-draw 900ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards, pw-flow-dash 6s linear ${delayMs + 900}ms infinite`
-      : 'none',
-  });
+  const flowLineStyle = (delayMs) => {
+    // SVG carat tile, 28x10. Gold chevron pointing right. Tiled horizontally
+    // and animated leftward via background-position so the carats appear to
+    // flow left → right. The tile width (28px) matches the step distance,
+    // giving a seamless conveyor.
+    const carat = encodeURIComponent(
+      `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='10' viewBox='0 0 28 10'>` +
+      `<path d='M2 1.5 L7 5 L2 8.5' fill='none' stroke='${G}' stroke-opacity='0.95' ` +
+      `stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/>` +
+      `</svg>`
+    );
+    return {
+      height: 10,
+      width: '100%',
+      backgroundImage: `url("data:image/svg+xml,${carat}")`,
+      backgroundRepeat: 'repeat-x',
+      backgroundSize: '28px 10px',
+      backgroundPosition: '0 center',
+      transformOrigin: 'left center',
+      transform: 'scaleX(0)',
+      opacity: 0.85,
+      // Two animations: a one-time horizontal "draw" reveal that sets the
+      // rail into place, then a continuous step animation that moves the
+      // carats left → right at a slow, considered pace.
+      animation: seen
+        ? `pw-flow-draw 900ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards, ` +
+          `pw-flow-step 1.6s steps(7, end) ${delayMs + 900}ms infinite`
+        : 'none',
+    };
+  };
 
   return (
-    <section ref={ref} className="pw-engine" style={{ background: '#ffffff', padding: '110px 24px 100px' }}>
+    <section ref={ref} className="pw-engine" style={{ background: '#ffffff', padding: '80px 24px 72px' }}>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
 
       <div style={{ maxWidth: 1180, margin: '0 auto' }}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 28, ...willReveal(T_HEADER) }}>
+        <div style={{ textAlign: 'center', marginBottom: 20, ...willReveal(T_HEADER) }}>
           <Eyebrow label="How Execution Capability Creates Value" />
           <h2 style={{
             fontSize: 'clamp(28px, 3.4vw, 42px)', fontWeight: 800, lineHeight: 1.12,
-            color: NAVY, fontFamily: 'inherit', margin: '0 0 24px',
+            color: NAVY, fontFamily: 'inherit', margin: '0 0 20px',
             textWrap: 'pretty',
           }}>
             Pressure Becomes Positive Results When Performance is Rooted in the Fundamentals.
           </h2>
           <p style={{
-            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
+            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
             color: TEXT, fontFamily: 'inherit',
-            maxWidth: 760, margin: '0 auto', textAlign: 'left',
+            maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
             {typo("Every operation faces conditions it can\u2019t control. Market pressure. Workforce turnover. Equipment failures. Demand swings. The question isn\u2019t whether those pressures show up. They always do. The question is whether the operation has the architecture to absorb them and still produce.")}
@@ -1523,38 +1538,44 @@ function SectionExecutionEngine() {
 
         {/* DIAGRAM — three columns + flow rails */}
         <div style={{
-          marginTop: 64,
+          marginTop: 40,
           display: 'grid',
           gridTemplateColumns: '1fr 1.18fr 1fr',
           columnGap: 32,
           alignItems: 'stretch',
           position: 'relative',
         }}>
-          {/* Animated flow rails — absolutely positioned across the whole diagram */}
+          {/* Animated flow rails — gold carats stepping left→right. Positioned
+              behind the columns; the center column sits above them in z-order
+              so the carats appear to enter the engine from the left and exit
+              toward the right column. */}
           <div aria-hidden="true" style={{
             position: 'absolute', top: '50%', left: 0, right: 0,
             transform: 'translateY(-50%)',
-            display: 'flex', flexDirection: 'column', gap: 12,
+            display: 'flex', flexDirection: 'column', gap: 18,
             pointerEvents: 'none', zIndex: 0,
           }}>
             <div style={flowLineStyle(T_FLOW)} />
-            <div style={flowLineStyle(T_FLOW + 110)} />
-            <div style={flowLineStyle(T_FLOW + 220)} />
+            <div style={flowLineStyle(T_FLOW + 130)} />
+            <div style={flowLineStyle(T_FLOW + 260)} />
           </div>
 
-          {/* LEFT COLUMN — Varying Forces */}
+          {/* LEFT COLUMN — Varying Forces. Typography matches the right
+              column so left → engine → right reads as one continuous flow,
+              not three different categories. No icons here: chevrons next
+              to text read as expandable UI affordances, which is the wrong
+              signal. The forward-motion is carried by the animated carat
+              rails passing behind the columns. */}
           <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
             <DiagramColHead label="Varying Forces" align="left" />
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {VARYING_FORCES.map((item, i) => (
                 <li key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  fontSize: 14.5, fontWeight: 400, color: TEXT, fontFamily: 'inherit',
-                  padding: '11px 0', borderBottom: '1px solid #e8e8e4',
+                  fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
+                  padding: '10px 0', borderBottom: '1px solid #e8e8e4',
                   ...willReveal(T_LEFT0 + i * T_LEFTGAP, 'pw-enter-left'),
                 }}>
-                  <ForceIcon color={AMBER} />
-                  <span>{item}</span>
+                  {item}
                 </li>
               ))}
             </ul>
@@ -1624,32 +1645,35 @@ function SectionExecutionEngine() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN — Consistent Results */}
+          {/* RIGHT COLUMN — Consistent Results. Typography matches the left
+              column. No icons (same reasoning as left). The accent line
+              above the header is gold to mark "this is the output side." */}
           <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
             <DiagramColHead label="Consistent Results" align="left" accent />
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {CONSISTENT_RESULTS.map((item, i) => (
                 <li key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
                   fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
-                  padding: '11px 0', borderBottom: '1px solid #e8e8e4',
+                  padding: '10px 0', borderBottom: '1px solid #e8e8e4',
                   ...willReveal(T_RIGHT0 + i * T_RIGHTGAP, 'pw-enter-right'),
                 }}>
-                  <ResultIcon color={G_DIM} />
-                  <span>{item}</span>
+                  {item}
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Closing line */}
-        <div style={{ textAlign: 'center', marginTop: 64, ...willReveal(T_CLOSE) }}>
-          <div style={{ height: 1, width: 72, background: G, margin: '0 auto 24px' }} />
+        {/* Closing subhead — section-anchor declaration. Treated as display
+            type (not body), since it's the thesis statement closing the
+            diagram. Same gold rule used elsewhere on the page as the
+            "anchor" device above section closers. */}
+        <div style={{ textAlign: 'center', marginTop: 56, ...willReveal(T_CLOSE) }}>
+          <div style={{ height: 1, width: 72, background: G, margin: '0 auto 22px' }} />
           <p style={{
-            fontSize: 'clamp(18px, 1.6vw, 22px)', fontWeight: 400, lineHeight: 1.45,
-            color: NAVY, fontFamily: 'inherit', margin: '0 auto', maxWidth: 720,
-            letterSpacing: '-0.005em', textWrap: 'pretty',
+            fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 700, lineHeight: 1.25,
+            color: NAVY, fontFamily: 'inherit', margin: '0 auto', maxWidth: 760,
+            letterSpacing: '-0.012em', textWrap: 'balance',
           }}>
             {typo("When the fundamentals are strong, the operation absorbs whatever comes at it and still produces.")}
           </p>
@@ -1672,24 +1696,6 @@ function DiagramColHead({ label, align = 'left', accent = false }) {
         fontWeight: 600, fontFamily: 'inherit',
       }}>{label}</div>
     </div>
-  );
-}
-
-function ForceIcon({ color }) {
-  // Right-pointing chevron in muted amber — implies "force arriving from the left"
-  return (
-    <svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true" style={{ flexShrink: 0 }}>
-      <path d="M2 1.5 L7 5.5 L2 9.5" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ResultIcon({ color }) {
-  // Up-and-right diagonal arrow in gold — implies "output leaving"
-  return (
-    <svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true" style={{ flexShrink: 0 }}>
-      <path d="M2 9 L9 2 M4.5 2 L9 2 L9 6.5" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 
