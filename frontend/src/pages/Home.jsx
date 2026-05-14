@@ -754,7 +754,7 @@ function Hero() {
           fontFamily: 'inherit',
           marginBottom: 24,
         }}>
-          Manufacturing Performance Consulting
+          Operations Performance Consulting
         </div>
 
         {/* H1 */}
@@ -768,7 +768,7 @@ function Hero() {
           margin: '0 0 28px',
           textWrap: 'pretty',
         }}>
-          Turning Manufacturing Strategy into Measurable Results
+          Strong Operations Don&rsquo;t Happen. They Get Built on Strong Roots.
         </h1>
 
         {/* Subhead */}
@@ -782,7 +782,7 @@ function Hero() {
           margin: '0 0 44px',
           textWrap: 'pretty',
         }}>
-          POWERS closes the gap between executive intent and shop floor performance. We build the systems, processes, and leadership behaviors that make improvement stick, no matter the conditions.
+          POWERS builds execution capability. The discipline, leadership, and accountability that make performance durable regardless of conditions. With your people, on the floor, where value gets created.
         </p>
 
         {/* CTAs */}
