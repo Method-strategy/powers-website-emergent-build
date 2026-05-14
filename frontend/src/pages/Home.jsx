@@ -6,6 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { typo } from '../lib/typo';
+import PowersMetrics from '../components/PowersMetrics';
 
 /* ── Tokens ── */
 const C = {
@@ -2579,6 +2580,7 @@ function App() {
       <Header />
       <Hero />
       <SectionTheMoment />
+      <PowersMetrics />
       <SectionExpertiseAreas />
       <SectionExecutionEngine />
       <SectionHowWeWork />
