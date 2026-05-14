@@ -289,7 +289,7 @@ export default function SiteHeader({ fixed = true }) {
           <Anchor href="index.html" data-testid="header-logo" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
             <img src="/uploads/powers-logo-refined-2026.png" alt="POWERS" style={{ height: 57, width: 'auto', display: 'block' }} />
           </Anchor>
-          <span style={{ fontSize: 12, fontWeight: 300, fontStyle: 'italic', letterSpacing: '0.01em', color: NC.navy400, lineHeight: 1, whiteSpace: 'nowrap', fontFamily: FONT }} className="nav-tagline">
+          <span style={{ fontSize: 12, fontWeight: 400, fontStyle: 'italic', letterSpacing: '0.01em', color: NC.navy400, lineHeight: 1, whiteSpace: 'nowrap', fontFamily: FONT }} className="nav-tagline">
             Strong Foundation. Strong Performance.
           </span>
         </div>

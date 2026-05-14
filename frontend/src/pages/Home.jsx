@@ -529,7 +529,7 @@ function Header() {
           </a>
           <span className="tagline-text desktop-only" style={{
             fontSize: 12,
-            fontWeight: 300,
+            fontWeight: 400,
             fontStyle: 'italic',
             letterSpacing: '0.01em',
             color: C.navy400,
@@ -782,7 +782,7 @@ function Hero() {
           margin: '0 0 44px',
           textWrap: 'pretty',
         }}>
-          POWERS builds execution capability. The discipline, leadership, and accountability that make performance durable regardless of conditions. With your people, on the floor, where value gets created.
+          POWERS builds execution capability. The discipline, leadership, and accountability that make performance durable regardless of conditions. With{'\u00A0'}your people, on the floor, where value gets created.
         </p>
 
         {/* CTAs */}
