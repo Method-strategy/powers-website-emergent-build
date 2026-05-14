@@ -2333,13 +2333,15 @@ function FooterCTA() {
     <section style={{ background: '#0d2442', padding: '100px 24px' }}>
       <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
         <h2 style={{
-          fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
-          color: '#ffffff', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
-        }}>Ready to Make Performance Stick?</h2>
+          fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.12,
+          color: '#ffffff', fontFamily: 'inherit', margin: 0,
+          letterSpacing: '-0.012em', textWrap: 'pretty',
+        }}>{typo("Build Execution Capability that Lasts.")}</h2>
         <p style={{
           fontSize: 18, fontWeight: 300, lineHeight: 1.6,
           color: 'rgba(255,255,255,0.70)', fontFamily: 'inherit', margin: 0,
-        }}>Let's talk about what's possible inside your operation.</p>
+          textWrap: 'pretty',
+        }}>{typo("Let\u2019s talk about what\u2019s possible inside your operation.")}</p>
         <a href="contact.html"
           onMouseEnter={() => setH(true)}
           onMouseLeave={() => setH(false)}
