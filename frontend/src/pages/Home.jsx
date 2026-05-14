@@ -22,6 +22,47 @@ const C = {
   gray400: '#888884',
 };
 
+/* ── HOMEPAGE SECTION TOKENS ─────────────────────────────────────────
+ * Single source of truth for the homepage's vertical rhythm. Sections
+ * read top→bottom as alternating tonal bands so the page has a real
+ * cadence instead of a row-by-row feel.
+ *
+ * Surfaces (in order of how often they appear):
+ *   bgWhite   — neutral content surface
+ *   bgLight   — warm off-white, sits between content blocks
+ *   bgNavy    — content highlight (Results section)
+ *   bgDeep    — bookend surface (Hero, FooterCTA, Footer)
+ *
+ * Vertical rhythm:
+ *   sectionPadY   — top + bottom on every section
+ *   sectionPadX   — left + right on every section
+ *   maxWide       — content container width on every section
+ *   gapHeaderToBody — distance from section header → first content block
+ *
+ * Type:
+ *   h2Size   — every section H2 uses this exact clamp
+ *   h2Weight, h2LH, h2Tracking — every section H2's display treatment
+ *   ledeSize, ledeLH, ledeWeight — every section's intro body paragraph
+ * ────────────────────────────────────────────────────────────────── */
+const S = {
+  bgWhite: '#ffffff',
+  bgLight: '#f7f6f1',
+  bgNavy:  '#183a61',
+  bgDeep:  '#0d2442',
+  sectionPadY: 'clamp(96px, 9vw, 128px)',
+  sectionPadX: 'clamp(24px, 4vw, 48px)',
+  maxWide: 1240,
+  maxRead: 760,
+  gapHeaderToBody: 64,
+  h2Size: 'clamp(28px, 3.4vw, 42px)',
+  h2Weight: 800,
+  h2LH: 1.12,
+  h2Tracking: '-0.012em',
+  ledeSize: 17,
+  ledeLH: 1.65,
+  ledeWeight: 300,
+};
+
 /* ── MEGA MENU — RESULTS ── */
 function MegaMenuResults({ visible }) {
   return (
@@ -686,16 +727,6 @@ function Header() {
 
 /* ── HERO ── */
 function Hero() {
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-
   return (
     <section style={{
       position: 'relative',
@@ -706,31 +737,6 @@ function Hero() {
       background: C.navy900,
       overflow: 'hidden',
     }}>
-
-      {/* Video */}
-      {!isMobile && (
-        <video
-          autoPlay muted loop playsInline
-          onCanPlayThrough={() => setVideoLoaded(true)}
-          style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: 'cover',
-            opacity: videoLoaded ? 1 : 0,
-            transition: 'opacity 1000ms ease',
-            zIndex: 0,
-          }}
-        >
-          <source src="https://www.thepowerscompany.com/wp-content/uploads/2025/10/POWERS-Banner-Video-2026.mp4" type="video/mp4" />
-        </video>
-      )}
-
-      {/* Overlay: navy at 60% */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: 'rgba(24,58,97,0.60)',
-        zIndex: 1,
-      }} />
 
       {/* Content */}
       <div style={{
@@ -1300,13 +1306,13 @@ function Eyebrow({ label, light }) {
 /* ── SECTION 2 — WHY WE'RE DIFFERENT ── */
 function SectionTheMoment() {
   return (
-    <section style={{ background: '#183a61', width: '100%', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
+    <section style={{ background: S.bgWhite, width: '100%', padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+      <div style={{ maxWidth: S.maxRead, margin: '0 auto', textAlign: 'center' }}>
         <Eyebrow label={"Why We\u2019re Different"} />
         <h2 style={{
-          fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
-          color: '#ffffff', fontFamily: 'inherit', margin: '0 0 36px',
-          textWrap: 'pretty',
+          fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+          color: C.navy, fontFamily: 'inherit', margin: '16px 0 36px',
+          letterSpacing: S.h2Tracking, textWrap: 'pretty',
         }}>
           The Fundamentals That Strong Performance is Actually Built on.
         </h2>
@@ -1321,15 +1327,15 @@ function SectionTheMoment() {
           maxWidth: 720, margin: '0 auto 28px', textAlign: 'left',
         }}>
           <p style={{
-            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-            color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
+            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
             margin: '0 0 18px', textWrap: 'pretty',
           }}>
             {typo("Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment is when the right capability gets built into the operation. The kind of capability that doesn\u2019t show up on the org chart or in the strategy. It\u2019s underneath. Load-bearing. The roots of execution that hold strong performance in place.")}
           </p>
           <p style={{
-            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-            color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
+            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
             margin: 0, textWrap: 'pretty',
           }}>
             {typo("When that root system is in, the operation changes. You can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That\u2019s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.")}
@@ -1339,8 +1345,8 @@ function SectionTheMoment() {
         {/* Centered closing declaration — different register from the
             narrative above, intentionally returns to center alignment. */}
         <p style={{
-          fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-          color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
+          fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+          color: C.body, fontFamily: 'inherit',
           margin: '0 auto', maxWidth: 720,
           textWrap: 'pretty',
         }}>
@@ -1562,24 +1568,24 @@ function SectionExecutionEngine() {
   );
 
   return (
-    <section ref={ref} className="pw-engine" style={{ background: '#ffffff', padding: '80px 24px 72px' }}>
+    <section ref={ref} className="pw-engine" style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
 
-      <div style={{ maxWidth: 1180, margin: '0 auto' }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 20, ...willReveal(T_HEADER) }}>
+        <div style={{ textAlign: 'center', marginBottom: 40, ...willReveal(T_HEADER) }}>
           <Eyebrow label="How Execution Capability Creates Value" />
           <h2 style={{
-            fontSize: 'clamp(28px, 3.4vw, 42px)', fontWeight: 800, lineHeight: 1.12,
-            color: NAVY, fontFamily: 'inherit', margin: '0 0 20px',
-            textWrap: 'pretty',
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             Pressure Becomes Positive Results When Performance is Rooted in the Fundamentals.
           </h2>
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
-            color: TEXT, fontFamily: 'inherit',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
@@ -1854,20 +1860,20 @@ function LearnMoreLink({ href }) {
 
 function SectionExpertiseAreas() {
   return (
-    <section style={{ background: '#f5f5f3', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+    <section style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="What We Build" />
           <h2 style={{
-            fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
-            color: '#183a61', fontFamily: 'inherit', margin: '0 0 28px',
-            textWrap: 'pretty',
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>The Five Fundamentals We Instill to Build Execution Capability.</h2>
           {/* Left-aligned intro column to keep long-form body readable;
               centered within the row to preserve the section's symmetry. */}
           <p style={{
-            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-            color: '#3a3a38', fontFamily: 'inherit',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
@@ -1878,7 +1884,7 @@ function SectionExpertiseAreas() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: 1,
-          background: '#e8e8e4',
+          background: C.gray100,
         }}>
           {EXPERTISE_CARDS.map((card, i) => (
             <ExpertiseCard key={i} {...card} />
@@ -1899,44 +1905,46 @@ function SectionExpertiseAreas() {
  * ──────────────────────────────────────────────────────────────────── */
 function SectionHowWeWork() {
   return (
-    <section style={{ background: '#ffffff' }}>
+    <section style={{ background: S.bgLight, padding: `${S.sectionPadY} 0` }}>
       <div style={{
-        maxWidth: 1280, margin: '0 auto',
+        maxWidth: S.maxWide, margin: '0 auto',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        minHeight: 560,
+        minHeight: 520,
+        alignItems: 'stretch',
+        gap: 0,
       }}>
         {/* Left: copy */}
         <div style={{
-          padding: 'clamp(48px, 6vw, 96px) clamp(24px, 4vw, 64px)',
+          padding: `0 clamp(24px, 4vw, 56px) 0 ${S.sectionPadX}`,
           display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22,
         }}>
           <Eyebrow label="How We Work" />
           <h2 style={{
-            fontSize: 'clamp(28px, 3.2vw, 42px)', fontWeight: 800, lineHeight: 1.12,
-            color: '#183a61', fontFamily: 'inherit', margin: 0,
-            letterSpacing: '-0.012em', textWrap: 'pretty',
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: 'inherit', margin: 0,
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             We Work Where Value Gets Won or Lost.
           </h2>
 
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
-            color: '#3a3a38', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
             {typo("Most consulting firms diagnose, recommend, and leave. They\u2019re out the door at 3pm and don\u2019t work Fridays. The slide decks are sharp. The results never last.")}
           </p>
 
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
-            color: '#3a3a38', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
             {typo("POWERS works differently. We\u2019re on the floor, in the shifts, inside the systems and understanding the behaviors where performance actually breaks down. We build discipline directly into your supervisors, your standards, and your daily operating routines. If the problem is on third-shift maintenance, we\u2019re there on third shift. If the decision gets made at 5\u00a0a.m. before the line starts, we\u2019re there at 5\u00a0a.m.")}
           </p>
 
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
-            color: '#3a3a38', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
             {typo("That\u2019s how the ability to execute under any circumstances gets built. Not described, not recommended, built from the roots up. And it\u2019s why the gains stay durable when we\u2019re gone.")}
           </p>
@@ -1946,14 +1954,14 @@ function SectionHowWeWork() {
               visual signature. */}
           <div style={{ marginTop: 4 }}>
             <div style={{
-              background: '#183a61', borderRadius: 14,
+              background: C.navy, borderRadius: 14,
               padding: '22px 26px',
               display: 'inline-block',
               boxShadow: `0 24px 60px -32px rgba(13,36,66,0.45)`,
             }}>
               <span style={{
                 fontSize: 'clamp(20px, 2vw, 24px)', fontWeight: 700, fontStyle: 'italic',
-                color: '#ffffff', fontFamily: 'inherit', lineHeight: 1.3,
+                color: C.white, fontFamily: 'inherit', lineHeight: 1.3,
                 letterSpacing: '-0.008em',
               }}>
                 {typo("\u201cIf you\u2019re working, we\u2019re working.\u201d")}
@@ -1962,9 +1970,9 @@ function SectionHowWeWork() {
           </div>
         </div>
 
-        {/* Right: image — flush bleed to right edge */}
+        {/* Right: image — flush bleed to right edge of the container */}
         <div style={{
-          background: '#0d2442',
+          background: C.navy900,
           minHeight: 400,
           display: 'flex', alignItems: 'stretch',
           position: 'relative', overflow: 'hidden',
@@ -2061,22 +2069,22 @@ function IndustryTile({ label, slug }) {
 
 function SectionWhereWeWork() {
   return (
-    <section style={{ background: '#f5f4ef', padding: '96px 24px 96px' }}>
-      <div style={{ maxWidth: 1180, margin: '0 auto' }}>
+    <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="Where We Work" />
           <h2 style={{
-            fontSize: 'clamp(28px, 3.4vw, 42px)', fontWeight: 800, lineHeight: 1.12,
-            color: '#183a61', fontFamily: 'inherit', margin: '0 0 22px',
-            letterSpacing: '-0.012em', textWrap: 'pretty',
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             Wherever the Work is Physical, Repeatable, and Measured.
           </h2>
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
-            color: '#3a3a38', fontFamily: 'inherit',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
@@ -2088,13 +2096,13 @@ function SectionWhereWeWork() {
         <div style={{ marginBottom: 72 }}>
           <h3 style={{
             fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
-            color: '#183a61', fontFamily: 'inherit',
-            margin: '0 0 18px', letterSpacing: '-0.012em',
+            color: C.navy, fontFamily: 'inherit',
+            margin: '0 0 18px', letterSpacing: S.h2Tracking,
             textAlign: 'left',
           }}>Across the Operation</h3>
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
-            color: '#3a3a38', fontFamily: 'inherit', margin: 0,
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0,
             maxWidth: 880, textWrap: 'pretty',
           }}>
             {typo("Production and operations. Maintenance and reliability. Supply chain and procurement. Warehousing and logistics. Quality and safety. Working capital and financial flow. Wherever the gap between intent and output is showing up, that\u2019s where POWERS works.")}
@@ -2105,8 +2113,8 @@ function SectionWhereWeWork() {
         <div>
           <h3 style={{
             fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
-            color: '#183a61', fontFamily: 'inherit',
-            margin: '0 0 22px', letterSpacing: '-0.012em',
+            color: C.navy, fontFamily: 'inherit',
+            margin: '0 0 22px', letterSpacing: S.h2Tracking,
             textAlign: 'left',
           }}>Across Industries</h3>
 
@@ -2120,22 +2128,25 @@ function SectionWhereWeWork() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
             gap: 1,
-            background: '#e2e2dc',
-            border: '1px solid #e2e2dc',
+            background: C.gray100,
+            border: `1px solid ${C.gray100}`,
           }}>
             {INDUSTRY_TILES.map((t) => (
               <IndustryTile key={t.slug} {...t} />
             ))}
           </div>
 
-          {/* Closing line beneath the grid */}
+          {/* Closing line — single thesis statement closing the section.
+              Treated as a display pull quote (not body) so it actually
+              announces itself rather than getting lost beneath the grid. */}
           <p style={{
-            marginTop: 40,
-            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
-            color: '#3a3a38', fontFamily: 'inherit',
-            maxWidth: 820, textWrap: 'pretty',
+            marginTop: 56,
+            fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
+            color: C.navy, fontFamily: 'inherit',
+            maxWidth: 980, textWrap: 'balance',
+            letterSpacing: S.h2Tracking,
           }}>
-            {typo("Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever pressure the quarter brings.")}
+            {typo("Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever the quarter brings.")}
           </p>
         </div>
       </div>
@@ -2200,19 +2211,20 @@ function CaseStudyCard({ industry, result, summary }) {
 function SectionResultsEntryPoint() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: '#183a61', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+    <section style={{ background: S.bgNavy, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="Proven Results" />
           <h2 style={{
-            fontSize: 'clamp(24px, 2.8vw, 36px)', fontWeight: 800, lineHeight: 1.15,
-            color: '#ffffff', fontFamily: 'inherit', margin: 0,
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.white, fontFamily: 'inherit', margin: '16px 0 0',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>The Work Speaks for Itself.</h2>
         </div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: 1, background: '#e8e8e4', marginBottom: 56,
+          gap: 1, background: C.gray100, marginBottom: 56,
         }}>
           {CASE_STUDIES.map((cs, i) => <CaseStudyCard key={i} {...cs} />)}
         </div>
@@ -2222,7 +2234,7 @@ function SectionResultsEntryPoint() {
             onMouseLeave={() => setH(false)}
             style={{
               fontSize: 16, fontWeight: 600,
-              color: h ? '#c9963e' : '#eabb71',
+              color: h ? C.gold600 : C.gold,
               textDecoration: 'none', fontFamily: 'inherit',
               transition: 'color 150ms ease',
             }}>
@@ -2292,13 +2304,14 @@ function InsightCard({ category, headline, summary }) {
 function SectionInsightsEntryPoint() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: '#f5f5f3', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+    <section style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="Insights" />
           <h2 style={{
-            fontSize: 'clamp(24px, 2.8vw, 36px)', fontWeight: 800, lineHeight: 1.15,
-            color: '#183a61', fontFamily: 'inherit', margin: 0,
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>The Ideas Behind the Work.</h2>
         </div>
         <div style={{
@@ -2314,7 +2327,7 @@ function SectionInsightsEntryPoint() {
             onMouseLeave={() => setH(false)}
             style={{
               fontSize: 16, fontWeight: 600,
-              color: h ? '#4a6a8a' : '#183a61',
+              color: h ? C.navy400 : C.navy,
               textDecoration: 'none', fontFamily: 'inherit',
               transition: 'color 150ms ease',
             }}>
@@ -2330,12 +2343,12 @@ function SectionInsightsEntryPoint() {
 function FooterCTA() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: '#0d2442', padding: '100px 24px' }}>
+    <section style={{ background: S.bgDeep, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
         <h2 style={{
-          fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.12,
-          color: '#ffffff', fontFamily: 'inherit', margin: 0,
-          letterSpacing: '-0.012em', textWrap: 'pretty',
+          fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+          color: C.white, fontFamily: 'inherit', margin: 0,
+          letterSpacing: S.h2Tracking, textWrap: 'pretty',
         }}>{typo("Build Execution Capability that Lasts.")}</h2>
         <p style={{
           fontSize: 18, fontWeight: 300, lineHeight: 1.6,
