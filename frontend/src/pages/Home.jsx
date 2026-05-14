@@ -4,6 +4,7 @@
    Visual edits should be made in /tmp/powers-website/powers-website-evolution/index.html
    first, then re-generate via scripts/convert_homepage.py. */
 import React, { useState, useRef, useEffect } from 'react';
+import { typo } from '../lib/typo';
 
 /* ── Tokens ── */
 const C = {
@@ -1323,14 +1324,14 @@ function SectionTheMoment() {
             color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
             margin: '0 0 18px', textWrap: 'pretty',
           }}>
-            Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment is when the right capability gets built into the operation. The kind of capability that doesn{"\u2019"}t show up on the org chart or in the strategy. It{"\u2019"}s underneath. Load-bearing. The roots of execution that hold strong performance in{"\u00A0"}place.
+            {typo("Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment is when the right capability gets built into the operation. The kind of capability that doesn\u2019t show up on the org chart or in the strategy. It\u2019s underneath. Load-bearing. The roots of execution that hold strong performance in place.")}
           </p>
           <p style={{
             fontSize: 18, fontWeight: 300, lineHeight: 1.65,
             color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
             margin: 0, textWrap: 'pretty',
           }}>
-            When that root system is in, the operation changes. You can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That{"\u2019"}s the sound of an operation producing what it was built to produce. At rate. At margin. At{"\u00A0"}scale.
+            {typo("When that root system is in, the operation changes. You can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That\u2019s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.")}
           </p>
         </div>
 
@@ -1342,7 +1343,7 @@ function SectionTheMoment() {
           margin: '0 auto', maxWidth: 720,
           textWrap: 'pretty',
         }}>
-          POWERS builds those roots with your people, on the floor, in the shifts, and inside the routines that build the execution capability that lasts long after we{"\u2019"}re{"\u00A0"}gone.
+          {typo("POWERS builds those roots with your people, on the floor, in the shifts, and inside the routines that build the execution capability that lasts long after we\u2019re gone.")}
         </p>
       </div>
     </section>
