@@ -1523,14 +1523,15 @@ function SectionExecutionEngine() {
     return `url("data:image/svg+xml,${svg}")`;
   };
 
-  // Left gutter: 4 chaotic arrows with pseudo-random vertical positions,
-  // durations, and per-arrow staggered start delays. Three keyframe variants
-  // give slightly different opacity profiles so the pattern doesn't repeat.
+  // Left gutter: 4 chaotic arrows — faster baseline + tighter randomized
+  // start delays so the eye reads "input is unpredictable AND coming at
+  // you quickly." Faster duration on the left vs right reinforces the
+  // chaos/pressure side of the diagram.
   const LEFT_CARATS = [
-    { top: '14%', delay: 0,    duration: 4.6, kf: 'pw-carat-drift-1' },
-    { top: '38%', delay: 1.8,  duration: 5.9, kf: 'pw-carat-drift-2' },
-    { top: '62%', delay: 0.7,  duration: 5.2, kf: 'pw-carat-drift-3' },
-    { top: '84%', delay: 3.2,  duration: 6.4, kf: 'pw-carat-drift-1' },
+    { top: '14%', delay: 0,    duration: 2.4, kf: 'pw-carat-drift-1' },
+    { top: '38%', delay: 0.6,  duration: 3.1, kf: 'pw-carat-drift-2' },
+    { top: '62%', delay: 0.2,  duration: 2.7, kf: 'pw-carat-drift-3' },
+    { top: '84%', delay: 1.4,  duration: 3.4, kf: 'pw-carat-drift-1' },
   ];
 
   // Right gutter: 4 arrows, evenly distributed top-to-bottom, identical
@@ -1635,21 +1636,21 @@ function SectionExecutionEngine() {
             </ul>
           </div>
 
-          {/* CENTER COLUMN — Execution Capability (load-bearing). The navy
-              panel is the engine that converts red inputs to green outputs.
-              No footer decoration: the column is intentionally clean so the
-              "System Active" badge and definition do all the talking. */}
+          {/* CENTER COLUMN — Execution Capability (load-bearing). Rounded
+              navy panel is the engine that converts red inputs to green
+              outputs. The column title lives inside the panel in white so
+              the engine is visually one self-contained unit. */}
           <div style={{
             position: 'relative', zIndex: 2,
             display: 'flex', flexDirection: 'column',
+            paddingTop: 8,
           }}>
-            <DiagramColHead label="Execution Capability" />
             <div style={{
-              background: NAVY,
-              color: '#ffffff', padding: '32px 28px',
+              background: NAVY, borderRadius: 14,
+              color: '#ffffff', padding: '34px 30px 36px',
               display: 'flex', flexDirection: 'column', justifyContent: 'center',
               flex: 1,
-              boxShadow: `0 24px 60px -28px rgba(13,36,66,0.65), inset 0 0 0 1px rgba(234,187,113,0.18)`,
+              boxShadow: `0 28px 64px -28px rgba(13,36,66,0.55), inset 0 0 0 1px rgba(234,187,113,0.18)`,
               position: 'relative', overflow: 'hidden',
               ...willReveal(T_CENTER, 'pw-scale-in'),
             }}>
@@ -1662,20 +1663,17 @@ function SectionExecutionEngine() {
                 mixBlendMode: 'overlay',
               }} />
 
-              {/* Live indicator */}
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: G, fontWeight: 600, marginBottom: 18,
-                fontFamily: 'inherit', position: 'relative', zIndex: 1,
+              {/* Column title — same family as the section subhead, white,
+                  smaller scale so it functions as a column head not a hero
+                  treatment. */}
+              <h3 style={{
+                fontSize: 'clamp(20px, 1.9vw, 24px)', fontWeight: 700, lineHeight: 1.2,
+                color: '#ffffff', fontFamily: 'inherit',
+                margin: '0 0 16px', letterSpacing: '-0.012em',
+                position: 'relative', zIndex: 1,
               }}>
-                <span style={{
-                  width: 7, height: 7, borderRadius: '50%', background: G,
-                  animation: seen ? 'pw-pulse 2.6s ease-in-out infinite' : 'none',
-                  boxShadow: `0 0 12px ${G}`,
-                }} />
-                System Active
-              </div>
+                Execution Capability
+              </h3>
 
               <p style={{
                 fontSize: 15, fontWeight: 300, lineHeight: 1.55,
@@ -1724,21 +1722,16 @@ function SectionExecutionEngine() {
 }
 
 function DiagramColHead({ label }) {
-  // Identical treatment across all three columns: thin navy rule + small
-  // tracked navy label beneath. Makes left / center / right read as three
-  // related elements of one system, not as three different categories.
+  // Column titles use the same display family + bold weight as the section
+  // subhead, sized down so they sit one tier below the section H2. No rule
+  // above — the title alone carries the weight. (Center column has its
+  // title inside the navy panel, so this only renders on left + right.)
   return (
-    <div style={{
-      borderTop: '1px solid #183a61',
-      paddingTop: 10, marginBottom: 12,
-      textAlign: 'left',
-    }}>
-      <div style={{
-        fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
-        color: '#183a61',
-        fontWeight: 600, fontFamily: 'inherit',
-      }}>{label}</div>
-    </div>
+    <h3 style={{
+      fontSize: 'clamp(20px, 1.9vw, 24px)', fontWeight: 700, lineHeight: 1.2,
+      color: '#183a61', fontFamily: 'inherit',
+      margin: '0 0 16px', letterSpacing: '-0.012em',
+    }}>{label}</h3>
   );
 }
 
