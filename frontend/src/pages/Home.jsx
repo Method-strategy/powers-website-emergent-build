@@ -2489,7 +2489,7 @@ function Footer() {
           <div style={{
             fontSize: 13, fontWeight: 500, letterSpacing: '0.14em',
             color: '#eabb71', fontFamily: 'inherit', marginBottom: 14,
-          }}>Make Performance Stick.</div>
+          }}>Strong Foundation. Strong Performance.</div>
           <p style={{
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,
             color: 'rgba(255,255,255,0.60)', fontFamily: 'inherit', margin: 0,
