@@ -34,7 +34,7 @@ const STATS = [
     description: 'Sustained improvement long after the engagement ends',
   },
   {
-    value: 3,
+    value: 5,
     suffix: ' WKS',
     label: 'Time to Impact',
     description: 'Average time from engagement start to measurable floor-level gains',
@@ -53,26 +53,16 @@ const STATS = [
   },
 ];
 
-/* ---------- Auto-inject required font stylesheets ---------- */
-const FONT_LINKS = [
-  { id: 'pm-preconnect-g',  href: 'https://fonts.googleapis.com', rel: 'preconnect' },
-  { id: 'pm-preconnect-gs', href: 'https://fonts.gstatic.com', rel: 'preconnect', crossOrigin: 'anonymous' },
-  { id: 'pm-google-fonts', href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap' },
-];
-
-const useFontLoader = () => {
-  useEffect(() => {
-    FONT_LINKS.forEach(({ id, href, rel = 'stylesheet', crossOrigin }) => {
-      if (document.getElementById(id)) return;
-      const link = document.createElement('link');
-      link.id = id;
-      link.rel = rel;
-      link.href = href;
-      if (crossOrigin) link.crossOrigin = crossOrigin;
-      document.head.appendChild(link);
-    });
-  }, []);
-};
+/* ---------- Font injection intentionally removed ─────────────────────
+ * The original component loaded Barlow Condensed + IBM Plex Sans, but
+ * the rest of the POWERS site runs on Proxima Nova (Adobe Typekit,
+ * loaded globally in index.html). To keep typography consistent we
+ * inherit the site font everywhere in this section. The "look and
+ * feel" of the metrics block — oversized gold numerals, small tracked
+ * white labels, muted body — is preserved through weight, size, and
+ * letter-spacing rather than typeface choice.
+ * ──────────────────────────────────────────────────────────────── */
+const useFontLoader = () => {};
 
 /* ---------- Scoped CSS (injected once, idempotent) ---------- */
 const STYLE_ID = 'powers-metrics-styles';
@@ -84,14 +74,13 @@ const STYLES = `
   --pm-muted: #94a3b8;
   --pm-border: rgba(255, 255, 255, 0.07);
   --pm-gold-border: rgba(234, 187, 113, 0.2);
-  --pm-font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --pm-font-cond: 'Barlow Condensed', 'IBM Plex Sans', sans-serif;
 
   background: var(--pm-navy-surface);
-  padding: 5rem 2rem;
+  padding: 4rem 2rem;
   display: flex;
   justify-content: center;
-  font-family: var(--pm-font-sans);
+  /* Inherit Proxima Nova from the rest of the site */
+  font-family: inherit;
   box-sizing: border-box;
 }
 .pm-section *, .pm-section *::before, .pm-section *::after { box-sizing: border-box; }
@@ -107,10 +96,10 @@ const STYLES = `
 
 .pm-card {
   background: var(--pm-navy-surface);
-  padding: 2.4rem 2rem;
+  padding: 1.9rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.55s ease-out, transform 0.55s ease-out,
@@ -123,31 +112,39 @@ const STYLES = `
   border-color: var(--pm-gold-border);
 }
 
+/* Big gold numeral — Proxima Nova 800 (matches site H2 weight) at a
+   display scale. Tight tracking + line-height pulls the figure tight
+   so it still reads as a "stat" not a heading. */
 .pm-value {
-  font-family: var(--pm-font-cond);
-  font-size: clamp(2.4rem, 5vw, 3.6rem);
-  font-weight: 700;
+  font-family: inherit;
+  font-size: clamp(2.4rem, 4.6vw, 3.2rem);
+  font-weight: 800;
   color: var(--pm-gold);
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
+/* Small all-caps white label — matches the site's eyebrow rhythm
+   (12px / 600 / 0.18em tracked) so it sits in the same typographic
+   family as every other eyebrow on the page. */
 .pm-label {
-  font-family: var(--pm-font-sans);
-  font-size: 0.72rem;
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--pm-white);
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 }
 
+/* Muted descriptive line — matches site body-small treatment. */
 .pm-desc {
-  font-family: var(--pm-font-sans);
-  font-size: 0.78rem;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 300;
   color: var(--pm-muted);
   line-height: 1.55;
-  margin: 0;
-  margin-top: 0.25rem;
+  margin: 0.3rem 0 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
