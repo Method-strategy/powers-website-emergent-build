@@ -4,6 +4,7 @@
    Visual edits should be made in /tmp/powers-website/powers-website-evolution/index.html
    first, then re-generate via scripts/convert_homepage.py. */
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { typo } from '../lib/typo';
 
 /* ── Tokens ── */
@@ -1888,68 +1889,254 @@ function SectionExpertiseAreas() {
   );
 }
 
-/* ── SECTION 5 — HOW WE WORK ── */
+/* ── SECTION 5 — HOW WE WORK ──────────────────────────────────────────
+ * Two-column layout: copy on the left, image on the right. Copy carries
+ * three body paragraphs that establish POWERS' floor-level presence as
+ * the differentiator vs. traditional consulting firms. The pull quote
+ * "If you're working, we're working." sits beneath the body as a navy
+ * pull-block — same device used elsewhere on the homepage so anchoring
+ * declarations get the same visual weight.
+ * ──────────────────────────────────────────────────────────────────── */
 function SectionHowWeWork() {
   return (
     <section style={{ background: '#ffffff' }}>
       <div style={{
         maxWidth: 1280, margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
         minHeight: 560,
       }}>
         {/* Left: copy */}
         <div style={{
           padding: 'clamp(48px, 6vw, 96px) clamp(24px, 4vw, 64px)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24,
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22,
         }}>
           <Eyebrow label="How We Work" />
           <h2 style={{
-            fontSize: 'clamp(24px, 2.8vw, 36px)', fontWeight: 800, lineHeight: 1.15,
-            color: '#183a61', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
-          }}>We Work Where Performance Happens.</h2>
+            fontSize: 'clamp(28px, 3.2vw, 42px)', fontWeight: 800, lineHeight: 1.12,
+            color: '#183a61', fontFamily: 'inherit', margin: 0,
+            letterSpacing: '-0.012em', textWrap: 'pretty',
+          }}>
+            We Work Where Value Gets Won or Lost.
+          </h2>
+
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.7,
+            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
             color: '#3a3a38', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
-            POWERS consultants are on the floor, in the shifts, inside the systems where performance actually breaks down. We do not observe from the outside. We build discipline directly into your supervisors, your standards, and your daily operating routines.
+            {typo("Most consulting firms diagnose, recommend, and leave. They\u2019re out the door at 3pm and don\u2019t work Fridays. The slide decks are sharp. The results never last.")}
           </p>
-          {/* Gold rule + pull quote */}
-          <div>
-            <div style={{ height: 1, background: '#eabb71', marginBottom: 24, width: 48 }} />
+
+          <p style={{
+            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
+            color: '#3a3a38', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+          }}>
+            {typo("POWERS works differently. We\u2019re on the floor, in the shifts, inside the systems and understanding the behaviors where performance actually breaks down. We build discipline directly into your supervisors, your standards, and your daily operating routines. If the problem is on third-shift maintenance, we\u2019re there on third shift. If the decision gets made at 5\u00a0a.m. before the line starts, we\u2019re there at 5\u00a0a.m.")}
+          </p>
+
+          <p style={{
+            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
+            color: '#3a3a38', fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+          }}>
+            {typo("That\u2019s how the ability to execute under any circumstances gets built. Not described, not recommended, built from the roots up. And it\u2019s why the gains stay durable when we\u2019re gone.")}
+          </p>
+
+          {/* Pull quote — navy panel mirrors the engine treatment in the
+              diagram above, so the anchoring declaration carries the same
+              visual signature. */}
+          <div style={{ marginTop: 4 }}>
             <div style={{
-              background: '#183a61',
-              padding: '20px 24px',
+              background: '#183a61', borderRadius: 14,
+              padding: '22px 26px',
               display: 'inline-block',
+              boxShadow: `0 24px 60px -32px rgba(13,36,66,0.45)`,
             }}>
               <span style={{
-                fontSize: 22, fontWeight: 700, fontStyle: 'italic',
+                fontSize: 'clamp(20px, 2vw, 24px)', fontWeight: 700, fontStyle: 'italic',
                 color: '#ffffff', fontFamily: 'inherit', lineHeight: 1.3,
-              }}>"If you're working, we're working."</span>
+                letterSpacing: '-0.008em',
+              }}>
+                {typo("\u201cIf you\u2019re working, we\u2019re working.\u201d")}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Right: image placeholder */}
+        {/* Right: image — flush bleed to right edge */}
         <div style={{
           background: '#0d2442',
           minHeight: 400,
           display: 'flex', alignItems: 'stretch',
           position: 'relative', overflow: 'hidden',
-          padding: 0,
         }}>
           <img
             src="/uploads/POWERS Homepage Placeholder 1280 x 960.png"
             alt="POWERS consultants working on the manufacturing floor"
             style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              display: 'block',
-              minHeight: 400,
+              width: '100%', height: '100%', objectFit: 'cover',
+              objectPosition: 'center', display: 'block', minHeight: 400,
             }}
           />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── SECTION 6 — WHERE WE WORK ────────────────────────────────────────
+ * Capability presentation, not industry marketing. Two sub-sections:
+ *   1. Across the Operation — body paragraph naming the functional areas
+ *      POWERS works inside.
+ *   2. Across Industries — an 18-tile grid of industries served, sized
+ *      6-up on desktop / 3-up on tablet / 2-up on mobile.
+ *
+ * Visual language harmonizes with the Execution Capability diagram above:
+ * navy ink, white tiles with a thin border, hover lifts to a navy fill
+ * with white text. Quiet and confident — no industry iconography, no
+ * stock photography. The breadth of the list is the message.
+ *
+ * All tiles route to /industries-served until per-industry pages exist.
+ * The hash on each link is a forward-compatible anchor target for future
+ * deep-link to a specific industry section on that page.
+ * ──────────────────────────────────────────────────────────────────── */
+const INDUSTRY_TILES = [
+  { label: 'Food & Beverage',                slug: 'food-beverage' },
+  { label: 'Meat Processing',                slug: 'meat-processing' },
+  { label: 'Poultry Processing',             slug: 'poultry-processing' },
+  { label: 'Dairy',                          slug: 'dairy' },
+  { label: 'Bakery & Snack',                 slug: 'bakery-snack' },
+  { label: 'Consumer Packaged Goods',        slug: 'cpg' },
+  { label: 'Animal Nutrition',               slug: 'animal-nutrition' },
+  { label: 'Agribusiness',                   slug: 'agribusiness' },
+  { label: 'Industrial Manufacturing',       slug: 'industrial-manufacturing' },
+  { label: 'Automotive',                     slug: 'automotive' },
+  { label: 'Aerospace & Defense',            slug: 'aerospace-defense' },
+  { label: 'Pharmaceutical & Medical Devices', slug: 'pharma-medical' },
+  { label: 'Chemicals',                      slug: 'chemicals' },
+  { label: 'Oil & Gas',                      slug: 'oil-gas' },
+  { label: 'Metals & Mining',                slug: 'metals-mining' },
+  { label: 'Warehouse & Distribution',       slug: 'warehouse-distribution' },
+  { label: 'Food Service',                   slug: 'food-service' },
+  { label: 'Private Equity & M&A',           slug: 'private-equity-ma' },
+];
+
+function IndustryTile({ label, slug }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Link
+      to={`/industries-served#${slug}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: 'relative',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center',
+        padding: '28px 18px',
+        minHeight: 96,
+        background: hovered ? '#183a61' : '#ffffff',
+        color: hovered ? '#ffffff' : '#183a61',
+        border: `1px solid ${hovered ? '#183a61' : '#e2e2dc'}`,
+        textDecoration: 'none',
+        fontFamily: 'inherit',
+        fontSize: 15, fontWeight: 600, lineHeight: 1.25,
+        letterSpacing: '-0.005em',
+        transition: 'background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease',
+        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
+        textWrap: 'balance',
+      }}
+    >
+      <span>{label}</span>
+      {/* Hover-only arrow — sits in the bottom-right, signals interactivity
+          without adding clutter in resting state. */}
+      <span aria-hidden="true" style={{
+        position: 'absolute', right: 12, bottom: 10,
+        fontSize: 14, fontWeight: 500,
+        color: hovered ? '#eabb71' : 'transparent',
+        transition: 'color 180ms ease',
+        lineHeight: 1,
+      }}>→</span>
+    </Link>
+  );
+}
+
+function SectionWhereWeWork() {
+  return (
+    <section style={{ background: '#f5f4ef', padding: '96px 24px 96px' }}>
+      <div style={{ maxWidth: 1180, margin: '0 auto' }}>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+          <Eyebrow label="Where We Work" />
+          <h2 style={{
+            fontSize: 'clamp(28px, 3.4vw, 42px)', fontWeight: 800, lineHeight: 1.12,
+            color: '#183a61', fontFamily: 'inherit', margin: '0 0 22px',
+            letterSpacing: '-0.012em', textWrap: 'pretty',
+          }}>
+            Wherever the Work is Physical, Repeatable, and Measured.
+          </h2>
+          <p style={{
+            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
+            color: '#3a3a38', fontFamily: 'inherit',
+            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            textWrap: 'pretty',
+          }}>
+            {typo("Execution capability gets built wherever value gets won or lost. Across the operation, and across the industries that depend on it.")}
+          </p>
+        </div>
+
+        {/* Across the Operation */}
+        <div style={{ marginBottom: 72 }}>
+          <h3 style={{
+            fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
+            color: '#183a61', fontFamily: 'inherit',
+            margin: '0 0 18px', letterSpacing: '-0.012em',
+            textAlign: 'left',
+          }}>Across the Operation</h3>
+          <p style={{
+            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
+            color: '#3a3a38', fontFamily: 'inherit', margin: 0,
+            maxWidth: 880, textWrap: 'pretty',
+          }}>
+            {typo("Production and operations. Maintenance and reliability. Supply chain and procurement. Warehousing and logistics. Quality and safety. Working capital and financial flow. Wherever the gap between intent and output is showing up, that\u2019s where POWERS works.")}
+          </p>
+        </div>
+
+        {/* Across Industries */}
+        <div>
+          <h3 style={{
+            fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
+            color: '#183a61', fontFamily: 'inherit',
+            margin: '0 0 22px', letterSpacing: '-0.012em',
+            textAlign: 'left',
+          }}>Across Industries</h3>
+
+          {/* Tile grid:
+                desktop  ≥1024px : 6 columns
+                tablet   ≥640px  : 3 columns
+                mobile           : 2 columns
+              Implemented with auto-fit + minmax so the grid degrades
+              gracefully at every viewport without media queries. */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+            gap: 1,
+            background: '#e2e2dc',
+            border: '1px solid #e2e2dc',
+          }}>
+            {INDUSTRY_TILES.map((t) => (
+              <IndustryTile key={t.slug} {...t} />
+            ))}
+          </div>
+
+          {/* Closing line beneath the grid */}
+          <p style={{
+            marginTop: 40,
+            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
+            color: '#3a3a38', fontFamily: 'inherit',
+            maxWidth: 820, textWrap: 'pretty',
+          }}>
+            {typo("Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever pressure the quarter brings.")}
+          </p>
         </div>
       </div>
     </section>
@@ -2373,6 +2560,7 @@ function App() {
       <SectionExpertiseAreas />
       <SectionExecutionEngine />
       <SectionHowWeWork />
+      <SectionWhereWeWork />
       <SectionResultsEntryPoint />
       <SectionInsightsEntryPoint />
       <FooterCTA />
