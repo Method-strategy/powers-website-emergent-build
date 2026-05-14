@@ -1351,100 +1351,345 @@ function SectionTheMoment() {
 }
 
 /* ── NEW SECTION — THE ROOT CAUSE ── */
-function RootCauseLink() {
-  const [h, setH] = useState(false);
-  return (
-    <a
-      href="frontline-leadership.html"
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      style={{
-        display: 'inline-block',
-        marginTop: 24,
-        fontSize: 16,
-        fontWeight: 600,
-        color: h ? '#c9963e' : '#eabb71',
-        textDecoration: 'none',
-        fontFamily: 'inherit',
-        transition: 'color 150ms ease',
-      }}
-    >
-      Build the Frontline Leaders That Will Make Performance Stick →
-    </a>
-  );
+/* ── SECTION 4 — HOW EXECUTION CAPABILITY CREATES VALUE ─────────────
+ *
+ * Three-column diagram + thesis. This is the load-bearing visual of the
+ * homepage, illustrating how "Execution Capability" (the center engine)
+ * converts uncontrollable inputs (left, "Varying Forces") into reliable
+ * outputs (right, "Consistent Results").
+ *
+ * Visual intent:
+ *   - Left column = pressures arriving. Slight amber tension on each item.
+ *   - Center column = the architecture. Heavy navy panel. Carries a
+ *     small "ACTIVE" indicator with a slowly pulsing gold dot — the only
+ *     persistent motion on the page.
+ *   - Right column = outputs leaving. Lighter, gold accent on each item.
+ *   - Flow indicators: 3 dashed lines between columns that "draw" from
+ *     left to right when the section enters the viewport, then settle.
+ *
+ * Motion: an IntersectionObserver triggers a one-time stagger reveal
+ * when the section scrolls into view. Header → left items (top-down)
+ * → flow lines draw → center engine establishes → right items (top-down).
+ * Honors `prefers-reduced-motion`: when reduced motion is requested,
+ * everything renders in its final state with no animation.
+ * ──────────────────────────────────────────────────────────────────── */
+const VARYING_FORCES = [
+  'Market volatility',
+  'Tariff and trade shifts',
+  'Demand swings',
+  'Workforce turnover',
+  'Equipment breakdowns',
+  'Inexperienced supervisors',
+  'Margin compression',
+  'Schedule misses',
+];
+
+const CONSISTENT_RESULTS = [
+  'Increased throughput',
+  'Higher OEE',
+  'Reduced downtime',
+  'Improved labor productivity',
+  'Expanded margin',
+  'Recovered working capital',
+  'Stronger frontline leadership',
+  'Sustained operational performance',
+];
+
+function useReveal() {
+  const ref = useRef(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    if (typeof window === 'undefined') return;
+    // Honor reduced-motion: snap straight to revealed state, skip observer.
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { setSeen(true); return; }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setSeen(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.18, rootMargin: '0px 0px -10% 0px' }
+    );
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, seen];
 }
 
-function SectionRootCause() {
+function SectionExecutionEngine() {
+  const [ref, seen] = useReveal();
+
+  // Stagger timings (ms after seen=true)
+  const T_HEADER  = 0;
+  const T_LEFT0   = 250;
+  const T_LEFTGAP = 55;     // per-item stagger
+  const T_FLOW    = T_LEFT0 + VARYING_FORCES.length * T_LEFTGAP + 80;
+  const T_CENTER  = T_FLOW + 200;
+  const T_RIGHT0  = T_CENTER + 240;
+  const T_RIGHTGAP = 55;
+  const T_CLOSE   = T_RIGHT0 + CONSISTENT_RESULTS.length * T_RIGHTGAP + 120;
+
+  const G = '#eabb71';      // gold
+  const G_DIM = '#c9963e';  // gold dim
+  const NAVY = '#183a61';
+  const NAVY900 = '#0d2442';
+  const AMBER = '#c47a2a';  // muted-amber for "tension" indicator on inputs
+  const TEXT = '#3a3a38';
+
+  // Inline keyframes — kept here so the section is self-contained.
+  const styles = `
+    @keyframes pw-enter-left {
+      0%   { opacity: 0; transform: translateX(-12px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pw-enter-right {
+      0%   { opacity: 0; transform: translateX(12px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pw-enter-up {
+      0%   { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pw-scale-in {
+      0%   { opacity: 0; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pw-flow-draw {
+      0%   { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
+    }
+    @keyframes pw-flow-dash {
+      0%   { background-position: 0 0; }
+      100% { background-position: -24px 0; }
+    }
+    @keyframes pw-pulse {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50%      { opacity: 1;    transform: scale(1.18); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pw-engine *, .pw-engine *::before, .pw-engine *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  `;
+
+  const willReveal = (delayMs, kf = 'pw-enter-up') => ({
+    opacity: 0,
+    animation: seen ? `${kf} 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards` : 'none',
+  });
+
+  const flowLineStyle = (delayMs) => ({
+    height: 1,
+    width: '100%',
+    backgroundImage: `repeating-linear-gradient(to right, ${G} 0 6px, transparent 6px 12px)`,
+    backgroundSize: '12px 1px',
+    transformOrigin: 'left center',
+    transform: 'scaleX(0)',
+    opacity: 0.55,
+    animation: seen
+      ? `pw-flow-draw 900ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards, pw-flow-dash 6s linear ${delayMs + 900}ms infinite`
+      : 'none',
+  });
+
   return (
-    <section style={{ background: '#ffffff', width: '100%', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
-        <Eyebrow label="The Root Cause" />
-        <h2 style={{
-          fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
-          color: '#183a61', fontFamily: 'inherit', margin: '0 0 28px',
-          textWrap: 'pretty',
+    <section ref={ref} className="pw-engine" style={{ background: '#ffffff', padding: '110px 24px 100px' }}>
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
+
+      <div style={{ maxWidth: 1180, margin: '0 auto' }}>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 28, ...willReveal(T_HEADER) }}>
+          <Eyebrow label="How Execution Capability Creates Value" />
+          <h2 style={{
+            fontSize: 'clamp(28px, 3.4vw, 42px)', fontWeight: 800, lineHeight: 1.12,
+            color: NAVY, fontFamily: 'inherit', margin: '0 0 24px',
+            textWrap: 'pretty',
+          }}>
+            Pressure Becomes Positive Results When Performance is Rooted in the Fundamentals.
+          </h2>
+          <p style={{
+            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
+            color: TEXT, fontFamily: 'inherit',
+            maxWidth: 760, margin: '0 auto', textAlign: 'left',
+            textWrap: 'pretty',
+          }}>
+            {typo("Every operation faces conditions it can\u2019t control. Market pressure. Workforce turnover. Equipment failures. Demand swings. The question isn\u2019t whether those pressures show up. They always do. The question is whether the operation has the architecture to absorb them and still produce.")}
+          </p>
+        </div>
+
+        {/* DIAGRAM — three columns + flow rails */}
+        <div style={{
+          marginTop: 64,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1.18fr 1fr',
+          columnGap: 32,
+          alignItems: 'stretch',
+          position: 'relative',
         }}>
-          Most Performance Problems Start at the Front Line.
-        </h2>
-        <p style={{
-          fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-          color: '#3a3a38', fontFamily: 'inherit',
-          margin: '0 auto', maxWidth: 620,
-          textWrap: 'pretty',
-        }}>
-          Ninety-five percent of your variable costs flow through the decisions and behaviors of your frontline leaders. When those leaders do not have the right systems, skills, and daily disciplines, performance degrades the moment pressure arrives. No strategy survives a supervisor who is firefighting instead of leading. POWERS builds the Management Operating System and frontline leadership capability that close that gap permanently, not just during the engagement.
-        </p>
-        <RootCauseLink />
+          {/* Animated flow rails — absolutely positioned across the whole diagram */}
+          <div aria-hidden="true" style={{
+            position: 'absolute', top: '50%', left: 0, right: 0,
+            transform: 'translateY(-50%)',
+            display: 'flex', flexDirection: 'column', gap: 12,
+            pointerEvents: 'none', zIndex: 0,
+          }}>
+            <div style={flowLineStyle(T_FLOW)} />
+            <div style={flowLineStyle(T_FLOW + 110)} />
+            <div style={flowLineStyle(T_FLOW + 220)} />
+          </div>
+
+          {/* LEFT COLUMN — Varying Forces */}
+          <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
+            <DiagramColHead label="Varying Forces" align="left" />
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {VARYING_FORCES.map((item, i) => (
+                <li key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  fontSize: 14.5, fontWeight: 400, color: TEXT, fontFamily: 'inherit',
+                  padding: '11px 0', borderBottom: '1px solid #e8e8e4',
+                  ...willReveal(T_LEFT0 + i * T_LEFTGAP, 'pw-enter-left'),
+                }}>
+                  <ForceIcon color={AMBER} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* CENTER COLUMN — Execution Capability (load-bearing) */}
+          <div style={{
+            position: 'relative', zIndex: 2,
+            background: NAVY,
+            color: '#ffffff', padding: '40px 30px',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            boxShadow: `0 24px 60px -28px rgba(13,36,66,0.65), inset 0 0 0 1px rgba(234,187,113,0.18)`,
+            ...willReveal(T_CENTER, 'pw-scale-in'),
+          }}>
+            {/* Fine architectural grid texture in background */}
+            <div aria-hidden="true" style={{
+              position: 'absolute', inset: 0, opacity: 0.12, pointerEvents: 'none',
+              backgroundImage: `linear-gradient(${G} 1px, transparent 1px), linear-gradient(90deg, ${G} 1px, transparent 1px)`,
+              backgroundSize: '40px 40px',
+              backgroundPosition: 'center center',
+              mixBlendMode: 'overlay',
+            }} />
+            {/* Top gold rule */}
+            <div style={{ height: 2, background: G, width: 56, marginBottom: 18 }} />
+
+            {/* Live indicator */}
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+              color: G, fontWeight: 600, marginBottom: 14,
+              fontFamily: 'inherit',
+            }}>
+              <span style={{
+                width: 7, height: 7, borderRadius: '50%', background: G,
+                animation: seen ? 'pw-pulse 2.6s ease-in-out infinite' : 'none',
+                boxShadow: `0 0 12px ${G}`,
+              }} />
+              System Active
+            </div>
+
+            <h3 style={{
+              fontSize: 'clamp(22px, 2vw, 28px)', fontWeight: 800,
+              lineHeight: 1.12, letterSpacing: '-0.01em',
+              color: '#ffffff', margin: '0 0 14px',
+              fontFamily: 'inherit',
+              textWrap: 'balance',
+            }}>
+              Execution Capability
+            </h3>
+
+            <p style={{
+              fontSize: 15, fontWeight: 300, lineHeight: 1.55,
+              color: 'rgba(255,255,255,0.85)', fontFamily: 'inherit',
+              margin: 0, textWrap: 'pretty', position: 'relative', zIndex: 1,
+            }}>
+              {typo("The ability to execute at a high level regardless of conditions. The discipline, leadership, and accountability that turn variable inputs into reliable outputs.")}
+            </p>
+
+            {/* Bottom rule echo */}
+            <div style={{ height: 1, background: 'rgba(234,187,113,0.30)', marginTop: 26 }} />
+            <div style={{
+              fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
+              color: 'rgba(234,187,113,0.75)', fontWeight: 600, marginTop: 12,
+              fontFamily: 'inherit',
+            }}>
+              Discipline · Leadership · Accountability
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN — Consistent Results */}
+          <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
+            <DiagramColHead label="Consistent Results" align="left" accent />
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {CONSISTENT_RESULTS.map((item, i) => (
+                <li key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
+                  padding: '11px 0', borderBottom: '1px solid #e8e8e4',
+                  ...willReveal(T_RIGHT0 + i * T_RIGHTGAP, 'pw-enter-right'),
+                }}>
+                  <ResultIcon color={G_DIM} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Closing line */}
+        <div style={{ textAlign: 'center', marginTop: 64, ...willReveal(T_CLOSE) }}>
+          <div style={{ height: 1, width: 72, background: G, margin: '0 auto 24px' }} />
+          <p style={{
+            fontSize: 'clamp(18px, 1.6vw, 22px)', fontWeight: 400, lineHeight: 1.45,
+            color: NAVY, fontFamily: 'inherit', margin: '0 auto', maxWidth: 720,
+            letterSpacing: '-0.005em', textWrap: 'pretty',
+          }}>
+            {typo("When the fundamentals are strong, the operation absorbs whatever comes at it and still produces.")}
+          </p>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ── SECTION 3 — WHAT POWERS DOES ── */
-function DifferentLink() {
-  const [h, setH] = useState(false);
+function DiagramColHead({ label, align = 'left', accent = false }) {
   return (
-    <a
-      href="approach.html"
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      style={{
-        display: 'inline-block',
-        marginTop: 24,
-        fontSize: 16, fontWeight: 600,
-        color: h ? '#c9963e' : '#eabb71',
-        textDecoration: 'none', fontFamily: 'inherit',
-        transition: 'color 150ms ease',
-      }}
-    >
-      See What That Looks Like in Practice →
-    </a>
+    <div style={{
+      borderTop: `2px solid ${accent ? '#eabb71' : '#183a61'}`,
+      paddingTop: 10, marginBottom: 12,
+      textAlign: align,
+    }}>
+      <div style={{
+        fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+        color: accent ? '#c9963e' : '#183a61',
+        fontWeight: 600, fontFamily: 'inherit',
+      }}>{label}</div>
+    </div>
   );
 }
 
-function SectionWhatPowersDoes() {
+function ForceIcon({ color }) {
+  // Right-pointing chevron in muted amber — implies "force arriving from the left"
   return (
-    <section style={{ background: '#183a61', width: '100%', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
-        <Eyebrow label="How We're Different" />
-        <h2 style={{
-          fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
-          color: '#ffffff', fontFamily: 'inherit', margin: '0 0 28px',
-          textWrap: 'pretty',
-        }}>
-          We Close the Gap Between Executive Intent and Shop Floor Performance
-        </h2>
-        <p style={{
-          fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-          color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
-          margin: '0 auto 32px', maxWidth: 620,
-          textWrap: 'pretty',
-        }}>
-          Most consulting firms hand off a playbook and leave. POWERS works differently. We embed inside your operation, with your people, on your processes, during your shifts, building the systems, leadership behaviors, and daily disciplines that make improvement stick long after we're gone.
-        </p>
-        <DifferentLink />
-      </div>
-    </section>
+    <svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d="M2 1.5 L7 5.5 L2 9.5" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ResultIcon({ color }) {
+  // Up-and-right diagonal arrow in gold — implies "output leaving"
+  return (
+    <svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d="M2 9 L9 2 M4.5 2 L9 2 L9 6.5" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
@@ -2052,8 +2297,7 @@ function App() {
       <Hero />
       <SectionTheMoment />
       <SectionExpertiseAreas />
-      <SectionRootCause />
-      <SectionWhatPowersDoes />
+      <SectionExecutionEngine />
       <SectionHowWeWork />
       <SectionResultsEntryPoint />
       <SectionInsightsEntryPoint />
