@@ -1303,23 +1303,41 @@ function SectionTheMoment() {
         <Eyebrow label={"Why We\u2019re Different"} />
         <h2 style={{
           fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
-          color: '#ffffff', fontFamily: 'inherit', margin: '0 0 28px',
+          color: '#ffffff', fontFamily: 'inherit', margin: '0 0 36px',
           textWrap: 'pretty',
         }}>
           The Fundamentals That Strong Performance is Actually Built on.
         </h2>
-        <p style={{
-          fontSize: 18, fontWeight: 300, lineHeight: 1.65,
-          color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
-          margin: '0 auto 20px', maxWidth: 680,
-          textWrap: 'pretty',
+
+        {/* Left-aligned narrative column, centered on the row.
+            Long-form body copy gets an anchored left edge so the eye can
+            settle into the rhythm; the centered eyebrow + H2 above and
+            centered closer below frame it. */}
+        <div style={{
+          maxWidth: 620, margin: '0 auto 28px', textAlign: 'left',
         }}>
-          Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment is when the right capability gets built into the operation. The kind of capability that doesn{"\u2019"}t show up on the org chart or in the strategy. It{"\u2019"}s underneath. Load-bearing. The roots of execution that hold strong performance in place. When that root system is in, the operation changes. You can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That{"\u2019"}s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.
-        </p>
+          <p style={{
+            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
+            color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
+            margin: '0 0 18px', textWrap: 'pretty',
+          }}>
+            Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment is when the right capability gets built into the operation. The kind of capability that doesn{"\u2019"}t show up on the org chart or in the strategy. It{"\u2019"}s underneath. Load-bearing. The roots of execution that hold strong performance in place.
+          </p>
+          <p style={{
+            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
+            color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
+            margin: 0, textWrap: 'pretty',
+          }}>
+            When that root system is in, the operation changes. You can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That{"\u2019"}s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.
+          </p>
+        </div>
+
+        {/* Centered closing declaration — different register from the
+            narrative above, intentionally returns to center alignment. */}
         <p style={{
           fontSize: 18, fontWeight: 300, lineHeight: 1.65,
           color: 'rgba(255,255,255,0.80)', fontFamily: 'inherit',
-          margin: '0 auto', maxWidth: 680,
+          margin: '0 auto', maxWidth: 620,
           textWrap: 'pretty',
         }}>
           POWERS builds those roots with your people, on the floor, in the shifts, and inside the routines that build the execution capability that lasts long after we{"\u2019"}re gone.
