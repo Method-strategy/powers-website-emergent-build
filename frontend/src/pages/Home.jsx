@@ -1458,9 +1458,29 @@ function SectionExecutionEngine() {
       0%   { transform: scaleX(0); }
       100% { transform: scaleX(1); }
     }
-    @keyframes pw-flow-step {
-      0%   { background-position: 0 0; }
-      100% { background-position: 28px 0; }
+    @keyframes pw-carat-drift-1 {
+      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
+      18%  { opacity: 0.55; }
+      82%  { opacity: 0.55; }
+      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+    }
+    @keyframes pw-carat-drift-2 {
+      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
+      22%  { opacity: 0.40; }
+      78%  { opacity: 0.40; }
+      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+    }
+    @keyframes pw-carat-drift-3 {
+      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
+      26%  { opacity: 0.50; }
+      74%  { opacity: 0.50; }
+      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+    }
+    @keyframes pw-carat-march {
+      0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
+      14%  { opacity: 0.50; }
+      86%  { opacity: 0.50; }
+      100% { transform: translate3d(130%, 0, 0); opacity: 0; }
     }
     @keyframes pw-pulse {
       0%, 100% { opacity: 0.45; transform: scale(1); }
@@ -1479,36 +1499,63 @@ function SectionExecutionEngine() {
     animation: seen ? `${kf} 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards` : 'none',
   });
 
-  const flowLineStyle = (delayMs) => {
-    // SVG carat tile, 28x10. Gold chevron pointing right. Tiled horizontally
-    // and animated leftward via background-position so the carats appear to
-    // flow left → right. The tile width (28px) matches the step distance,
-    // giving a seamless conveyor.
-    const carat = encodeURIComponent(
-      `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='10' viewBox='0 0 28 10'>` +
-      `<path d='M2 1.5 L7 5 L2 8.5' fill='none' stroke='${G}' stroke-opacity='0.95' ` +
+  // ── Carat particles ─────────────────────────────────────────────
+  // Left gutter: ~5 carats in muted slate-blue, each with its own randomized
+  // vertical position, duration, and start delay. Reads as unpredictable
+  // pressures arriving — never quite repeats.
+  // Right gutter: ~4 carats in gold, all on the same evenly-spaced cadence
+  // and a single vertical position. Reads as regimented, predictable output.
+  //
+  // Carats live ONLY in the column gutters so they never cross body text.
+  const SLATE = '#7c9ab8';   // muted slate-blue (subdued, not amber-tense)
+
+  const makeCarat = (color) => {
+    const svg = encodeURIComponent(
+      `<svg xmlns='http://www.w3.org/2000/svg' width='10' height='12' viewBox='0 0 10 12'>` +
+      `<path d='M2 2 L7 6 L2 10' fill='none' stroke='${color}' ` +
       `stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/>` +
       `</svg>`
     );
-    return {
-      height: 10,
-      width: '100%',
-      backgroundImage: `url("data:image/svg+xml,${carat}")`,
-      backgroundRepeat: 'repeat-x',
-      backgroundSize: '28px 10px',
-      backgroundPosition: '0 center',
-      transformOrigin: 'left center',
-      transform: 'scaleX(0)',
-      opacity: 0.85,
-      // Two animations: a one-time horizontal "draw" reveal that sets the
-      // rail into place, then a continuous step animation that moves the
-      // carats left → right at a slow, considered pace.
-      animation: seen
-        ? `pw-flow-draw 900ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards, ` +
-          `pw-flow-step 1.6s steps(7, end) ${delayMs + 900}ms infinite`
-        : 'none',
-    };
+    return `url("data:image/svg+xml,${svg}")`;
   };
+
+  // Left gutter: 5 carats with pseudo-random vertical positions, durations,
+  // and per-carat staggered start delays. Three different keyframe variants
+  // (pw-carat-drift-1/2/3) give slightly different opacity profiles so the
+  // pattern doesn't repeat visually.
+  const LEFT_CARATS = [
+    { top: '12%', delay: 0,    duration: 5.8, kf: 'pw-carat-drift-1' },
+    { top: '34%', delay: 2.3,  duration: 7.2, kf: 'pw-carat-drift-2' },
+    { top: '58%', delay: 0.9,  duration: 6.5, kf: 'pw-carat-drift-3' },
+    { top: '76%', delay: 4.1,  duration: 8.0, kf: 'pw-carat-drift-1' },
+    { top: '46%', delay: 5.6,  duration: 5.3, kf: 'pw-carat-drift-2' },
+  ];
+
+  // Right gutter: 4 carats, evenly distributed, identical duration, evenly
+  // staggered start delays. The cadence is the visible signal: stuff comes
+  // out on a beat. The four delays form a perfect 0/25/50/75 phase pattern.
+  const RIGHT_CARATS_COUNT = 4;
+  const RIGHT_DURATION = 5.6;
+  const RIGHT_CARATS = Array.from({ length: RIGHT_CARATS_COUNT }, (_, i) => ({
+    top: '50%',
+    delay: (RIGHT_DURATION / RIGHT_CARATS_COUNT) * i,
+    duration: RIGHT_DURATION,
+    kf: 'pw-carat-march',
+  }));
+
+  const caratSpan = (color, { top, delay, duration, kf }, i) => (
+    <span key={i} aria-hidden="true" style={{
+      position: 'absolute', top, left: 0, width: 10, height: 12,
+      backgroundImage: makeCarat(color),
+      backgroundRepeat: 'no-repeat', backgroundSize: 'contain',
+      transform: 'translate3d(-30%, 0, 0)',
+      opacity: 0,
+      animation: seen
+        ? `${kf} ${duration}s linear ${T_FLOW / 1000 + delay}s infinite`
+        : 'none',
+      willChange: 'transform, opacity',
+    }} />
+  );
 
   return (
     <section ref={ref} className="pw-engine" style={{ background: '#ffffff', padding: '80px 24px 72px' }}>
@@ -1545,19 +1592,23 @@ function SectionExecutionEngine() {
           alignItems: 'stretch',
           position: 'relative',
         }}>
-          {/* Animated flow rails — gold carats stepping left→right. Positioned
-              behind the columns; the center column sits above them in z-order
-              so the carats appear to enter the engine from the left and exit
-              toward the right column. */}
-          <div aria-hidden="true" style={{
-            position: 'absolute', top: '50%', left: 0, right: 0,
-            transform: 'translateY(-50%)',
-            display: 'flex', flexDirection: 'column', gap: 18,
+          {/* Carat particles, confined to the LEFT and RIGHT gutters only.
+              They no longer cross the column body copy. Left gutter is the
+              irregular slate-blue arrival. Right gutter is the regimented
+              gold output. */}
+          <div aria-hidden="true" className="pw-carat-gutter pw-carat-gutter-left" style={{
+            position: 'absolute',
+            top: 0, bottom: 0, left: 'calc(33.33% - 16px)', width: 32,
             pointerEvents: 'none', zIndex: 0,
           }}>
-            <div style={flowLineStyle(T_FLOW)} />
-            <div style={flowLineStyle(T_FLOW + 130)} />
-            <div style={flowLineStyle(T_FLOW + 260)} />
+            {LEFT_CARATS.map((c, i) => caratSpan(SLATE, c, i))}
+          </div>
+          <div aria-hidden="true" className="pw-carat-gutter pw-carat-gutter-right" style={{
+            position: 'absolute',
+            top: 0, bottom: 0, right: 'calc(33.33% - 16px)', width: 32,
+            pointerEvents: 'none', zIndex: 0,
+          }}>
+            {RIGHT_CARATS.map((c, i) => caratSpan(G, c, i))}
           </div>
 
           {/* LEFT COLUMN — Varying Forces. Typography matches the right
@@ -1581,67 +1632,64 @@ function SectionExecutionEngine() {
             </ul>
           </div>
 
-          {/* CENTER COLUMN — Execution Capability (load-bearing) */}
+          {/* CENTER COLUMN — Execution Capability (load-bearing). Matching
+              column head above (consistent rule + label as left/right), then
+              a heavy navy panel beneath containing the live indicator and
+              the system definition. */}
           <div style={{
             position: 'relative', zIndex: 2,
-            background: NAVY,
-            color: '#ffffff', padding: '40px 30px',
-            display: 'flex', flexDirection: 'column', justifyContent: 'center',
-            boxShadow: `0 24px 60px -28px rgba(13,36,66,0.65), inset 0 0 0 1px rgba(234,187,113,0.18)`,
-            ...willReveal(T_CENTER, 'pw-scale-in'),
+            display: 'flex', flexDirection: 'column',
           }}>
-            {/* Fine architectural grid texture in background */}
-            <div aria-hidden="true" style={{
-              position: 'absolute', inset: 0, opacity: 0.12, pointerEvents: 'none',
-              backgroundImage: `linear-gradient(${G} 1px, transparent 1px), linear-gradient(90deg, ${G} 1px, transparent 1px)`,
-              backgroundSize: '40px 40px',
-              backgroundPosition: 'center center',
-              mixBlendMode: 'overlay',
-            }} />
-            {/* Top gold rule */}
-            <div style={{ height: 2, background: G, width: 56, marginBottom: 18 }} />
-
-            {/* Live indicator */}
+            <DiagramColHead label="Execution Capability" />
             <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: G, fontWeight: 600, marginBottom: 14,
-              fontFamily: 'inherit',
+              background: NAVY,
+              color: '#ffffff', padding: '32px 28px',
+              display: 'flex', flexDirection: 'column', justifyContent: 'center',
+              flex: 1,
+              boxShadow: `0 24px 60px -28px rgba(13,36,66,0.65), inset 0 0 0 1px rgba(234,187,113,0.18)`,
+              position: 'relative', overflow: 'hidden',
+              ...willReveal(T_CENTER, 'pw-scale-in'),
             }}>
-              <span style={{
-                width: 7, height: 7, borderRadius: '50%', background: G,
-                animation: seen ? 'pw-pulse 2.6s ease-in-out infinite' : 'none',
-                boxShadow: `0 0 12px ${G}`,
+              {/* Fine architectural grid texture in background */}
+              <div aria-hidden="true" style={{
+                position: 'absolute', inset: 0, opacity: 0.12, pointerEvents: 'none',
+                backgroundImage: `linear-gradient(${G} 1px, transparent 1px), linear-gradient(90deg, ${G} 1px, transparent 1px)`,
+                backgroundSize: '40px 40px',
+                backgroundPosition: 'center center',
+                mixBlendMode: 'overlay',
               }} />
-              System Active
-            </div>
 
-            <h3 style={{
-              fontSize: 'clamp(22px, 2vw, 28px)', fontWeight: 800,
-              lineHeight: 1.12, letterSpacing: '-0.01em',
-              color: '#ffffff', margin: '0 0 14px',
-              fontFamily: 'inherit',
-              textWrap: 'balance',
-            }}>
-              Execution Capability
-            </h3>
+              {/* Live indicator */}
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+                color: G, fontWeight: 600, marginBottom: 18,
+                fontFamily: 'inherit', position: 'relative', zIndex: 1,
+              }}>
+                <span style={{
+                  width: 7, height: 7, borderRadius: '50%', background: G,
+                  animation: seen ? 'pw-pulse 2.6s ease-in-out infinite' : 'none',
+                  boxShadow: `0 0 12px ${G}`,
+                }} />
+                System Active
+              </div>
 
-            <p style={{
-              fontSize: 15, fontWeight: 300, lineHeight: 1.55,
-              color: 'rgba(255,255,255,0.85)', fontFamily: 'inherit',
-              margin: 0, textWrap: 'pretty', position: 'relative', zIndex: 1,
-            }}>
-              {typo("The ability to execute at a high level regardless of conditions. The discipline, leadership, and accountability that turn variable inputs into reliable outputs.")}
-            </p>
+              <p style={{
+                fontSize: 15, fontWeight: 300, lineHeight: 1.55,
+                color: 'rgba(255,255,255,0.92)', fontFamily: 'inherit',
+                margin: 0, textWrap: 'pretty', position: 'relative', zIndex: 1,
+              }}>
+                {typo("The ability to execute at a high level regardless of conditions. The discipline, leadership, and accountability that turn variable inputs into reliable outputs.")}
+              </p>
 
-            {/* Bottom rule echo */}
-            <div style={{ height: 1, background: 'rgba(234,187,113,0.30)', marginTop: 26 }} />
-            <div style={{
-              fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: 'rgba(234,187,113,0.75)', fontWeight: 600, marginTop: 12,
-              fontFamily: 'inherit',
-            }}>
-              Discipline · Leadership · Accountability
+              <div style={{ height: 1, background: 'rgba(234,187,113,0.30)', marginTop: 22, position: 'relative', zIndex: 1 }} />
+              <div style={{
+                fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
+                color: 'rgba(234,187,113,0.75)', fontWeight: 600, marginTop: 10,
+                fontFamily: 'inherit', position: 'relative', zIndex: 1,
+              }}>
+                Discipline · Leadership · Accountability
+              </div>
             </div>
           </div>
 
@@ -1683,16 +1731,19 @@ function SectionExecutionEngine() {
   );
 }
 
-function DiagramColHead({ label, align = 'left', accent = false }) {
+function DiagramColHead({ label }) {
+  // Identical treatment across all three columns: thin navy rule + small
+  // tracked navy label beneath. Makes left / center / right read as three
+  // related elements of one system, not as three different categories.
   return (
     <div style={{
-      borderTop: `2px solid ${accent ? '#eabb71' : '#183a61'}`,
+      borderTop: '1px solid #183a61',
       paddingTop: 10, marginBottom: 12,
-      textAlign: align,
+      textAlign: 'left',
     }}>
       <div style={{
         fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
-        color: accent ? '#c9963e' : '#183a61',
+        color: '#183a61',
         fontWeight: 600, fontFamily: 'inherit',
       }}>{label}</div>
     </div>
