@@ -2072,8 +2072,10 @@ function SectionWhereWeWork() {
     <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
+        {/* Section header — left-aligned to match the subsection rhythm
+            below, so the whole section reads as a single anchored column
+            instead of a centered-header / left-content mash-up. */}
+        <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: 920 }}>
           <Eyebrow label="Where We Work" />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
@@ -2084,38 +2086,41 @@ function SectionWhereWeWork() {
           </h2>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            color: C.body, fontFamily: 'inherit', margin: 0,
             textWrap: 'pretty',
           }}>
             {typo("Execution capability gets built wherever value gets won or lost. Across the operation, and across the industries that depend on it.")}
           </p>
         </div>
 
-        {/* Across the Operation */}
-        <div style={{ marginBottom: 72 }}>
+        {/* Across the Operation — single content block aligned to the same
+            left rail as the section header. Body width capped at a
+            comfortable reading measure (~920) so the line lengths stay
+            consistent throughout the section. */}
+        <div style={{ marginBottom: 72, maxWidth: 920 }}>
           <h3 style={{
             fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
             color: C.navy, fontFamily: 'inherit',
             margin: '0 0 18px', letterSpacing: S.h2Tracking,
-            textAlign: 'left',
           }}>Across the Operation</h3>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0,
-            maxWidth: 880, textWrap: 'pretty',
+            textWrap: 'pretty',
           }}>
             {typo("Production and operations. Maintenance and reliability. Supply chain and procurement. Warehousing and logistics. Quality and safety. Working capital and financial flow. Wherever the gap between intent and output is showing up, that\u2019s where POWERS works.")}
           </p>
         </div>
 
-        {/* Across Industries */}
+        {/* Across Industries — same left rail. The grid stretches the full
+            container width (so the tiles get the breadth they need to
+            land the breadth-of-capability message) but its left edge
+            aligns with the H3 above it. */}
         <div>
           <h3 style={{
             fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
             color: C.navy, fontFamily: 'inherit',
             margin: '0 0 22px', letterSpacing: S.h2Tracking,
-            textAlign: 'left',
           }}>Across Industries</h3>
 
           {/* Tile grid:
@@ -2126,7 +2131,7 @@ function SectionWhereWeWork() {
               gracefully at every viewport without media queries. */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
             gap: 1,
             background: C.gray100,
             border: `1px solid ${C.gray100}`,
@@ -2138,13 +2143,15 @@ function SectionWhereWeWork() {
 
           {/* Closing line — single thesis statement closing the section.
               Treated as a display pull quote (not body) so it actually
-              announces itself rather than getting lost beneath the grid. */}
+              announces itself rather than getting lost beneath the grid.
+              Same left rail + 920 measure as the rest of the section. */}
           <p style={{
             marginTop: 56,
             fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
             color: C.navy, fontFamily: 'inherit',
-            maxWidth: 980, textWrap: 'balance',
+            maxWidth: 920, textWrap: 'balance',
             letterSpacing: S.h2Tracking,
+            margin: '56px 0 0',
           }}>
             {typo("Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever the quarter brings.")}
           </p>
@@ -2162,7 +2169,7 @@ const CASE_STUDIES = [
     summary: 'A multi-site food manufacturer engaged POWERS to address inconsistent shift performance and rising labor costs. Sustainable gains achieved within 18 months.',
   },
   {
-    industry: 'Defense and Aerospace',
+    industry: 'Aerospace & Defense',
     result: '59% on-time delivery improvement across three facilities',
     summary: 'A defense contractor facing chronic schedule slippage built new production discipline and accountability structures across their entire operation.',
   },

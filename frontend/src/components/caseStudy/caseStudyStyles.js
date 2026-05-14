@@ -704,7 +704,7 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
 
   /* ── PAGE 1 — SLIM FULL-BLEED NAVY MASTHEAD ───────────────────────
      Masthead contains ONLY the POWERS logo (top-left) and the eyebrow
-     ("CASE STUDY | DEFENSE & AEROSPACE", right-justified). The H1
+     ("CASE STUDY | AEROSPACE & DEFENSE", right-justified). The H1
      moves below the masthead into the white content area where it's
      the dominant typographic moment in navy-800. The big "Results at
      a Glance" stat block is then the strong navy color moment on the
@@ -760,6 +760,20 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     margin: 0 0 18px;
     letter-spacing: -0.018em;
     text-wrap: balance;
+    max-width: 7in;
+  }
+
+  /* H1 descriptor — sits directly beneath the H1 like the web hero's
+     italic descriptor. Same role: a one-line clarifier identifying the
+     client archetype. Print-scaled (~11pt) so it doesn't crowd the
+     stat block beneath it. */
+  .pp-h1-descriptor {
+    font-size: 11px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    color: var(--navy400);
+    margin: -8px 0 18px;
     max-width: 7in;
   }
 

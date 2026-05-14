@@ -41,7 +41,7 @@ const defenseAerospaceOTD = {
   date: '2021-08-18',
 
   // Hero fields
-  industry: 'Defense & Aerospace',
+  industry: 'Aerospace & Defense',
   headlineResult:
     'On-time performance climbed from 56% to 89% inside a make-to-order defense operation that had been running on opinion.',
   subtitle: 'Make-to-Order Defense Manufacturer',

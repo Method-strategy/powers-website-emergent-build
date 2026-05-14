@@ -30,6 +30,7 @@ export default function CaseStudyPrintDoc({ data }) {
   const {
     industry,
     headlineResult,
+    subtitle,
     summary,
     serviceLines = [],
     statTiles = [],
@@ -61,6 +62,7 @@ export default function CaseStudyPrintDoc({ data }) {
           <div className="pp-disciplines">{disciplinesLine}</div>
 
           <h1 className="pp-h1">{headlineResult}</h1>
+          {subtitle ? <div className="pp-h1-descriptor">{subtitle}</div> : null}
 
           <div className="pp-brief">
             <div className="pp-brief-label">Executive Brief</div>
