@@ -1448,27 +1448,27 @@ function SectionWhatPowersDoes() {
   );
 }
 
-/* ── SECTION 4 — FOUR EXPERTISE AREAS ── */
+/* ── SECTION (now position 3) — FIVE FUNDAMENTALS ── */
 const EXPERTISE_CARDS = [
   {
-    headline: 'Operational Readiness and Discipline',
-    body: 'We build the standards, routines, and accountability structures that turn strategy into daily operating discipline.',
-    href: 'operational-readiness.html',
+    headline: 'Operational Discipline',
+    body: 'Standards, routines, and structured practices that make consistent execution the default. When discipline is built in, the floor stops running on heroics and starts running on the system.',
   },
   {
-    headline: 'Frontline Capability and Workforce Readiness',
-    body: 'We develop the supervisors and frontline leaders who carry performance forward when we are no longer in the building.',
-    href: 'frontline-leadership.html',
+    headline: 'Frontline Leadership',
+    body: 'Supervisors who can plan a shift, run a problem to ground, and enforce the standard with their team. The single highest-leverage role in the operation, and the one most often handed a clipboard and left to figure it out alone.',
   },
   {
-    headline: 'Equipment Reliability and Maintenance Performance',
-    body: 'We reduce unplanned downtime and build the maintenance disciplines that keep your assets running at capacity.',
-    href: 'equipment-reliability.html',
+    headline: 'Reliable Equipment Performance',
+    body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable. When equipment performs, scheduling works, throughput stays consistent, and labor stops absorbing the variability the machines should have absorbed.',
   },
   {
-    headline: 'Supply Chain and Distribution Performance',
-    body: 'We improve flow, reduce waste, and build the supply chain execution systems that hold under real conditions.',
-    href: 'supply-chain.html',
+    headline: 'Workforce Capability',
+    body: "Skilled, engaged operators who know the work, own the outcome, and can train the next shift. Capability isn\u2019t a headcount problem. It\u2019s what each person on the line can actually do when the day gets hard.",
+  },
+  {
+    headline: 'Daily Accountability',
+    body: 'The cadence, metrics, and conversations that close the loop every shift, every day. Without it, the other four fundamentals drift. With it, they compound.',
   },
 ];
 
@@ -1487,7 +1487,7 @@ function IconPlaceholder() {
   );
 }
 
-function ExpertiseCard({ headline, body, href }) {
+function ExpertiseCard({ headline, body }) {
   const [h, setH] = useState(false);
   return (
     <div style={{
@@ -1497,6 +1497,7 @@ function ExpertiseCard({ headline, body, href }) {
       padding: '36px 28px 32px',
       display: 'flex', flexDirection: 'column', gap: 0,
       transition: 'border-top-color 200ms ease',
+      height: '100%',
     }}
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
@@ -1508,9 +1509,9 @@ function ExpertiseCard({ headline, body, href }) {
       }}>{headline}</div>
       <p style={{
         fontSize: 15, fontWeight: 300, lineHeight: 1.65,
-        color: '#3a3a38', fontFamily: 'inherit', margin: '0 0 20px', flex: 1,
-      }}>{body}</p>
-      <LearnMoreLink href={href} />
+        color: '#3a3a38', fontFamily: 'inherit', margin: 0, flex: 1,
+        textWrap: 'pretty',
+      }}>{typo(body)}</p>
     </div>
   );
 }
@@ -1535,16 +1536,27 @@ function SectionExpertiseAreas() {
   return (
     <section style={{ background: '#f5f5f3', padding: '100px 24px' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <Eyebrow label="Expertise Areas" />
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <Eyebrow label="What We Build" />
           <h2 style={{
-            fontSize: 'clamp(24px, 2.8vw, 36px)', fontWeight: 800, lineHeight: 1.15,
-            color: '#183a61', fontFamily: 'inherit', margin: 0,
-          }}>Where POWERS Goes to Work</h2>
+            fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1,
+            color: '#183a61', fontFamily: 'inherit', margin: '0 0 28px',
+            textWrap: 'pretty',
+          }}>The Five Fundamentals We Instill to Build Execution Capability.</h2>
+          {/* Left-aligned intro column to keep long-form body readable;
+              centered within the row to preserve the section's symmetry. */}
+          <p style={{
+            fontSize: 18, fontWeight: 300, lineHeight: 1.65,
+            color: '#3a3a38', fontFamily: 'inherit',
+            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            textWrap: 'pretty',
+          }}>
+            {typo("Execution capability isn\u2019t one fix. It\u2019s five fundamentals working together, built into the daily rhythm of the operation. Weaken any one and the others drift. Instill them together and the operation produces what it\u2019s supposed to produce, on the floor, on the financial statement, across whatever comes next.")}
+          </p>
         </div>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: 1,
           background: '#e8e8e4',
         }}>
@@ -2039,9 +2051,9 @@ function App() {
       <Header />
       <Hero />
       <SectionTheMoment />
+      <SectionExpertiseAreas />
       <SectionRootCause />
       <SectionWhatPowersDoes />
-      <SectionExpertiseAreas />
       <SectionHowWeWork />
       <SectionResultsEntryPoint />
       <SectionInsightsEntryPoint />
