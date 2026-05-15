@@ -1,0 +1,17 @@
+{
+  "name": "powers-faust-test",
+  "repo": "TODO-github-org/powers-faust-test",
+  "region": "US-C",
+  "environments": [
+    {
+      "name": "Production",
+      "branch": "main",
+      "env_variables": [
+        {
+          "key": "NEXT_PUBLIC_WORDPRESS_URL",
+          "value": "https://faustexample.wpengine.com"
+        }
+      ]
+    }
+  ]
+}

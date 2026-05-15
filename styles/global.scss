@@ -1,0 +1,12 @@
+// Global styles
+// These styles are available on all pages.
+// `blocks` import removed in this sandbox because @wordpress/base-styles@6.15.0
+// and @wordpress/block-library@9.10.0 have a path mismatch in the upstream
+// starter. The sandbox renders no block content so the styles are unused.
+// Restore the `@import 'blocks';` line in the production scaffold once the
+// dependency versions are aligned.
+
+@import 'breakpoints';
+@import 'css-variables';
+@import 'base';
+@import 'utilities';
