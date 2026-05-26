@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import HomeLayout from './components/HomeLayout';
 
 import Home from './pages/Home';
+import HomeV2 from './pages/HomeV2';
 import Approach from './pages/Approach';
 import DiscoveryProcess from './pages/DiscoveryProcess';
 import IndustriesServed from './pages/IndustriesServed';
@@ -34,6 +35,9 @@ function App() {
         {/* Homepage renders its own inline Header + Footer — no shared chrome */}
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
+          {/* /v2 — copy iteration: roots / chase / produce voice.
+              Reversible: delete this line + HomeV2.jsx to revert. */}
+          <Route path="/v2" element={<HomeV2 />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
