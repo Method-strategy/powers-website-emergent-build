@@ -15,33 +15,49 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ── Tokens ── */
 const C = {
-  // Primary navy stack — three depths for layering
+  // Primary navy stack — five depths for layering
   ink:     '#0a1421',  // Deepest. Used for max-emphasis surfaces (hero, footer CTA).
   navy900: '#0d2442',  // Deep — case-study masthead, footer
   navy:    '#183a61',  // Brand navy — primary copy, anchors
   navy700: '#234a78',  // Mid-tone navy — secondary fills, hover lifts
+  navy600: '#3a5d8a',  // Mid-tone navy — UI accents
   navy400: '#4a6a8a',  // Muted navy — meta text, sub-labels
+  slate:   '#5c7896',  // Cool slate-blue — accent for technical UI
+  steel:   '#7a93b0',  // Lighter cool blue — secondary accent
 
-  // Gold accent stack — pale wash through deep emphasis
+  // Gold accent stack — pale wash through emphasis
   gold200: '#f7e8c8',  // Pale gold wash — subtle backgrounds, surface lifts
   gold:    '#eabb71',  // Brand gold — primary accent
-  gold600: '#c9963e',  // Deep gold — hover, emphasis on light
-  gold800: '#8a6321',  // Deepest gold — used sparingly on light surfaces for max contrast
+  gold600: '#c9963e',  // Deep gold — hover, emphasis on light surfaces
 
-  // Secondary accent — copper (paired with gold sparingly for variety)
-  copper:  '#a55a3e',  // Warm accent for one-off editorial moments
+  // Orange / copper / rust stack — warm secondary accent paired with gold
+  // for variety. Reads as industrial heritage, not decorative.
+  amber:   '#e89346',  // Bright amber — accent on light backgrounds
+  copper:  '#b85f33',  // Copper — primary emphasis color (replaces gold800)
+  rust:    '#8a3f1f',  // Deep rust — max-emphasis warm accent
 
-  // Neutrals — warm-to-cool spread for surface layering
+  // Neutral warm-light surface tones
   ivory:   '#fbf9f4',  // Warmest off-white — premium content surfaces
   bone:    '#f4efe4',  // Warm off-white — content sections
-  paper:   '#f7f6f1',  // Neutral off-white — section bands (legacy bgLight)
-  fog:     '#dcdfe3',  // Cool light gray — dividers, fine borders
-  steel:   '#3d5876',  // Cool mid — captions on dark surfaces
-  body:    '#3a3a38',  // Body text — warm dark gray
+  paper:   '#f7f6f1',  // Neutral off-white — section bands
   white:   '#ffffff',
-  gray50:  '#f5f5f3',
-  gray100: '#e8e8e4',
-  gray400: '#888884',
+
+  // True gray ramp — cool, neutral. For dividers, captions, secondary type.
+  gray50:  '#f7f8fa',
+  gray100: '#eceef2',
+  gray200: '#dcdfe4',
+  gray300: '#c1c6cd',
+  gray400: '#8a9098',
+  gray500: '#6b7280',
+  gray600: '#4b5360',
+  gray700: '#363c47',
+  gray800: '#22262e',
+
+  // Legacy aliases (kept for compatibility through ongoing migration)
+  fog:     '#dcdfe3',  // Cool light gray — dividers, fine borders
+  body:    '#3a3a38',  // Body text — warm dark gray
+  gray100Legacy: '#e8e8e4',
+  gray400Legacy: '#888884',
 };
 
 /* ── HOMEPAGE DESIGN SYSTEM ──────────────────────────────────────────
@@ -1495,7 +1511,7 @@ function SectionTheMoment() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Most Firms Chase the Symptom. <span style={{ color: C.gold800, fontStyle: 'italic', fontWeight: 700 }}>POWERS Fixes the Root.</span>
+            Most Firms Chase the Symptom. <span style={{ color: C.copper, fontStyle: 'italic', fontWeight: 700 }}>POWERS Fixes the Root.</span>
           </h2>
         </div>
 
@@ -1637,194 +1653,193 @@ function useReveal() {
   return [ref, seen];
 }
 
-/* ── SECTION — PRESSURE IN / PERFORMANCE OUT ──────────────────────
+/* ── PRESSURE IN / PERFORMANCE OUT — continuous ambient choreography ─
  *
- * GSAP scroll-driven three-act choreography:
+ * Concept: an immovable engine in the center; ever-changing forces on
+ * the left arrive against it; ever-changing results on the right are
+ * produced by it. No scroll trigger — the diagram runs constantly,
+ * autonomously, like a live system dashboard.
  *
- *   Act 1 — Pressures arrive.
- *     Forces fade in from the left, one at a time, each preceded by
- *     a red trend-down marker. The arrivals are paced so the reader
- *     can register each pressure as it lands rather than seeing them
- *     all at once. A faint dashed flow line draws from each force
- *     toward the engine as it arrives — visualizing the absorption.
+ * Mechanics: 5 visible slots per side. Each slot independently cycles
+ * through a pool of forces (left) or results (right) on a randomized
+ * 2.8-4.4 second interval, with per-slot stagger so the columns
+ * shimmer rather than tick in sync. The slot animation is a small
+ * fade-up exit followed by a fade-down entrance; reads as turbulence
+ * on the left and production on the right.
  *
- *   Act 2 — The engine absorbs.
- *     With every force that lands, the engine subtly intensifies:
- *     the navy block lifts in shadow, a gold ring breathes at a
- *     slightly faster rate, and a soft halo grows. By the time all
- *     forces are in, the engine is fully "loaded."
+ * The engine card is treated to match the 5-Disciplines card
+ * vocabulary: square corners, 3px gold top rule (matching the
+ * keystone treatment from Row 2), thin border, fine grid pattern
+ * inside, ambient gold halo behind. Content is top-justified so the
+ * card has presence at the top edge of the column. The halo
+ * perpetually breathes at a slow cadence — a heartbeat for the
+ * "system active" idea, without the literal pulse dot.
  *
- *   Act 3 — Results emit.
- *     The engine releases. Results emerge from the engine and
- *     travel rightward into the Consistent Results column, each
- *     preceded by a green trend-up marker. A solid gold flow line
- *     draws from the engine into each result as it lands.
- *
- * The scrub is set deliberately slow so the reader can absorb the
- * "absorbing → producing" beat. Reduced-motion renders the entire
- * diagram fully resolved and skips all GSAP setup.
+ * Reduced-motion: rotation interval is skipped; initial slot items
+ * are rendered statically; halo holds at its mid state.
  * ────────────────────────────────────────────────────────────────── */
-function SectionExecutionEngine() {
-  const sectionRef = useRef(null);
-  const enginePanelRef = useRef(null);
-  const engineHaloRef = useRef(null);
-  const closerRef = useRef(null);
+
+const FORCES_POOL = [
+  'Market volatility', 'Tariff and trade shifts', 'Demand swings',
+  'Workforce turnover', 'Equipment breakdowns', 'Inexperienced supervisors',
+  'Margin compression', 'Schedule misses', 'Supply chain disruption',
+  'Raw material cost spikes', 'Quality variation', 'Capacity constraints',
+  'Energy cost swings', 'Regulatory pressure', 'Customer escalations',
+];
+
+const RESULTS_POOL = [
+  'Increased throughput', 'Higher OEE', 'Reduced downtime',
+  'Improved labor productivity', 'Expanded margin', 'Recovered working capital',
+  'Stronger frontline leadership', 'Sustained operational performance',
+  'Faster cycle times', 'Lower scrap rates', 'Predictable on-time delivery',
+  'Resilient supply', 'Stable cost structure', 'Compounding shift performance',
+];
+
+/* RotatingPaneList — continuous slot-rotation primitive.
+
+   Renders `slotCount` <li>s. Each slot owns a cursor into the pool
+   and independently cycles to its next pool item on a randomized
+   interval. Animation is driven directly through GSAP into the DOM
+   so cycles don't trigger React re-renders. Initial items are
+   evenly distributed across the pool so the visible set starts
+   diverse from frame one.
+
+   Props:
+     pool         — array of strings to rotate through
+     slotCount    — number of visible slots
+     Marker       — component that renders the per-row indicator
+     markerColor  — color passed to the marker
+     side         — 'left' or 'right'; controls exit direction so
+                    forces feel like they leave inward toward the
+                    engine, results feel like they leave outward
+     intervalMs   — base interval between cycles per slot
+     jitter       — randomized addition to interval
+     baseDelay    — global delay before the first cycle starts */
+function RotatingPaneList({
+  pool, slotCount = 5, Marker, markerColor, side = 'left',
+  intervalMs = 3000, jitter = 1800, baseDelay = 800,
+}) {
+  const ulRef = useRef(null);
+  // Per-slot cursors live in a ref so cycles don't cause re-renders.
+  // Initial values evenly stride across the pool.
+  const stride = Math.max(1, Math.floor(pool.length / slotCount));
+  const cursorsRef = useRef(
+    Array.from({ length: slotCount }, (_, i) => (i * stride) % pool.length)
+  );
+  const reduceRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    reduceRef.current = reduce;
+    if (reduce) return;
 
-    const section = sectionRef.current;
-    if (!section) return;
+    const ul = ulRef.current;
+    if (!ul) return;
+    const slots = Array.from(ul.querySelectorAll('[data-slot-text]'));
+    const timers = [];
 
-    const leftItems = section.querySelectorAll('[data-force-item]');
-    const rightItems = section.querySelectorAll('[data-result-item]');
-    const leftLines = section.querySelectorAll('[data-flow-line-left]');
-    const rightLines = section.querySelectorAll('[data-flow-line-right]');
-    const engine = enginePanelRef.current;
-    const halo = engineHaloRef.current;
-    const closer = closerRef.current;
+    // Cycle one slot: animate text out, swap, animate new text in,
+    // schedule next cycle with randomized delay.
+    const cycle = (slotIdx) => {
+      const textEl = slots[slotIdx];
+      if (!textEl) return;
 
-    if (reduce) {
-      // Resolved state — no animation, no GSAP setup.
-      return;
-    }
+      // Pick next pool index. Skips ahead by slotCount to ensure
+      // adjacent slots don't all land on the same item; modulo by
+      // pool.length keeps it in range. Then steps an extra +1 with
+      // a 30% probability for a small amount of unpredictability.
+      let nextCursor = (cursorsRef.current[slotIdx] + slotCount) % pool.length;
+      if (Math.random() < 0.3) nextCursor = (nextCursor + 1) % pool.length;
+      cursorsRef.current[slotIdx] = nextCursor;
 
-    // Initial states. Left items sit 24px left + invisible; right
-    // items sit 24px right + invisible. Engine sits 14px lifted +
-    // 0.96 scale. Halo invisible. Lines collapsed (scaleX 0).
-    gsap.set(leftItems, { opacity: 0, x: -28, willChange: 'transform, opacity' });
-    gsap.set(rightItems, { opacity: 0, x: 28, willChange: 'transform, opacity' });
-    gsap.set(leftLines, { scaleX: 0, transformOrigin: '100% 50%' });
-    gsap.set(rightLines, { scaleX: 0, transformOrigin: '0% 50%' });
-    if (engine) gsap.set(engine, { y: 18, opacity: 0, scale: 0.965, willChange: 'transform, opacity' });
-    if (halo) gsap.set(halo, { opacity: 0, scale: 0.8 });
-    if (closer) gsap.set(closer, { opacity: 0, y: 14 });
+      gsap.timeline()
+        .to(textEl, {
+          opacity: 0,
+          y: -10,
+          duration: 0.42,
+          ease: 'power2.in',
+        })
+        .call(() => {
+          textEl.textContent = pool[nextCursor];
+        })
+        .fromTo(textEl,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
+        );
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          // Range tuned for the section's natural height: starts as
-          // the section comes into view, ends well past so the user
-          // has a full screen of scroll to walk through Act 1 → 3.
-          start: 'top 70%',
-          end: 'bottom 30%',
-          scrub: 1.2,
-        },
-      });
+      const nextDelay = intervalMs + Math.random() * jitter;
+      timers[slotIdx] = setTimeout(() => cycle(slotIdx), nextDelay);
+    };
 
-      // Engine lifts into place first — establishes the system that
-      // will absorb the inputs.
-      if (engine) {
-        tl.to(engine, {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          ease: 'power3.out',
-          duration: 1.2,
-        }, 0);
-      }
-      if (halo) {
-        tl.to(halo, {
-          opacity: 0.45,
-          scale: 1,
-          ease: 'power2.out',
-          duration: 1.0,
-        }, 0.4);
-      }
+    // Initial start — each slot gets its own delay so they rotate
+    // out of phase. Without this they'd all fire together on the
+    // first cycle and the column would tick like a clock.
+    slots.forEach((_, i) => {
+      const initial = baseDelay + i * 420 + Math.random() * 280;
+      timers[i] = setTimeout(() => cycle(i), initial);
+    });
 
-      // Act 1: each force arrives + draws a flow line toward the
-      // engine. Stagger is generous so the reader has time to read
-      // each force as it lands.
-      const FORCE_STAGGER = 0.5;
-      leftItems.forEach((item, i) => {
-        const at = 1.0 + i * FORCE_STAGGER;
-        tl.to(item, {
-          opacity: 1,
-          x: 0,
-          ease: 'power3.out',
-          duration: 0.7,
-        }, at);
-        if (leftLines[i]) {
-          tl.to(leftLines[i], {
-            scaleX: 1,
-            ease: 'power2.inOut',
-            duration: 0.55,
-          }, at + 0.15);
-        }
-        // Subtle engine intensification with each force absorbed —
-        // halo brightens and breathes faster the more loaded it gets.
-        if (halo) {
-          tl.to(halo, {
-            opacity: 0.45 + (i + 1) * 0.04,
-            scale: 1.0 + (i + 1) * 0.012,
-            ease: 'power1.out',
-            duration: 0.4,
-          }, at + 0.05);
-        }
-      });
+    return () => timers.forEach((t) => clearTimeout(t));
+  }, [pool, slotCount, intervalMs, jitter, baseDelay]);
 
-      // Act 2 → Act 3 bridge: engine "releases" with a small surge
-      // before results emit.
-      if (halo) {
-        const releaseAt = 1.0 + leftItems.length * FORCE_STAGGER + 0.2;
-        tl.to(halo, {
-          opacity: 0.85,
-          scale: 1.18,
-          ease: 'power2.out',
-          duration: 0.6,
-        }, releaseAt)
-          .to(halo, {
-            opacity: 0.55,
-            scale: 1.06,
-            ease: 'power2.inOut',
-            duration: 0.5,
-          }, releaseAt + 0.6);
-      }
+  // Initial render — populate each slot with the item at its cursor.
+  const initial = cursorsRef.current.map((idx) => pool[idx]);
 
-      // Act 3: results emit + draw flow lines from the engine into
-      // each result.
-      const RESULT_START = 1.0 + leftItems.length * FORCE_STAGGER + 0.8;
-      const RESULT_STAGGER = 0.46;
-      rightItems.forEach((item, i) => {
-        const at = RESULT_START + i * RESULT_STAGGER;
-        if (rightLines[i]) {
-          tl.to(rightLines[i], {
-            scaleX: 1,
-            ease: 'power2.inOut',
-            duration: 0.5,
-          }, at);
-        }
-        tl.to(item, {
-          opacity: 1,
-          x: 0,
-          ease: 'power3.out',
-          duration: 0.7,
-        }, at + 0.18);
-      });
+  return (
+    <ul ref={ulRef} style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+      {initial.map((item, i) => (
+        <li key={i} style={{
+          display: 'flex', alignItems: 'center', gap: 12,
+          fontSize: 14.5, fontWeight: 500, color: C.navy, fontFamily: 'inherit',
+          padding: '14px 0', borderBottom: `1px solid ${C.gray200}`,
+          position: 'relative',
+          minHeight: 48,
+        }}>
+          <Marker color={markerColor} />
+          <span
+            data-slot-text
+            style={{
+              display: 'inline-block',
+              willChange: 'transform, opacity',
+              flex: 1,
+              textAlign: side === 'right' ? 'left' : 'left',
+            }}
+          >{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
-      // Closer line settles in once everything's resolved.
-      if (closer) {
-        tl.to(closer, {
-          opacity: 1,
-          y: 0,
-          ease: 'power2.out',
-          duration: 0.9,
-        }, '>-0.2');
-      }
-    }, section);
+function SectionExecutionEngine() {
+  const haloRef = useRef(null);
 
-    return () => ctx.revert();
+  // Continuous engine halo "heartbeat" — independent of scroll.
+  // Slow, even, ambient. Communicates "running" without using a
+  // literal pulse dot.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    if (!haloRef.current) return;
+
+    const tween = gsap.to(haloRef.current, {
+      opacity: 0.85,
+      scale: 1.06,
+      duration: 3.2,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+    return () => tween.kill();
   }, []);
 
   return (
-    <section ref={sectionRef} style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}`, position: 'relative', overflow: 'hidden' }}>
+    <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
 
-        {/* Header — left-anchored editorial. Eyebrow + H2 + lede sit
-            in a reading column on the left rail to match the section
-            rhythm established earlier on the page. */}
+        {/* Header — left-anchored editorial */}
         <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: S.maxRead }}>
           <Eyebrow label="How Execution Capability Creates Value" />
           <h2 style={{
@@ -1832,7 +1847,7 @@ function SectionExecutionEngine() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Pressure In. <span style={{ color: C.gold800, fontStyle: 'italic', fontWeight: 700 }}>Performance Out.</span>
+            Pressure In. <span style={{ color: C.copper, fontStyle: 'italic', fontWeight: 700 }}>Performance Out.</span>
           </h2>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
@@ -1848,153 +1863,142 @@ function SectionExecutionEngine() {
           display: 'grid',
           gridTemplateColumns: '1fr 1.2fr 1fr',
           columnGap: 'clamp(20px, 4vw, 56px)',
-          alignItems: 'stretch',
+          alignItems: 'start',
           position: 'relative',
         }}>
-          {/* LEFT COLUMN — pressures (forces). Each item carries a red
-              trend-down marker and a flow line that draws toward the
-              engine as the item lands. */}
+          {/* LEFT — Varying Forces, continuously rotating */}
           <div style={{ position: 'relative', paddingTop: 8 }}>
             <DiagramColHead label="Varying Forces" />
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {VARYING_FORCES.map((item, i) => (
-                <li key={i}
-                  data-force-item
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    fontSize: 14.5, fontWeight: 500, color: C.navy, fontFamily: 'inherit',
-                    padding: '12px 0', borderBottom: `1px solid ${C.fog}`,
-                    position: 'relative',
-                  }}>
-                  <RedDownMarker color="#b8392d" />
-                  <span>{item}</span>
-                  {/* Flow line from this force toward the engine.
-                      Sits in the column gap on the right of each item,
-                      scaleX from 1 (right edge) toward 0 (left). */}
-                  <span
-                    data-flow-line-left
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      right: -12,
-                      top: '50%',
-                      width: 'clamp(20px, 4vw, 56px)',
-                      height: 1,
-                      background: `linear-gradient(to right, ${C.fog}, ${C.gold})`,
-                      transform: 'scaleX(0)',
-                    }}
-                  />
-                </li>
-              ))}
-            </ul>
+            <RotatingPaneList
+              pool={FORCES_POOL}
+              slotCount={5}
+              Marker={RedDownMarker}
+              markerColor={C.copper}
+              side="left"
+              intervalMs={2900}
+              jitter={1700}
+              baseDelay={1200}
+            />
           </div>
 
-          {/* CENTER — the engine. Navy panel with a subtle gold halo
-              that brightens and breathes as forces are absorbed. The
-              halo is the load indicator: invisible at rest, ramping
-              up to peak as the system reaches capacity. */}
-          <div style={{
-            position: 'relative',
-            display: 'flex', flexDirection: 'column',
-            paddingTop: 8,
-          }}>
-            {/* Halo — sits behind the engine panel. Gold radial blur
-                that grows + brightens with each force. */}
-            <div
-              ref={engineHaloRef}
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                inset: -28,
-                borderRadius: 36,
-                background: `radial-gradient(ellipse at center, ${C.gold200} 0%, rgba(234,187,113,0.25) 35%, rgba(234,187,113,0) 70%)`,
-                pointerEvents: 'none',
-                filter: 'blur(12px)',
-                zIndex: 0,
-              }}
-            />
-            {/* Engine panel */}
-            <div
-              ref={enginePanelRef}
-              style={{
+          {/* CENTER — the immovable engine.
+              Square corners + thin border + permanent gold top rule
+              to match the 5-Disciplines keystone treatment, so this
+              card reads as visually consistent with Row 2. Content
+              is top-justified (alignItems: flex-start on column)
+              so the title and description sit at the top edge of
+              the card, with a quiet anchor below. */}
+          <div style={{ position: 'relative', paddingTop: 8 }}>
+            <DiagramColHead label="Execution Capability" />
+            <div style={{
+              position: 'relative',
+            }}>
+              {/* Ambient halo — perpetual slow breath */}
+              <div
+                ref={haloRef}
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  inset: -24,
+                  background: `radial-gradient(ellipse at center, ${C.gold200} 0%, rgba(234,187,113,0.20) 38%, rgba(234,187,113,0) 72%)`,
+                  pointerEvents: 'none',
+                  filter: 'blur(14px)',
+                  opacity: 0.6,
+                  zIndex: 0,
+                }}
+              />
+              {/* Engine card — matches 5-Disciplines card vocabulary */}
+              <div style={{
                 position: 'relative', zIndex: 1,
                 background: `linear-gradient(180deg, ${C.navy} 0%, ${C.navy900} 100%)`,
-                borderRadius: 18,
+                border: `1px solid ${C.gray200}`,
+                borderTop: `3px solid ${C.gold}`,
                 color: C.white,
-                padding: 'clamp(28px, 3vw, 40px) clamp(24px, 2.4vw, 34px) clamp(32px, 3vw, 44px)',
-                display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                flex: 1,
-                boxShadow: `0 32px 80px -28px rgba(13,36,66,0.65), inset 0 0 0 1px rgba(234,187,113,0.22)`,
+                padding: '36px 30px 34px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'stretch',
+                boxShadow: `0 28px 64px -28px rgba(13,36,66,0.55)`,
                 overflow: 'hidden',
-              }}
-            >
-              {/* Fine architectural grid texture */}
-              <div aria-hidden="true" style={{
-                position: 'absolute', inset: 0, opacity: 0.14, pointerEvents: 'none',
-                backgroundImage: `linear-gradient(${C.gold} 1px, transparent 1px), linear-gradient(90deg, ${C.gold} 1px, transparent 1px)`,
-                backgroundSize: '40px 40px',
-                mixBlendMode: 'overlay',
-              }} />
-
-              <h3 style={{
-                fontSize: 'clamp(20px, 1.9vw, 24px)', fontWeight: 700, lineHeight: 1.2,
-                color: C.white, fontFamily: 'inherit',
-                margin: '0 0 14px', letterSpacing: '-0.012em',
-                position: 'relative', zIndex: 1,
+                minHeight: 320,
               }}>
-                Execution Capability
-              </h3>
+                {/* Inner architectural grid */}
+                <div aria-hidden="true" style={{
+                  position: 'absolute', inset: 0, opacity: 0.10, pointerEvents: 'none',
+                  backgroundImage: `linear-gradient(${C.gold} 1px, transparent 1px), linear-gradient(90deg, ${C.gold} 1px, transparent 1px)`,
+                  backgroundSize: '40px 40px',
+                  mixBlendMode: 'overlay',
+                }} />
 
-              <p style={{
-                fontSize: 15, fontWeight: 300, lineHeight: 1.55,
-                color: 'rgba(255,255,255,0.92)', fontFamily: 'inherit',
-                margin: 0, textWrap: 'pretty', position: 'relative', zIndex: 1,
-              }}>
-                {typo("The ability to execute at a high level regardless of conditions. The discipline, leadership, and accountability that turn variable inputs into reliable outputs.")}
-              </p>
+                {/* Heading */}
+                <h3 style={{
+                  fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
+                  color: C.white, fontFamily: 'inherit',
+                  margin: '0 0 14px', letterSpacing: '-0.012em',
+                  position: 'relative', zIndex: 1,
+                }}>
+                  Built on the Five Disciplines.
+                </h3>
+
+                {/* Body — top-justified above the discipline anchor list */}
+                <p style={{
+                  fontSize: 15, fontWeight: 300, lineHeight: 1.55,
+                  color: 'rgba(255,255,255,0.86)', fontFamily: 'inherit',
+                  margin: '0 0 22px', textWrap: 'pretty',
+                  position: 'relative', zIndex: 1,
+                }}>
+                  {typo("The engine that turns variable inputs into reliable outputs. Immovable against changing conditions because the foundation underneath it doesn\u2019t bend.")}
+                </p>
+
+                {/* Quiet anchor — the five disciplines listed at small
+                    scale at the bottom of the card. Tells the reader
+                    exactly what the engine is built on, without
+                    repeating Row 2's animation. */}
+                <div style={{
+                  position: 'relative', zIndex: 1,
+                  marginTop: 'auto', paddingTop: 18,
+                  borderTop: `1px solid rgba(234, 187, 113, 0.28)`,
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '8px 18px',
+                  fontSize: 11.5,
+                  fontWeight: 500,
+                  letterSpacing: '0.02em',
+                  color: 'rgba(255,255,255,0.78)',
+                }}>
+                  {EXPERTISE_CARDS.map((card) => (
+                    <div key={card.headline} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit' }}>
+                      <span style={{
+                        width: 4, height: 4, borderRadius: 50, background: C.gold,
+                        flex: '0 0 auto',
+                      }} />
+                      {card.headline}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN — results. Mirror of left column with green
-              up-markers and flow lines that draw from the engine
-              outward as each result lands. */}
+          {/* RIGHT — Consistent Results, continuously rotating */}
           <div style={{ position: 'relative', paddingTop: 8 }}>
-            <DiagramColHead label="Consistent Results" align="left" />
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {CONSISTENT_RESULTS.map((item, i) => (
-                <li key={i}
-                  data-result-item
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    fontSize: 14.5, fontWeight: 500, color: C.navy, fontFamily: 'inherit',
-                    padding: '12px 0', borderBottom: `1px solid ${C.fog}`,
-                    position: 'relative',
-                  }}>
-                  {/* Flow line from engine into this result. */}
-                  <span
-                    data-flow-line-right
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      left: -12,
-                      top: '50%',
-                      width: 'clamp(20px, 4vw, 56px)',
-                      height: 1,
-                      background: `linear-gradient(to left, ${C.fog}, ${C.gold})`,
-                      transform: 'scaleX(0)',
-                      transformOrigin: '0% 50%',
-                    }}
-                  />
-                  <GreenUpMarker color="#2d7a4f" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <DiagramColHead label="Consistent Results" />
+            <RotatingPaneList
+              pool={RESULTS_POOL}
+              slotCount={5}
+              Marker={GreenUpMarker}
+              markerColor="#2d7a4f"
+              side="right"
+              intervalMs={3200}
+              jitter={1700}
+              baseDelay={1500}
+            />
           </div>
         </div>
 
-        {/* Closing line — settles in once both columns resolve. */}
-        <p ref={closerRef} style={{
+        {/* Closing line */}
+        <p style={{
           fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 700, lineHeight: 1.25,
           color: C.navy, fontFamily: 'inherit',
           margin: '72px 0 0', maxWidth: S.maxRead,
