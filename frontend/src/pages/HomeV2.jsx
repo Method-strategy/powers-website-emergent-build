@@ -15,59 +15,155 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ── Tokens ── */
 const C = {
-  navy:    '#183a61',
-  navy900: '#0d2442',
-  navy400: '#4a6a8a',
-  gold:    '#eabb71',
-  gold50:  '#fdf6e8',
-  gold600: '#c9963e',
-  body:    '#3a3a38',
+  // Primary navy stack — three depths for layering
+  ink:     '#0a1421',  // Deepest. Used for max-emphasis surfaces (hero, footer CTA).
+  navy900: '#0d2442',  // Deep — case-study masthead, footer
+  navy:    '#183a61',  // Brand navy — primary copy, anchors
+  navy700: '#234a78',  // Mid-tone navy — secondary fills, hover lifts
+  navy400: '#4a6a8a',  // Muted navy — meta text, sub-labels
+
+  // Gold accent stack — pale wash through deep emphasis
+  gold200: '#f7e8c8',  // Pale gold wash — subtle backgrounds, surface lifts
+  gold:    '#eabb71',  // Brand gold — primary accent
+  gold600: '#c9963e',  // Deep gold — hover, emphasis on light
+  gold800: '#8a6321',  // Deepest gold — used sparingly on light surfaces for max contrast
+
+  // Secondary accent — copper (paired with gold sparingly for variety)
+  copper:  '#a55a3e',  // Warm accent for one-off editorial moments
+
+  // Neutrals — warm-to-cool spread for surface layering
+  ivory:   '#fbf9f4',  // Warmest off-white — premium content surfaces
+  bone:    '#f4efe4',  // Warm off-white — content sections
+  paper:   '#f7f6f1',  // Neutral off-white — section bands (legacy bgLight)
+  fog:     '#dcdfe3',  // Cool light gray — dividers, fine borders
+  steel:   '#3d5876',  // Cool mid — captions on dark surfaces
+  body:    '#3a3a38',  // Body text — warm dark gray
   white:   '#ffffff',
   gray50:  '#f5f5f3',
   gray100: '#e8e8e4',
   gray400: '#888884',
 };
 
-/* ── HOMEPAGE SECTION TOKENS ─────────────────────────────────────────
- * Single source of truth for the homepage's vertical rhythm. Sections
- * read top→bottom as alternating tonal bands so the page has a real
- * cadence instead of a row-by-row feel.
+/* ── HOMEPAGE DESIGN SYSTEM ──────────────────────────────────────────
+ * Single source of truth for the homepage's layout, type, and rhythm.
  *
- * Surfaces (in order of how often they appear):
- *   bgWhite   — neutral content surface
- *   bgLight   — warm off-white, sits between content blocks
- *   bgNavy    — content highlight (Results section)
- *   bgDeep    — bookend surface (Hero, FooterCTA, Footer)
+ * Layout — three approved measures, used purposefully:
+ *   maxNarrow  — 640px. Punchy hero / focal display content.
+ *   maxRead    — 760px. Reading copy + display headings.
+ *   maxWide    — 1240px. Card grids, the engine diagram, tool surfaces.
  *
- * Vertical rhythm:
- *   sectionPadY   — top + bottom on every section
- *   sectionPadX   — left + right on every section
- *   maxWide       — content container width on every section
- *   gapHeaderToBody — distance from section header → first content block
+ * Alignment regimen — left-anchored is the default voice. Centered
+ * alignment is reserved for big moments only (hero, payoff lines,
+ * single-thesis closers). This is the discipline that fixes "all
+ * over the place" feeling.
  *
- * Type:
- *   h2Size   — every section H2 uses this exact clamp
- *   h2Weight, h2LH, h2Tracking — every section H2's display treatment
- *   ledeSize, ledeLH, ledeWeight — every section's intro body paragraph
+ * Type — every H2 on the page uses h2Size / h2Weight / h2LH /
+ * h2Tracking. Editorial variation happens INSIDE the H2 via italic
+ * or weight contrast, not by varying the H2 itself. The system is
+ * what makes the site feel coherent.
  * ────────────────────────────────────────────────────────────────── */
 const S = {
+  // Surface tokens
   bgWhite: '#ffffff',
-  bgLight: '#f7f6f1',
+  bgIvory: '#fbf9f4',
+  bgBone:  '#f4efe4',
+  bgPaper: '#f7f6f1',
   bgNavy:  '#183a61',
   bgDeep:  '#0d2442',
+  bgInk:   '#0a1421',
+
+  // Vertical rhythm — every section uses these
   sectionPadY: 'clamp(96px, 9vw, 128px)',
   sectionPadX: 'clamp(24px, 4vw, 48px)',
-  maxWide: 1240,
-  maxRead: 760,
   gapHeaderToBody: 64,
+
+  // Measure widths — three only
+  maxNarrow: 640,
+  maxRead: 760,
+  maxWide: 1240,
+
+  // Display type
   h2Size: 'clamp(28px, 3.4vw, 42px)',
   h2Weight: 800,
   h2LH: 1.12,
   h2Tracking: '-0.012em',
+  h3Size: 'clamp(20px, 2vw, 26px)',
+  h3Weight: 700,
+
+  // Body type
   ledeSize: 17,
   ledeLH: 1.65,
   ledeWeight: 300,
 };
+
+/* ── COMMON SECTION ATOMS ────────────────────────────────────────────
+ * Shared building blocks so every section gets the same treatment
+ * automatically instead of re-implementing the rhythm by hand.
+ * ────────────────────────────────────────────────────────────────── */
+
+/* SectionShell — every section wraps in this. Standardizes background,
+   padding, and inner container width. Pass `align="left"` for the
+   default editorial alignment, `align="center"` for the rare big
+   moments. */
+function SectionShell({ bg, maxWidth, align = 'left', overflow = false, style, children }) {
+  return (
+    <section style={{
+      background: bg || S.bgWhite,
+      padding: `${S.sectionPadY} ${S.sectionPadX}`,
+      position: 'relative',
+      overflow: overflow ? 'visible' : 'hidden',
+      ...(style || {}),
+    }}>
+      <div style={{
+        maxWidth: maxWidth || S.maxWide,
+        margin: '0 auto',
+        textAlign: align,
+      }}>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+/* SectionHeader — eyebrow + H2 + optional lede. One header treatment
+   used across every section. Variants:
+     tone="light" — for navy / ink surfaces (white type)
+     tone="dark"  — for light surfaces (navy type, default)
+     align        — inherits from parent shell unless overridden
+   The lede always sits at maxRead width regardless of the shell, so
+   long-form reading copy stays in a comfortable measure even when
+   the surrounding tool surface is wider. */
+function SectionHeader({ eyebrow, h2, lede, tone = 'dark', align = 'left' }) {
+  const isLight = tone === 'light';
+  const navyColor = isLight ? C.white : C.navy;
+  const bodyColor = isLight ? 'rgba(255,255,255,0.78)' : C.body;
+  return (
+    <div style={{
+      marginBottom: S.gapHeaderToBody,
+      maxWidth: S.maxRead,
+      marginLeft: align === 'center' ? 'auto' : 0,
+      marginRight: align === 'center' ? 'auto' : 0,
+      textAlign: align,
+    }}>
+      <Eyebrow label={eyebrow} light={isLight} />
+      <h2 style={{
+        fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+        color: navyColor, fontFamily: 'inherit',
+        margin: lede ? '16px 0 22px' : '16px 0 0',
+        letterSpacing: S.h2Tracking, textWrap: 'pretty',
+      }}>{h2}</h2>
+      {lede && (
+        <p style={{
+          fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+          color: bodyColor, fontFamily: 'inherit',
+          margin: 0, textWrap: 'pretty',
+        }}>
+          {typeof lede === 'string' ? typo(lede) : lede}
+        </p>
+      )}
+    </div>
+  );
+}
 
 /* ── MEGA MENU — RESULTS ── */
 function MegaMenuResults({ visible }) {
@@ -1377,52 +1473,87 @@ function Eyebrow({ label, light }) {
 /* ── SECTION 2 — WHY WE'RE DIFFERENT ── */
 function SectionTheMoment() {
   return (
-    <section style={{ background: S.bgWhite, width: '100%', padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <div style={{ maxWidth: S.maxRead, margin: '0 auto', textAlign: 'center' }}>
-        <Eyebrow label={"Why We\u2019re Different"} />
-        <h2 style={{
-          fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-          color: C.navy, fontFamily: 'inherit', margin: '16px 0 36px',
-          letterSpacing: S.h2Tracking, textWrap: 'pretty',
-        }}>
-          Most Firms Chase the Symptom. POWERS Fixes the Root.
-        </h2>
+    <section style={{ background: S.bgWhite, width: '100%', padding: `${S.sectionPadY} ${S.sectionPadX}`, position: 'relative' }}>
+      {/* Subtle off-page architectural mark — large outline "+" in
+          pale gold sits at the top-right corner of the section as
+          editorial punctuation. Aligns visually with the additive
+          + joiners used in Row 2 above. */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', right: 'clamp(40px, 8vw, 120px)', top: 'clamp(56px, 6vw, 88px)',
+        fontSize: 'clamp(120px, 14vw, 220px)', fontWeight: 200, lineHeight: 0.8,
+        color: C.gold200, fontFamily: 'inherit',
+        userSelect: 'none', pointerEvents: 'none', zIndex: 0,
+      }}>+</div>
 
-        {/* Long-form narrative argument. Three movements: (1) what most
-            firms get wrong, (2) the redwood analogy as a single piece of
-            argumentative imagery, (3) the inflection-point passage with
-            the "radios get quiet" landing. Anchored left for readability,
-            centered on the row for visual rhythm with the H2 above. */}
-        <div style={{
-          maxWidth: 720, margin: '0 auto', textAlign: 'left',
-        }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        {/* Left-anchored editorial header — eyebrow + H2 sit on the
+            left rail, matching the section's body alignment. */}
+        <div style={{ maxWidth: S.maxRead, marginBottom: 44 }}>
+          <Eyebrow label={"Why We\u2019re Different"} />
+          <h2 style={{
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
+          }}>
+            Most Firms Chase the Symptom. <span style={{ color: C.gold800, fontStyle: 'italic', fontWeight: 700 }}>POWERS Fixes the Root.</span>
+          </h2>
+        </div>
+
+        {/* Long-form narrative argument. Editorial layout: body sits
+            in a reading column with a single inset pull-quote that
+            breaks up the wall of text and gives the section a
+            visual pivot point. */}
+        <div style={{ maxWidth: S.maxRead }}>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
-            margin: '0 0 18px', textWrap: 'pretty',
+            margin: '0 0 22px', textWrap: 'pretty',
           }}>
             {typo("Most consulting firms work on the readout. They target the number, move it, write the deck, and leave. Then the number drifts back, because nothing underneath it changed.")}
           </p>
-          <p style={{
-            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            margin: '0 0 18px', textWrap: 'pretty',
+
+          {/* Pull-quote — editorial pivot. Serif italic for typographic
+              contrast against the predominantly sans-serif page; left
+              gold rule anchors it to the page's accent system. */}
+          <blockquote style={{
+            margin: '36px 0 36px -4px',
+            paddingLeft: 28,
+            borderLeft: `3px solid ${C.gold}`,
+            fontSize: 'clamp(22px, 2.4vw, 28px)',
+            lineHeight: 1.3,
+            fontWeight: 500,
+            fontStyle: 'italic',
+            color: C.navy,
+            fontFamily: 'inherit',
+            letterSpacing: '-0.008em',
+            textWrap: 'balance',
           }}>
-            {typo("The tallest, oldest, most storm-resistant trees on earth don\u2019t stand because of what you can see. They stand because of a root system, decades deep, that most people never think about. Operations are no different. The ones that perform under pressure are the ones with something strong enough underneath to carry the weight. That\u2019s the level we work at.")}
-          </p>
+            {typo("The tallest trees on earth don\u2019t stand because of what you can see. They stand because of a root system, decades deep, that most people never think about.")}
+          </blockquote>
+
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
-            margin: '0 0 18px', textWrap: 'pretty',
+            margin: '0 0 22px', textWrap: 'pretty',
+          }}>
+            {typo("Operations are no different. The ones that perform under pressure are the ones with something strong enough underneath to carry the weight. That\u2019s the level we work at.")}
+          </p>
+
+          <p style={{
+            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
+            margin: '0 0 22px', textWrap: 'pretty',
           }}>
             {typo("Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment comes when the right capability gets built into the operation itself. The kind that doesn\u2019t show up on the org chart or in the strategy. It\u2019s underneath. Load-bearing. The root system that keeps strong performance running under pressure.")}
           </p>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
-            margin: '0 0 18px', textWrap: 'pretty',
+            margin: '0 0 22px', textWrap: 'pretty',
           }}>
-            {typo("When that system is in, the operation changes, and you can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That\u2019s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.")}
+            {typo("When that system is in, the operation changes, and you can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. ")}
+            <span style={{ color: C.navy, fontWeight: 600 }}>The radios get quiet.</span>
+            {typo(" That\u2019s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.")}
           </p>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
@@ -1506,257 +1637,309 @@ function useReveal() {
   return [ref, seen];
 }
 
+/* ── SECTION — PRESSURE IN / PERFORMANCE OUT ──────────────────────
+ *
+ * GSAP scroll-driven three-act choreography:
+ *
+ *   Act 1 — Pressures arrive.
+ *     Forces fade in from the left, one at a time, each preceded by
+ *     a red trend-down marker. The arrivals are paced so the reader
+ *     can register each pressure as it lands rather than seeing them
+ *     all at once. A faint dashed flow line draws from each force
+ *     toward the engine as it arrives — visualizing the absorption.
+ *
+ *   Act 2 — The engine absorbs.
+ *     With every force that lands, the engine subtly intensifies:
+ *     the navy block lifts in shadow, a gold ring breathes at a
+ *     slightly faster rate, and a soft halo grows. By the time all
+ *     forces are in, the engine is fully "loaded."
+ *
+ *   Act 3 — Results emit.
+ *     The engine releases. Results emerge from the engine and
+ *     travel rightward into the Consistent Results column, each
+ *     preceded by a green trend-up marker. A solid gold flow line
+ *     draws from the engine into each result as it lands.
+ *
+ * The scrub is set deliberately slow so the reader can absorb the
+ * "absorbing → producing" beat. Reduced-motion renders the entire
+ * diagram fully resolved and skips all GSAP setup.
+ * ────────────────────────────────────────────────────────────────── */
 function SectionExecutionEngine() {
-  const [ref, seen] = useReveal();
+  const sectionRef = useRef(null);
+  const enginePanelRef = useRef(null);
+  const engineHaloRef = useRef(null);
+  const closerRef = useRef(null);
 
-  // Stagger timings (ms after seen=true)
-  const T_HEADER  = 0;
-  const T_LEFT0   = 220;
-  const T_LEFTGAP = 45;     // per-item stagger (tightened)
-  const T_FLOW    = T_LEFT0 + VARYING_FORCES.length * T_LEFTGAP + 60;
-  const T_CENTER  = T_FLOW + 180;
-  const T_RIGHT0  = T_CENTER + 200;
-  const T_RIGHTGAP = 45;
-  const T_CLOSE   = T_RIGHT0 + CONSISTENT_RESULTS.length * T_RIGHTGAP + 100;
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const G = '#eabb71';      // gold
-  const NAVY = '#183a61';
-  const TEXT = '#3a3a38';
-  const RED   = '#b8392d';  // "red number" — pressure-side indicator
-  const GREEN = '#2d7a4f';  // "green number" — result-side indicator
+    const section = sectionRef.current;
+    if (!section) return;
 
-  // Inline keyframes — kept here so the section is self-contained.
-  const styles = `
-    @keyframes pw-enter-left {
-      0%   { opacity: 0; transform: translateX(-12px); }
-      100% { opacity: 1; transform: translateX(0); }
+    const leftItems = section.querySelectorAll('[data-force-item]');
+    const rightItems = section.querySelectorAll('[data-result-item]');
+    const leftLines = section.querySelectorAll('[data-flow-line-left]');
+    const rightLines = section.querySelectorAll('[data-flow-line-right]');
+    const engine = enginePanelRef.current;
+    const halo = engineHaloRef.current;
+    const closer = closerRef.current;
+
+    if (reduce) {
+      // Resolved state — no animation, no GSAP setup.
+      return;
     }
-    @keyframes pw-enter-right {
-      0%   { opacity: 0; transform: translateX(12px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes pw-enter-up {
-      0%   { opacity: 0; transform: translateY(8px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pw-scale-in {
-      0%   { opacity: 0; transform: scale(0.96); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    @keyframes pw-flow-draw {
-      0%   { transform: scaleX(0); }
-      100% { transform: scaleX(1); }
-    }
-    @keyframes pw-carat-drift-1 {
-      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
-      14%  { opacity: 0.92; }
-      86%  { opacity: 0.92; }
-      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
-    }
-    @keyframes pw-carat-drift-2 {
-      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
-      18%  { opacity: 0.78; }
-      82%  { opacity: 0.78; }
-      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
-    }
-    @keyframes pw-carat-drift-3 {
-      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
-      22%  { opacity: 0.85; }
-      78%  { opacity: 0.85; }
-      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
-    }
-    @keyframes pw-carat-march {
-      0%   { transform: translate3d(-20%, 0, 0); opacity: 0; }
-      12%  { opacity: 0.95; }
-      88%  { opacity: 0.95; }
-      100% { transform: translate3d(120%, 0, 0); opacity: 0; }
-    }
-    @keyframes pw-pulse {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50%      { opacity: 1;    transform: scale(1.18); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .pw-engine *, .pw-engine *::before, .pw-engine *::after {
-        animation: none !important;
-        transition: none !important;
+
+    // Initial states. Left items sit 24px left + invisible; right
+    // items sit 24px right + invisible. Engine sits 14px lifted +
+    // 0.96 scale. Halo invisible. Lines collapsed (scaleX 0).
+    gsap.set(leftItems, { opacity: 0, x: -28, willChange: 'transform, opacity' });
+    gsap.set(rightItems, { opacity: 0, x: 28, willChange: 'transform, opacity' });
+    gsap.set(leftLines, { scaleX: 0, transformOrigin: '100% 50%' });
+    gsap.set(rightLines, { scaleX: 0, transformOrigin: '0% 50%' });
+    if (engine) gsap.set(engine, { y: 18, opacity: 0, scale: 0.965, willChange: 'transform, opacity' });
+    if (halo) gsap.set(halo, { opacity: 0, scale: 0.8 });
+    if (closer) gsap.set(closer, { opacity: 0, y: 14 });
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          // Range tuned for the section's natural height: starts as
+          // the section comes into view, ends well past so the user
+          // has a full screen of scroll to walk through Act 1 → 3.
+          start: 'top 70%',
+          end: 'bottom 30%',
+          scrub: 1.2,
+        },
+      });
+
+      // Engine lifts into place first — establishes the system that
+      // will absorb the inputs.
+      if (engine) {
+        tl.to(engine, {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          ease: 'power3.out',
+          duration: 1.2,
+        }, 0);
       }
-    }
-  `;
+      if (halo) {
+        tl.to(halo, {
+          opacity: 0.45,
+          scale: 1,
+          ease: 'power2.out',
+          duration: 1.0,
+        }, 0.4);
+      }
 
-  const willReveal = (delayMs, kf = 'pw-enter-up') => ({
-    opacity: 0,
-    animation: seen ? `${kf} 500ms cubic-bezier(0.22, 1, 0.36, 1) ${delayMs}ms forwards` : 'none',
-  });
+      // Act 1: each force arrives + draws a flow line toward the
+      // engine. Stagger is generous so the reader has time to read
+      // each force as it lands.
+      const FORCE_STAGGER = 0.5;
+      leftItems.forEach((item, i) => {
+        const at = 1.0 + i * FORCE_STAGGER;
+        tl.to(item, {
+          opacity: 1,
+          x: 0,
+          ease: 'power3.out',
+          duration: 0.7,
+        }, at);
+        if (leftLines[i]) {
+          tl.to(leftLines[i], {
+            scaleX: 1,
+            ease: 'power2.inOut',
+            duration: 0.55,
+          }, at + 0.15);
+        }
+        // Subtle engine intensification with each force absorbed —
+        // halo brightens and breathes faster the more loaded it gets.
+        if (halo) {
+          tl.to(halo, {
+            opacity: 0.45 + (i + 1) * 0.04,
+            scale: 1.0 + (i + 1) * 0.012,
+            ease: 'power1.out',
+            duration: 0.4,
+          }, at + 0.05);
+        }
+      });
 
-  // ── Carat particles ─────────────────────────────────────────────
-  // Left gutter: chaotic slate-blue arrows arriving at irregular intervals.
-  // Reads as unpredictable pressures arriving — never quite repeats.
-  // Right gutter: gold arrows leaving on a perfectly even cadence.
-  // Reads as regimented, predictable output.
-  const SLATE = '#7c9ab8';   // muted slate-blue
+      // Act 2 → Act 3 bridge: engine "releases" with a small surge
+      // before results emit.
+      if (halo) {
+        const releaseAt = 1.0 + leftItems.length * FORCE_STAGGER + 0.2;
+        tl.to(halo, {
+          opacity: 0.85,
+          scale: 1.18,
+          ease: 'power2.out',
+          duration: 0.6,
+        }, releaseAt)
+          .to(halo, {
+            opacity: 0.55,
+            scale: 1.06,
+            ease: 'power2.inOut',
+            duration: 0.5,
+          }, releaseAt + 0.6);
+      }
 
-  // Triple-chevron arrow (">>>") — reads as directional flow, much more
-  // legible than a single chevron at small sizes.
-  const makeCarat = (color) => {
-    const svg = encodeURIComponent(
-      `<svg xmlns='http://www.w3.org/2000/svg' width='44' height='18' viewBox='0 0 44 18'>` +
-      `<g fill='none' stroke='${color}' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>` +
-      `<path d='M3 3 L11 9 L3 15' opacity='0.45'/>` +
-      `<path d='M16 3 L24 9 L16 15' opacity='0.75'/>` +
-      `<path d='M29 3 L37 9 L29 15'/>` +
-      `</g>` +
-      `</svg>`
-    );
-    return `url("data:image/svg+xml,${svg}")`;
-  };
+      // Act 3: results emit + draw flow lines from the engine into
+      // each result.
+      const RESULT_START = 1.0 + leftItems.length * FORCE_STAGGER + 0.8;
+      const RESULT_STAGGER = 0.46;
+      rightItems.forEach((item, i) => {
+        const at = RESULT_START + i * RESULT_STAGGER;
+        if (rightLines[i]) {
+          tl.to(rightLines[i], {
+            scaleX: 1,
+            ease: 'power2.inOut',
+            duration: 0.5,
+          }, at);
+        }
+        tl.to(item, {
+          opacity: 1,
+          x: 0,
+          ease: 'power3.out',
+          duration: 0.7,
+        }, at + 0.18);
+      });
 
-  // Left gutter: 4 chaotic arrows — faster baseline + tighter randomized
-  // start delays so the eye reads "input is unpredictable AND coming at
-  // you quickly." Faster duration on the left vs right reinforces the
-  // chaos/pressure side of the diagram.
-  const LEFT_CARATS = [
-    { top: '14%', delay: 0,    duration: 2.4, kf: 'pw-carat-drift-1' },
-    { top: '38%', delay: 0.6,  duration: 3.1, kf: 'pw-carat-drift-2' },
-    { top: '62%', delay: 0.2,  duration: 2.7, kf: 'pw-carat-drift-3' },
-    { top: '84%', delay: 1.4,  duration: 3.4, kf: 'pw-carat-drift-1' },
-  ];
+      // Closer line settles in once everything's resolved.
+      if (closer) {
+        tl.to(closer, {
+          opacity: 1,
+          y: 0,
+          ease: 'power2.out',
+          duration: 0.9,
+        }, '>-0.2');
+      }
+    }, section);
 
-  // Right gutter: 4 arrows, evenly distributed top-to-bottom, identical
-  // duration, evenly staggered start delays. The cadence is the signal:
-  // output arrives on a beat.
-  const RIGHT_CARATS_COUNT = 4;
-  const RIGHT_DURATION = 4.2;
-  const RIGHT_CARATS = Array.from({ length: RIGHT_CARATS_COUNT }, (_, i) => ({
-    top: `${18 + i * 22}%`,
-    delay: (RIGHT_DURATION / RIGHT_CARATS_COUNT) * i,
-    duration: RIGHT_DURATION,
-    kf: 'pw-carat-march',
-  }));
-
-  const caratSpan = (color, { top, delay, duration, kf }, i) => (
-    <span key={i} aria-hidden="true" style={{
-      position: 'absolute', top, left: 0, width: 44, height: 18,
-      backgroundImage: makeCarat(color),
-      backgroundRepeat: 'no-repeat', backgroundSize: 'contain',
-      transform: 'translate3d(-20%, 0, 0)',
-      opacity: 0,
-      animation: seen
-        ? `${kf} ${duration}s linear ${T_FLOW / 1000 + delay}s infinite`
-        : 'none',
-      willChange: 'transform, opacity',
-    }} />
-  );
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section ref={ref} className="pw-engine" style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <style dangerouslySetInnerHTML={{ __html: styles }} />
-
+    <section ref={sectionRef} style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 40, ...willReveal(T_HEADER) }}>
+        {/* Header — left-anchored editorial. Eyebrow + H2 + lede sit
+            in a reading column on the left rail to match the section
+            rhythm established earlier on the page. */}
+        <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: S.maxRead }}>
           <Eyebrow label="How Execution Capability Creates Value" />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Pressure In. Performance Out.
+            Pressure In. <span style={{ color: C.gold800, fontStyle: 'italic', fontWeight: 700 }}>Performance Out.</span>
           </h2>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            color: C.body, fontFamily: 'inherit', margin: 0,
             textWrap: 'pretty',
           }}>
             {typo("Every operation faces conditions it can\u2019t control. Market pressure. Workforce turnover. Equipment failure. Demand swings. The question isn\u2019t whether those pressures show up. They always do. The question is whether the operation has the foundation to absorb them and still produce.")}
           </p>
         </div>
 
-        {/* DIAGRAM — three columns + flow rails */}
+        {/* DIAGRAM */}
         <div style={{
-          marginTop: 40,
           display: 'grid',
-          gridTemplateColumns: '1fr 1.18fr 1fr',
-          columnGap: 72,
+          gridTemplateColumns: '1fr 1.2fr 1fr',
+          columnGap: 'clamp(20px, 4vw, 56px)',
           alignItems: 'stretch',
           position: 'relative',
         }}>
-          {/* Animated flow arrows — live in the column gaps, full gap width,
-              so they read as actual directional flow rather than incidental
-              ornament. Left = chaotic slate arrival, right = regimented
-              gold output. */}
-          <div aria-hidden="true" className="pw-carat-gutter pw-carat-gutter-left" style={{
-            position: 'absolute',
-            top: 0, bottom: 0,
-            left: 'calc(33.33% - 60px)', width: 80,
-            pointerEvents: 'none', zIndex: 0,
-          }}>
-            {LEFT_CARATS.map((c, i) => caratSpan(SLATE, c, i))}
-          </div>
-          <div aria-hidden="true" className="pw-carat-gutter pw-carat-gutter-right" style={{
-            position: 'absolute',
-            top: 0, bottom: 0,
-            right: 'calc(33.33% - 60px)', width: 80,
-            pointerEvents: 'none', zIndex: 0,
-          }}>
-            {RIGHT_CARATS.map((c, i) => caratSpan(G, c, i))}
-          </div>
-
-          {/* LEFT COLUMN — Varying Forces. Each line carries a red trend-
-              down marker. These are the "red numbers" CEOs and ops execs
-              are trying to convert. */}
-          <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
+          {/* LEFT COLUMN — pressures (forces). Each item carries a red
+              trend-down marker and a flow line that draws toward the
+              engine as the item lands. */}
+          <div style={{ position: 'relative', paddingTop: 8 }}>
             <DiagramColHead label="Varying Forces" />
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {VARYING_FORCES.map((item, i) => (
-                <li key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
-                  padding: '10px 0', borderBottom: '1px solid #e8e8e4',
-                  ...willReveal(T_LEFT0 + i * T_LEFTGAP, 'pw-enter-left'),
-                }}>
-                  <RedDownMarker color={RED} />
+                <li key={i}
+                  data-force-item
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    fontSize: 14.5, fontWeight: 500, color: C.navy, fontFamily: 'inherit',
+                    padding: '12px 0', borderBottom: `1px solid ${C.fog}`,
+                    position: 'relative',
+                  }}>
+                  <RedDownMarker color="#b8392d" />
                   <span>{item}</span>
+                  {/* Flow line from this force toward the engine.
+                      Sits in the column gap on the right of each item,
+                      scaleX from 1 (right edge) toward 0 (left). */}
+                  <span
+                    data-flow-line-left
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      right: -12,
+                      top: '50%',
+                      width: 'clamp(20px, 4vw, 56px)',
+                      height: 1,
+                      background: `linear-gradient(to right, ${C.fog}, ${C.gold})`,
+                      transform: 'scaleX(0)',
+                    }}
+                  />
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* CENTER COLUMN — Execution Capability (load-bearing). Rounded
-              navy panel is the engine that converts red inputs to green
-              outputs. The column title lives inside the panel in white so
-              the engine is visually one self-contained unit. */}
+          {/* CENTER — the engine. Navy panel with a subtle gold halo
+              that brightens and breathes as forces are absorbed. The
+              halo is the load indicator: invisible at rest, ramping
+              up to peak as the system reaches capacity. */}
           <div style={{
-            position: 'relative', zIndex: 2,
+            position: 'relative',
             display: 'flex', flexDirection: 'column',
             paddingTop: 8,
           }}>
-            <div style={{
-              background: NAVY, borderRadius: 14,
-              color: '#ffffff', padding: '34px 30px 36px',
-              display: 'flex', flexDirection: 'column', justifyContent: 'center',
-              flex: 1,
-              boxShadow: `0 28px 64px -28px rgba(13,36,66,0.55), inset 0 0 0 1px rgba(234,187,113,0.18)`,
-              position: 'relative', overflow: 'hidden',
-              ...willReveal(T_CENTER, 'pw-scale-in'),
-            }}>
-              {/* Fine architectural grid texture in background */}
+            {/* Halo — sits behind the engine panel. Gold radial blur
+                that grows + brightens with each force. */}
+            <div
+              ref={engineHaloRef}
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                inset: -28,
+                borderRadius: 36,
+                background: `radial-gradient(ellipse at center, ${C.gold200} 0%, rgba(234,187,113,0.25) 35%, rgba(234,187,113,0) 70%)`,
+                pointerEvents: 'none',
+                filter: 'blur(12px)',
+                zIndex: 0,
+              }}
+            />
+            {/* Engine panel */}
+            <div
+              ref={enginePanelRef}
+              style={{
+                position: 'relative', zIndex: 1,
+                background: `linear-gradient(180deg, ${C.navy} 0%, ${C.navy900} 100%)`,
+                borderRadius: 18,
+                color: C.white,
+                padding: 'clamp(28px, 3vw, 40px) clamp(24px, 2.4vw, 34px) clamp(32px, 3vw, 44px)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                flex: 1,
+                boxShadow: `0 32px 80px -28px rgba(13,36,66,0.65), inset 0 0 0 1px rgba(234,187,113,0.22)`,
+                overflow: 'hidden',
+              }}
+            >
+              {/* Fine architectural grid texture */}
               <div aria-hidden="true" style={{
-                position: 'absolute', inset: 0, opacity: 0.12, pointerEvents: 'none',
-                backgroundImage: `linear-gradient(${G} 1px, transparent 1px), linear-gradient(90deg, ${G} 1px, transparent 1px)`,
+                position: 'absolute', inset: 0, opacity: 0.14, pointerEvents: 'none',
+                backgroundImage: `linear-gradient(${C.gold} 1px, transparent 1px), linear-gradient(90deg, ${C.gold} 1px, transparent 1px)`,
                 backgroundSize: '40px 40px',
-                backgroundPosition: 'center center',
                 mixBlendMode: 'overlay',
               }} />
 
-              {/* Column title — same family as the section subhead, white,
-                  smaller scale so it functions as a column head not a hero
-                  treatment. */}
               <h3 style={{
                 fontSize: 'clamp(20px, 1.9vw, 24px)', fontWeight: 700, lineHeight: 1.2,
-                color: '#ffffff', fontFamily: 'inherit',
-                margin: '0 0 16px', letterSpacing: '-0.012em',
+                color: C.white, fontFamily: 'inherit',
+                margin: '0 0 14px', letterSpacing: '-0.012em',
                 position: 'relative', zIndex: 1,
               }}>
                 Execution Capability
@@ -1772,20 +1955,37 @@ function SectionExecutionEngine() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN — Consistent Results. Each line carries a green
-              trend-up marker. These are the "green numbers" the engine
-              produces from the red ones on the left. */}
-          <div style={{ position: 'relative', zIndex: 1, paddingTop: 8 }}>
-            <DiagramColHead label="Consistent Results" />
+          {/* RIGHT COLUMN — results. Mirror of left column with green
+              up-markers and flow lines that draw from the engine
+              outward as each result lands. */}
+          <div style={{ position: 'relative', paddingTop: 8 }}>
+            <DiagramColHead label="Consistent Results" align="left" />
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {CONSISTENT_RESULTS.map((item, i) => (
-                <li key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  fontSize: 14.5, fontWeight: 500, color: NAVY, fontFamily: 'inherit',
-                  padding: '10px 0', borderBottom: '1px solid #e8e8e4',
-                  ...willReveal(T_RIGHT0 + i * T_RIGHTGAP, 'pw-enter-right'),
-                }}>
-                  <GreenUpMarker color={GREEN} />
+                <li key={i}
+                  data-result-item
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    fontSize: 14.5, fontWeight: 500, color: C.navy, fontFamily: 'inherit',
+                    padding: '12px 0', borderBottom: `1px solid ${C.fog}`,
+                    position: 'relative',
+                  }}>
+                  {/* Flow line from engine into this result. */}
+                  <span
+                    data-flow-line-right
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: -12,
+                      top: '50%',
+                      width: 'clamp(20px, 4vw, 56px)',
+                      height: 1,
+                      background: `linear-gradient(to left, ${C.fog}, ${C.gold})`,
+                      transform: 'scaleX(0)',
+                      transformOrigin: '0% 50%',
+                    }}
+                  />
+                  <GreenUpMarker color="#2d7a4f" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -1793,16 +1993,15 @@ function SectionExecutionEngine() {
           </div>
         </div>
 
-        {/* Closing subhead — section-anchor declaration. */}
-        <div style={{ textAlign: 'center', marginTop: 56, ...willReveal(T_CLOSE) }}>
-          <p style={{
-            fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 700, lineHeight: 1.25,
-            color: NAVY, fontFamily: 'inherit', margin: '0 auto', maxWidth: 760,
-            letterSpacing: '-0.012em', textWrap: 'balance',
-          }}>
-            {typo("When the foundation is strong, conditions stop determining outcomes.")}
-          </p>
-        </div>
+        {/* Closing line — settles in once both columns resolve. */}
+        <p ref={closerRef} style={{
+          fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 700, lineHeight: 1.25,
+          color: C.navy, fontFamily: 'inherit',
+          margin: '72px 0 0', maxWidth: S.maxRead,
+          letterSpacing: '-0.012em', textWrap: 'balance',
+        }}>
+          {typo("When the foundation is strong, conditions stop determining outcomes.")}
+        </p>
       </div>
     </section>
   );
@@ -2204,7 +2403,7 @@ function SectionExpertiseAreas() {
   }, []);
 
   return (
-    <section ref={sectionRef} style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+    <section ref={sectionRef} style={{ background: S.bgBone, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="What We Build" />
@@ -2281,7 +2480,7 @@ function SectionExpertiseAreas() {
  * ──────────────────────────────────────────────────────────────────── */
 function SectionHowWeWork() {
   return (
-    <section style={{ background: S.bgLight, padding: `${S.sectionPadY} 0` }}>
+    <section style={{ background: S.bgPaper, padding: `${S.sectionPadY} 0` }}>
       <div style={{
         maxWidth: S.maxWide, margin: '0 auto',
         display: 'grid',
@@ -2662,7 +2861,7 @@ function InsightCard({ category, headline, summary }) {
 function SectionInsightsEntryPoint() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+    <section style={{ background: S.bgIvory, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="Insights" />
