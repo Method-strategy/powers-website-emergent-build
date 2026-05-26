@@ -34,10 +34,10 @@ function App() {
       <Routes>
         {/* Homepage renders its own inline Header + Footer — no shared chrome */}
         <Route element={<HomeLayout />}>
-          <Route path="/" element={<Home />} />
-          {/* /v2 — copy iteration: roots / chase / produce voice.
-              Reversible: delete this line + HomeV2.jsx to revert. */}
-          <Route path="/v2" element={<HomeV2 />} />
+          {/* Primary homepage — currently the copy iteration (HomeV2).
+              To revert: swap these two paths so / points back to <Home />. */}
+          <Route path="/" element={<HomeV2 />} />
+          <Route path="/v1" element={<Home />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
