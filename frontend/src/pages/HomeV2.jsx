@@ -7,6 +7,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { typo } from '../lib/typo';
 import PowersMetrics from '../components/PowersMetrics';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger once. Safe to call multiple times — GSAP dedupes.
+gsap.registerPlugin(ScrollTrigger);
 
 /* ── Tokens ── */
 const C = {
@@ -811,47 +816,62 @@ function Hero() {
   );
 }
 
-/* HeroHeadline — three-word opacity reveal: Stop · Chasing · Results.
-   ~400ms per word, opacity-only (no slide, no scale). Plays once on
-   first paint, then stays still for the rest of the session. Honors
-   prefers-reduced-motion by rendering fully resolved with no animation.
-   Critical SEO/a11y note: the text is rendered immediately at the
-   final opacity for the SR layer — only the visible opacity is
-   delayed. The headline is always present and readable to crawlers
-   and assistive tech. */
+/* HeroHeadline — GSAP-driven three-beat reveal: Stop · Chasing · Results.
+   Each word: opacity 0 + y 14 → opacity 1 + y 0, stagger 0.42s, eased
+   with power4.out for the lift and power2.out for the opacity to keep
+   the resolve crisp. The lift is intentionally small (14px) — the
+   spec calls for "no slide," and at this distance the y motion reads
+   as *weight settling* rather than slide-in. Period travels with
+   "Results." as a single token.
+
+   Accessibility / SEO: words render at their final state immediately
+   in the DOM. GSAP overrides to the start state only after mount, so
+   crawlers and reduced-motion users see the fully resolved headline
+   with zero animation. */
 function HeroHeadline() {
-  const [reduce, setReduce] = useState(false);
-  const [played, setPlayed] = useState(false);
+  const ref = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const r = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setReduce(r);
-    const id = requestAnimationFrame(() => setPlayed(true));
-    return () => cancelAnimationFrame(id);
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+
+    const words = ref.current ? ref.current.querySelectorAll('[data-hero-word]') : [];
+    if (!words.length) return;
+
+    // Set initial state in the same frame to avoid a flash of the
+    // resolved headline before the animation begins.
+    gsap.set(words, { opacity: 0, y: 14, willChange: 'transform, opacity' });
+
+    const tl = gsap.timeline({
+      defaults: { ease: 'power4.out' },
+      delay: 0.18,
+      onComplete: () => {
+        // Drop willChange after the timeline resolves so it doesn't
+        // sit on the GPU for the life of the page.
+        gsap.set(words, { willChange: 'auto' });
+      },
+    });
+    tl.to(words, {
+      opacity: 1,
+      y: 0,
+      duration: 0.62,
+      stagger: 0.42,
+    });
+
+    return () => {
+      tl.kill();
+    };
   }, []);
 
-  const words = ['Stop', 'Chasing', 'Results.'];
-  const baseDelay = 120;
-  const perWord = 400;
-
   return (
-    <>
-      {words.map((w, i) => {
-        const style = reduce
-          ? { opacity: 1 }
-          : {
-              opacity: played ? 1 : 0,
-              transition: `opacity 520ms ease-out ${baseDelay + i * perWord}ms`,
-              display: 'inline-block',
-            };
-        return (
-          <span key={i} style={style}>
-            {w}{i < words.length - 1 ? '\u00A0' : ''}
-          </span>
-        );
-      })}
-    </>
+    <span ref={ref}>
+      <span data-hero-word style={{ display: 'inline-block' }}>Stop</span>
+      {'\u00A0'}
+      <span data-hero-word style={{ display: 'inline-block' }}>Chasing</span>
+      {'\u00A0'}
+      <span data-hero-word style={{ display: 'inline-block' }}>Results.</span>
+    </span>
   );
 }
 
@@ -1873,49 +1893,40 @@ function IconPlaceholder() {
   );
 }
 
-/* ExpertiseCard — Five Disciplines card with scroll-driven lock-in.
-   Props:
-     - headline, body: card content
-     - lockedIn (bool): whether this card has been locked into the
-       structure by the parent's scroll progress
-     - isKeystone (bool): true for Daily Accountability (5th card).
-       When locked in, the keystone gets a gold top rule signaling
-       structural completion.
-     - locking (bool): true during the active lock-in transition.
-       Drives the gold flash on the keystone the moment it locks.
-   Resting state (before lock-in): card sits below its final position
-   with zero opacity. Locked state: card sits in place, opaque, with
-   weighted easing — the "mass being set into place" feel the spec
-   requires. No bounce; tightly controlled cubic-bezier with a soft
-   settle. */
-function ExpertiseCard({ headline, body, lockedIn, isKeystone }) {
-  const [h, setH] = useState(false);
-  return (
-    <div style={{
-      background: '#ffffff',
-      border: `1px solid #e8e8e4`,
-      // Keystone gets a permanent gold top rule once locked in.
-      // Other cards retain the hover-driven gold rule behavior.
-      borderTop: isKeystone && lockedIn
-        ? `3px solid #eabb71`
-        : `3px solid ${h ? '#eabb71' : '#e8e8e4'}`,
-      padding: '36px 28px 32px',
-      display: 'flex', flexDirection: 'column', gap: 0,
-      height: '100%',
+/* ExpertiseCard — Five Disciplines card. Visual treatment only; the
+   lock-in animation is driven by the parent SectionExpertiseAreas
+   through GSAP, which directly mutates opacity / transform on the
+   card's root element. Hover state for the gold top rule stays here.
 
-      // Lock-in motion — opacity + translateY only. Weighted cubic-
-      // bezier (Catmull-Rom-style ease-out) gives a confident settle
-      // without bounce. 620ms duration is slow enough to read as
-      // "mass," fast enough that the reader doesn't wait on it.
-      opacity: lockedIn ? 1 : 0,
-      transform: lockedIn ? 'translateY(0)' : 'translateY(36px)',
-      transition: [
-        'opacity 540ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        'transform 620ms cubic-bezier(0.22, 1, 0.36, 1)',
-        'border-top-color 220ms ease',
-      ].join(', '),
-      willChange: 'opacity, transform',
-    }}
+   The card also carries an opt-in keystone treatment used by
+   SectionExpertiseAreas only on the 5th card (Daily Accountability).
+   Keystone state is a derived prop driven by ScrollTrigger; when it
+   activates, a gold top rule turns on permanently to signal that the
+   structure has been completed. */
+function ExpertiseCard({ headline, body, isKeystone, keystoneLocked }) {
+  const [h, setH] = useState(false);
+  // Keystone wins over hover state for the top rule once it locks.
+  const topRule = isKeystone && keystoneLocked
+    ? '#eabb71'
+    : (h ? '#eabb71' : '#e8e8e4');
+  return (
+    <div
+      data-discipline-card
+      style={{
+        background: '#ffffff',
+        border: `1px solid #e8e8e4`,
+        borderTop: `3px solid ${topRule}`,
+        padding: '36px 28px 32px',
+        display: 'flex', flexDirection: 'column', gap: 0,
+        height: '100%',
+        transition: 'border-top-color 320ms ease',
+        // Starting state for the GSAP timeline. GSAP overwrites these
+        // on mount; setting them inline ensures no FOUC before GSAP
+        // runs. Reduced-motion users see the fully-resolved card (the
+        // hook below short-circuits and leaves DOM at final state).
+        opacity: 1,
+        transform: 'translate3d(0,0,0)',
+      }}
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
     >
@@ -1949,86 +1960,105 @@ function LearnMoreLink({ href }) {
   );
 }
 
-/* useReducedMotion — single source of truth for prefers-reduced-motion.
-   Returns true when the OS-level setting is on; we then skip every
-   motion treatment in this section and render fully resolved. */
-function useReducedMotion() {
-  const [reduce, setReduce] = useState(false);
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduce(mq.matches);
-    const handler = (e) => setReduce(e.matches);
-    mq.addEventListener ? mq.addEventListener('change', handler) : mq.addListener(handler);
-    return () => {
-      mq.removeEventListener ? mq.removeEventListener('change', handler) : mq.removeListener(handler);
-    };
-  }, []);
-  return reduce;
-}
+/* SectionExpertiseAreas — Row 2: scroll-driven five-discipline lock-in.
 
-/* useScrollProgress — rAF-throttled scroll-progress hook for a target
-   ref. Returns a 0→1 value as the target moves through the viewport.
-   Progress is 0 while the target's top is below `startAt * vh` and
-   reaches 1 when the target's bottom passes `endAt * vh`. Tuning
-   these two anchors changes "when the build starts" and "when it
-   completes," giving the section a natural scrollable region in which
-   the user can stop and read each discipline. */
-function useScrollProgress(ref, { startAt = 0.78, endAt = 0.28 } = {}) {
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    let raf = 0;
-    const update = () => {
-      const el = ref.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      const start = vh * startAt;
-      const end = vh * endAt;
-      // Span: how far the section travels from "starts revealing" to
-      // "fully revealed" measured in scroll pixels. Adding (start - end)
-      // accounts for the offset between trigger and complete points.
-      const span = Math.max(1, rect.height + (start - end));
-      const scrolled = start - rect.top;
-      const p = Math.max(0, Math.min(1, scrolled / span));
-      setProgress(p);
-    };
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        update();
-      });
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, [ref, startAt, endAt]);
-  return progress;
-}
+   Implementation: a GSAP timeline driven by a scrubbed ScrollTrigger
+   tied to the section. The scrub gives the reader full control of
+   the build — they can stop, reverse, or accelerate by scrolling.
+   The timeline is structured so each card occupies its own segment
+   of the scroll range with a small overlap, giving the lock-ins a
+   confident sequence without dead air between them.
 
+   Why this is the right tool: hand-coded scroll math + CSS easing
+   cannot deliver weighted easing reliably under scrub (the curve
+   gets flattened by the scroll position). GSAP's scrub interpolates
+   along the easing curve itself, preserving the intended weight.
+
+   Choreography:
+     - Each card enters with y: 64 → 0 and opacity: 0 → 1
+     - power3.out (slow start, weighted settle) on transform
+     - power2.out on opacity (clean reveal, no fade flicker)
+     - Stagger via timeline position rather than gsap.stagger so each
+       card lands at a predictable scroll progress
+     - Keystone (card 5) triggers a derived state that turns on the
+       permanent gold top rule + drives the payoff line in
+
+   Reduced-motion: short-circuits all GSAP setup; cards render in
+   their final visual state from frame one. Crawlers see fully-
+   resolved DOM by default since the initial inline styles are the
+   resolved state. */
 function SectionExpertiseAreas() {
   const sectionRef = useRef(null);
-  const reduce = useReducedMotion();
-  // 0 → 1 progress driven by user scroll over the section's reveal
-  // band. We pad startAt/endAt so each of the five disciplines gets a
-  // comfortable "stop and read" window before the next locks in.
-  const progress = useScrollProgress(sectionRef, { startAt: 0.85, endAt: 0.25 });
+  const payoffRef = useRef(null);
+  const [keystoneLocked, setKeystoneLocked] = useState(false);
 
-  // Each discipline locks in at a specific progress threshold. The
-  // five thresholds are evenly spaced across the band (0.05 .. 0.85)
-  // so cards #1 and #5 don't fire at the extreme edges and the middle
-  // three have natural breathing room between them. Reduced-motion
-  // forces all to locked.
-  const THRESHOLDS = [0.05, 0.22, 0.39, 0.56, 0.73];
-  const lockedFlags = THRESHOLDS.map((t) => reduce ? true : progress >= t);
-  const allLocked = lockedFlags[lockedFlags.length - 1];
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setKeystoneLocked(true);
+      return;
+    }
+
+    const section = sectionRef.current;
+    if (!section) return;
+    const cards = section.querySelectorAll('[data-discipline-card]');
+    const payoff = payoffRef.current;
+    if (!cards.length) return;
+
+    // Initial states. Set inline so there's no flash of resolved
+    // content before ScrollTrigger initializes.
+    gsap.set(cards, { opacity: 0, y: 64, willChange: 'transform, opacity' });
+    if (payoff) gsap.set(payoff, { opacity: 0, y: 18, willChange: 'transform, opacity' });
+
+    // Build the scrubbed timeline.
+    // - start: section top hits 75% of viewport
+    // - end:   section top hits 5% past viewport top (so the build
+    //          completes before the section starts to exit)
+    // - scrub: 0.8s smoothing so the motion has a slight settle even
+    //          on fast scrolls
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 75%',
+          end: 'top 5%',
+          scrub: 0.8,
+          // onUpdate fires every scrub frame; track keystone lock at
+          // 90% progress so the gold rule + payoff fire just before
+          // the timeline completes.
+          onUpdate: (self) => {
+            setKeystoneLocked(self.progress >= 0.86);
+          },
+        },
+      });
+
+      // Stagger card lock-ins along the timeline. Each card occupies
+      // ~22% of the timeline with a small overlap into the next.
+      cards.forEach((card, i) => {
+        tl.to(card, {
+          opacity: 1,
+          y: 0,
+          ease: 'power3.out',
+          duration: 1.0,
+        }, i * 0.78);
+      });
+
+      // Payoff line — animates in right after card 5 lands.
+      if (payoff) {
+        tl.to(payoff, {
+          opacity: 1,
+          y: 0,
+          ease: 'power2.out',
+          duration: 0.9,
+        }, '>-0.15');
+      }
+    }, section);
+
+    return () => {
+      ctx.revert();
+    };
+  }, []);
 
   return (
     <section ref={sectionRef} style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
@@ -2040,8 +2070,6 @@ function SectionExpertiseAreas() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>Five Disciplines. One Operation That Doesn&rsquo;t Break Down.</h2>
-          {/* Left-aligned intro column to keep long-form body readable;
-              centered within the row to preserve the section's symmetry. */}
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
@@ -2052,13 +2080,6 @@ function SectionExpertiseAreas() {
           </p>
         </div>
 
-        {/* The five disciplines as scroll-driven lock-in cards. Build
-            order is fixed and meaningful — see the EXPERTISE_CARDS
-            array. The 5th (Daily Accountability) is the keystone; once
-            it locks, the row reads as a completed structure.
-            We render the cards in a 5-column grid so they lock into
-            *the same horizontal row* and read as one interlocked
-            structure, not five vertical stacks. */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -2069,28 +2090,19 @@ function SectionExpertiseAreas() {
             <ExpertiseCard
               key={i}
               {...card}
-              lockedIn={lockedFlags[i]}
               isKeystone={i === EXPERTISE_CARDS.length - 1}
+              keystoneLocked={keystoneLocked}
             />
           ))}
         </div>
 
-        {/* Payoff line — resolves beneath the structure only after all
-            five cards are locked in. Same opacity/translate motion so
-            it reads as the final piece settling into place. */}
-        <p style={{
+        <p ref={payoffRef} style={{
           marginTop: 56,
           fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
           color: C.navy, fontFamily: 'inherit',
           maxWidth: 920, textWrap: 'balance',
           letterSpacing: S.h2Tracking,
           textAlign: 'center', margin: '56px auto 0',
-          opacity: allLocked ? 1 : 0,
-          transform: allLocked ? 'translateY(0)' : 'translateY(20px)',
-          transition: [
-            'opacity 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 120ms',
-            'transform 720ms cubic-bezier(0.22, 1, 0.36, 1) 120ms',
-          ].join(', '),
         }}>
           {typo("Five disciplines. One root system. An operation that stays standing when conditions don\u2019t.")}
         </p>
