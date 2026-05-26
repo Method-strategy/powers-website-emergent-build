@@ -753,25 +753,13 @@ function Hero() {
         gap: 0,
       }}>
 
-        {/* Eyebrow */}
-        <div style={{
-          fontSize: 12,
-          fontWeight: 500,
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          color: C.gold,
-          fontFamily: 'inherit',
-          marginBottom: 24,
-        }}>
-          Execution. From the Roots Up.
-        </div>
-
         {/* H1 — Standalone provocation. The resolution lives in the
-            subhead and rhymes with the closing CTA. Motion: three-word
-            opacity fade (Stop · Chasing · Results), ~400ms per word,
-            opacity-only — no slide, no scale, no drift. Plays once per
-            first-load only. Reduced-motion: skip animation, render
-            resolved. */}
+            subhead and rhymes with the closing CTA. Motion: three-beat
+            opacity fade (Stop · Chasing · Results.), ~400ms per word,
+            no overlap between beats, no slide/scale/drift. Plays once
+            on first load only. Reduced-motion: renders fully resolved
+            with zero animation. SEO/a11y: text is always present and
+            readable to crawlers and assistive tech. */}
         <h1 style={{
           fontSize: 'clamp(40px, 5vw, 64px)',
           fontWeight: 800,
@@ -813,11 +801,10 @@ function Hero() {
           ↓ &nbsp;Start with the foundation
         </div>
 
-        {/* CTAs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
-          <PrimaryCTA />
-          <SecondaryCTA />
-        </div>
+        {/* CTAs intentionally removed from the hero per v2 copy spec.
+            The hero is a provocation that deliberately does not resolve;
+            scroll cue above is the only forward affordance. PrimaryCTA
+            still ships in the closing CTA section. */}
       </div>
 
     </section>
@@ -1886,17 +1873,48 @@ function IconPlaceholder() {
   );
 }
 
-function ExpertiseCard({ headline, body }) {
+/* ExpertiseCard — Five Disciplines card with scroll-driven lock-in.
+   Props:
+     - headline, body: card content
+     - lockedIn (bool): whether this card has been locked into the
+       structure by the parent's scroll progress
+     - isKeystone (bool): true for Daily Accountability (5th card).
+       When locked in, the keystone gets a gold top rule signaling
+       structural completion.
+     - locking (bool): true during the active lock-in transition.
+       Drives the gold flash on the keystone the moment it locks.
+   Resting state (before lock-in): card sits below its final position
+   with zero opacity. Locked state: card sits in place, opaque, with
+   weighted easing — the "mass being set into place" feel the spec
+   requires. No bounce; tightly controlled cubic-bezier with a soft
+   settle. */
+function ExpertiseCard({ headline, body, lockedIn, isKeystone }) {
   const [h, setH] = useState(false);
   return (
     <div style={{
       background: '#ffffff',
       border: `1px solid #e8e8e4`,
-      borderTop: `3px solid ${h ? '#eabb71' : '#e8e8e4'}`,
+      // Keystone gets a permanent gold top rule once locked in.
+      // Other cards retain the hover-driven gold rule behavior.
+      borderTop: isKeystone && lockedIn
+        ? `3px solid #eabb71`
+        : `3px solid ${h ? '#eabb71' : '#e8e8e4'}`,
       padding: '36px 28px 32px',
       display: 'flex', flexDirection: 'column', gap: 0,
-      transition: 'border-top-color 200ms ease',
       height: '100%',
+
+      // Lock-in motion — opacity + translateY only. Weighted cubic-
+      // bezier (Catmull-Rom-style ease-out) gives a confident settle
+      // without bounce. 620ms duration is slow enough to read as
+      // "mass," fast enough that the reader doesn't wait on it.
+      opacity: lockedIn ? 1 : 0,
+      transform: lockedIn ? 'translateY(0)' : 'translateY(36px)',
+      transition: [
+        'opacity 540ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        'transform 620ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'border-top-color 220ms ease',
+      ].join(', '),
+      willChange: 'opacity, transform',
     }}
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
@@ -1931,9 +1949,89 @@ function LearnMoreLink({ href }) {
   );
 }
 
+/* useReducedMotion — single source of truth for prefers-reduced-motion.
+   Returns true when the OS-level setting is on; we then skip every
+   motion treatment in this section and render fully resolved. */
+function useReducedMotion() {
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduce(mq.matches);
+    const handler = (e) => setReduce(e.matches);
+    mq.addEventListener ? mq.addEventListener('change', handler) : mq.addListener(handler);
+    return () => {
+      mq.removeEventListener ? mq.removeEventListener('change', handler) : mq.removeListener(handler);
+    };
+  }, []);
+  return reduce;
+}
+
+/* useScrollProgress — rAF-throttled scroll-progress hook for a target
+   ref. Returns a 0→1 value as the target moves through the viewport.
+   Progress is 0 while the target's top is below `startAt * vh` and
+   reaches 1 when the target's bottom passes `endAt * vh`. Tuning
+   these two anchors changes "when the build starts" and "when it
+   completes," giving the section a natural scrollable region in which
+   the user can stop and read each discipline. */
+function useScrollProgress(ref, { startAt = 0.78, endAt = 0.28 } = {}) {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let raf = 0;
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const start = vh * startAt;
+      const end = vh * endAt;
+      // Span: how far the section travels from "starts revealing" to
+      // "fully revealed" measured in scroll pixels. Adding (start - end)
+      // accounts for the offset between trigger and complete points.
+      const span = Math.max(1, rect.height + (start - end));
+      const scrolled = start - rect.top;
+      const p = Math.max(0, Math.min(1, scrolled / span));
+      setProgress(p);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        update();
+      });
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [ref, startAt, endAt]);
+  return progress;
+}
+
 function SectionExpertiseAreas() {
+  const sectionRef = useRef(null);
+  const reduce = useReducedMotion();
+  // 0 → 1 progress driven by user scroll over the section's reveal
+  // band. We pad startAt/endAt so each of the five disciplines gets a
+  // comfortable "stop and read" window before the next locks in.
+  const progress = useScrollProgress(sectionRef, { startAt: 0.85, endAt: 0.25 });
+
+  // Each discipline locks in at a specific progress threshold. The
+  // five thresholds are evenly spaced across the band (0.05 .. 0.85)
+  // so cards #1 and #5 don't fire at the extreme edges and the middle
+  // three have natural breathing room between them. Reduced-motion
+  // forces all to locked.
+  const THRESHOLDS = [0.05, 0.22, 0.39, 0.56, 0.73];
+  const lockedFlags = THRESHOLDS.map((t) => reduce ? true : progress >= t);
+  const allLocked = lockedFlags[lockedFlags.length - 1];
+
   return (
-    <section style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+    <section ref={sectionRef} style={{ background: S.bgLight, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <Eyebrow label="What We Build" />
@@ -1954,13 +2052,13 @@ function SectionExpertiseAreas() {
           </p>
         </div>
 
-        {/* TODO MOTION: Replace the static card grid with the scroll-driven
-            5-discipline lock-in build per the copy spec. Build order is
-            fixed: Operational Discipline (substrate) → Frontline Leadership
-            → Reliable Equipment Performance → Workforce Capability →
-            Daily Accountability (keystone). Scroll-driven, not autoplay.
-            Weighted easing — "mass being set into place," never bouncy.
-            Honors prefers-reduced-motion (renders resolved structure). */}
+        {/* The five disciplines as scroll-driven lock-in cards. Build
+            order is fixed and meaningful — see the EXPERTISE_CARDS
+            array. The 5th (Daily Accountability) is the keystone; once
+            it locks, the row reads as a completed structure.
+            We render the cards in a 5-column grid so they lock into
+            *the same horizontal row* and read as one interlocked
+            structure, not five vertical stacks. */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -1968,12 +2066,18 @@ function SectionExpertiseAreas() {
           background: C.gray100,
         }}>
           {EXPERTISE_CARDS.map((card, i) => (
-            <ExpertiseCard key={i} {...card} />
+            <ExpertiseCard
+              key={i}
+              {...card}
+              lockedIn={lockedFlags[i]}
+              isKeystone={i === EXPERTISE_CARDS.length - 1}
+            />
           ))}
         </div>
 
-        {/* Payoff line — closes the section with the thesis the cards
-            assemble into when read together. */}
+        {/* Payoff line — resolves beneath the structure only after all
+            five cards are locked in. Same opacity/translate motion so
+            it reads as the final piece settling into place. */}
         <p style={{
           marginTop: 56,
           fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
@@ -1981,6 +2085,12 @@ function SectionExpertiseAreas() {
           maxWidth: 920, textWrap: 'balance',
           letterSpacing: S.h2Tracking,
           textAlign: 'center', margin: '56px auto 0',
+          opacity: allLocked ? 1 : 0,
+          transform: allLocked ? 'translateY(0)' : 'translateY(20px)',
+          transition: [
+            'opacity 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 120ms',
+            'transform 720ms cubic-bezier(0.22, 1, 0.36, 1) 120ms',
+          ].join(', '),
         }}>
           {typo("Five disciplines. One root system. An operation that stays standing when conditions don\u2019t.")}
         </p>
