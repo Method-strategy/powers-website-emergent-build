@@ -1930,7 +1930,9 @@ function ExpertiseCard({ headline, body, isKeystone, keystoneLocked }) {
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
     >
-      <IconPlaceholder />
+      {/* Per-card [+] removed; the additive operators now live in
+          PlusJoiner components between cards, so the row reads as
+          card + card + card = result. */}
       <div style={{
         fontSize: 18, fontWeight: 700, lineHeight: 1.3,
         color: '#183a61', fontFamily: 'inherit', marginBottom: 12,
@@ -1960,36 +1962,109 @@ function LearnMoreLink({ href }) {
   );
 }
 
-/* SectionExpertiseAreas — Row 2: scroll-driven five-discipline lock-in.
+/* PlusJoiner — additive operator between cards. Gold "+" sign in a
+   narrow flex column. Each joiner animates in with its right-hand
+   neighbor card, so the build reads literally as
+     card + card + card + card + card
+   The 5 cards plus the 4 joiners are framed by the perimeter SVG. */
+function PlusJoiner({ index }) {
+  return (
+    <div
+      data-plus-joiner
+      data-plus-index={index}
+      aria-hidden="true"
+      style={{
+        flex: '0 0 44px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 28, fontWeight: 300, lineHeight: 1,
+        color: '#eabb71',
+        fontFamily: 'inherit',
+        userSelect: 'none',
+        // GSAP initial state set inline so there's no flash before
+        // the timeline mounts.
+        opacity: 1,
+        transform: 'translate3d(0,0,0)',
+      }}
+    >+</div>
+  );
+}
 
-   Implementation: a GSAP timeline driven by a scrubbed ScrollTrigger
-   tied to the section. The scrub gives the reader full control of
-   the build — they can stop, reverse, or accelerate by scrolling.
-   The timeline is structured so each card occupies its own segment
-   of the scroll range with a small overlap, giving the lock-ins a
-   confident sequence without dead air between them.
+/* PerimeterFrame — gold frame that wraps the 5-card row.
+   Two layers:
+     1. solid:  the perimeter rect, drawn on once via stroke-dashoffset.
+        Tied to the scrubbed timeline so it draws in concert with the
+        keystone landing.
+     2. comet:  a smaller bright segment that traces the perimeter
+        perpetually after the solid is drawn in. Independent of scroll;
+        starts when the keystone locks, kills when the user scrolls
+        back above the keystone trigger.
+   The SVG sits absolutely positioned with a small negative inset so
+   the line floats just outside the card edges instead of clipping
+   against them. */
+const PERIMETER_INSET = 10;
+const PerimeterFrame = React.forwardRef(function PerimeterFrame(_props, ref) {
+  return (
+    <svg
+      ref={ref}
+      aria-hidden="true"
+      preserveAspectRatio="none"
+      style={{
+        position: 'absolute',
+        inset: -PERIMETER_INSET,
+        width: `calc(100% + ${PERIMETER_INSET * 2}px)`,
+        height: `calc(100% + ${PERIMETER_INSET * 2}px)`,
+        pointerEvents: 'none',
+        overflow: 'visible',
+        zIndex: 2,
+      }}
+    >
+      {/* Solid perimeter. pathLength normalizes the path to 1000 so
+          the stroke-dasharray math is independent of element width.
+          Initial dashoffset = 1000 makes it invisible. */}
+      <rect
+        data-perimeter-solid
+        x="0.5" y="0.5"
+        width="calc(100% - 1px)" height="calc(100% - 1px)"
+        fill="none"
+        stroke="#eabb71"
+        strokeWidth="1.5"
+        pathLength="1000"
+        style={{
+          strokeDasharray: 1000,
+          strokeDashoffset: 1000,
+        }}
+      />
+      {/* Comet — short bright segment that perpetually circles after
+          the solid finishes drawing. Brighter gold + slightly thicker
+          + rounded ends so it reads as a moving light, not a second
+          static line. Opacity starts at 0; GSAP turns it on after the
+          solid finishes. */}
+      <rect
+        data-perimeter-comet
+        x="0.5" y="0.5"
+        width="calc(100% - 1px)" height="calc(100% - 1px)"
+        fill="none"
+        stroke="#fdd58a"
+        strokeWidth="2"
+        strokeLinecap="round"
+        pathLength="1000"
+        style={{
+          strokeDasharray: '70 930',
+          strokeDashoffset: 0,
+          opacity: 0,
+          filter: 'drop-shadow(0 0 6px rgba(234, 187, 113, 0.55))',
+        }}
+      />
+    </svg>
+  );
+});
 
-   Why this is the right tool: hand-coded scroll math + CSS easing
-   cannot deliver weighted easing reliably under scrub (the curve
-   gets flattened by the scroll position). GSAP's scrub interpolates
-   along the easing curve itself, preserving the intended weight.
-
-   Choreography:
-     - Each card enters with y: 64 → 0 and opacity: 0 → 1
-     - power3.out (slow start, weighted settle) on transform
-     - power2.out on opacity (clean reveal, no fade flicker)
-     - Stagger via timeline position rather than gsap.stagger so each
-       card lands at a predictable scroll progress
-     - Keystone (card 5) triggers a derived state that turns on the
-       permanent gold top rule + drives the payoff line in
-
-   Reduced-motion: short-circuits all GSAP setup; cards render in
-   their final visual state from frame one. Crawlers see fully-
-   resolved DOM by default since the initial inline styles are the
-   resolved state. */
 function SectionExpertiseAreas() {
   const sectionRef = useRef(null);
+  const rowRef = useRef(null);
   const payoffRef = useRef(null);
+  const perimeterRef = useRef(null);
+  const cometTweenRef = useRef(null);
   const [keystoneLocked, setKeystoneLocked] = useState(false);
 
   useEffect(() => {
@@ -2001,61 +2076,124 @@ function SectionExpertiseAreas() {
     }
 
     const section = sectionRef.current;
-    if (!section) return;
-    const cards = section.querySelectorAll('[data-discipline-card]');
+    const row = rowRef.current;
+    const perimeter = perimeterRef.current;
+    if (!section || !row) return;
+
+    const cards = row.querySelectorAll('[data-discipline-card]');
+    const joiners = row.querySelectorAll('[data-plus-joiner]');
+    const solid = perimeter ? perimeter.querySelector('[data-perimeter-solid]') : null;
+    const comet = perimeter ? perimeter.querySelector('[data-perimeter-comet]') : null;
     const payoff = payoffRef.current;
     if (!cards.length) return;
 
-    // Initial states. Set inline so there's no flash of resolved
-    // content before ScrollTrigger initializes.
-    gsap.set(cards, { opacity: 0, y: 64, willChange: 'transform, opacity' });
+    // Initial states. Each card starts 80px below + invisible; each
+    // joiner starts scaled-down + invisible so it reads as the
+    // operator "snapping into place" between the neighbors.
+    gsap.set(cards, { opacity: 0, y: 80, willChange: 'transform, opacity' });
+    gsap.set(joiners, { opacity: 0, scale: 0.6, willChange: 'transform, opacity' });
     if (payoff) gsap.set(payoff, { opacity: 0, y: 18, willChange: 'transform, opacity' });
+    if (solid) gsap.set(solid, { strokeDashoffset: 1000 });
+    if (comet) gsap.set(comet, { opacity: 0 });
 
-    // Build the scrubbed timeline.
-    // - start: section top hits 75% of viewport
-    // - end:   section top hits 5% past viewport top (so the build
-    //          completes before the section starts to exit)
-    // - scrub: 0.8s smoothing so the motion has a slight settle even
-    //          on fast scrolls
     const ctx = gsap.context(() => {
+      // Helper: start the perpetual comet animation. Independent of
+      // the scrubbed scroll timeline. Killed and reset when the user
+      // scrolls back above the keystone (handled in onUpdate below).
+      const startComet = () => {
+        if (!comet || cometTweenRef.current) return;
+        gsap.set(comet, { opacity: 1, strokeDashoffset: 0 });
+        cometTweenRef.current = gsap.to(comet, {
+          strokeDashoffset: -1000,
+          duration: 5.6,
+          ease: 'none',
+          repeat: -1,
+        });
+      };
+      const stopComet = () => {
+        if (cometTweenRef.current) {
+          cometTweenRef.current.kill();
+          cometTweenRef.current = null;
+        }
+        if (comet) gsap.set(comet, { opacity: 0 });
+      };
+
+      // Main scrubbed timeline. Range extended so the user has to
+      // scroll meaningfully through the section to land each card.
+      // start: when the section top hits 95% of viewport (just
+      // entering); end: when the section top is 25% above viewport
+      // top (well past). That's ~120% of viewport-height of scroll
+      // distance — slow and deliberate by design.
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 75%',
-          end: 'top 5%',
-          scrub: 0.8,
-          // onUpdate fires every scrub frame; track keystone lock at
-          // 90% progress so the gold rule + payoff fire just before
-          // the timeline completes.
+          start: 'top 90%',
+          end: 'top -25%',
+          scrub: 1.1,
           onUpdate: (self) => {
-            setKeystoneLocked(self.progress >= 0.86);
+            const locked = self.progress >= 0.86;
+            setKeystoneLocked(locked);
+            if (locked && self.direction === 1) startComet();
+            else if (!locked && self.direction === -1) stopComet();
           },
         },
       });
 
-      // Stagger card lock-ins along the timeline. Each card occupies
-      // ~22% of the timeline with a small overlap into the next.
+      // Card lock-ins with weighted easing. Stagger of 1.4s gives
+      // each card its own deliberate "settle moment" before the next
+      // arrives. Card duration of 1.2s keeps each lock-in heavy.
+      const STAGGER = 1.4;
       cards.forEach((card, i) => {
         tl.to(card, {
           opacity: 1,
           y: 0,
           ease: 'power3.out',
-          duration: 1.0,
-        }, i * 0.78);
+          duration: 1.2,
+        }, i * STAGGER);
       });
 
-      // Payoff line — animates in right after card 5 lands.
+      // Joiners — each + appears as its right-neighbor card lands.
+      // Joiner i sits between cards i and i+1, so it animates with
+      // card i+1's timeline position, slightly delayed so it reads as
+      // "this new card just got added by this operator."
+      joiners.forEach((joiner, i) => {
+        // joiner i is between cards[i] and cards[i+1] in DOM order.
+        tl.to(joiner, {
+          opacity: 1,
+          scale: 1,
+          ease: 'back.out(2)',
+          duration: 0.55,
+        }, (i + 1) * STAGGER - 0.25);
+      });
+
+      // Perimeter draw-on — begins as the keystone card is mid-lock
+      // and completes a beat after the keystone lands. Eased in/out
+      // so the line accelerates around the corners and slows as it
+      // closes the loop.
+      if (solid) {
+        tl.to(solid, {
+          strokeDashoffset: 0,
+          ease: 'power2.inOut',
+          duration: 1.8,
+        }, 4 * STAGGER + 0.2);
+      }
+
+      // Payoff line — resolves just after the perimeter closes.
       if (payoff) {
         tl.to(payoff, {
           opacity: 1,
           y: 0,
           ease: 'power2.out',
           duration: 0.9,
-        }, '>-0.15');
+        }, '>-0.4');
       }
     }, section);
 
     return () => {
+      if (cometTweenRef.current) {
+        cometTweenRef.current.kill();
+        cometTweenRef.current = null;
+      }
       ctx.revert();
     };
   }, []);
@@ -2080,29 +2218,46 @@ function SectionExpertiseAreas() {
           </p>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 1,
-          background: C.gray100,
-        }}>
+        {/* Row container — flex row of [card + joiner + card + joiner ... card]
+            wrapped by an SVG perimeter frame. Position: relative anchors
+            the absolute SVG. On narrow screens the row collapses to a
+            column via flex-wrap; the joiners hide via media query so
+            mobile shows just stacked cards. */}
+        <div
+          ref={rowRef}
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'stretch',
+            flexWrap: 'wrap',
+            gap: 0,
+            background: C.gray100,
+          }}
+        >
+          <PerimeterFrame ref={perimeterRef} />
           {EXPERTISE_CARDS.map((card, i) => (
-            <ExpertiseCard
-              key={i}
-              {...card}
-              isKeystone={i === EXPERTISE_CARDS.length - 1}
-              keystoneLocked={keystoneLocked}
-            />
+            <React.Fragment key={i}>
+              {i > 0 && <PlusJoiner index={i - 1} />}
+              <div style={{ flex: '1 1 200px', minWidth: 0, display: 'flex' }}>
+                <div style={{ flex: 1, display: 'flex' }}>
+                  <ExpertiseCard
+                    {...card}
+                    isKeystone={i === EXPERTISE_CARDS.length - 1}
+                    keystoneLocked={keystoneLocked}
+                  />
+                </div>
+              </div>
+            </React.Fragment>
           ))}
         </div>
 
         <p ref={payoffRef} style={{
-          marginTop: 56,
+          marginTop: 64,
           fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
           color: C.navy, fontFamily: 'inherit',
           maxWidth: 920, textWrap: 'balance',
           letterSpacing: S.h2Tracking,
-          textAlign: 'center', margin: '56px auto 0',
+          textAlign: 'center', margin: '64px auto 0',
         }}>
           {typo("Five disciplines. One root system. An operation that stays standing when conditions don\u2019t.")}
         </p>
