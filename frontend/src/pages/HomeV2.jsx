@@ -1385,7 +1385,7 @@ function SectionTheMoment() {
           color: C.navy, fontFamily: 'inherit', margin: '16px 0 36px',
           letterSpacing: S.h2Tracking, textWrap: 'pretty',
         }}>
-          Most Firms Fix the Result. POWERS Fixes the Operation.
+          Most Firms Chase the Symptom. POWERS Fixes the Root.
         </h2>
 
         {/* Long-form narrative argument. Three movements: (1) what most
@@ -2127,8 +2127,13 @@ function SectionExpertiseAreas() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 90%',
-          end: 'top -25%',
+          // Tuned for Row 2 sitting directly under the hero: start
+          // when the section top hits 75% of viewport (i.e., the
+          // section header has properly entered) and end well past
+          // viewport top, so the user has a full screen-worth of
+          // scroll to land each discipline.
+          start: 'top 75%',
+          end: 'top -45%',
           scrub: 1.1,
           onUpdate: (self) => {
             const locked = self.progress >= 0.86;
@@ -2924,9 +2929,9 @@ function HomeV2() {
     <div style={{ fontFamily: 'inherit', minHeight: '100vh' }}>
       <Header />
       <Hero />
+      <SectionExpertiseAreas />
       <SectionTheMoment />
       <PowersMetrics />
-      <SectionExpertiseAreas />
       <SectionExecutionEngine />
       <SectionHowWeWork />
       <SectionWhereWeWork />
