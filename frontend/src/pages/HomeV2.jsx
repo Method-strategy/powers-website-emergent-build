@@ -766,40 +766,52 @@ function Hero() {
           Execution. From the Roots Up.
         </div>
 
-        {/* H1 — Pain-mirror line one + POWERS-as-actor line two.
-            Plain English, no consultant verbs. The H1 is the rhetorical
-            anchor for the whole page; every section H2 downstream does
-            one of three jobs: name the chase, build the roots, or show
-            the production. */}
+        {/* H1 — Standalone provocation. The resolution lives in the
+            subhead and rhymes with the closing CTA. Motion: three-word
+            opacity fade (Stop · Chasing · Results), ~400ms per word,
+            opacity-only — no slide, no scale, no drift. Plays once per
+            first-load only. Reduced-motion: skip animation, render
+            resolved. */}
         <h1 style={{
-          fontSize: 'clamp(36px, 4.2vw, 56px)',
+          fontSize: 'clamp(40px, 5vw, 64px)',
           fontWeight: 800,
-          lineHeight: 1.08,
+          lineHeight: 1.04,
           color: C.white,
           fontFamily: 'inherit',
-          maxWidth: 760,
+          maxWidth: 900,
           margin: '0 0 28px',
           textWrap: 'pretty',
-          letterSpacing: '-0.012em',
+          letterSpacing: '-0.018em',
         }}>
-          Stop chasing results.<br />
-          POWERS builds the operation that produces&nbsp;them.
+          <HeroHeadline />
         </h1>
 
-        {/* Subhead — names the root-cause logic so the visitor knows
-            this isn't a slogan. Plain English, no consultant register. */}
+        {/* Subhead — contrast-structure subhead that reframes results
+            as a readout and names a foundation underneath the operation,
+            without revealing the number five. The "five disciplines"
+            reveal happens in Row 2 by design. */}
         <p style={{
           fontSize: 18,
           fontWeight: 300,
           lineHeight: 1.65,
           color: 'rgba(255,255,255,0.80)',
           fontFamily: 'inherit',
-          maxWidth: 600,
-          margin: '0 0 44px',
+          maxWidth: 680,
+          margin: '0 0 36px',
           textWrap: 'pretty',
         }}>
-          {typo("Results are a symptom. The operation is the cause. POWERS builds the five disciplines at the root, so performance doesn\u2019t break down when the workforce turns, the equipment fails, or the quarter changes shape.")}
+          {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals at the root of your operation. When they\u2019re missing, performance is at the mercy of conditions. When they\u2019re built in, it isn\u2019t. That foundation is a specific set of disciplines we build into your operation to execute at the highest level and withstand whatever comes next.")}
         </p>
+
+        {/* Scroll cue — minimal, gold, sits above the CTAs */}
+        <div style={{
+          fontSize: 12, fontWeight: 600,
+          letterSpacing: '0.22em', textTransform: 'uppercase',
+          color: C.gold, fontFamily: 'inherit',
+          marginBottom: 28,
+        }}>
+          ↓ &nbsp;Start with the foundation
+        </div>
 
         {/* CTAs */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
@@ -809,6 +821,50 @@ function Hero() {
       </div>
 
     </section>
+  );
+}
+
+/* HeroHeadline — three-word opacity reveal: Stop · Chasing · Results.
+   ~400ms per word, opacity-only (no slide, no scale). Plays once on
+   first paint, then stays still for the rest of the session. Honors
+   prefers-reduced-motion by rendering fully resolved with no animation.
+   Critical SEO/a11y note: the text is rendered immediately at the
+   final opacity for the SR layer — only the visible opacity is
+   delayed. The headline is always present and readable to crawlers
+   and assistive tech. */
+function HeroHeadline() {
+  const [reduce, setReduce] = useState(false);
+  const [played, setPlayed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const r = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setReduce(r);
+    const id = requestAnimationFrame(() => setPlayed(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  const words = ['Stop', 'Chasing', 'Results.'];
+  const baseDelay = 120;
+  const perWord = 400;
+
+  return (
+    <>
+      {words.map((w, i) => {
+        const style = reduce
+          ? { opacity: 1 }
+          : {
+              opacity: played ? 1 : 0,
+              transition: `opacity 520ms ease-out ${baseDelay + i * perWord}ms`,
+              display: 'inline-block',
+            };
+        return (
+          <span key={i} style={style}>
+            {w}{i < words.length - 1 ? '\u00A0' : ''}
+          </span>
+        );
+      })}
+    </>
   );
 }
 
@@ -1322,44 +1378,53 @@ function SectionTheMoment() {
           color: C.navy, fontFamily: 'inherit', margin: '16px 0 36px',
           letterSpacing: S.h2Tracking, textWrap: 'pretty',
         }}>
-          The Result is a Symptom. The Operation is the Cause.
+          Most Firms Fix the Result. POWERS Fixes the Operation.
         </h2>
 
-        {/* Left-aligned narrative column, centered on the row.
-            Long-form body copy gets an anchored left edge so the eye can
-            settle into the rhythm; the centered eyebrow + H2 above and
-            centered closer below frame it. Width sits close to the H2
-            measure so the visual cadence between display and body type
-            stays tight. */}
+        {/* Long-form narrative argument. Three movements: (1) what most
+            firms get wrong, (2) the redwood analogy as a single piece of
+            argumentative imagery, (3) the inflection-point passage with
+            the "radios get quiet" landing. Anchored left for readability,
+            centered on the row for visual rhythm with the H2 above. */}
         <div style={{
-          maxWidth: 720, margin: '0 auto 28px', textAlign: 'left',
+          maxWidth: 720, margin: '0 auto', textAlign: 'left',
         }}>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
             margin: '0 0 18px', textWrap: 'pretty',
           }}>
-            {typo("Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment is when the right capability gets built into the operation. The kind of capability that doesn\u2019t show up on the org chart or in the strategy. It\u2019s underneath. Load-bearing. The roots of execution that keep strong performance running under pressure.")}
+            {typo("Most consulting firms work on the readout. They target the number, move it, write the deck, and leave. Then the number drifts back, because nothing underneath it changed.")}
+          </p>
+          <p style={{
+            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
+            margin: '0 0 18px', textWrap: 'pretty',
+          }}>
+            {typo("The tallest, oldest, most storm-resistant trees on earth don\u2019t stand because of what you can see. They stand because of a root system, decades deep, that most people never think about. Operations are no different. The ones that perform under pressure are the ones with something strong enough underneath to carry the weight. That\u2019s the level we work at.")}
+          </p>
+          <p style={{
+            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
+            margin: '0 0 18px', textWrap: 'pretty',
+          }}>
+            {typo("Every operation has an inflection point, the moment execution stops depending on conditions and starts performing regardless of them. That moment comes when the right capability gets built into the operation itself. The kind that doesn\u2019t show up on the org chart or in the strategy. It\u2019s underneath. Load-bearing. The root system that keeps strong performance running under pressure.")}
+          </p>
+          <p style={{
+            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
+            margin: '0 0 18px', textWrap: 'pretty',
+          }}>
+            {typo("When that system is in, the operation changes, and you can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That\u2019s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.")}
           </p>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
             margin: 0, textWrap: 'pretty',
           }}>
-            {typo("When that root system is in, the operation changes. You can hear it. The line just runs. The team works any problems before they cascade. Bad shifts stay contained. Good shifts compound. The radios get quiet. That\u2019s the sound of an operation producing what it was built to produce. At rate. At margin. At scale.")}
+            {typo("That\u2019s what POWERS builds, with your people, on the floor, in the shifts, inside the routines that make execution capability last long after we\u2019re gone.")}
           </p>
         </div>
-
-        {/* Centered closing declaration — different register from the
-            narrative above, intentionally returns to center alignment. */}
-        <p style={{
-          fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-          color: C.body, fontFamily: 'inherit',
-          margin: '0 auto', maxWidth: 720,
-          textWrap: 'pretty',
-        }}>
-          {typo("POWERS builds those roots with your people, on the floor, in the shifts, and inside the routines that build the execution capability that lasts long after we\u2019re gone.")}
-        </p>
       </div>
     </section>
   );
@@ -1589,7 +1654,7 @@ function SectionExecutionEngine() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Pressure Doesn&rsquo;t Stop. The Operation Shouldn&rsquo;t Either.
+            Pressure In. Performance Out.
           </h2>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
@@ -1597,7 +1662,7 @@ function SectionExecutionEngine() {
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
-            {typo("Every operation faces conditions it can\u2019t control. Market pressure. Workforce turnover. Equipment failures. Demand swings. The question isn\u2019t whether those pressures show up. They always do. The question is whether the operation has the architecture to absorb them and still produce.")}
+            {typo("Every operation faces conditions it can\u2019t control. Market pressure. Workforce turnover. Equipment failure. Demand swings. The question isn\u2019t whether those pressures show up. They always do. The question is whether the operation has the foundation to absorb them and still produce.")}
           </p>
         </div>
 
@@ -1728,7 +1793,7 @@ function SectionExecutionEngine() {
             color: NAVY, fontFamily: 'inherit', margin: '0 auto', maxWidth: 760,
             letterSpacing: '-0.012em', textWrap: 'balance',
           }}>
-            {typo("When the roots are strong, the operation doesn\u2019t break down. It produces.")}
+            {typo("When the foundation is strong, conditions stop determining outcomes.")}
           </p>
         </div>
       </div>
@@ -1802,7 +1867,7 @@ const EXPERTISE_CARDS = [
   },
   {
     headline: 'Daily Accountability',
-    body: 'The cadence, metrics, and conversations that close the loop every shift, every day. Without it, the other four fundamentals drift. With it, they compound.',
+    body: 'The cadence, metrics, and conversations that close the loop every shift, every day. It\u2019s the keystone. Without it, the other four drift. With it, they lock together and compound.',
   },
 ];
 
@@ -1876,7 +1941,7 @@ function SectionExpertiseAreas() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The Five Roots of an Operation That Doesn&rsquo;t Break Down.</h2>
+          }}>Five Disciplines. One Operation That Doesn&rsquo;t Break Down.</h2>
           {/* Left-aligned intro column to keep long-form body readable;
               centered within the row to preserve the section's symmetry. */}
           <p style={{
@@ -1885,9 +1950,17 @@ function SectionExpertiseAreas() {
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
-            {typo("Execution capability isn\u2019t one fix. It\u2019s five fundamentals working together, built into the daily rhythm of the operation. Weaken any one and the others drift. Instill them together and the operation produces what it\u2019s supposed to produce, on the floor, on the financial statement, across whatever comes next.")}
+            {typo("The foundation is five disciplines. Not five initiatives or five priorities, five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn\u2019t break down when conditions do.")}
           </p>
         </div>
+
+        {/* TODO MOTION: Replace the static card grid with the scroll-driven
+            5-discipline lock-in build per the copy spec. Build order is
+            fixed: Operational Discipline (substrate) → Frontline Leadership
+            → Reliable Equipment Performance → Workforce Capability →
+            Daily Accountability (keystone). Scroll-driven, not autoplay.
+            Weighted easing — "mass being set into place," never bouncy.
+            Honors prefers-reduced-motion (renders resolved structure). */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -1898,6 +1971,19 @@ function SectionExpertiseAreas() {
             <ExpertiseCard key={i} {...card} />
           ))}
         </div>
+
+        {/* Payoff line — closes the section with the thesis the cards
+            assemble into when read together. */}
+        <p style={{
+          marginTop: 56,
+          fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
+          color: C.navy, fontFamily: 'inherit',
+          maxWidth: 920, textWrap: 'balance',
+          letterSpacing: S.h2Tracking,
+          textAlign: 'center', margin: '56px auto 0',
+        }}>
+          {typo("Five disciplines. One root system. An operation that stays standing when conditions don\u2019t.")}
+        </p>
       </div>
     </section>
   );
@@ -2000,20 +2086,14 @@ function SectionHowWeWork() {
 }
 
 /* ── SECTION 6 — WHERE WE WORK ────────────────────────────────────────
- * Capability presentation, not industry marketing. Two sub-sections:
- *   1. Across the Operation — body paragraph naming the functional areas
- *      POWERS works inside.
- *   2. Across Industries — an 18-tile grid of industries served, sized
- *      6-up on desktop / 3-up on tablet / 2-up on mobile.
+ * Capability presentation in prose. The 18-tile industry grid that was
+ * here was removed per the v2 copy draft: the section now makes the
+ * functional-scope and industry-range arguments in body copy and links
+ * out to a dedicated Industries page for the deeper view.
  *
- * Visual language harmonizes with the Execution Capability diagram above:
- * navy ink, white tiles with a thin border, hover lifts to a navy fill
- * with white text. Quiet and confident — no industry iconography, no
- * stock photography. The breadth of the list is the message.
- *
- * All tiles route to /industries-served until per-industry pages exist.
- * The hash on each link is a forward-compatible anchor target for future
- * deep-link to a specific industry section on that page.
+ * The INDUSTRY_TILES const and the IndustryTile component below remain
+ * in the file but are no longer rendered on the homepage. Left in place
+ * so they can be reused on /industries-served without a second port.
  * ──────────────────────────────────────────────────────────────────── */
 const INDUSTRY_TILES = [
   { label: 'Food & Beverage',                slug: 'food-beverage' },
@@ -2036,6 +2116,8 @@ const INDUSTRY_TILES = [
   { label: 'Private Equity & M&A',           slug: 'private-equity-ma' },
 ];
 
+// Retained for future reuse on /industries-served. Not rendered here.
+// eslint-disable-next-line no-unused-vars
 function IndustryTile({ label, slug }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -2062,8 +2144,6 @@ function IndustryTile({ label, slug }) {
       }}
     >
       <span>{label}</span>
-      {/* Hover-only arrow — sits in the bottom-right, signals interactivity
-          without adding clutter in resting state. */}
       <span aria-hidden="true" style={{
         position: 'absolute', right: 12, bottom: 10,
         fontSize: 14, fontWeight: 500,
@@ -2076,93 +2156,64 @@ function IndustryTile({ label, slug }) {
 }
 
 function SectionWhereWeWork() {
+  const [linkHover, setLinkHover] = useState(false);
   return (
     <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
 
-        {/* Section header — left-aligned to match the subsection rhythm
-            below, so the whole section reads as a single anchored column
-            instead of a centered-header / left-content mash-up. */}
-        <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: 920 }}>
+        {/* Section header — left-anchored column. Single 920px measure
+            for header + body so the section reads as one continuous
+            argument rather than a header / multi-block stack. */}
+        <div style={{ marginBottom: 36, maxWidth: 920 }}>
           <Eyebrow label="Where We Work" />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             Wherever the Work is Physical, Repeatable, and Measured.
           </h2>
-          <p style={{
-            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit', margin: 0,
-            textWrap: 'pretty',
-          }}>
-            {typo("Execution capability gets built wherever value gets won or lost. Across the operation, and across the industries that depend on it.")}
-          </p>
         </div>
 
-        {/* Across the Operation — single content block aligned to the same
-            left rail as the section header. Body width capped at a
-            comfortable reading measure (~920) so the line lengths stay
-            consistent throughout the section. */}
-        <div style={{ marginBottom: 72, maxWidth: 920 }}>
-          <h3 style={{
-            fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
-            color: C.navy, fontFamily: 'inherit',
-            margin: '0 0 18px', letterSpacing: S.h2Tracking,
-          }}>Across the Operation</h3>
+        {/* Body — single two-paragraph block that makes the
+            functional-scope argument and then names the industry range
+            as a credential. The 18-tile grid that used to live here was
+            removed per the v2 copy draft; the breadth-of-industries
+            argument is now made in prose, and the link below routes
+            curious visitors to the dedicated Industries page. */}
+        <div style={{ maxWidth: 920 }}>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit', margin: 0,
+            color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
             textWrap: 'pretty',
           }}>
-            {typo("Production and operations. Maintenance and reliability. Supply chain and procurement. Warehousing and logistics. Quality and safety. Working capital and financial flow. Wherever the gap between intent and output is showing up, that\u2019s where POWERS works.")}
+            {typo("Execution capability doesn\u2019t belong to one corner of the operation. We build it across production and maintenance, supply chain and procurement, warehousing and logistics, quality and safety, and the working capital and financial flow the operation produces. Whenever the gap between intent and output shows up, that\u2019s where the work happens.")}
           </p>
-        </div>
-
-        {/* Across Industries — same left rail. The grid stretches the full
-            container width (so the tiles get the breadth they need to
-            land the breadth-of-capability message) but its left edge
-            aligns with the H3 above it. */}
-        <div>
-          <h3 style={{
-            fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
-            color: C.navy, fontFamily: 'inherit',
-            margin: '0 0 22px', letterSpacing: S.h2Tracking,
-          }}>Across Industries</h3>
-
-          {/* Tile grid:
-                desktop  ≥1024px : 6 columns
-                tablet   ≥640px  : 3 columns
-                mobile           : 2 columns
-              Implemented with auto-fit + minmax so the grid degrades
-              gracefully at every viewport without media queries. */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
-            gap: 1,
-            background: C.gray100,
-            border: `1px solid ${C.gray100}`,
-          }}>
-            {INDUSTRY_TILES.map((t) => (
-              <IndustryTile key={t.slug} {...t} />
-            ))}
-          </div>
-
-          {/* Closing line — single thesis statement closing the section.
-              Treated as a display pull quote (not body) so it actually
-              announces itself rather than getting lost beneath the grid.
-              Same left rail + 920 measure as the rest of the section. */}
           <p style={{
-            marginTop: 56,
-            fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
-            color: C.navy, fontFamily: 'inherit',
-            maxWidth: 920, textWrap: 'balance',
-            letterSpacing: S.h2Tracking,
-            margin: '56px 0 0',
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
+            textWrap: 'pretty',
           }}>
-            {typo("Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever the quarter brings.")}
+            {typo("That work spans the industries where execution is measured every shift, from food and beverage and protein processing to automotive, aerospace and defense, industrial manufacturing, pharmaceuticals, and the private equity firms that own them. Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever the quarter brings.")}
           </p>
+
+          {/* Single explore link out to the dedicated Industries page. */}
+          <Link
+            to="/industries-served"
+            onMouseEnter={() => setLinkHover(true)}
+            onMouseLeave={() => setLinkHover(false)}
+            style={{
+              display: 'inline-block',
+              marginTop: 6,
+              fontSize: 15, fontWeight: 600,
+              color: linkHover ? C.gold600 : C.gold,
+              textDecoration: 'none', fontFamily: 'inherit',
+              transition: 'color 150ms ease',
+              letterSpacing: '0.01em',
+            }}
+          >
+            Explore the industries we serve →
+          </Link>
         </div>
       </div>
     </section>
@@ -2232,9 +2283,19 @@ function SectionResultsEntryPoint() {
           <Eyebrow label="Proven Results" />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.white, fontFamily: 'inherit', margin: '16px 0 0',
+            color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>Operations That Produce Results. Not Chase Them.</h2>
+          }}>Operations Built for Lasting Results.</h2>
+          {/* Peer-proof intro — frames the case studies as proof that the
+              reader's peers have built on the same five disciplines. */}
+          <p style={{
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
+            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            textWrap: 'pretty',
+          }}>
+            {typo("The operations below were built on the same five disciplines. Different industries, different pressures, the same foundation underneath.")}
+          </p>
         </div>
         <div style={{
           display: 'grid',
@@ -2266,17 +2327,17 @@ const INSIGHTS = [
   {
     category: 'Reindustrialization',
     headline: 'Why the Firms That Built Discipline Early Will Win the Reshoring Decade',
-    summary: 'The competitive advantage in American manufacturing is not technology. It is the operating discipline to deploy it effectively.',
+    summary: 'The competitive advantage in American manufacturing isn\u2019t technology. It\u2019s the operating discipline to deploy it effectively.',
   },
   {
     category: 'Frontline Leadership',
     headline: 'The Supervisor Gap: Why Most Improvement Programs Stall at the Floor Level',
-    summary: 'When supervisors are firefighting instead of leading, the operation breaks down. Here is what changing that actually takes.',
+    summary: 'When supervisors are firefighting instead of leading, the operation breaks down. Here\u2019s what changing that actually takes.',
   },
   {
     category: 'Operational Readiness',
     headline: 'What Consistent Performance Looks Like Across Shifts, Sites, and Holdings',
-    summary: 'Consistency is not a cultural value. It is a designed outcome. This is how POWERS builds it.',
+    summary: 'Consistency isn\u2019t a cultural value. It\u2019s a designed outcome. This is how POWERS builds it.',
   },
 ];
 
@@ -2364,12 +2425,12 @@ function FooterCTA() {
           fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
           color: C.white, fontFamily: 'inherit', margin: 0,
           letterSpacing: S.h2Tracking, textWrap: 'pretty',
-        }}>{typo("Stop Chasing Results. Start Building the Roots.")}</h2>
+        }}>{typo("Stop Chasing Results. Start Building the Foundation.")}</h2>
         <p style={{
           fontSize: 18, fontWeight: 300, lineHeight: 1.6,
           color: 'rgba(255,255,255,0.70)', fontFamily: 'inherit', margin: 0,
           textWrap: 'pretty',
-        }}>{typo("Let\u2019s talk about what\u2019s possible inside your operation.")}</p>
+        }}>{typo("Tell us where the operation is underperforming. We\u2019ll come see it, on the floor, and show you what\u2019s missing.")}</p>
         <a href="contact.html"
           onMouseEnter={() => setH(true)}
           onMouseLeave={() => setH(false)}
@@ -2501,7 +2562,7 @@ function Footer() {
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,
             color: 'rgba(255,255,255,0.60)', fontFamily: 'inherit', margin: 0,
           }}>
-            Management consulting for manufacturers who need performance that runs across teams, shifts, sites, and holdings.
+            Operations performance consulting that builds execution capability across teams, shifts, sites, and holdings.
           </p>
           <LinkedInIcon />
         </div>

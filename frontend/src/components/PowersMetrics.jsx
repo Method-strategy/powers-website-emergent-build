@@ -31,25 +31,25 @@ const STATS = [
     value: 98,
     suffix: '%',
     label: 'Client Retention',
-    description: 'Sustained improvement long after the engagement ends',
+    description: 'Sustained improvement long after the engagement ends.',
   },
   {
     value: 5,
     suffix: ' WKS',
     label: 'Time to Impact',
-    description: 'Average time from engagement start to measurable floor-level gains',
+    description: 'Average time from engagement start to measurable floor-level gains.',
   },
   {
     value: 500,
     suffix: '+',
-    label: 'Plants Transformed',
-    description: 'Manufacturing operations with built-in execution capability',
+    label: 'Operations Strengthened',
+    description: 'Manufacturing, processing, and distribution operations with built-in execution capability.',
   },
   {
     value: 30,
     suffix: '+',
     label: 'Years of Expertise',
-    description: 'Of frontline manufacturing leadership and operational execution',
+    description: 'Frontline operations leadership, building execution capability where the work happens.',
   },
 ];
 
