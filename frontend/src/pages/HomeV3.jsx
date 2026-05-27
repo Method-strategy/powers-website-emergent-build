@@ -40,13 +40,14 @@ gsap.registerPlugin(ScrollTrigger);
  *     enacting an argument the copy is making. No decoration.
  * ────────────────────────────────────────────────────────────────── */
 
-/* Inject Fraunces (Google Fonts) — used for editorial italic + display
-   moments. Loaded once per session via id-deduped <link> tags. Pattern
-   matches the PowersMetrics font injection. */
+/* Inject Inter Tight (Google Fonts) for forward-looking sans display
+   + Playfair Display for refined editorial italic + display moments.
+   Loaded once per session via id-deduped <link> tags. */
 const V3_FONT_LINKS = [
   { id: 'v3-preconnect-g',  href: 'https://fonts.googleapis.com', rel: 'preconnect' },
   { id: 'v3-preconnect-gs', href: 'https://fonts.gstatic.com', rel: 'preconnect', crossOrigin: 'anonymous' },
-  { id: 'v3-fraunces',      href: 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap' },
+  { id: 'v3-playfair',      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap' },
+  { id: 'v3-intertight',    href: 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap' },
 ];
 const useV3Fonts = () => {
   useEffect(() => {
@@ -60,11 +61,18 @@ const useV3Fonts = () => {
   }, []);
 };
 
-// Editorial serif stack — Fraunces is the workhorse for italic
-// display + chapter numbers. Optical sizing axis means it renders
-// well from tiny (chapter numbers at 11px) to huge (hero H1 emphasis
-// at 124px).
-const SERIF = "'Fraunces', 'Georgia', 'Times New Roman', serif";
+// Sans-serif workhorse for V3 only. Inter Tight is the forward-looking
+// counterpart to Fraunces — a modern grotesque with a tighter horizontal
+// rhythm than regular Inter, sharper terminals, and a confident display
+// weight at 700/800. Pairs cleanly with Fraunces italic for typographic
+// contrast without competing with it.
+const SANS = "'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+
+// Editorial serif stack — Playfair Display is the workhorse for italic
+// display + chapter numbers. Refined high-contrast Didone with elegant
+// terminals; reads classical, confident, and forward-looking — not
+// nostalgic. Pairs cleanly with Inter Tight without competing.
+const SERIF = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
 
 /* ChapterMark — small typographic chapter indicator that opens each
    section. "00" through "10" set in copper Fraunces italic, sitting
@@ -219,15 +227,23 @@ function ReadingProgress() {
 
 /* ── Tokens ── */
 const C = {
-  // Primary navy stack — five depths for layering
-  ink:     '#0a1421',  // Deepest. Used for max-emphasis surfaces (hero, footer CTA).
-  navy900: '#0d2442',  // Deep — case-study masthead, footer
+  // ── Deep navy / blue stack — eight depths for editorial layering.
+  // Reads cool, technical, and confident; gives every section a
+  // distinct ambient temperature without breaking the brand.
+  midnight:'#050b1a',  // Near-black blue. Reserved for deepest surfaces.
+  ink:     '#0a1421',  // Deepest navy. Hero, footer CTA — max emphasis.
+  navy900: '#0d2442',  // Deep — case-study masthead, diagram backdrops
+  dusk:    '#13304f',  // Between navy900 and brand navy — section bands
   navy:    '#183a61',  // Brand navy — primary copy, anchors
   navy700: '#234a78',  // Mid-tone navy — secondary fills, hover lifts
+  cobalt:  '#2c5fa3',  // Vivid mid-blue — chromatic accent, links on dark
   navy600: '#3a5d8a',  // Mid-tone navy — UI accents
+  sapphire:'#4878b8',  // Clear vibrant blue — interactive accent
   navy400: '#4a6a8a',  // Muted navy — meta text, sub-labels
   slate:   '#5c7896',  // Cool slate-blue — accent for technical UI
   steel:   '#7a93b0',  // Lighter cool blue — secondary accent
+  mist:    '#b6c6d9',  // Pale blue surface — soft section dividers
+  ice:     '#e6edf6',  // Coolest neutral surface — alternative to bone
 
   // Gold accent stack — pale wash through emphasis
   gold200: '#f7e8c8',  // Pale gold wash — subtle backgrounds, surface lifts
@@ -239,6 +255,10 @@ const C = {
   amber:   '#e89346',  // Bright amber — accent on light backgrounds
   copper:  '#b85f33',  // Copper — primary emphasis color (replaces gold800)
   rust:    '#8a3f1f',  // Deep rust — max-emphasis warm accent
+
+  // Signal colors — semantic only. Red = down/pressure, green = up/result.
+  signalRed:   '#c84a3a',  // Pressure indicator (down triangle on dark navy)
+  signalGreen: '#4a9b6a',  // Outcome indicator (up triangle on dark navy)
 
   // Neutral warm-light surface tones
   ivory:   '#fbf9f4',  // Warmest off-white — premium content surfaces
@@ -2251,6 +2271,10 @@ function RotatingPaneList({
 
 function SectionExecutionEngine() {
   const haloRef = useRef(null);
+  const pressureRef = useRef(null);
+  const outcomeRef = useRef(null);
+  const flowDotRef = useRef(null);
+  const flowLineRef = useRef(null);
 
   // Continuous engine halo "heartbeat" — independent of scroll.
   // Slow, even, ambient. Communicates "running" without using a
@@ -2262,9 +2286,9 @@ function SectionExecutionEngine() {
     if (!haloRef.current) return;
 
     const tween = gsap.to(haloRef.current, {
-      opacity: 0.85,
-      scale: 1.06,
-      duration: 3.2,
+      opacity: 0.7,
+      scale: 1.05,
+      duration: 3.4,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
@@ -2272,178 +2296,216 @@ function SectionExecutionEngine() {
     return () => tween.kill();
   }, []);
 
-  return (
-    <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}`, position: 'relative', overflow: 'hidden' }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+  // Cycling labels — single pressure / outcome each side, swapped via
+  // GSAP cross-fade every ~2.6s. Pools live at module scope so they
+  // can be tuned without touching the component. Pressures rotate
+  // out-of-phase with outcomes (different intervals) so the eye never
+  // catches them changing in lockstep.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
 
-        {/* Header — left-anchored editorial */}
-        <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: S.maxRead }}>
-          <ChapterMark n="04" />
-          <Eyebrow label="How Execution Capability Creates Value" />
-          <h2 style={{
-            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
+    const cycle = (el, pool, cursor, interval) => {
+      let i = cursor;
+      const tick = () => {
+        if (!el) return;
+        i = (i + 1) % pool.length;
+        const tl = gsap.timeline();
+        tl.to(el, { opacity: 0, y: -8, duration: 0.45, ease: 'power2.in' })
+          .call(() => { el.textContent = pool[i]; })
+          .fromTo(el, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' });
+      };
+      return setInterval(tick, interval);
+    };
+
+    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 2700);
+    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 3100);
+    return () => { clearInterval(t1); clearInterval(t2); };
+  }, []);
+
+  // Bottom flow rail — a gold dot travels left → right continuously,
+  // visualizing the direction of value. 5s loop, ease-linear so it
+  // reads as a measured pulse, not a bouncing ball.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !flowDotRef.current || !flowLineRef.current) return;
+
+    gsap.set(flowDotRef.current, { left: '0%' });
+    const tween = gsap.to(flowDotRef.current, {
+      left: '100%',
+      duration: 5,
+      ease: 'none',
+      repeat: -1,
+    });
+    return () => tween.kill();
+  }, []);
+
+  return (
+    <section style={{
+      background: `linear-gradient(180deg, ${C.navy900} 0%, ${C.ink} 100%)`,
+      padding: `${S.sectionPadY} ${S.sectionPadX} 120px`,
+      position: 'relative', overflow: 'hidden',
+    }}>
+      {/* Faint cobalt wash on the right, ice-blue glow on the left, to add
+          chromatic depth to the navy field without breaking the brand. */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: `radial-gradient(ellipse 80% 60% at 12% 30%, rgba(44,95,163,0.18) 0%, rgba(44,95,163,0) 60%), radial-gradient(ellipse 70% 50% at 88% 70%, rgba(72,120,184,0.12) 0%, rgba(72,120,184,0) 60%)`,
+      }} />
+
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', position: 'relative' }}>
+
+        {/* Header — left-anchored editorial, on dark */}
+        <div style={{ marginBottom: 100, maxWidth: S.maxRead }}>
+          <ChapterMark n="04" light />
+          <div style={{
+            fontFamily: SANS, fontSize: 12, fontWeight: 600,
+            letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: C.gold, marginBottom: 22,
           }}>
-            Pressure In. <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Performance Out.</span>
+            When Everything Works Together
+          </div>
+          <h2 style={{
+            fontSize: S.h2Size, fontWeight: 800, lineHeight: 1.04,
+            color: C.white, fontFamily: SANS, margin: '0 0 28px',
+            letterSpacing: '-0.022em', textWrap: 'pretty',
+          }}>
+            Pressure in. <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Performance out.</span>
           </h2>
           <p style={{
-            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit', margin: 0,
-            textWrap: 'pretty',
+            fontSize: S.ledeSize, fontWeight: 300, lineHeight: 1.6,
+            color: 'rgba(230, 237, 246, 0.78)', fontFamily: SANS, margin: 0,
+            textWrap: 'pretty', maxWidth: 640,
           }}>
-            {typo("Every operation faces conditions it can\u2019t control. Market pressure. Workforce turnover. Equipment failure. Demand swings. The question isn\u2019t whether those pressures show up. They always do. The question is whether the operation has the foundation to absorb them and still produce.")}
+            {typo("The market forces don\u2019t stop coming. The foundation you build at the root level of your operation decides whether they impact production or get handled before they do.")}
           </p>
         </div>
 
-        {/* DIAGRAM */}
+        {/* DIAGRAM — three columns, simplified to a single signal per side.
+            Left: single red ▼ + cycling pressure label.
+            Center: gold-topped card with the thesis.
+            Right: single green ▲ + cycling outcome label. */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1.2fr 1fr',
-          columnGap: 'clamp(20px, 4vw, 56px)',
-          alignItems: 'start',
+          gridTemplateColumns: '1fr 1.4fr 1fr',
+          columnGap: 'clamp(20px, 5vw, 80px)',
+          alignItems: 'center',
           position: 'relative',
+          minHeight: 320,
         }}>
-          {/* LEFT — Varying Forces, continuously rotating */}
-          <div style={{ position: 'relative', paddingTop: 8 }}>
-            <DiagramColHead label="Varying Forces" />
-            <RotatingPaneList
-              pool={FORCES_POOL}
-              slotCount={5}
-              Marker={RedDownMarker}
-              markerColor={C.copper}
-              side="left"
-              intervalMs={2900}
-              jitter={1700}
-              baseDelay={1200}
-            />
+          {/* LEFT — PRESSURES */}
+          <div style={{
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            textAlign: 'center', gap: 28,
+          }}>
+            <div style={{
+              fontFamily: SANS, fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.32em', textTransform: 'uppercase',
+              color: 'rgba(230, 237, 246, 0.45)',
+            }}>Pressures</div>
+            <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+              <path d="M6 10 L38 10 L22 38 Z" fill={C.signalRed} />
+            </svg>
+            <div
+              ref={pressureRef}
+              style={{
+                fontFamily: SANS, fontSize: 17, fontWeight: 500,
+                color: C.white, letterSpacing: '-0.005em',
+                minHeight: 26,
+                willChange: 'transform, opacity',
+              }}
+            >{FORCES_POOL[0]}</div>
           </div>
 
-          {/* CENTER — the immovable engine.
-              Square corners + thin border + permanent gold top rule
-              to match the 5-Disciplines keystone treatment, so this
-              card reads as visually consistent with Row 2. Content
-              is top-justified (alignItems: flex-start on column)
-              so the title and description sit at the top edge of
-              the card, with a quiet anchor below. */}
-          <div style={{ position: 'relative', paddingTop: 8 }}>
-            <DiagramColHead label="Execution Capability" />
+          {/* CENTER — engine card */}
+          <div style={{ position: 'relative' }}>
+            {/* Ambient cobalt halo — perpetual slow breath */}
+            <div
+              ref={haloRef}
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                inset: -28,
+                background: `radial-gradient(ellipse at center, rgba(234,187,113,0.18) 0%, rgba(44,95,163,0.10) 50%, rgba(44,95,163,0) 78%)`,
+                pointerEvents: 'none',
+                filter: 'blur(20px)',
+                opacity: 0.5,
+                zIndex: 0,
+              }}
+            />
+            {/* Card */}
             <div style={{
-              position: 'relative',
+              position: 'relative', zIndex: 1,
+              background: 'rgba(13, 36, 66, 0.65)',
+              border: `1px solid rgba(72, 120, 184, 0.22)`,
+              borderTop: `2px solid ${C.gold}`,
+              padding: '44px 38px',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              minHeight: 240,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              {/* Ambient halo — perpetual slow breath */}
-              <div
-                ref={haloRef}
-                aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  inset: -24,
-                  background: `radial-gradient(ellipse at center, ${C.gold200} 0%, rgba(234,187,113,0.20) 38%, rgba(234,187,113,0) 72%)`,
-                  pointerEvents: 'none',
-                  filter: 'blur(14px)',
-                  opacity: 0.6,
-                  zIndex: 0,
-                }}
-              />
-              {/* Engine card — matches 5-Disciplines card vocabulary */}
-              <div style={{
-                position: 'relative', zIndex: 1,
-                background: `linear-gradient(180deg, ${C.navy} 0%, ${C.navy900} 100%)`,
-                border: `1px solid ${C.gray200}`,
-                borderTop: `3px solid ${C.gold}`,
-                color: C.white,
-                padding: '36px 30px 34px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'stretch',
-                boxShadow: `0 28px 64px -28px rgba(13,36,66,0.55)`,
-                overflow: 'hidden',
-                minHeight: 320,
+              <p style={{
+                fontFamily: SANS, fontSize: 19, fontWeight: 400, lineHeight: 1.55,
+                color: C.white, margin: 0, textAlign: 'center', textWrap: 'balance',
               }}>
-                {/* Inner architectural grid */}
-                <div aria-hidden="true" style={{
-                  position: 'absolute', inset: 0, opacity: 0.10, pointerEvents: 'none',
-                  backgroundImage: `linear-gradient(${C.gold} 1px, transparent 1px), linear-gradient(90deg, ${C.gold} 1px, transparent 1px)`,
-                  backgroundSize: '40px 40px',
-                  mixBlendMode: 'overlay',
-                }} />
-
-                {/* Heading */}
-                <h3 style={{
-                  fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 700, lineHeight: 1.2,
-                  color: C.white, fontFamily: 'inherit',
-                  margin: '0 0 14px', letterSpacing: '-0.012em',
-                  position: 'relative', zIndex: 1,
-                }}>
-                  Built on the Five Disciplines.
-                </h3>
-
-                {/* Body — top-justified above the discipline anchor list */}
-                <p style={{
-                  fontSize: 15, fontWeight: 300, lineHeight: 1.55,
-                  color: 'rgba(255,255,255,0.86)', fontFamily: 'inherit',
-                  margin: '0 0 22px', textWrap: 'pretty',
-                  position: 'relative', zIndex: 1,
-                }}>
-                  {typo("The engine that turns variable inputs into reliable outputs. Immovable against changing conditions because the foundation underneath it doesn\u2019t bend.")}
-                </p>
-
-                {/* Quiet anchor — the five disciplines listed at small
-                    scale at the bottom of the card. Tells the reader
-                    exactly what the engine is built on, without
-                    repeating Row 2's animation. */}
-                <div style={{
-                  position: 'relative', zIndex: 1,
-                  marginTop: 'auto', paddingTop: 18,
-                  borderTop: `1px solid rgba(234, 187, 113, 0.28)`,
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '8px 18px',
-                  fontSize: 11.5,
-                  fontWeight: 500,
-                  letterSpacing: '0.02em',
-                  color: 'rgba(255,255,255,0.78)',
-                }}>
-                  {EXPERTISE_CARDS.map((card) => (
-                    <div key={card.headline} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit' }}>
-                      <span style={{
-                        width: 4, height: 4, borderRadius: 50, background: C.gold,
-                        flex: '0 0 auto',
-                      }} />
-                      {card.headline}
-                    </div>
-                  ))}
-                </div>
-              </div>
+                <span style={{ color: C.gold, fontWeight: 600 }}>The Five Disciplines</span>{' '}
+                {typo("built into your operation. Held by your people. Compounds shift over shift.")}
+              </p>
             </div>
           </div>
 
-          {/* RIGHT — Consistent Results, continuously rotating */}
-          <div style={{ position: 'relative', paddingTop: 8 }}>
-            <DiagramColHead label="Consistent Results" />
-            <RotatingPaneList
-              pool={RESULTS_POOL}
-              slotCount={5}
-              Marker={GreenUpMarker}
-              markerColor="#2d7a4f"
-              side="right"
-              intervalMs={3200}
-              jitter={1700}
-              baseDelay={1500}
-            />
+          {/* RIGHT — OUTCOMES */}
+          <div style={{
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            textAlign: 'center', gap: 28,
+          }}>
+            <div style={{
+              fontFamily: SANS, fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.32em', textTransform: 'uppercase',
+              color: 'rgba(230, 237, 246, 0.45)',
+            }}>Outcomes</div>
+            <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+              <path d="M22 6 L38 34 L6 34 Z" fill={C.signalGreen} />
+            </svg>
+            <div
+              ref={outcomeRef}
+              style={{
+                fontFamily: SANS, fontSize: 17, fontWeight: 500,
+                color: C.white, letterSpacing: '-0.005em',
+                minHeight: 26,
+                willChange: 'transform, opacity',
+              }}
+            >{RESULTS_POOL[0]}</div>
           </div>
         </div>
 
-        {/* Closing line */}
-        <p style={{
-          fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 700, lineHeight: 1.25,
-          color: C.navy, fontFamily: 'inherit',
-          margin: '72px 0 0', maxWidth: S.maxRead,
-          letterSpacing: '-0.012em', textWrap: 'balance',
+        {/* BOTTOM FLOW RAIL — hairline gold with a single dot traveling
+            left → right. Reads as the direction of value across the
+            diagram above. Quiet, continuous, never re-triggered. */}
+        <div ref={flowLineRef} style={{
+          position: 'relative',
+          marginTop: 96,
+          height: 1,
+          background: 'linear-gradient(90deg, rgba(234,187,113,0) 0%, rgba(234,187,113,0.4) 12%, rgba(234,187,113,0.4) 88%, rgba(234,187,113,0) 100%)',
         }}>
-          {typo("When the foundation is strong, conditions stop determining outcomes.")}
-        </p>
+          <span
+            ref={flowDotRef}
+            aria-hidden="true"
+            style={{
+              position: 'absolute', top: '50%', left: '0%',
+              transform: 'translate(-50%, -50%)',
+              width: 8, height: 8, borderRadius: '50%',
+              background: C.gold,
+              boxShadow: `0 0 0 4px rgba(234,187,113,0.18), 0 0 16px rgba(234,187,113,0.55)`,
+              willChange: 'left',
+            }}
+          />
+        </div>
       </div>
     </section>
   );
@@ -2506,7 +2568,7 @@ const EXPERTISE_CARDS = [
     body: 'Supervisors who can plan a shift, run a problem to ground, and enforce the standard with their team. The single highest-leverage role in the operation, and the one most often handed a clipboard and left to figure it out alone.',
   },
   {
-    headline: 'Reliable Equipment Performance',
+    headline: 'Reliable Equipment',
     body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable. When equipment performs, scheduling works, throughput stays consistent, and labor stops absorbing the variability the machines should have absorbed.',
   },
   {
@@ -2515,7 +2577,7 @@ const EXPERTISE_CARDS = [
   },
   {
     headline: 'Daily Accountability',
-    body: 'The cadence, metrics, and conversations that close the loop every shift, every day. It\u2019s the keystone. Without it, the other four drift. With it, they lock together and compound.',
+    body: "The cadence, metrics, and conversations that close the loop every shift, every day. Without it, the other four drift. With it, they lock together and compound.",
   },
 ];
 
@@ -2534,56 +2596,113 @@ function IconPlaceholder() {
   );
 }
 
-/* ExpertiseCard — Five Disciplines card. Visual treatment only; the
-   lock-in animation is driven by the parent SectionExpertiseAreas
-   through GSAP, which directly mutates opacity / transform on the
-   card's root element. Hover state for the gold top rule stays here.
+/* ExpertiseCard — Five Disciplines accordion card. All five cards are
+   equal-weight (no keystone treatment); clicking the [+] toggles an
+   expansion that reveals the body text below the title. Closes when
+   another card opens (radio behavior). The card is white with no
+   internal border — the copper outer frame on the row carries the
+   structural weight. */
+function ExpertiseCard({ headline, body, isOpen, onToggle, isLastInRow }) {
+  const bodyRef = useRef(null);
+  const [bodyHeight, setBodyHeight] = useState(0);
 
-   The card also carries an opt-in keystone treatment used by
-   SectionExpertiseAreas only on the 5th card (Daily Accountability).
-   Keystone state is a derived prop driven by ScrollTrigger; when it
-   activates, a gold top rule turns on permanently to signal that the
-   structure has been completed. */
-function ExpertiseCard({ headline, body, isKeystone, keystoneLocked }) {
-  const [h, setH] = useState(false);
-  // Keystone wins over hover state for the top rule once it locks.
-  const topRule = isKeystone && keystoneLocked
-    ? '#eabb71'
-    : (h ? '#eabb71' : '#e8e8e4');
+  // Measure body height on mount + on resize so the open transition
+  // animates to the real natural height rather than guessing.
+  useEffect(() => {
+    if (!bodyRef.current) return;
+    const measure = () => {
+      if (bodyRef.current) setBodyHeight(bodyRef.current.scrollHeight);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(bodyRef.current);
+    return () => ro.disconnect();
+  }, [body]);
+
   return (
-    <div
+    <button
+      type="button"
       data-discipline-card
+      aria-expanded={isOpen}
+      onClick={onToggle}
       style={{
         background: '#ffffff',
-        border: `1px solid #e8e8e4`,
-        borderTop: `3px solid ${topRule}`,
-        padding: '36px 28px 32px',
-        display: 'flex', flexDirection: 'column', gap: 0,
-        height: '100%',
-        transition: 'border-top-color 320ms ease',
-        // Starting state for the GSAP timeline. GSAP overwrites these
-        // on mount; setting them inline ensures no FOUC before GSAP
-        // runs. Reduced-motion users see the fully-resolved card (the
-        // hook below short-circuits and leaves DOM at final state).
-        opacity: 1,
-        transform: 'translate3d(0,0,0)',
+        border: 'none',
+        // Internal vertical divider between cards lives on the right
+        // edge of every card except the last in the row. Hairline
+        // copper-tinted gray so it reads as quiet structure inside
+        // the copper outer frame.
+        borderRight: isLastInRow ? 'none' : `1px solid rgba(184, 95, 51, 0.12)`,
+        padding: '36px 30px 36px',
+        margin: 0,
+        textAlign: 'left',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        color: 'inherit',
+        display: 'flex', flexDirection: 'column',
+        // Generous baseline so collapsed cards have presence;
+        // expanded cards grow taller via the body panel below.
+        minHeight: 280,
+        position: 'relative',
+        outline: 'none',
+        transition: 'background 220ms ease',
       }}
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(247, 232, 200, 0.18)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
+      onFocus={(e) => { e.currentTarget.style.background = 'rgba(247, 232, 200, 0.25)'; }}
+      onBlur={(e) => { e.currentTarget.style.background = '#ffffff'; }}
     >
-      {/* Per-card [+] removed; the additive operators now live in
-          PlusJoiner components between cards, so the row reads as
-          card + card + card = result. */}
+      {/* Header row — title + animated [+] / [×] toggle */}
       <div style={{
-        fontSize: 18, fontWeight: 700, lineHeight: 1.3,
-        color: '#183a61', fontFamily: 'inherit', marginBottom: 12,
-      }}>{headline}</div>
-      <p style={{
-        fontSize: 15, fontWeight: 300, lineHeight: 1.65,
-        color: '#3a3a38', fontFamily: 'inherit', margin: 0, flex: 1,
-        textWrap: 'pretty',
-      }}>{typo(body)}</p>
-    </div>
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+        gap: 16, marginBottom: 12,
+      }}>
+        <div style={{
+          fontFamily: 'inherit',
+          fontSize: 'clamp(18px, 1.5vw, 21px)',
+          fontWeight: 700, lineHeight: 1.2,
+          color: C.navy,
+          letterSpacing: '-0.012em',
+        }}>{headline}</div>
+        {/* [+] toggle — copper, rotates to × when open */}
+        <span aria-hidden="true" style={{
+          flex: '0 0 auto',
+          width: 18, height: 18, position: 'relative',
+          color: C.copper,
+          transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+          transition: 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1)',
+          marginTop: 4,
+        }}>
+          <span style={{
+            position: 'absolute', top: '50%', left: 0,
+            width: '100%', height: 1.5,
+            background: 'currentColor',
+            transform: 'translateY(-50%)',
+          }} />
+          <span style={{
+            position: 'absolute', left: '50%', top: 0,
+            width: 1.5, height: '100%',
+            background: 'currentColor',
+            transform: 'translateX(-50%)',
+          }} />
+        </span>
+      </div>
+
+      {/* Body panel — collapses via max-height + opacity */}
+      <div style={{
+        maxHeight: isOpen ? bodyHeight : 0,
+        opacity: isOpen ? 1 : 0,
+        overflow: 'hidden',
+        transition: 'max-height 420ms cubic-bezier(0.4, 0, 0.2, 1), opacity 320ms ease',
+        willChange: 'max-height, opacity',
+      }}>
+        <p ref={bodyRef} style={{
+          fontFamily: 'inherit',
+          fontSize: 14.5, fontWeight: 400, lineHeight: 1.6,
+          color: C.body, margin: '8px 0 0', textWrap: 'pretty',
+        }}>{typo(body)}</p>
+      </div>
+    </button>
   );
 }
 
@@ -2603,310 +2722,80 @@ function LearnMoreLink({ href }) {
   );
 }
 
-/* PlusJoiner — additive operator between cards. Gold "+" sign in a
-   narrow flex column. Each joiner animates in with its right-hand
-   neighbor card, so the build reads literally as
-     card + card + card + card + card
-   The 5 cards plus the 4 joiners are framed by the perimeter SVG. */
-function PlusJoiner({ index }) {
-  return (
-    <div
-      data-plus-joiner
-      data-plus-index={index}
-      aria-hidden="true"
-      style={{
-        flex: '0 0 44px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 28, fontWeight: 300, lineHeight: 1,
-        color: '#eabb71',
-        fontFamily: 'inherit',
-        userSelect: 'none',
-        // GSAP initial state set inline so there's no flash before
-        // the timeline mounts.
-        opacity: 1,
-        transform: 'translate3d(0,0,0)',
-      }}
-    >+</div>
-  );
-}
-
-/* PerimeterFrame — gold frame that wraps the 5-card row.
-   Two layers:
-     1. solid:  the perimeter rect, drawn on once via stroke-dashoffset.
-        Tied to the scrubbed timeline so it draws in concert with the
-        keystone landing.
-     2. comet:  a smaller bright segment that traces the perimeter
-        perpetually after the solid is drawn in. Independent of scroll;
-        starts when the keystone locks, kills when the user scrolls
-        back above the keystone trigger.
-   The SVG sits absolutely positioned with a small negative inset so
-   the line floats just outside the card edges instead of clipping
-   against them. */
-const PERIMETER_INSET = 10;
-const PerimeterFrame = React.forwardRef(function PerimeterFrame(_props, ref) {
-  return (
-    <svg
-      ref={ref}
-      aria-hidden="true"
-      preserveAspectRatio="none"
-      style={{
-        position: 'absolute',
-        inset: -PERIMETER_INSET,
-        width: `calc(100% + ${PERIMETER_INSET * 2}px)`,
-        height: `calc(100% + ${PERIMETER_INSET * 2}px)`,
-        pointerEvents: 'none',
-        overflow: 'visible',
-        zIndex: 2,
-      }}
-    >
-      {/* Solid perimeter. pathLength normalizes the path to 1000 so
-          the stroke-dasharray math is independent of element width.
-          Initial dashoffset = 1000 makes it invisible. */}
-      <rect
-        data-perimeter-solid
-        x="0.5" y="0.5"
-        width="calc(100% - 1px)" height="calc(100% - 1px)"
-        fill="none"
-        stroke="#eabb71"
-        strokeWidth="1.5"
-        pathLength="1000"
-        style={{
-          strokeDasharray: 1000,
-          strokeDashoffset: 1000,
-        }}
-      />
-      {/* Comet — short bright segment that perpetually circles after
-          the solid finishes drawing. Brighter gold + slightly thicker
-          + rounded ends so it reads as a moving light, not a second
-          static line. Opacity starts at 0; GSAP turns it on after the
-          solid finishes. */}
-      <rect
-        data-perimeter-comet
-        x="0.5" y="0.5"
-        width="calc(100% - 1px)" height="calc(100% - 1px)"
-        fill="none"
-        stroke="#fdd58a"
-        strokeWidth="2"
-        strokeLinecap="round"
-        pathLength="1000"
-        style={{
-          strokeDasharray: '70 930',
-          strokeDashoffset: 0,
-          opacity: 0,
-          filter: 'drop-shadow(0 0 6px rgba(234, 187, 113, 0.55))',
-        }}
-      />
-    </svg>
-  );
-});
-
+/* SectionExpertiseAreas — Five Disciplines, accordion-style.
+   Five equal-weight white cards inside a single copper hairline frame.
+   Each card has a [+] toggle that expands to reveal the body text.
+   Radio behavior: opening one closes any other. No keystone, no
+   scroll lock-in, no perimeter draw — calm and confident. The whole
+   row reads as a single structural unit because of the copper frame. */
 function SectionExpertiseAreas() {
-  const sectionRef = useRef(null);
-  const rowRef = useRef(null);
-  const payoffRef = useRef(null);
-  const perimeterRef = useRef(null);
-  const cometTweenRef = useRef(null);
-  const [keystoneLocked, setKeystoneLocked] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      setKeystoneLocked(true);
-      return;
-    }
-
-    const section = sectionRef.current;
-    const row = rowRef.current;
-    const perimeter = perimeterRef.current;
-    if (!section || !row) return;
-
-    const cards = row.querySelectorAll('[data-discipline-card]');
-    const joiners = row.querySelectorAll('[data-plus-joiner]');
-    const solid = perimeter ? perimeter.querySelector('[data-perimeter-solid]') : null;
-    const comet = perimeter ? perimeter.querySelector('[data-perimeter-comet]') : null;
-    const payoff = payoffRef.current;
-    if (!cards.length) return;
-
-    // Initial states. Each card starts 80px below + invisible; each
-    // joiner starts scaled-down + invisible so it reads as the
-    // operator "snapping into place" between the neighbors.
-    gsap.set(cards, { opacity: 0, y: 80, willChange: 'transform, opacity' });
-    gsap.set(joiners, { opacity: 0, scale: 0.6, willChange: 'transform, opacity' });
-    if (payoff) gsap.set(payoff, { opacity: 0, y: 18, willChange: 'transform, opacity' });
-    if (solid) gsap.set(solid, { strokeDashoffset: 1000 });
-    if (comet) gsap.set(comet, { opacity: 0 });
-
-    const ctx = gsap.context(() => {
-      // Helper: start the perpetual comet animation. Independent of
-      // the scrubbed scroll timeline. Killed and reset when the user
-      // scrolls back above the keystone (handled in onUpdate below).
-      const startComet = () => {
-        if (!comet || cometTweenRef.current) return;
-        gsap.set(comet, { opacity: 1, strokeDashoffset: 0 });
-        cometTweenRef.current = gsap.to(comet, {
-          strokeDashoffset: -1000,
-          duration: 5.6,
-          ease: 'none',
-          repeat: -1,
-        });
-      };
-      const stopComet = () => {
-        if (cometTweenRef.current) {
-          cometTweenRef.current.kill();
-          cometTweenRef.current = null;
-        }
-        if (comet) gsap.set(comet, { opacity: 0 });
-      };
-
-      // Main scrubbed timeline. Range extended so the user has to
-      // scroll meaningfully through the section to land each card.
-      // start: when the section top hits 95% of viewport (just
-      // entering); end: when the section top is 25% above viewport
-      // top (well past). That's ~120% of viewport-height of scroll
-      // distance — slow and deliberate by design.
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          // Tuned for Row 2 sitting directly under the hero: start
-          // when the section top hits 75% of viewport (i.e., the
-          // section header has properly entered) and end well past
-          // viewport top, so the user has a full screen-worth of
-          // scroll to land each discipline.
-          start: 'top 75%',
-          end: 'top -45%',
-          scrub: 1.1,
-          onUpdate: (self) => {
-            const locked = self.progress >= 0.86;
-            setKeystoneLocked(locked);
-            if (locked && self.direction === 1) startComet();
-            else if (!locked && self.direction === -1) stopComet();
-          },
-        },
-      });
-
-      // Card lock-ins with weighted easing. Stagger of 1.4s gives
-      // each card its own deliberate "settle moment" before the next
-      // arrives. Card duration of 1.2s keeps each lock-in heavy.
-      const STAGGER = 1.4;
-      cards.forEach((card, i) => {
-        tl.to(card, {
-          opacity: 1,
-          y: 0,
-          ease: 'power3.out',
-          duration: 1.2,
-        }, i * STAGGER);
-      });
-
-      // Joiners — each + appears as its right-neighbor card lands.
-      // Joiner i sits between cards i and i+1, so it animates with
-      // card i+1's timeline position, slightly delayed so it reads as
-      // "this new card just got added by this operator."
-      joiners.forEach((joiner, i) => {
-        // joiner i is between cards[i] and cards[i+1] in DOM order.
-        tl.to(joiner, {
-          opacity: 1,
-          scale: 1,
-          ease: 'back.out(2)',
-          duration: 0.55,
-        }, (i + 1) * STAGGER - 0.25);
-      });
-
-      // Perimeter draw-on — begins as the keystone card is mid-lock
-      // and completes a beat after the keystone lands. Eased in/out
-      // so the line accelerates around the corners and slows as it
-      // closes the loop.
-      if (solid) {
-        tl.to(solid, {
-          strokeDashoffset: 0,
-          ease: 'power2.inOut',
-          duration: 1.8,
-        }, 4 * STAGGER + 0.2);
-      }
-
-      // Payoff line — resolves just after the perimeter closes.
-      if (payoff) {
-        tl.to(payoff, {
-          opacity: 1,
-          y: 0,
-          ease: 'power2.out',
-          duration: 0.9,
-        }, '>-0.4');
-      }
-    }, section);
-
-    return () => {
-      if (cometTweenRef.current) {
-        cometTweenRef.current.kill();
-        cometTweenRef.current = null;
-      }
-      ctx.revert();
-    };
-  }, []);
-
+  const [openIdx, setOpenIdx] = useState(null);
   return (
-    <section ref={sectionRef} style={{ background: S.bgBone, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+    <section style={{ background: C.ice, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
+        {/* Header — left-anchored editorial. Matches the rest of the
+            page rather than the previous centered treatment. */}
+        <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
           <ChapterMark n="01" />
-          <Eyebrow label="What We Build" />
-          <h2 style={{
-            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>Five Disciplines. <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>One Foundation.</span></h2>
-          <p style={{
-            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            maxWidth: 720, margin: '0 auto', textAlign: 'left',
-            textWrap: 'pretty',
+          <div style={{
+            fontFamily: SANS, fontSize: 12, fontWeight: 600,
+            letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: C.copper, marginBottom: 22,
           }}>
-            {typo("Five disciplines, built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance holds up under whatever pressure comes next.")}
-          </p>
+            What Gets Built In
+          </div>
+          <h2 style={{
+            fontSize: S.h2Size, fontWeight: 800, lineHeight: 1.04,
+            color: C.navy, fontFamily: SANS, margin: '0 0 0',
+            letterSpacing: '-0.022em', textWrap: 'pretty',
+          }}>
+            Five disciplines.{' '}
+            <span style={{
+              fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+              color: C.gold600,
+            }}>One operation that doesn{'\u2019'}t break down.</span>
+          </h2>
         </div>
 
-        {/* Row container — flex row of [card + joiner + card + joiner ... card]
-            wrapped by an SVG perimeter frame. Position: relative anchors
-            the absolute SVG. On narrow screens the row collapses to a
-            column via flex-wrap; the joiners hide via media query so
-            mobile shows just stacked cards. */}
-        <div
-          ref={rowRef}
-          style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'stretch',
-            flexWrap: 'wrap',
-            gap: 0,
-            background: C.gray100,
-          }}
-        >
-          <PerimeterFrame ref={perimeterRef} />
-          {EXPERTISE_CARDS.map((card, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <PlusJoiner index={i - 1} />}
-              <div style={{ flex: '1 1 200px', minWidth: 0, display: 'flex' }}>
-                <div style={{ flex: 1, display: 'flex' }}>
-                  <ExpertiseCard
-                    {...card}
-                    isKeystone={i === EXPERTISE_CARDS.length - 1}
-                    keystoneLocked={keystoneLocked}
-                  />
-                </div>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-
-        <p ref={payoffRef} style={{
-          marginTop: 64,
-          fontSize: 'clamp(20px, 2vw, 26px)', fontWeight: 600, lineHeight: 1.35,
-          color: C.navy, fontFamily: 'inherit',
-          maxWidth: 920, textWrap: 'balance',
-          letterSpacing: S.h2Tracking,
-          textAlign: 'center', margin: '64px auto 0',
+        {/* Row — copper hairline frame around an equal-width 5-column
+            grid. Inner column dividers live on each card; the frame
+            itself is a single rounded-corner rectangle around the row.
+            Collapses to a vertical stack at narrow widths via the
+            auto-fit on the grid. */}
+        <div style={{
+          position: 'relative',
+          border: `1px solid ${C.gold600}`,
+          padding: 10,
+          background: 'rgba(255, 255, 255, 0.4)',
         }}>
-          {typo("Five disciplines. One foundation. An operation that produces when conditions don\u2019t cooperate.")}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 0,
+            background: '#ffffff',
+          }}>
+            {EXPERTISE_CARDS.map((card, i) => (
+              <ExpertiseCard
+                key={card.headline}
+                headline={card.headline}
+                body={card.body}
+                isOpen={openIdx === i}
+                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+                isLastInRow={i === EXPERTISE_CARDS.length - 1}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Closing paragraph — sits below the framed row */}
+        <p style={{
+          fontFamily: SANS,
+          marginTop: 56,
+          fontSize: S.ledeSize, fontWeight: 400, lineHeight: 1.65,
+          color: C.body, maxWidth: S.maxRead,
+          textWrap: 'pretty', margin: '56px 0 0',
+        }}>
+          {typo("Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn\u2019t break down when conditions do.")}
         </p>
       </div>
     </section>
@@ -3600,7 +3489,7 @@ function Footer() {
 function HomeV3() {
   useV3Fonts();
   return (
-    <div style={{ fontFamily: 'inherit', minHeight: '100vh', background: '#fbf9f4' }}>
+    <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#fbf9f4' }}>
       <ReadingProgress />
       <Header />
       <Hero />

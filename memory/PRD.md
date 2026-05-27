@@ -68,6 +68,28 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 2. Replace `/app/frontend/src/data/caseStudies.js` with a WPGraphQL query returning the same JSON shape (the helper `getCaseStudy(slug)` becomes a `useQuery` call).
 3. No component edits required — `CaseStudyHero`, `CaseStudyBody`, `CaseStudyPrintDoc`, `CaseStudyCard` read from the same data object regardless of source.
 
+## Implemented (2026-02-27 — later still) — Serif Swap + Five Disciplines Rebuild
+- **Serif typeface**: Replaced Fraunces with **Playfair Display** (Google Fonts). High-contrast Didone italic — classical, confident, forward-looking. Picked up automatically by all italic accents: hero "Numbers.", chapter marks (`00 —`, `01 —`, …), section headlines' gold italic, reading-rail chapter badge, and the "Start with the foundation" tag.
+- **Five Disciplines (Section 01) rebuilt as accordion row**:
+  - All five disciplines now equal weight — no keystone treatment, no scroll-locked GSAP stagger, no perimeter comet.
+  - Single copper hairline frame around a 5-column row of white cards on the new `ice` blue background.
+  - Each card has a copper `+` toggle that rotates 45° to `×` on open; clicking the card expands the body text via measured-height + opacity transitions. Radio behavior — opening one closes any other.
+  - New copy: eyebrow "WHAT GETS BUILT IN", H2 "Five disciplines. One operation that doesn't break down." (italic gold), closing paragraph "Not five initiatives or five priorities…".
+  - Removed PerimeterFrame, PlusJoiner, and the keystone state machine from this section. ExpertiseCard rewritten as a button with aria-expanded for a11y.
+- All other V3 sections (Hero, Principle, Diagnostic Chain, Pressure-In/Out, How We Work, Metrics, Where We Work, Results, Insights, Closing CTA) untouched.
+
+## Implemented (2026-02-27 — later) — Typography, Palette, & Pressure-In/Out Redesign
+- **Typography**: Loaded Inter Tight (Google Fonts) for V3 only and applied via a `SANS` constant on the root V3 wrapper. Replaces the inherited Proxima Nova with a modern grotesque that feels forward-looking, geometric, and confident — pairs cleanly with Fraunces italic accents.
+- **Expanded blue palette**: Added six new blue tokens (`midnight`, `dusk`, `cobalt`, `sapphire`, `mist`, `ice`) plus semantic `signalRed` and `signalGreen` for the pressure/outcome indicators. Section 04 now uses the dusk/navy900/ink stack as a chromatic depth layer with subtle cobalt + sapphire radial washes.
+- **Section 04 (Pressure In / Performance Out) rebuilt to match user's reference**:
+  - Full navy → ink gradient background (was white).
+  - Header: copper chapter mark + gold eyebrow "WHEN EVERYTHING WORKS TOGETHER" + H2 with lowercase "in/out" + Fraunces italic "out." in brand gold.
+  - Three columns: PRESSURES label + single red ▼ + cycling pressure label (cross-fade dissolve, GSAP) | gold-topped glass card with the thesis | OUTCOMES label + single green ▲ + cycling outcome label.
+  - Pressures and outcomes cycle on independent intervals (2.7s / 3.1s) so they never tick together.
+  - Bottom flow rail: gold hairline with a single dot that travels left → right continuously (5s loop, linear ease) — visualizes direction of value.
+  - Honors `prefers-reduced-motion` (snaps to final state, no animation).
+- All other V3 sections retained and continue to inherit the new Inter Tight family by default via the wrapper.
+
 ## Implemented (2026-02-27) — HomeV3 Editorial Iteration Promoted to `/`
 - New editorial homepage at `/` (`/app/frontend/src/pages/HomeV3.jsx`) with Fraunces serif italic accents, chapter marks (`00 — / 01 — …`), asymmetric left-anchored layouts, radial-gradient hero, and GSAP-driven cinematic motion (ScrollTrigger lock-ins, continuous "engine" halo breathing, rotating force/result lists).
 - 11-chapter editorial spine: 00 Hero → 01 Five Disciplines → 02 The Principle → 03 Diagnostic Chain → 04 Pressure In/Out → 05 How We Work → 06 Metrics → 07 Where We Work → 08 Proven Results → 09 Insights → 10 Closing CTA.
