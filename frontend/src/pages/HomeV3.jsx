@@ -2298,28 +2298,38 @@ function SectionExecutionEngine() {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return;
 
-    // direction = +1 → exit right, enter from left (pressures)
-    // direction = -1 → exit left, enter from right (outcomes)
+    // direction = +1 → exit right, enter from left (pressures + outcomes)
+    // direction = -1 → exit left, enter from right (unused for now)
     const cycle = (el, pool, cursor, interval, direction) => {
       let i = cursor;
       const tick = () => {
         if (!el) return;
         i = (i + 1) % pool.length;
-        const exitX = direction * 32;
-        const enterX = -direction * 32;
+        // Generous travel distance so the horizontal slide is
+        // unmistakable. The previous 32px read as "subtle dissolve"
+        // because at 0.28s the eye barely caught the lateral motion.
+        const exitX = direction * 110;
+        const enterX = -direction * 110;
         const tl = gsap.timeline();
-        tl.to(el, { opacity: 0, x: exitX, duration: 0.28, ease: 'power2.in' })
+        // Exit — slides out in the chosen direction while fading.
+        tl.to(el, {
+          opacity: 0,
+          x: exitX,
+          duration: 0.5,
+          ease: 'power2.in',
+        })
           .call(() => { el.textContent = pool[i]; })
+          // Enter — slides in from the opposite side while fading up.
           .fromTo(el,
             { opacity: 0, x: enterX },
-            { opacity: 1, x: 0, duration: 0.38, ease: 'power3.out' }
+            { opacity: 1, x: 0, duration: 0.55, ease: 'power3.out' }
           );
       };
       return setInterval(tick, interval);
     };
 
-    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1700, +1);
-    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 1900, +1);
+    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1900, +1);
+    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 2100, +1);
     return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
 
