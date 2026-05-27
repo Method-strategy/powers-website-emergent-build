@@ -2298,38 +2298,70 @@ function SectionExecutionEngine() {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return;
 
-    // direction = +1 → exit right, enter from left (pressures + outcomes)
-    // direction = -1 → exit left, enter from right (unused for now)
+    // direction = +1 → exit right, enter from left
+    //
+    // PROBLEM with the previous version: `power1.in` ease pushed
+    // almost all of the lateral motion to the END of the exit window,
+    // which overlapped with the fade-out. The text barely moved while
+    // visible, then disappeared. Result was a centered cross-fade
+    // with no perceptible slide.
+    //
+    // FIX:
+    //   • Linear ease on x so the slide is uniform across the full
+    //     duration — viewer always sees lateral motion.
+    //   • Hold opacity at 1 for the first 80% of the slide; only
+    //     fade in the final 20%. The text is fully readable while
+    //     it travels right, then a quick fade at the very edge.
+    //   • 180px travel — at typical column widths the label clearly
+    //     exits past the visual "frame" of the column.
     const cycle = (el, pool, cursor, interval, direction) => {
       let i = cursor;
+      const TRAVEL = 180;
+      const EXIT_DUR = 0.70;
+      const ENTER_DUR = 0.70;
+
       const tick = () => {
         if (!el) return;
         i = (i + 1) % pool.length;
-        // Generous travel distance so the horizontal slide is
-        // unmistakable. The previous 32px read as "subtle dissolve"
-        // because at 0.28s the eye barely caught the lateral motion.
-        const exitX = direction * 110;
-        const enterX = -direction * 110;
+        const exitX = direction * TRAVEL;
+        const enterX = -direction * TRAVEL;
+
         const tl = gsap.timeline();
-        // Exit — slides out in the chosen direction while fading.
+
+        // === EXIT === slide + late fade
+        tl.to(el, {
+          x: exitX,
+          duration: EXIT_DUR,
+          ease: 'none', // linear — uniform velocity = clearly visible motion
+        }, 0);
         tl.to(el, {
           opacity: 0,
-          x: exitX,
-          duration: 0.5,
+          duration: EXIT_DUR * 0.25,
           ease: 'power2.in',
-        })
-          .call(() => { el.textContent = pool[i]; })
-          // Enter — slides in from the opposite side while fading up.
-          .fromTo(el,
-            { opacity: 0, x: enterX },
-            { opacity: 1, x: 0, duration: 0.55, ease: 'power3.out' }
-          );
+        }, EXIT_DUR * 0.75);
+
+        // Swap text right at the end of exit.
+        tl.call(() => { el.textContent = pool[i]; }, [], EXIT_DUR);
+
+        // === ENTER === jump to entry position, fade up fast, slide to center
+        tl.set(el, { x: enterX, opacity: 0 }, EXIT_DUR);
+        tl.to(el, {
+          opacity: 1,
+          duration: ENTER_DUR * 0.25,
+          ease: 'power2.out',
+        }, EXIT_DUR);
+        tl.to(el, {
+          x: 0,
+          duration: ENTER_DUR,
+          ease: 'none', // linear — uniform motion across the full slide
+        }, EXIT_DUR);
       };
       return setInterval(tick, interval);
     };
 
-    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1900, +1);
-    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 2100, +1);
+    // Cycle is now total animation duration (~1.4s) + ~1s rest.
+    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 2600, +1);
+    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 2900, +1);
     return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
 
