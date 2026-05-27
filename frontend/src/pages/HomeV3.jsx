@@ -2286,15 +2286,13 @@ function SectionExecutionEngine() {
   }, []);
 
   // Cycling labels — single pressure / outcome each side, swapped via
-  // GSAP cross-fade every ~1700ms. The motion direction reinforces
-  // the diagram's thesis. Pressures and outcomes use MIRROR motions:
-  //   • Pressures (left col):  enter from the LEFT, exit to the RIGHT
+  // GSAP cross-fade every ~1700ms. Both sides flow LEFT → RIGHT:
+  //   • Pressures (left col):  enter from left → center → exit right
   //     (toward the engine) — reads as "absorbed by the engine."
-  //   • Outcomes (right col):  enter from the RIGHT, exit to the LEFT
-  //     — reads as "the outcome arrives in the right column already
-  //     fully-formed, then is replaced from the engine side." The two
-  //     columns flow inward toward the engine but in opposing
-  //     directions, framing the engine as the convergence point.
+  //   • Outcomes (right col):  enter from left → center → exit right
+  //     — reads as "emitted by the engine and carried onward."
+  // Unified left-to-right value-flow across the whole diagram,
+  // mirroring the gold dot traveling along the rail below.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2321,7 +2319,7 @@ function SectionExecutionEngine() {
     };
 
     const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1700, +1);
-    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 1900, -1);
+    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 1900, +1);
     return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
 
