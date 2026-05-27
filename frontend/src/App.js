@@ -5,6 +5,7 @@ import HomeLayout from './components/HomeLayout';
 
 import Home from './pages/Home';
 import HomeV2 from './pages/HomeV2';
+import HomeV3 from './pages/HomeV3';
 import Approach from './pages/Approach';
 import DiscoveryProcess from './pages/DiscoveryProcess';
 import IndustriesServed from './pages/IndustriesServed';
@@ -38,6 +39,7 @@ function App() {
               To revert: swap these two paths so / points back to <Home />. */}
           <Route path="/" element={<HomeV2 />} />
           <Route path="/v1" element={<Home />} />
+          <Route path="/v3" element={<HomeV3 />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
