@@ -2287,40 +2287,41 @@ function SectionExecutionEngine() {
 
   // Cycling labels — single pressure / outcome each side, swapped via
   // GSAP cross-fade every ~1700ms. The motion direction reinforces
-  // the diagram's thesis:
-  //   • Pressures exit to the RIGHT (toward the engine), then the next
-  //     pressure enters from the LEFT — reading as "absorbed by the
-  //     engine."
-  //   • Outcomes exit to the RIGHT (away from the engine), then the
-  //     next outcome enters from the LEFT (out of the engine) — reading
-  //     as "emitted by the engine."
-  // Both sides therefore flow strictly left → right, mirroring the
-  // gold dot traveling along the rail below.
+  // the diagram's thesis. Pressures and outcomes use MIRROR motions:
+  //   • Pressures (left col):  enter from the LEFT, exit to the RIGHT
+  //     (toward the engine) — reads as "absorbed by the engine."
+  //   • Outcomes (right col):  enter from the RIGHT, exit to the LEFT
+  //     — reads as "the outcome arrives in the right column already
+  //     fully-formed, then is replaced from the engine side." The two
+  //     columns flow inward toward the engine but in opposing
+  //     directions, framing the engine as the convergence point.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return;
 
-    const cycle = (el, pool, cursor, interval) => {
+    // direction = +1 → exit right, enter from left (pressures)
+    // direction = -1 → exit left, enter from right (outcomes)
+    const cycle = (el, pool, cursor, interval, direction) => {
       let i = cursor;
       const tick = () => {
         if (!el) return;
         i = (i + 1) % pool.length;
+        const exitX = direction * 32;
+        const enterX = -direction * 32;
         const tl = gsap.timeline();
-        // Exit RIGHT — current label drifts toward the engine card.
-        tl.to(el, { opacity: 0, x: 32, duration: 0.28, ease: 'power2.in' })
+        tl.to(el, { opacity: 0, x: exitX, duration: 0.28, ease: 'power2.in' })
           .call(() => { el.textContent = pool[i]; })
-          // Enter from LEFT — next label drifts in from the opposite side.
           .fromTo(el,
-            { opacity: 0, x: -32 },
+            { opacity: 0, x: enterX },
             { opacity: 1, x: 0, duration: 0.38, ease: 'power3.out' }
           );
       };
       return setInterval(tick, interval);
     };
 
-    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1700);
-    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 1900);
+    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1700, +1);
+    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 1900, -1);
     return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
 
