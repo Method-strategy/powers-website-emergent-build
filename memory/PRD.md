@@ -68,6 +68,12 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 2. Replace `/app/frontend/src/data/caseStudies.js` with a WPGraphQL query returning the same JSON shape (the helper `getCaseStudy(slug)` becomes a `useQuery` call).
 3. No component edits required — `CaseStudyHero`, `CaseStudyBody`, `CaseStudyPrintDoc`, `CaseStudyCard` read from the same data object regardless of source.
 
+## Implemented (2026-02-27 — final pass for the day) — Roboto Serif + Numbering Removal
+- **Serif typeface**: Playfair Display → **Roboto Serif** (Google Fonts). Used roman/upright throughout — every italic SERIF usage on the page was stripped. This kills the letter-tracking artifacts the user flagged on rounded italic terminals.
+- **Conceptual fix — no more chapter numbers**: The page previously numbered each section `00 — / 01 — / 02 — … / 10 —` as a "chaptered article" device. That directly contradicted the homepage thesis "Stop Chasing Numbers." `ChapterMark` is now a no-op component (returns `null`); every `<ChapterMark n="…" />` call site stays intact but renders nothing.
+- **Reading rail upgraded**: Replaced the Fraunces chapter-number badge with a GSAP pulse-flash on the newly-active dot when the reader crosses a section boundary (scale `2.4 → 1.4`, copper halo fading out, 0.9s `power3.out`). The 11 dots + scrubbing fill remain as the navigation/orientation device.
+- Lint clean; verified with multi-section screenshot pass.
+
 ## Implemented (2026-02-27 — later still) — Serif Swap + Five Disciplines Rebuild
 - **Serif typeface**: Replaced Fraunces with **Playfair Display** (Google Fonts). High-contrast Didone italic — classical, confident, forward-looking. Picked up automatically by all italic accents: hero "Numbers.", chapter marks (`00 —`, `01 —`, …), section headlines' gold italic, reading-rail chapter badge, and the "Start with the foundation" tag.
 - **Five Disciplines (Section 01) rebuilt as accordion row**:

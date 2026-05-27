@@ -41,12 +41,13 @@ gsap.registerPlugin(ScrollTrigger);
  * ────────────────────────────────────────────────────────────────── */
 
 /* Inject Inter Tight (Google Fonts) for forward-looking sans display
-   + Playfair Display for refined editorial italic + display moments.
+   + Roboto Serif for editorial display moments (used roman, not italic
+   — italic introduces letter-tracking issues on rounded terminals).
    Loaded once per session via id-deduped <link> tags. */
 const V3_FONT_LINKS = [
   { id: 'v3-preconnect-g',  href: 'https://fonts.googleapis.com', rel: 'preconnect' },
   { id: 'v3-preconnect-gs', href: 'https://fonts.gstatic.com', rel: 'preconnect', crossOrigin: 'anonymous' },
-  { id: 'v3-playfair',      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap' },
+  { id: 'v3-robotoserif',   href: 'https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,300;8..144,400;8..144,500;8..144,600;8..144,700&display=swap' },
   { id: 'v3-intertight',    href: 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap' },
 ];
 const useV3Fonts = () => {
@@ -68,46 +69,34 @@ const useV3Fonts = () => {
 // contrast without competing with it.
 const SANS = "'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
-// Editorial serif stack — Playfair Display is the workhorse for italic
-// display + chapter numbers. Refined high-contrast Didone with elegant
-// terminals; reads classical, confident, and forward-looking — not
-// nostalgic. Pairs cleanly with Inter Tight without competing.
-const SERIF = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
+// Editorial serif stack — Roboto Serif is the workhorse for display
+// emphasis. Used roman (upright) only — italics introduce letter-
+// tracking artifacts on rounded terminals that don't sit well in
+// display sizes. Pairs cleanly with Inter Tight at any weight.
+const SERIF = "'Roboto Serif', 'Georgia', 'Times New Roman', serif";
 
-/* ChapterMark — small typographic chapter indicator that opens each
-   section. "00" through "10" set in copper Fraunces italic, sitting
-   above the eyebrow. Creates the magazine-spread rhythm. */
-function ChapterMark({ n, light = false }) {
-  return (
-    <div style={{
-      fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-      fontSize: 13, letterSpacing: '0.06em',
-      color: light ? '#e89346' : '#b85f33',
-      marginBottom: 14,
-      display: 'flex', alignItems: 'baseline', gap: 10,
-    }}>
-      <span style={{ fontSize: 28, fontWeight: 400, lineHeight: 1 }}>{n}</span>
-      <span style={{ height: 1, width: 28, background: light ? 'rgba(232,147,70,0.5)' : 'rgba(184,95,51,0.55)' }} />
-    </div>
-  );
+/* ChapterMark — INTENTIONALLY DISABLED.
+   The earlier design numbered every section (00 — / 01 — / 02 —) as
+   chapter markers. We removed that system because it directly
+   contradicts the homepage thesis ("Stop Chasing Numbers"). All
+   <ChapterMark /> call sites are kept intact (they're scattered across
+   every section) but render nothing. The reading-progress rail on the
+   right edge replaces them as a navigation/orientation device. */
+function ChapterMark(_props) {
+  return null;
 }
 
-/* ReadingProgress — Apple-level "chapter scrubber" pinned to the right
-   edge of the viewport. 11 hairline tick dots map to the 11 editorial
-   chapters (00–10). A copper hairline connects them; tick dots fill in
-   as the reader passes each chapter. The active chapter's number (e.g.
-   "03") fades in adjacent to the dot, then fades out after the reader
-   stops scrolling. Vertically centered, lives inside a ~280px band so
-   it never crowds the chrome above or footer below. Hidden on mobile
-   and for `prefers-reduced-motion`. */
-const CHAPTER_LABELS = [
-  '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
-];
+/* ReadingProgress — Apple-level reading rail pinned to the right edge
+   of the viewport. 11 hairline tick dots map to the 11 sections of
+   the page; a copper hairline connects them and fills in as the
+   reader scrolls. When the reader crosses a section boundary, the
+   newly-active dot flashes (brief copper pulse + halo) — replacing
+   the chapter-number system we removed from the page body.
+   Vertically centered, hidden on mobile and for `prefers-reduced-motion`. */
+const SECTION_COUNT = 11;
 function ReadingProgress() {
   const fillRef = useRef(null);
   const dotsRef = useRef([]);
-  const badgeRef = useRef(null);
-  const idleTimerRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -116,7 +105,22 @@ function ReadingProgress() {
     if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) return;
 
     let raf = 0;
-    let lastChapterIdx = -1;
+    let lastIdx = -1;
+
+    const flash = (el) => {
+      if (!el) return;
+      // Brief amber pulse — scale up + bright copper + soft glow,
+      // then settle back to the resting passed-dot state.
+      gsap.fromTo(el, {
+        scale: 2.4,
+        boxShadow: '0 0 0 6px rgba(184,95,51,0.30), 0 0 14px rgba(184,95,51,0.65)',
+      }, {
+        scale: 1.4,
+        boxShadow: '0 0 0 0 rgba(184,95,51,0), 0 0 0 rgba(184,95,51,0)',
+        duration: 0.9,
+        ease: 'power3.out',
+      });
+    };
 
     const update = () => {
       const doc = document.documentElement;
@@ -128,42 +132,32 @@ function ReadingProgress() {
         fillRef.current.style.transform = `scaleY(${p})`;
       }
 
-      // Active chapter — the dot the reader has most recently passed.
-      // p=0 → -1 (none yet), then 0..10 across the page.
-      const chapterIdx = Math.min(
-        CHAPTER_LABELS.length - 1,
-        Math.floor(p * CHAPTER_LABELS.length)
-      );
+      // Active section index — clamped to dot count.
+      const idx = Math.min(SECTION_COUNT - 1, Math.floor(p * SECTION_COUNT));
+
       dotsRef.current.forEach((dot, i) => {
         if (!dot) return;
-        const passed = i <= chapterIdx;
-        dot.style.background = passed ? '#b85f33' : 'rgba(184,95,51,0.18)';
-        dot.style.transform = i === chapterIdx ? 'scale(1.6)' : 'scale(1)';
+        const passed = i <= idx;
+        dot.style.background = passed ? '#b85f33' : 'rgba(184,95,51,0.22)';
+        // The active dot stays slightly larger; flash adds a brief
+        // pulse on crossing (handled below).
+        if (i !== idx) dot.style.transform = 'scale(1)';
       });
 
-      // Badge — show current chapter label, fade out after idle.
-      if (badgeRef.current) {
-        badgeRef.current.textContent = CHAPTER_LABELS[chapterIdx] ?? '00';
-        if (chapterIdx !== lastChapterIdx) {
-          lastChapterIdx = chapterIdx;
-        }
-        badgeRef.current.style.opacity = '1';
-        if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-        idleTimerRef.current = setTimeout(() => {
-          if (badgeRef.current) badgeRef.current.style.opacity = '0';
-        }, 1100);
+      if (idx !== lastIdx) {
+        lastIdx = idx;
+        if (!reduce) flash(dotsRef.current[idx]);
       }
     };
 
     const onScroll = () => {
-      if (raf || reduce) return;
+      if (raf) return;
       raf = requestAnimationFrame(() => { raf = 0; update(); });
     };
     update();
-    if (!reduce) window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     };
   }, []);
 
@@ -191,36 +185,25 @@ function ReadingProgress() {
         background: '#b85f33',
         transition: 'transform 0.18s ease-out',
       }} />
-      {/* Tick dots — one per chapter, evenly distributed */}
+      {/* Tick dots — one per section, evenly distributed */}
       <div style={{
         position: 'relative', width: '100%', height: '100%',
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        {CHAPTER_LABELS.map((label, i) => (
+        {Array.from({ length: SECTION_COUNT }).map((_, i) => (
           <div
-            key={label}
+            key={i}
             ref={(el) => { dotsRef.current[i] = el; }}
             style={{
               width: 5, height: 5, borderRadius: '50%',
-              background: 'rgba(184,95,51,0.18)',
-              transition: 'background 0.25s ease, transform 0.25s ease',
+              background: 'rgba(184,95,51,0.22)',
               transformOrigin: '50% 50%',
+              willChange: 'transform, box-shadow',
             }}
           />
         ))}
       </div>
-      {/* Active chapter badge — Fraunces italic, fades out on idle */}
-      <span ref={badgeRef} style={{
-        position: 'absolute', right: 22, top: '50%',
-        transform: 'translateY(-50%)',
-        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-        fontSize: 13, letterSpacing: '0.06em',
-        color: '#b85f33',
-        opacity: 0,
-        transition: 'opacity 0.45s ease',
-        whiteSpace: 'nowrap',
-      }}>00</span>
     </div>
   );
 }
@@ -1153,7 +1136,7 @@ function Hero() {
             {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals at the root of your operation. When they\u2019re missing, your ability to execute is at the mercy of conditions. When they\u2019re built in, it isn\u2019t.")}
           </p>
           <p style={{
-            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+            fontFamily: SERIF, fontWeight: 600,
             fontSize: 20, lineHeight: 1.35,
             color: C.gold, margin: 0,
             letterSpacing: '-0.005em',
@@ -1177,7 +1160,7 @@ function Hero() {
           width: 1, height: 38, background: 'rgba(232,147,70,0.55)',
         }} />
         <div style={{
-          fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+          fontFamily: SERIF, fontWeight: 600,
           fontSize: 13, color: '#e89346', letterSpacing: '0.04em',
         }}>
           Start with the foundation
@@ -1243,7 +1226,7 @@ function HeroHeadline() {
       {'\u00A0'}
       <span data-hero-word style={{
         display: 'inline-block',
-        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+        fontFamily: SERIF, fontWeight: 600,
         color: '#e89346',
         letterSpacing: '-0.025em',
       }}>Numbers.</span>
@@ -1817,8 +1800,7 @@ function SectionThePrinciple() {
         <blockquote data-principle-quote style={{
           margin: 0,
           fontFamily: SERIF,
-          fontStyle: 'italic',
-          fontWeight: 400,
+          fontWeight: 500,
           fontSize: 'clamp(32px, 5.4vw, 76px)',
           lineHeight: 1.05,
           color: C.white,
@@ -1890,7 +1872,7 @@ function SectionTheMoment() {
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             We Don&rsquo;t Work on the Numbers.<br/>
-            <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>We Work Where the Numbers Come From.</span>
+            <span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>We Work Where the Numbers Come From.</span>
           </h2>
         </div>
 
@@ -1963,7 +1945,7 @@ function SectionTheMoment() {
           }} />
           <blockquote style={{
             margin: 0,
-            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400,
+            fontFamily: SERIF, fontWeight: 500,
             fontSize: 'clamp(26px, 3.4vw, 44px)',
             lineHeight: 1.18, letterSpacing: '-0.012em',
             color: C.navy,
@@ -2005,7 +1987,7 @@ function DiagnosticLink({ children, emphasized = false }) {
       display: 'flex', alignItems: 'baseline', gap: 18,
     }}>
       <span aria-hidden="true" style={{
-        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+        fontFamily: SERIF, fontWeight: 600,
         fontSize: 'clamp(15px, 1.6vw, 20px)',
         color: emphasized ? C.copper : C.gray400,
         flex: '0 0 auto',
@@ -2372,7 +2354,7 @@ function SectionExecutionEngine() {
             color: C.white, fontFamily: SANS, margin: '0 0 28px',
             letterSpacing: '-0.022em', textWrap: 'pretty',
           }}>
-            Pressure in. <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Performance out.</span>
+            Pressure in. <span style={{ fontFamily: SERIF, fontWeight: 600, color: C.gold }}>Performance out.</span>
           </h2>
           <p style={{
             fontSize: S.ledeSize, fontWeight: 300, lineHeight: 1.6,
@@ -2751,7 +2733,7 @@ function SectionExpertiseAreas() {
           }}>
             Five disciplines.{' '}
             <span style={{
-              fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+              fontFamily: SERIF, fontWeight: 600,
               color: C.gold600,
             }}>One operation that doesn{'\u2019'}t break down.</span>
           </h2>
@@ -2833,7 +2815,7 @@ function SectionHowWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: 0,
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            We Work Where Value Gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Won or Lost.</span>
+            We Work Where Value Gets&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>Won or Lost.</span>
           </h2>
 
           <p style={{
@@ -2986,7 +2968,7 @@ function SectionWhereWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Wherever the Work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Physical, Repeatable, and Measured.</span>
+            Wherever the Work is&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>Physical, Repeatable, and Measured.</span>
           </h2>
         </div>
 
@@ -3101,7 +3083,7 @@ function SectionResultsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The Work, on the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Floor.</span></h2>
+          }}>The Work, on the&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.gold }}>Floor.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
               reader's peers have built on the same five disciplines. */}
           <p style={{
@@ -3205,7 +3187,7 @@ function SectionInsightsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Thinking</span>&nbsp;Behind the Work.</h2>
+          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>Thinking</span>&nbsp;Behind the Work.</h2>
         </div>
         <div style={{
           display: 'grid',
@@ -3257,7 +3239,7 @@ function FooterCTA() {
         }}>
           <span style={{ color: 'rgba(255,255,255,0.32)' }}>Stop Chasing Numbers.</span><br/>
           <span style={{
-            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+            fontFamily: SERIF, fontWeight: 600,
             color: '#e89346', letterSpacing: '-0.025em',
           }}>Start Building the Foundation.</span>
         </h2>
@@ -3284,7 +3266,7 @@ function FooterCTA() {
                 transform: h ? 'translateY(-1px)' : 'translateY(0)',
               }}>
               Start a Conversation
-              <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 17 }}>→</span>
+              <span style={{ fontFamily: SERIF, fontSize: 17 }}>→</span>
             </a>
           </div>
         </div>
