@@ -1722,13 +1722,19 @@ function ReindustrializationBridge() {
   );
 }
 
-/* ── SHARED: EYEBROW ── */
+/* ── SHARED: EYEBROW ──
+   Single canonical eyebrow used by every section. JetBrains Mono +
+   tight uppercase + wide tracking + copper (on light) / gold (on dark).
+   The mono face gives every section the same engineered/technical
+   voice and keeps the rhythm consistent across the page. */
 function Eyebrow({ label, light }) {
   return (
     <div style={{
-      fontSize: 12, fontWeight: 500, letterSpacing: '0.18em',
-      textTransform: 'uppercase', color: '#eabb71',
-      fontFamily: 'inherit', marginBottom: 16,
+      fontFamily: MONO,
+      fontSize: 11.5, fontWeight: 500,
+      letterSpacing: '0.24em', textTransform: 'uppercase',
+      color: light ? '#eabb71' : '#b85f33',
+      marginBottom: 22,
     }}>{label}</div>
   );
 }
@@ -2280,10 +2286,16 @@ function SectionExecutionEngine() {
   }, []);
 
   // Cycling labels — single pressure / outcome each side, swapped via
-  // GSAP cross-fade every ~2.6s. Pools live at module scope so they
-  // can be tuned without touching the component. Pressures rotate
-  // out-of-phase with outcomes (different intervals) so the eye never
-  // catches them changing in lockstep.
+  // GSAP cross-fade every ~1700ms. The motion direction reinforces
+  // the diagram's thesis:
+  //   • Pressures exit to the RIGHT (toward the engine), then the next
+  //     pressure enters from the LEFT — reading as "absorbed by the
+  //     engine."
+  //   • Outcomes exit to the RIGHT (away from the engine), then the
+  //     next outcome enters from the LEFT (out of the engine) — reading
+  //     as "emitted by the engine."
+  // Both sides therefore flow strictly left → right, mirroring the
+  // gold dot traveling along the rail below.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2295,21 +2307,27 @@ function SectionExecutionEngine() {
         if (!el) return;
         i = (i + 1) % pool.length;
         const tl = gsap.timeline();
-        tl.to(el, { opacity: 0, y: -8, duration: 0.45, ease: 'power2.in' })
+        // Exit RIGHT — current label drifts toward the engine card.
+        tl.to(el, { opacity: 0, x: 32, duration: 0.28, ease: 'power2.in' })
           .call(() => { el.textContent = pool[i]; })
-          .fromTo(el, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' });
+          // Enter from LEFT — next label drifts in from the opposite side.
+          .fromTo(el,
+            { opacity: 0, x: -32 },
+            { opacity: 1, x: 0, duration: 0.38, ease: 'power3.out' }
+          );
       };
       return setInterval(tick, interval);
     };
 
-    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 2700);
-    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 3100);
+    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 1700);
+    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 1900);
     return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
 
   // Bottom flow rail — a gold dot travels left → right continuously,
-  // visualizing the direction of value. 5s loop, ease-linear so it
-  // reads as a measured pulse, not a bouncing ball.
+  // visualizing the direction of value. 4s loop (slightly faster to
+  // match the new label cadence), ease-linear so it reads as a
+  // measured pulse, not a bouncing ball.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2318,7 +2336,7 @@ function SectionExecutionEngine() {
     gsap.set(flowDotRef.current, { left: '0%' });
     const tween = gsap.to(flowDotRef.current, {
       left: '100%',
-      duration: 5,
+      duration: 4,
       ease: 'none',
       repeat: -1,
     });
@@ -2343,17 +2361,11 @@ function SectionExecutionEngine() {
         {/* Header — left-anchored editorial, on dark */}
         <div style={{ marginBottom: 100, maxWidth: S.maxRead }}>
           <ChapterMark n="04" light />
-          <div style={{
-            fontFamily: SANS, fontSize: 12, fontWeight: 600,
-            letterSpacing: '0.28em', textTransform: 'uppercase',
-            color: C.gold, marginBottom: 22,
-          }}>
-            When Everything Works Together
-          </div>
+          <Eyebrow label="When Everything Works Together" light />
           <h2 style={{
-            fontSize: S.h2Size, fontWeight: 800, lineHeight: 1.04,
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: SANS, margin: '0 0 28px',
-            letterSpacing: '-0.022em', textWrap: 'pretty',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             Pressure in. <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Performance out.</span>
           </h2>
@@ -2713,22 +2725,16 @@ function SectionExpertiseAreas() {
   }, []);
 
   return (
-    <section style={{ background: C.ice, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+    <section style={{ background: C.white, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
         {/* Header — left-anchored editorial */}
         <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
           <ChapterMark n="01" />
-          <div style={{
-            fontFamily: MONO, fontSize: 11.5, fontWeight: 500,
-            letterSpacing: '0.28em', textTransform: 'uppercase',
-            color: C.copper, marginBottom: 22,
-          }}>
-            What Gets Built In
-          </div>
+          <Eyebrow label="What Gets Built In" />
           <h2 style={{
-            fontSize: S.h2Size, fontWeight: 800, lineHeight: 1.04,
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: SANS, margin: '0 0 0',
-            letterSpacing: '-0.022em', textWrap: 'pretty',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             Five disciplines.{' '}
             <span style={{
@@ -2835,7 +2841,7 @@ function SectionExpertiseAreas() {
  * ──────────────────────────────────────────────────────────────────── */
 function SectionHowWeWork() {
   return (
-    <section style={{ background: S.bgPaper, padding: `${S.sectionPadY} 0` }}>
+    <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
       <div style={{
         maxWidth: S.maxWide, margin: '0 auto',
         display: 'grid',

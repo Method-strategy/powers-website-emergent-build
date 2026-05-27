@@ -68,6 +68,17 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 2. Replace `/app/frontend/src/data/caseStudies.js` with a WPGraphQL query returning the same JSON shape (the helper `getCaseStudy(slug)` becomes a `useQuery` call).
 3. No component edits required — `CaseStudyHero`, `CaseStudyBody`, `CaseStudyPrintDoc`, `CaseStudyCard` read from the same data object regardless of source.
 
+## Implemented (2026-02-27 — polish pass) — White Backgrounds, Eyebrow Unification, H2 Anchoring, Faster Pressure/Outcome
+- **More white background**: Five Disciplines (was `C.ice`), How We Work (was `S.bgPaper`) now both sit on pure white. The dark sections (Hero, Principle, Pressure In/Out, Metrics, Footer CTA) are kept dark as editorial moments — high contrast against the white sections gives the page a clear rhythm.
+- **Eyebrow continuity**: Single canonical `<Eyebrow>` component used by every section. JetBrains Mono, 11.5px, weight 500, 0.24em tracking, uppercase, copper on light / gold on dark. Removed two inline eyebrow blocks that were drifting from the spec (Section 01 + Section 04).
+- **H2 anchored**: Sections 01 (Disciplines) and 04 (Pressure In/Out) now use `S.h2Size / S.h2Weight / S.h2LH / S.h2Tracking` like everywhere else — no more outlier tighter line-height / tracking that made those H2s read visually heavier.
+- **Pressure / Outcome motion** rebuilt to match user's "other build":
+  - Cycle interval down from 2700–3100ms to **1700ms / 1900ms** (much faster).
+  - Pressures exit **right** (toward the engine card) and the next pressure enters from the **left** — reads as "absorbed by the engine."
+  - Outcomes exit **right** (away from the engine) and the next outcome enters from the **left** (out of the engine) — reads as "emitted by the engine."
+  - Both sides now contribute to a unified left → right value-flow across the whole diagram.
+  - Bottom gold rail dot sped up to **4s** loop to match the new label cadence.
+
 ## Implemented (2026-02-27 — closing pass) — Font Stack + Five Disciplines Tab/Drawer
 - **Font stack** updated to user spec:
   - **Sans**: Proxima Nova (Adobe Typekit, site-wide) → `'proxima-nova', 'Proxima Nova', ...`
