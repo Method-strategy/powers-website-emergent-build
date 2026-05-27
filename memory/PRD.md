@@ -68,6 +68,19 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 2. Replace `/app/frontend/src/data/caseStudies.js` with a WPGraphQL query returning the same JSON shape (the helper `getCaseStudy(slug)` becomes a `useQuery` call).
 3. No component edits required — `CaseStudyHero`, `CaseStudyBody`, `CaseStudyPrintDoc`, `CaseStudyCard` read from the same data object regardless of source.
 
+## Implemented (2026-02-27 — closing pass) — Font Stack + Five Disciplines Tab/Drawer
+- **Font stack** updated to user spec:
+  - **Sans**: Proxima Nova (Adobe Typekit, site-wide) → `'proxima-nova', 'Proxima Nova', ...`
+  - **Serif**: Newsreader (Google Fonts) → `'Newsreader', 'Source Serif 4', 'Tiempos Headline', 'Domine', Georgia, ...`
+  - **Mono**: JetBrains Mono (Google Fonts) → `'JetBrains Mono', 'IBM Plex Mono', ui-monospace, ...`
+  - Italics restored on serif accents. Newsreader's italics are drawn with restrained terminals so the rounded-tail tracking issues the user flagged on Fraunces / Playfair don't recur.
+- **Five Disciplines rebuilt as tab-strip + drawer** (matches user's reference exactly):
+  - Top row: 5 short equal-weight cards (~138px tall) inside a single copper hairline frame. Each shows only the discipline title + a `+` toggle.
+  - Active card gets a cream-tinted background + copper outline; `+` rotates 45° to `×`.
+  - Body text lives in a shared drawer panel directly below the row, in a 5-column grid that mirrors the row above. The body for the active card sits in its matching column — visually "drops down" out of the clicked card.
+  - Radio behavior: opening one closes any other. Smooth max-height + opacity transitions.
+  - Panel height measures the tallest body so no layout jump when switching tabs.
+
 ## Implemented (2026-02-27 — final pass for the day) — Roboto Serif + Numbering Removal
 - **Serif typeface**: Playfair Display → **Roboto Serif** (Google Fonts). Used roman/upright throughout — every italic SERIF usage on the page was stripped. This kills the letter-tracking artifacts the user flagged on rounded italic terminals.
 - **Conceptual fix — no more chapter numbers**: The page previously numbered each section `00 — / 01 — / 02 — … / 10 —` as a "chaptered article" device. That directly contradicted the homepage thesis "Stop Chasing Numbers." `ChapterMark` is now a no-op component (returns `null`); every `<ChapterMark n="…" />` call site stays intact but renders nothing.

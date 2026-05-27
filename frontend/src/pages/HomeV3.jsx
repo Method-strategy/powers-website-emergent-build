@@ -40,15 +40,14 @@ gsap.registerPlugin(ScrollTrigger);
  *     enacting an argument the copy is making. No decoration.
  * ────────────────────────────────────────────────────────────────── */
 
-/* Inject Inter Tight (Google Fonts) for forward-looking sans display
-   + Roboto Serif for editorial display moments (used roman, not italic
-   — italic introduces letter-tracking issues on rounded terminals).
-   Loaded once per session via id-deduped <link> tags. */
+/* Inject Newsreader (serif) + JetBrains Mono (mono) from Google Fonts.
+   Proxima Nova is loaded site-wide via Adobe Typekit in index.html,
+   so we just reference it in the font stack below — no link needed. */
 const V3_FONT_LINKS = [
   { id: 'v3-preconnect-g',  href: 'https://fonts.googleapis.com', rel: 'preconnect' },
   { id: 'v3-preconnect-gs', href: 'https://fonts.gstatic.com', rel: 'preconnect', crossOrigin: 'anonymous' },
-  { id: 'v3-robotoserif',   href: 'https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,300;8..144,400;8..144,500;8..144,600;8..144,700&display=swap' },
-  { id: 'v3-intertight',    href: 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap' },
+  { id: 'v3-newsreader',    href: 'https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600;1,6..72,700&display=swap' },
+  { id: 'v3-jetbrains',     href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap' },
 ];
 const useV3Fonts = () => {
   useEffect(() => {
@@ -62,18 +61,19 @@ const useV3Fonts = () => {
   }, []);
 };
 
-// Sans-serif workhorse for V3 only. Inter Tight is the forward-looking
-// counterpart to Fraunces — a modern grotesque with a tighter horizontal
-// rhythm than regular Inter, sharper terminals, and a confident display
-// weight at 700/800. Pairs cleanly with Fraunces italic for typographic
-// contrast without competing with it.
-const SANS = "'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+// Sans-serif workhorse — Proxima Nova (Adobe Typekit, loaded site-wide
+// in index.html). Reads clean, modern, and confident at every weight.
+const SANS = "'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
 
-// Editorial serif stack — Roboto Serif is the workhorse for display
-// emphasis. Used roman (upright) only — italics introduce letter-
-// tracking artifacts on rounded terminals that don't sit well in
-// display sizes. Pairs cleanly with Inter Tight at any weight.
-const SERIF = "'Roboto Serif', 'Georgia', 'Times New Roman', serif";
+// Editorial serif — Newsreader is the workhorse for italic display
+// moments. Its italics are drawn with restrained terminals (no rounded
+// flourish), so the letter-tracking issues that showed up on Fraunces
+// / Playfair don't appear here.
+const SERIF = "'Newsreader', 'Source Serif 4', 'Tiempos Headline', 'Domine', Georgia, 'Times New Roman', serif";
+
+// Mono — JetBrains Mono. Reserved for technical / metric-label
+// moments where a monospaced rhythm reads as engineered.
+const MONO = "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace";
 
 /* ChapterMark — INTENTIONALLY DISABLED.
    The earlier design numbered every section (00 — / 01 — / 02 —) as
@@ -1136,7 +1136,7 @@ function Hero() {
             {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals at the root of your operation. When they\u2019re missing, your ability to execute is at the mercy of conditions. When they\u2019re built in, it isn\u2019t.")}
           </p>
           <p style={{
-            fontFamily: SERIF, fontWeight: 600,
+            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
             fontSize: 20, lineHeight: 1.35,
             color: C.gold, margin: 0,
             letterSpacing: '-0.005em',
@@ -1160,7 +1160,7 @@ function Hero() {
           width: 1, height: 38, background: 'rgba(232,147,70,0.55)',
         }} />
         <div style={{
-          fontFamily: SERIF, fontWeight: 600,
+          fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
           fontSize: 13, color: '#e89346', letterSpacing: '0.04em',
         }}>
           Start with the foundation
@@ -1226,7 +1226,7 @@ function HeroHeadline() {
       {'\u00A0'}
       <span data-hero-word style={{
         display: 'inline-block',
-        fontFamily: SERIF, fontWeight: 600,
+        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
         color: '#e89346',
         letterSpacing: '-0.025em',
       }}>Numbers.</span>
@@ -1800,6 +1800,7 @@ function SectionThePrinciple() {
         <blockquote data-principle-quote style={{
           margin: 0,
           fontFamily: SERIF,
+          fontStyle: 'italic',
           fontWeight: 500,
           fontSize: 'clamp(32px, 5.4vw, 76px)',
           lineHeight: 1.05,
@@ -1872,7 +1873,7 @@ function SectionTheMoment() {
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             We Don&rsquo;t Work on the Numbers.<br/>
-            <span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>We Work Where the Numbers Come From.</span>
+            <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>We Work Where the Numbers Come From.</span>
           </h2>
         </div>
 
@@ -1945,7 +1946,7 @@ function SectionTheMoment() {
           }} />
           <blockquote style={{
             margin: 0,
-            fontFamily: SERIF, fontWeight: 500,
+            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
             fontSize: 'clamp(26px, 3.4vw, 44px)',
             lineHeight: 1.18, letterSpacing: '-0.012em',
             color: C.navy,
@@ -1987,7 +1988,7 @@ function DiagnosticLink({ children, emphasized = false }) {
       display: 'flex', alignItems: 'baseline', gap: 18,
     }}>
       <span aria-hidden="true" style={{
-        fontFamily: SERIF, fontWeight: 600,
+        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
         fontSize: 'clamp(15px, 1.6vw, 20px)',
         color: emphasized ? C.copper : C.gray400,
         flex: '0 0 auto',
@@ -2354,7 +2355,7 @@ function SectionExecutionEngine() {
             color: C.white, fontFamily: SANS, margin: '0 0 28px',
             letterSpacing: '-0.022em', textWrap: 'pretty',
           }}>
-            Pressure in. <span style={{ fontFamily: SERIF, fontWeight: 600, color: C.gold }}>Performance out.</span>
+            Pressure in. <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Performance out.</span>
           </h2>
           <p style={{
             fontSize: S.ledeSize, fontWeight: 300, lineHeight: 1.6,
@@ -2584,106 +2585,80 @@ function IconPlaceholder() {
    another card opens (radio behavior). The card is white with no
    internal border — the copper outer frame on the row carries the
    structural weight. */
-function ExpertiseCard({ headline, body, isOpen, onToggle, isLastInRow }) {
-  const bodyRef = useRef(null);
-  const [bodyHeight, setBodyHeight] = useState(0);
-
-  // Measure body height on mount + on resize so the open transition
-  // animates to the real natural height rather than guessing.
-  useEffect(() => {
-    if (!bodyRef.current) return;
-    const measure = () => {
-      if (bodyRef.current) setBodyHeight(bodyRef.current.scrollHeight);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(bodyRef.current);
-    return () => ro.disconnect();
-  }, [body]);
-
+/* DisciplineTab — small/short card. Just the title + [+/×] toggle.
+   Body text lives in a single shared panel below the row, not inside
+   the card. When this tab is active, a copper border highlights it
+   and the toggle rotates to ×. */
+function DisciplineTab({ headline, isOpen, onToggle, isLastInRow }) {
   return (
     <button
       type="button"
-      data-discipline-card
+      data-discipline-tab
       aria-expanded={isOpen}
       onClick={onToggle}
       style={{
         background: '#ffffff',
-        border: 'none',
-        // Internal vertical divider between cards lives on the right
-        // edge of every card except the last in the row. Hairline
-        // copper-tinted gray so it reads as quiet structure inside
-        // the copper outer frame.
-        borderRight: isLastInRow ? 'none' : `1px solid rgba(184, 95, 51, 0.12)`,
-        padding: '36px 30px 36px',
+        // The active tab gets a copper outline that visually "extends"
+        // into the panel below via the panel's matching border.
+        border: isOpen
+          ? `1px solid ${C.gold600}`
+          : `1px solid transparent`,
+        // Subtle inter-card divider on non-active tabs.
+        borderRight: isOpen
+          ? `1px solid ${C.gold600}`
+          : (isLastInRow ? '1px solid transparent' : `1px solid rgba(184, 95, 51, 0.08)`),
+        padding: '32px 26px',
         margin: 0,
         textAlign: 'left',
         cursor: 'pointer',
         fontFamily: 'inherit',
         color: 'inherit',
-        display: 'flex', flexDirection: 'column',
-        // Generous baseline so collapsed cards have presence;
-        // expanded cards grow taller via the body panel below.
-        minHeight: 280,
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        gap: 16,
+        // Short, fixed height — only enough for the title.
+        minHeight: 138,
         position: 'relative',
         outline: 'none',
-        transition: 'background 220ms ease',
+        transition: 'border-color 220ms ease, background 220ms ease',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(247, 232, 200, 0.18)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
-      onFocus={(e) => { e.currentTarget.style.background = 'rgba(247, 232, 200, 0.25)'; }}
-      onBlur={(e) => { e.currentTarget.style.background = '#ffffff'; }}
+      onMouseEnter={(e) => {
+        if (!isOpen) e.currentTarget.style.background = 'rgba(247, 232, 200, 0.20)';
+      }}
+      onMouseLeave={(e) => {
+        if (!isOpen) e.currentTarget.style.background = '#ffffff';
+      }}
     >
-      {/* Header row — title + animated [+] / [×] toggle */}
       <div style={{
-        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-        gap: 16, marginBottom: 12,
+        fontFamily: 'inherit',
+        fontSize: 'clamp(18px, 1.4vw, 21px)',
+        fontWeight: 700, lineHeight: 1.18,
+        color: C.navy,
+        letterSpacing: '-0.012em',
+      }}>{headline}</div>
+      {/* [+] toggle — copper, rotates 45° to × when open */}
+      <span aria-hidden="true" style={{
+        flex: '0 0 auto',
+        width: 16, height: 16, position: 'relative',
+        color: C.copper,
+        transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+        transition: 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1)',
+        marginTop: 4,
       }}>
-        <div style={{
-          fontFamily: 'inherit',
-          fontSize: 'clamp(18px, 1.5vw, 21px)',
-          fontWeight: 700, lineHeight: 1.2,
-          color: C.navy,
-          letterSpacing: '-0.012em',
-        }}>{headline}</div>
-        {/* [+] toggle — copper, rotates to × when open */}
-        <span aria-hidden="true" style={{
-          flex: '0 0 auto',
-          width: 18, height: 18, position: 'relative',
-          color: C.copper,
-          transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
-          transition: 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1)',
-          marginTop: 4,
-        }}>
-          <span style={{
-            position: 'absolute', top: '50%', left: 0,
-            width: '100%', height: 1.5,
-            background: 'currentColor',
-            transform: 'translateY(-50%)',
-          }} />
-          <span style={{
-            position: 'absolute', left: '50%', top: 0,
-            width: 1.5, height: '100%',
-            background: 'currentColor',
-            transform: 'translateX(-50%)',
-          }} />
-        </span>
-      </div>
-
-      {/* Body panel — collapses via max-height + opacity */}
-      <div style={{
-        maxHeight: isOpen ? bodyHeight : 0,
-        opacity: isOpen ? 1 : 0,
-        overflow: 'hidden',
-        transition: 'max-height 420ms cubic-bezier(0.4, 0, 0.2, 1), opacity 320ms ease',
-        willChange: 'max-height, opacity',
-      }}>
-        <p ref={bodyRef} style={{
-          fontFamily: 'inherit',
-          fontSize: 14.5, fontWeight: 400, lineHeight: 1.6,
-          color: C.body, margin: '8px 0 0', textWrap: 'pretty',
-        }}>{typo(body)}</p>
-      </div>
+        <span style={{
+          position: 'absolute', top: '50%', left: 0,
+          width: '100%', height: 1.5,
+          background: 'currentColor',
+          transform: 'translateY(-50%)',
+        }} />
+        <span style={{
+          position: 'absolute', left: '50%', top: 0,
+          width: 1.5, height: '100%',
+          background: 'currentColor',
+          transform: 'translateX(-50%)',
+        }} />
+      </span>
     </button>
   );
 }
@@ -2704,23 +2679,47 @@ function LearnMoreLink({ href }) {
   );
 }
 
-/* SectionExpertiseAreas — Five Disciplines, accordion-style.
-   Five equal-weight white cards inside a single copper hairline frame.
-   Each card has a [+] toggle that expands to reveal the body text.
-   Radio behavior: opening one closes any other. No keystone, no
-   scroll lock-in, no perimeter draw — calm and confident. The whole
-   row reads as a single structural unit because of the copper frame. */
+/* SectionExpertiseAreas — Five Disciplines, "tab-strip + drawer" layout.
+   Top row: 5 short equal-weight cards, each showing only the discipline
+   title + a [+] toggle. The whole strip is wrapped in a single copper
+   hairline frame.
+
+   Below the strip: a single shared panel that opens when any tab is
+   activated. The panel reserves a 5-column grid the same width as the
+   row above, and the body text sits in the column matching the active
+   tab — so the text appears to "drop down" out of the clicked card.
+   Radio behavior: opening one closes any other; the panel itself slides
+   open/closed via max-height + opacity. */
 function SectionExpertiseAreas() {
   const [openIdx, setOpenIdx] = useState(null);
+  const panelRef = useRef(null);
+  const [panelHeight, setPanelHeight] = useState(0);
+
+  // Measure the open card's body height so the panel animates to the
+  // real natural height. We measure the tallest body so the panel doesn't
+  // jump between card switches; this keeps the closing copper border
+  // sitting at a consistent baseline as the user clicks through tabs.
+  const bodyRefs = useRef([]);
+  useEffect(() => {
+    const measure = () => {
+      const heights = bodyRefs.current.map((el) => (el ? el.scrollHeight : 0));
+      const max = Math.max(0, ...heights);
+      setPanelHeight(max);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    bodyRefs.current.forEach((el) => el && ro.observe(el));
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <section style={{ background: C.ice, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
-        {/* Header — left-anchored editorial. Matches the rest of the
-            page rather than the previous centered treatment. */}
+        {/* Header — left-anchored editorial */}
         <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
           <ChapterMark n="01" />
           <div style={{
-            fontFamily: SANS, fontSize: 12, fontWeight: 600,
+            fontFamily: MONO, fontSize: 11.5, fontWeight: 500,
             letterSpacing: '0.28em', textTransform: 'uppercase',
             color: C.copper, marginBottom: 22,
           }}>
@@ -2733,39 +2732,81 @@ function SectionExpertiseAreas() {
           }}>
             Five disciplines.{' '}
             <span style={{
-              fontFamily: SERIF, fontWeight: 600,
+              fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
               color: C.gold600,
             }}>One operation that doesn{'\u2019'}t break down.</span>
           </h2>
         </div>
 
-        {/* Row — copper hairline frame around an equal-width 5-column
-            grid. Inner column dividers live on each card; the frame
-            itself is a single rounded-corner rectangle around the row.
-            Collapses to a vertical stack at narrow widths via the
-            auto-fit on the grid. */}
+        {/* Tab strip + drawer panel wrapped in a single copper frame. */}
         <div style={{
           position: 'relative',
           border: `1px solid ${C.gold600}`,
           padding: 10,
           background: 'rgba(255, 255, 255, 0.4)',
         }}>
+          {/* Row — 5 short cards */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(5, 1fr)',
             gap: 0,
             background: '#ffffff',
           }}>
             {EXPERTISE_CARDS.map((card, i) => (
-              <ExpertiseCard
+              <DisciplineTab
                 key={card.headline}
                 headline={card.headline}
-                body={card.body}
                 isOpen={openIdx === i}
                 onToggle={() => setOpenIdx(openIdx === i ? null : i)}
                 isLastInRow={i === EXPERTISE_CARDS.length - 1}
               />
             ))}
+          </div>
+
+          {/* Drawer — single shared panel below the row. Reserves the
+              same 5-column grid so the active body text drops into the
+              column of the clicked card. Other columns stay empty. */}
+          <div
+            ref={panelRef}
+            style={{
+              overflow: 'hidden',
+              maxHeight: openIdx !== null ? panelHeight + 64 : 0,
+              opacity: openIdx !== null ? 1 : 0,
+              transition: 'max-height 460ms cubic-bezier(0.4, 0, 0.2, 1), opacity 320ms ease',
+              willChange: 'max-height, opacity',
+              marginTop: openIdx !== null ? 0 : 0,
+              background: '#ffffff',
+              borderTop: openIdx !== null ? `1px solid ${C.gold600}` : '1px solid transparent',
+              transitionProperty: 'max-height, opacity, border-top-color',
+            }}
+          >
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              padding: '28px 0 36px',
+            }}>
+              {EXPERTISE_CARDS.map((card, i) => (
+                <div
+                  key={card.headline}
+                  style={{
+                    padding: '0 26px',
+                    visibility: openIdx === i ? 'visible' : 'hidden',
+                    // Keep refs measurable while hidden — `visibility:
+                    // hidden` preserves layout, unlike `display: none`.
+                    height: openIdx === i ? 'auto' : 0,
+                  }}
+                >
+                  <p
+                    ref={(el) => { bodyRefs.current[i] = el; }}
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 15, fontWeight: 400, lineHeight: 1.7,
+                      color: C.body, margin: 0, textWrap: 'pretty',
+                    }}
+                  >{typo(card.body)}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -2815,7 +2856,7 @@ function SectionHowWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: 0,
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            We Work Where Value Gets&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>Won or Lost.</span>
+            We Work Where Value Gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Won or Lost.</span>
           </h2>
 
           <p style={{
@@ -2968,7 +3009,7 @@ function SectionWhereWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Wherever the Work is&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>Physical, Repeatable, and Measured.</span>
+            Wherever the Work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Physical, Repeatable, and Measured.</span>
           </h2>
         </div>
 
@@ -3083,7 +3124,7 @@ function SectionResultsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The Work, on the&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.gold }}>Floor.</span></h2>
+          }}>The Work, on the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Floor.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
               reader's peers have built on the same five disciplines. */}
           <p style={{
@@ -3187,7 +3228,7 @@ function SectionInsightsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontWeight: 600, color: C.copper }}>Thinking</span>&nbsp;Behind the Work.</h2>
+          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Thinking</span>&nbsp;Behind the Work.</h2>
         </div>
         <div style={{
           display: 'grid',
@@ -3239,7 +3280,7 @@ function FooterCTA() {
         }}>
           <span style={{ color: 'rgba(255,255,255,0.32)' }}>Stop Chasing Numbers.</span><br/>
           <span style={{
-            fontFamily: SERIF, fontWeight: 600,
+            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
             color: '#e89346', letterSpacing: '-0.025em',
           }}>Start Building the Foundation.</span>
         </h2>
