@@ -84,43 +84,135 @@ function ChapterMark({ n, light = false }) {
   );
 }
 
-/* ReadingProgress — fixed thin gold bar on the right edge of the
-   viewport. Scales 0→1 as the user scrolls the document. Reads as a
-   printed-page reading-position indicator; non-intrusive but a quiet
-   editorial signal that the page is structured to be read. */
+/* ReadingProgress — Apple-level "chapter scrubber" pinned to the right
+   edge of the viewport. 11 hairline tick dots map to the 11 editorial
+   chapters (00–10). A copper hairline connects them; tick dots fill in
+   as the reader passes each chapter. The active chapter's number (e.g.
+   "03") fades in adjacent to the dot, then fades out after the reader
+   stops scrolling. Vertically centered, lives inside a ~280px band so
+   it never crowds the chrome above or footer below. Hidden on mobile
+   and for `prefers-reduced-motion`. */
+const CHAPTER_LABELS = [
+  '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
+];
 function ReadingProgress() {
-  const barRef = useRef(null);
+  const fillRef = useRef(null);
+  const dotsRef = useRef([]);
+  const badgeRef = useRef(null);
+  const idleTimerRef = useRef(null);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Hide entirely on small screens — the chrome is busy enough.
+    if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) return;
+
     let raf = 0;
+    let lastChapterIdx = -1;
+
     const update = () => {
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
-      const p = max > 0 ? window.scrollY / max : 0;
-      if (barRef.current) {
-        barRef.current.style.transform = `scaleY(${Math.max(0, Math.min(1, p))})`;
+      const p = max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
+
+      // Connector fill — scaleY from top down through the rail.
+      if (fillRef.current) {
+        fillRef.current.style.transform = `scaleY(${p})`;
+      }
+
+      // Active chapter — the dot the reader has most recently passed.
+      // p=0 → -1 (none yet), then 0..10 across the page.
+      const chapterIdx = Math.min(
+        CHAPTER_LABELS.length - 1,
+        Math.floor(p * CHAPTER_LABELS.length)
+      );
+      dotsRef.current.forEach((dot, i) => {
+        if (!dot) return;
+        const passed = i <= chapterIdx;
+        dot.style.background = passed ? '#b85f33' : 'rgba(184,95,51,0.18)';
+        dot.style.transform = i === chapterIdx ? 'scale(1.6)' : 'scale(1)';
+      });
+
+      // Badge — show current chapter label, fade out after idle.
+      if (badgeRef.current) {
+        badgeRef.current.textContent = CHAPTER_LABELS[chapterIdx] ?? '00';
+        if (chapterIdx !== lastChapterIdx) {
+          lastChapterIdx = chapterIdx;
+        }
+        badgeRef.current.style.opacity = '1';
+        if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = setTimeout(() => {
+          if (badgeRef.current) badgeRef.current.style.opacity = '0';
+        }, 1100);
       }
     };
+
     const onScroll = () => {
       if (raf || reduce) return;
       raf = requestAnimationFrame(() => { raf = 0; update(); });
     };
     update();
     if (!reduce) window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
   }, []);
+
   return (
     <div aria-hidden="true" style={{
-      position: 'fixed', top: 0, right: 0, bottom: 0,
-      width: 2, zIndex: 60, pointerEvents: 'none',
-      background: 'rgba(184,95,51,0.08)',
+      position: 'fixed',
+      top: '50%', right: 28,
+      transform: 'translateY(-50%)',
+      height: 'min(360px, 56vh)',
+      width: 20,
+      zIndex: 60, pointerEvents: 'none',
+      display: 'flex', alignItems: 'stretch', justifyContent: 'center',
     }}>
-      <div ref={barRef} style={{
-        width: '100%', height: '100%',
-        background: '#b85f33',
-        transformOrigin: '50% 0%', transform: 'scaleY(0)',
+      {/* Track — empty hairline, full height */}
+      <div style={{
+        position: 'absolute', top: 0, bottom: 0, left: '50%',
+        width: 1, transform: 'translateX(-50%)',
+        background: 'rgba(184,95,51,0.10)',
       }} />
+      {/* Fill — copper hairline, scales from top down */}
+      <div ref={fillRef} style={{
+        position: 'absolute', top: 0, bottom: 0, left: '50%',
+        width: 1, transform: 'translateX(-50%) scaleY(0)',
+        transformOrigin: '50% 0%',
+        background: '#b85f33',
+        transition: 'transform 0.18s ease-out',
+      }} />
+      {/* Tick dots — one per chapter, evenly distributed */}
+      <div style={{
+        position: 'relative', width: '100%', height: '100%',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        {CHAPTER_LABELS.map((label, i) => (
+          <div
+            key={label}
+            ref={(el) => { dotsRef.current[i] = el; }}
+            style={{
+              width: 5, height: 5, borderRadius: '50%',
+              background: 'rgba(184,95,51,0.18)',
+              transition: 'background 0.25s ease, transform 0.25s ease',
+              transformOrigin: '50% 50%',
+            }}
+          />
+        ))}
+      </div>
+      {/* Active chapter badge — Fraunces italic, fades out on idle */}
+      <span ref={badgeRef} style={{
+        position: 'absolute', right: 22, top: '50%',
+        transform: 'translateY(-50%)',
+        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+        fontSize: 13, letterSpacing: '0.06em',
+        color: '#b85f33',
+        opacity: 0,
+        transition: 'opacity 0.45s ease',
+        whiteSpace: 'nowrap',
+      }}>00</span>
     </div>
   );
 }

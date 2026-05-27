@@ -35,10 +35,12 @@ function App() {
       <Routes>
         {/* Homepage renders its own inline Header + Footer — no shared chrome */}
         <Route element={<HomeLayout />}>
-          {/* Primary homepage — currently the copy iteration (HomeV2).
-              To revert: swap these two paths so / points back to <Home />. */}
-          <Route path="/" element={<HomeV2 />} />
+          {/* Primary homepage — now the editorial V3 iteration.
+              Older iterations remain at /v1 (original) and /v2 (copy rewrite)
+              for stakeholder comparison until they're retired. */}
+          <Route path="/" element={<HomeV3 />} />
           <Route path="/v1" element={<Home />} />
+          <Route path="/v2" element={<HomeV2 />} />
           <Route path="/v3" element={<HomeV3 />} />
         </Route>
 

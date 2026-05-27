@@ -68,7 +68,24 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 2. Replace `/app/frontend/src/data/caseStudies.js` with a WPGraphQL query returning the same JSON shape (the helper `getCaseStudy(slug)` becomes a `useQuery` call).
 3. No component edits required — `CaseStudyHero`, `CaseStudyBody`, `CaseStudyPrintDoc`, `CaseStudyCard` read from the same data object regardless of source.
 
+## Implemented (2026-02-27) — HomeV3 Editorial Iteration Promoted to `/`
+- New editorial homepage at `/` (`/app/frontend/src/pages/HomeV3.jsx`) with Fraunces serif italic accents, chapter marks (`00 — / 01 — …`), asymmetric left-anchored layouts, radial-gradient hero, and GSAP-driven cinematic motion (ScrollTrigger lock-ins, continuous "engine" halo breathing, rotating force/result lists).
+- 11-chapter editorial spine: 00 Hero → 01 Five Disciplines → 02 The Principle → 03 Diagnostic Chain → 04 Pressure In/Out → 05 How We Work → 06 Metrics → 07 Where We Work → 08 Proven Results → 09 Insights → 10 Closing CTA.
+- Apple-level reading-progress rail: replaced the previous 2px right-edge bar with a vertically-centered chapter scrubber — 11 hairline copper tick dots connected by a hairline that scales as the reader passes each chapter, plus a Fraunces-italic chapter number badge that quietly fades in/out adjacent to the active dot. Hidden on mobile and `prefers-reduced-motion`.
+- Old iterations preserved for stakeholder review: `/v1` (original Home), `/v2` (HomeV2 copy rewrite), `/v3` (alias of `/`).
+- GSAP is now the standard for motion on this site (raw CSS keyframes deprecated for complex sequences). Easing favors `power3.out`, `back.out`, `sine.inOut`.
+
 ## Pending / Backlog
+- P1: Build a native React `IndustriesServed` page (currently wraps the legacy HTML via `LegacyPage.jsx`). The V3 home's "Where We Work" CTA links here, so a native treatment matters once V3 is the live home.
+- P1: Confirm final metric numbers with the CEO (98% / 5 WKS / 500+ / 30+ are placeholders).
+- P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
+- P1: Wire Contact form to a FastAPI endpoint (currently UI-only per user choice; revisit when client supplies submission target).
+- P2: Real images for placeholders flagged in CLAUDE.md v0.1.15 (history Section 3, careers Section 2).
+- P2: Search modal (icon is a placeholder per CLAUDE.md "Key Design Decisions").
+- P2: Refresh the remaining 66 case studies from the master spreadsheet into the locked detail template (production data work, not a code change).
+- P3: Retire `/v1` and `/v2` aliases once the V3 home is fully signed off.
+
+## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
 - P1: Wire Contact form to a FastAPI endpoint (currently UI-only per user choice; revisit when client supplies submission target).
 - P2: Real images for placeholders flagged in CLAUDE.md v0.1.15 (history Section 3, careers Section 2).
