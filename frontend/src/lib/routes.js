@@ -7,10 +7,13 @@ export const HTML_TO_ROUTE = {
   'industries-served.html': '/industries-served',
   'case-studies.html': '/case-studies',
   'powers-case-study-library.html': '/case-studies',
-  'operational-readiness.html': '/operational-readiness',
+  'operational-discipline.html': '/operational-discipline',
+  'operational-readiness.html': '/operational-discipline', // retired alias — renamed
   'frontline-leadership.html': '/frontline-leadership',
   'equipment-reliability.html': '/equipment-reliability',
-  'supply-chain.html': '/supply-chain',
+  'workforce-capability.html': '/workforce-capability',
+  'supply-chain.html': '/workforce-capability', // retired alias — replaced
+  'daily-accountability.html': '/daily-accountability',
   'history.html': '/history',
   'leadership.html': '/leadership',
   'company-news.html': '/company-news',

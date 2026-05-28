@@ -20,7 +20,7 @@ const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding
 const HTML = `<section style="background:#183a61;">
   <div style="max-width:1280px;margin:0 auto;width:100%;padding:120px 48px;min-height:600px;display:flex;flex-direction:column;justify-content:center;">
     <div style="font-size:12px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#eabb71;font-family:inherit;margin-bottom:24px;">Expertise Areas</div>
-    <h1 style="font-size:clamp(36px,4.2vw,56px);font-weight:800;line-height:1.08;color:#ffffff;letter-spacing:-0.01em;font-family:inherit;max-width:920px;text-wrap:balance;">Equipment Reliability and Maintenance Performance</h1>
+    <h1 style="font-size:clamp(36px,4.2vw,56px);font-weight:800;line-height:1.08;color:#ffffff;letter-spacing:-0.01em;font-family:inherit;max-width:920px;text-wrap:balance;">Equipment Reliability</h1>
   </div>
 </section>`;
 
@@ -32,7 +32,7 @@ export default function EquipmentReliability() {
       css={CSS}
       html={HTML}
       script={SCRIPT}
-      title={`Equipment Reliability and Maintenance Performance — POWERS Manufacturing Performance Consulting`}
+      title={`Equipment Reliability — POWERS Manufacturing Performance Consulting`}
       metaDescription={``}
     />
   );

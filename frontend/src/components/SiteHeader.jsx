@@ -28,10 +28,11 @@ const RESULTS_LEFT = {
 const RESULTS_RIGHT = {
   groupLabel: 'Expertise Areas',
   subLinks: [
-    { label: 'Operational Readiness and Discipline',              href: 'operational-readiness.html' },
-    { label: 'Frontline Capability and Workforce Readiness',      href: 'frontline-leadership.html' },
-    { label: 'Equipment Reliability and Maintenance Performance', href: 'equipment-reliability.html' },
-    { label: 'Supply Chain and Distribution Performance',         href: 'supply-chain.html' },
+    { label: 'Operational Discipline', href: 'operational-discipline.html' },
+    { label: 'Frontline Leadership',   href: 'frontline-leadership.html'   },
+    { label: 'Equipment Reliability',  href: 'equipment-reliability.html'  },
+    { label: 'Workforce Capability',   href: 'workforce-capability.html'   },
+    { label: 'Daily Accountability',   href: 'daily-accountability.html'   },
   ],
 };
 const ABOUT_LINKS = [
@@ -197,10 +198,11 @@ function NDrawer({ open, onClose }) {
                 { type: 'link', label: 'Industries Served', href: 'industries-served.html' },
                 { type: 'link', label: 'Case Studies',      href: 'case-studies.html' },
                 { type: 'group', label: 'Expertise Areas', children: [
-                  { label: 'Operational Readiness and Discipline',              href: 'operational-readiness.html' },
-                  { label: 'Frontline Capability and Workforce Readiness',      href: 'frontline-leadership.html' },
-                  { label: 'Equipment Reliability and Maintenance Performance', href: 'equipment-reliability.html' },
-                  { label: 'Supply Chain and Distribution Performance',         href: 'supply-chain.html' },
+                  { label: 'Operational Discipline', href: 'operational-discipline.html' },
+                  { label: 'Frontline Leadership',   href: 'frontline-leadership.html'   },
+                  { label: 'Equipment Reliability',  href: 'equipment-reliability.html'  },
+                  { label: 'Workforce Capability',   href: 'workforce-capability.html'   },
+                  { label: 'Daily Accountability',   href: 'daily-accountability.html'   },
                 ]},
               ],
             },

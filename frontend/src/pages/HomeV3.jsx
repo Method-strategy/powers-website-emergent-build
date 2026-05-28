@@ -5,6 +5,7 @@
    first, then re-generate via scripts/convert_homepage.py. */
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { toRoute } from '../lib/routes';
 import { typo } from '../lib/typo';
 import PowersMetrics from '../components/PowersMetrics';
 import gsap from 'gsap';
@@ -484,10 +485,11 @@ function MegaMenuResults({ visible }) {
           Expertise Areas
         </div>
         {[
-          { label: 'Operational Readiness and Discipline',            href: 'operational-readiness.html' },
-          { label: 'Frontline Capability and Workforce Readiness',    href: 'frontline-leadership.html' },
-          { label: 'Equipment Reliability and Maintenance Performance', href: 'equipment-reliability.html' },
-          { label: 'Supply Chain and Distribution Performance',       href: 'supply-chain.html' },
+          { label: 'Operational Discipline', href: 'operational-discipline.html' },
+          { label: 'Frontline Leadership',   href: 'frontline-leadership.html'   },
+          { label: 'Equipment Reliability',  href: 'equipment-reliability.html'  },
+          { label: 'Workforce Capability',   href: 'workforce-capability.html'   },
+          { label: 'Daily Accountability',   href: 'daily-accountability.html'   },
         ].map((item, i) => (
           <MegaSubLink key={i} href={item.href}>{item.label}</MegaSubLink>
         ))}
@@ -533,10 +535,11 @@ function MegaMenuResultsStatic() {
           fontFamily: 'inherit', marginBottom: 2, padding: '7px 0',
         }}>Expertise Areas</div>
         {[
-          { label: 'Operational Readiness and Discipline',            href: 'operational-readiness.html' },
-          { label: 'Frontline Capability and Workforce Readiness',    href: 'frontline-leadership.html' },
-          { label: 'Equipment Reliability and Maintenance Performance', href: 'equipment-reliability.html' },
-          { label: 'Supply Chain and Distribution Performance',       href: 'supply-chain.html' },
+          { label: 'Operational Discipline', href: 'operational-discipline.html' },
+          { label: 'Frontline Leadership',   href: 'frontline-leadership.html'   },
+          { label: 'Equipment Reliability',  href: 'equipment-reliability.html'  },
+          { label: 'Workforce Capability',   href: 'workforce-capability.html'   },
+          { label: 'Daily Accountability',   href: 'daily-accountability.html'   },
         ].map((item, i) => (
           <MegaSubLink key={i} href={item.href}>{item.label}</MegaSubLink>
         ))}
@@ -770,10 +773,11 @@ function Drawer({ open, onClose }) {
       { type: 'link',  label: 'Approach' },
       { type: 'link',  label: 'Discovery Process' },
       { type: 'group', label: 'Expertise Areas', children: [
-        'Operational Readiness and Discipline',
-        'Frontline Capability and Workforce Readiness',
-        'Equipment Reliability and Maintenance Performance',
-        'Supply Chain and Distribution Performance',
+        'Operational Discipline',
+        'Frontline Leadership',
+        'Equipment Reliability',
+        'Workforce Capability',
+        'Daily Accountability',
       ]},
       { type: 'link', label: 'Industries Served' },
       { type: 'link', label: 'Case Studies', href: 'case-studies.html' },
@@ -1046,10 +1050,11 @@ function Header() {
                 fontFamily: 'inherit', marginBottom: 2, padding: '7px 0',
               }}>Expertise Areas</div>
               {[
-                { label: 'Operational Readiness and Discipline',            href: 'operational-readiness.html' },
-                { label: 'Frontline Capability and Workforce Readiness',    href: 'frontline-leadership.html' },
-                { label: 'Equipment Reliability and Maintenance Performance', href: 'equipment-reliability.html' },
-                { label: 'Supply Chain and Distribution Performance',       href: 'supply-chain.html' },
+                { label: 'Operational Discipline', href: 'operational-discipline.html' },
+                { label: 'Frontline Leadership',   href: 'frontline-leadership.html'   },
+                { label: 'Equipment Reliability',  href: 'equipment-reliability.html'  },
+                { label: 'Workforce Capability',   href: 'workforce-capability.html'   },
+                { label: 'Daily Accountability',   href: 'daily-accountability.html'   },
               ].map((item, i) => (
                 <MegaSubLink key={i} href={item.href}>{item.label}</MegaSubLink>
               ))}
@@ -1616,22 +1621,27 @@ const EXPERTISE_CARDS = [
   {
     headline: 'Operational Discipline',
     body: 'Standards, routines, and structured practices that make consistent execution the default. When discipline is built in, the floor stops running on heroics and starts running on the system.',
+    href: 'operational-discipline.html',
   },
   {
     headline: 'Frontline Leadership',
     body: 'Supervisors who can plan a shift, run a problem to ground, and enforce the standard with their team. The single highest-leverage role in the operation, and the one most often handed a clipboard and left to figure it out alone.',
+    href: 'frontline-leadership.html',
   },
   {
-    headline: 'Reliable Equipment',
+    headline: 'Equipment Reliability',
     body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable. When equipment performs, scheduling works, throughput stays consistent, and labor stops absorbing the variability the machines should have absorbed.',
+    href: 'equipment-reliability.html',
   },
   {
     headline: 'Workforce Capability',
     body: "Skilled, engaged operators who know the work, own the outcome, and can train the next shift. Capability isn\u2019t a headcount problem. It\u2019s what each person on the line can actually do when the day gets hard.",
+    href: 'workforce-capability.html',
   },
   {
     headline: 'Daily Accountability',
     body: "The cadence, metrics, and conversations that close the loop every shift, every day. Without it, the other four drift. With it, they lock together and compound.",
+    href: 'daily-accountability.html',
   },
 ];
 
@@ -1733,6 +1743,51 @@ function DisciplineTab({ headline, isOpen, onToggle, isLastInRow }) {
     </button>
   );
 }
+
+/* ExpertiseLearnMoreLink — copper "Learn more →" link rendered at the
+   bottom of each Five Disciplines accordion body. Uses react-router's
+   `Link` (via `toRoute`) so navigation is client-side, not a full page
+   reload. Underlined on hover, arrow nudges right on hover for
+   affordance. Sits below the discipline body text with editorial
+   breathing room above. */
+function ExpertiseLearnMoreLink({ href }) {
+  const [h, setH] = useState(false);
+  return (
+    <div style={{ marginTop: 22 }}>
+      <Link
+        to={toRoute(href)}
+        onMouseEnter={() => setH(true)}
+        onMouseLeave={() => setH(false)}
+        style={{
+          fontFamily: SANS,
+          fontSize: 13,
+          fontWeight: 600,
+          color: C.copper,
+          textDecoration: h ? 'underline' : 'none',
+          textUnderlineOffset: 4,
+          textDecorationColor: C.copper,
+          letterSpacing: '0.02em',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
+        Learn more
+        <span
+          aria-hidden="true"
+          style={{
+            display: 'inline-block',
+            transform: h ? 'translateX(4px)' : 'translateX(0)',
+            transition: 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+          }}
+        >
+          →
+        </span>
+      </Link>
+    </div>
+  );
+}
+
 
 function LearnMoreLink({ href }) {
   const [h, setH] = useState(false);
@@ -1853,6 +1908,7 @@ function SectionExpertiseAreas() {
               {EXPERTISE_CARDS.map((card, i) => (
                 <div
                   key={card.headline}
+                  ref={(el) => { bodyRefs.current[i] = el; }}
                   style={{
                     padding: '0 26px',
                     visibility: openIdx === i ? 'visible' : 'hidden',
@@ -1862,13 +1918,18 @@ function SectionExpertiseAreas() {
                   }}
                 >
                   <p
-                    ref={(el) => { bodyRefs.current[i] = el; }}
                     style={{
                       fontFamily: SANS,
                       fontSize: 15, fontWeight: 300, lineHeight: 1.7,
                       color: C.body, margin: 0, textWrap: 'pretty',
                     }}
                   >{typo(card.body)}</p>
+                  {/* Learn more link — wires the accordion drawer to the
+                      full discipline page. Copper text, mono micro-tracking,
+                      underline-on-hover (no decoration when idle to keep the
+                      drawer body editorial). The arrow nudges right on hover
+                      via a transform on the inner span. */}
+                  <ExpertiseLearnMoreLink href={card.href} />
                 </div>
               ))}
             </div>
@@ -2848,7 +2909,7 @@ const INSIGHTS = [
     summary: 'When supervisors are firefighting instead of leading, the operation breaks down. Here\u2019s what changing that actually takes.',
   },
   {
-    category: 'Operational Readiness',
+    category: 'Operational Discipline',
     headline: 'What Consistent Performance Looks Like Across Shifts, Sites, and Holdings',
     summary: 'Consistency isn\u2019t a cultural value. It\u2019s a designed outcome. This is how POWERS builds it.',
   },

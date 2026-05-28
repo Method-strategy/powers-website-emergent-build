@@ -10,10 +10,11 @@ import Approach from './pages/Approach';
 import DiscoveryProcess from './pages/DiscoveryProcess';
 import IndustriesServed from './pages/IndustriesServed';
 import CaseStudies from './pages/CaseStudies';
-import OperationalReadiness from './pages/OperationalReadiness';
+import OperationalDiscipline from './pages/OperationalDiscipline';
 import FrontlineLeadership from './pages/FrontlineLeadership';
 import EquipmentReliability from './pages/EquipmentReliability';
-import SupplyChain from './pages/SupplyChain';
+import WorkforceCapability from './pages/WorkforceCapability';
+import DailyAccountability from './pages/DailyAccountability';
 import History from './pages/History';
 import Leadership from './pages/Leadership';
 import CompanyNews from './pages/CompanyNews';
@@ -51,10 +52,11 @@ function App() {
           <Route path="/industries-served" element={<IndustriesServed />} />
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
-          <Route path="/operational-readiness" element={<OperationalReadiness />} />
+          <Route path="/operational-discipline" element={<OperationalDiscipline />} />
           <Route path="/frontline-leadership" element={<FrontlineLeadership />} />
           <Route path="/equipment-reliability" element={<EquipmentReliability />} />
-          <Route path="/supply-chain" element={<SupplyChain />} />
+          <Route path="/workforce-capability" element={<WorkforceCapability />} />
+          <Route path="/daily-accountability" element={<DailyAccountability />} />
           <Route path="/history" element={<History />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/leadership/randall-powers" element={<BioRandallPowers />} />
