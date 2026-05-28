@@ -68,12 +68,12 @@ const useFontLoader = () => {};
 const STYLE_ID = 'powers-metrics-styles';
 const STYLES = `
 .pm-section {
-  --pm-navy-surface: #132b47;
-  --pm-gold: #eabb71;
+  --pm-navy-surface: #0f2a47;
+  --pm-gold: #e89346;
   --pm-white: #ffffff;
   --pm-muted: #94a3b8;
   --pm-border: rgba(255, 255, 255, 0.07);
-  --pm-gold-border: rgba(234, 187, 113, 0.2);
+  --pm-gold-border: rgba(232, 147, 70, 0.22);
 
   background: var(--pm-navy-surface);
   padding: 4rem 2rem;

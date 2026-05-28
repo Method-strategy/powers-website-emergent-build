@@ -2825,23 +2825,25 @@ function FooterCTA() {
         padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         position: 'relative', zIndex: 1,
       }}>
-        {/* H2 — editorial echo of the hero. "Stop Chasing Numbers."
-            dimmed back, "Start Building the Foundation." in solid
-            navy with gold period. The page closes by resolving the
-            provocation it opened with. Set on the same H2 size
-            ladder as the rest of the page so the rhythm holds. */}
+        {/* H2 — editorial echo of the hero. Hero pairing was sans-navy
+            statement + serif-italic gold pivot ("Stop Chasing" /
+            "Numbers."). The CTA mirrors that exact pairing as the
+            page-closing resolve. Sits on the gold-wash surface so
+            both colors hold their full weight. */}
         <h2 style={{
           fontSize: S.h2Size,
           fontWeight: S.h2Weight, lineHeight: S.h2LH,
-          color: C.navy, fontFamily: SANS,
+          fontFamily: SANS,
           margin: '0 0 36px', maxWidth: 900,
           letterSpacing: S.h2Tracking, textWrap: 'balance',
         }}>
-          <span style={{ color: 'rgba(20, 50, 87, 0.35)' }}>Stop Chasing Numbers.</span><br/>
+          <span style={{ display: 'block', color: C.navy }}>Stop Chasing Numbers.</span>
           <span style={{
+            display: 'block',
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-            color: C.navy, letterSpacing: '-0.018em',
-          }}>Start Building the Foundation<span style={{ color: '#e89346' }}>.</span></span>
+            color: '#e89346', letterSpacing: '-0.014em',
+            marginTop: '0.05em',
+          }}>Start Building the Foundation.</span>
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'end' }}>
@@ -3054,7 +3056,7 @@ function Footer() {
           <span style={{
             fontSize: 11, fontWeight: 300,
             color: 'rgba(255,255,255,0.40)', fontFamily: 'inherit',
-          }}>Copyright 2025 The POWERS Company, Inc. All Rights Reserved.</span>
+          }}>Copyright 2026 The POWERS Company, Inc. All Rights Reserved.</span>
           <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11 }}>|</span>
           <LegalLink>Sitemap</LegalLink>
           <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11 }}>|</span>
@@ -3171,8 +3173,8 @@ function SectionDifferentApproach() {
               <span style={{
                 display: 'block',
                 fontFamily: SANS,
-                fontWeight: 800,
-                fontSize: 'clamp(30px, 3.6vw, 46px)',
+                fontWeight: S.h2Weight,
+                fontSize: S.h2Size,
                 color: '#143257',
               }}>We don&rsquo;t work on the numbers.</span>
               <span style={{
@@ -3180,7 +3182,7 @@ function SectionDifferentApproach() {
                 fontFamily: SERIF,
                 fontStyle: 'italic',
                 fontWeight: 500,
-                fontSize: 'clamp(30px, 3.6vw, 46px)',
+                fontSize: S.h2Size,
                 color: '#e89346',
                 marginTop: '0.05em',
               }}>We work where the numbers come from.</span>
