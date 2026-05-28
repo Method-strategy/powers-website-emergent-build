@@ -908,14 +908,12 @@ function Header() {
             />
           </a>
           <span className="tagline-text desktop-only" style={{
-            fontSize: 12,
-            fontWeight: 500,
-            fontStyle: 'italic',
-            letterSpacing: '0.01em',
+            fontFamily: MONO,
+            fontSize: 11.5, fontWeight: 500,
+            letterSpacing: '0.24em', textTransform: 'uppercase',
             color: C.navy,
             lineHeight: 1,
             whiteSpace: 'nowrap',
-            fontFamily: SERIF,
             paddingTop: 1,
           }}>
             Strong Foundation. Strong Performance.
@@ -2528,14 +2526,13 @@ function IndustryTile({ label, slug }) {
 function SectionWhereWeWork() {
   const [linkHover, setLinkHover] = useState(false);
   return (
-    <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} 0` }}>
+    <section style={{ background: S.bgGoldWash, padding: `${S.sectionPadY} 0` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
 
         {/* Section header — left-anchored column. Single 920px measure
             for header + body so the section reads as one continuous
             argument rather than a header / multi-block stack. */}
         <div style={{ marginBottom: 36, maxWidth: 920 }}>
-          <ChapterMark n="07" />
           <Eyebrow label="Where We Work" />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
@@ -3104,7 +3101,7 @@ function SectionDifferentApproach() {
       ref={sectionRef}
       aria-label="A different approach"
       style={{
-        background: '#ffffff',
+        background: S.bgGoldWash,
       }}
     >
       <style>{`
@@ -3288,23 +3285,23 @@ function HomeV3() {
       <Hero />
       <SectionDifferentApproach />
       {/* Section order matches the v3 copy spine:
-            01 — A Different Approach (sits directly under hero, replaces the old Diagnostic Chain)
+            01 — A Different Approach (sits directly under hero)
             02 — Five Disciplines (the foundation, made concrete)
-            03 — The Principle (redwood beat, single high-altitude moment)
-            04 — Pressure In / Performance Out (visual restatement of the thesis)
-            05 — How We Work (where the work happens)
-            06 — The Proof, at Scale (metric stats)
-            07 — Where We Work (industries prose)
-            08 — Proven Results (peer evidence)
-            09 — Insights (thinking) */}
+            03 — Pressure In / Performance Out (visual restatement of the thesis)
+            04 — How We Work (where the work happens)
+            05 — The Proof, at Scale (metric stats)
+            06 — Where We Work (industries prose)
+            07 — Proven Results (peer evidence)
+            08 — Insights (thinking)
+            09 — Principle + CTA (redwood beat + closing CTA, paired) */}
       <SectionExpertiseAreas />
-      <SectionThePrinciple />
       <SectionExecutionEngine />
       <SectionHowWeWork />
       <PowersMetrics />
       <SectionWhereWeWork />
       <SectionResultsEntryPoint />
       <SectionInsightsEntryPoint />
+      <SectionThePrinciple />
       <FooterCTA />
       <Footer />
       {/* Version indicator */}
