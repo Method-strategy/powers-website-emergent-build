@@ -109,14 +109,14 @@ function ReadingProgress() {
 
     const flash = (el) => {
       if (!el) return;
-      // Brief amber pulse — scale up + bright copper + soft glow,
+      // Brief blue pulse — scale up + bright #3e80c1 + soft glow,
       // then settle back to the resting passed-dot state.
       gsap.fromTo(el, {
         scale: 2.4,
-        boxShadow: '0 0 0 6px rgba(184,95,51,0.30), 0 0 14px rgba(184,95,51,0.65)',
+        boxShadow: '0 0 0 6px rgba(62,128,193,0.30), 0 0 14px rgba(62,128,193,0.65)',
       }, {
         scale: 1.4,
-        boxShadow: '0 0 0 0 rgba(184,95,51,0), 0 0 0 rgba(184,95,51,0)',
+        boxShadow: '0 0 0 0 rgba(62,128,193,0), 0 0 0 rgba(62,128,193,0)',
         duration: 0.9,
         ease: 'power3.out',
       });
@@ -138,7 +138,7 @@ function ReadingProgress() {
       dotsRef.current.forEach((dot, i) => {
         if (!dot) return;
         const passed = i <= idx;
-        dot.style.background = passed ? '#b85f33' : 'rgba(184,95,51,0.22)';
+        dot.style.background = passed ? '#3e80c1' : 'rgba(62,128,193,0.22)';
         // The active dot stays slightly larger; flash adds a brief
         // pulse on crossing (handled below).
         if (i !== idx) dot.style.transform = 'scale(1)';
@@ -175,14 +175,14 @@ function ReadingProgress() {
       <div style={{
         position: 'absolute', top: 0, bottom: 0, left: '50%',
         width: 1, transform: 'translateX(-50%)',
-        background: 'rgba(184,95,51,0.10)',
+        background: 'rgba(62,128,193,0.10)',
       }} />
-      {/* Fill — copper hairline, scales from top down */}
+      {/* Fill — blue hairline, scales from top down */}
       <div ref={fillRef} style={{
         position: 'absolute', top: 0, bottom: 0, left: '50%',
         width: 1, transform: 'translateX(-50%) scaleY(0)',
         transformOrigin: '50% 0%',
-        background: '#b85f33',
+        background: '#3e80c1',
         transition: 'transform 0.18s ease-out',
       }} />
       {/* Tick dots — one per section, evenly distributed */}
@@ -197,7 +197,7 @@ function ReadingProgress() {
             ref={(el) => { dotsRef.current[i] = el; }}
             style={{
               width: 5, height: 5, borderRadius: '50%',
-              background: 'rgba(184,95,51,0.22)',
+              background: 'rgba(62,128,193,0.22)',
               transformOrigin: '50% 50%',
               willChange: 'transform, box-shadow',
             }}
@@ -1077,7 +1077,6 @@ function Hero() {
   const numbersRef = useRef(null);
   const ledeRef = useRef(null);
   const buildRef = useRef(null);
-  const cueRef = useRef(null);
 
   useEffect(() => {
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1086,7 +1085,6 @@ function Hero() {
     const chasingEl = chasingRef.current;
     const numbersEl = numbersRef.current;
     const rightEl = rightRef.current;
-    const cueEl = cueRef.current;
     const buildEl = buildRef.current;
     const ledeEl = ledeRef.current;
     const headWords = [stopEl, chasingEl, numbersEl];
@@ -1117,7 +1115,6 @@ function Hero() {
         }
       }, 4500);
       timeouts.push(buildT);
-      revealStatic(cueEl, 5100);
     }
 
     const canvas = swarmRef.current;
@@ -1310,7 +1307,10 @@ function Hero() {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '100vh',
+        // Hero is allowed to run on the upper side of typical row
+        // height since it's the page entrance. Tightened from 100vh
+        // (~1080px) to ~860px now that the scroll cue is gone.
+        minHeight: '86vh',
         overflow: 'hidden',
         background: `
           radial-gradient(120% 90% at 78% 18%, rgba(60,40,40,0.28) 0%, rgba(15,42,71,0) 55%),
@@ -1333,12 +1333,12 @@ function Hero() {
       <div style={{
         position: 'relative', zIndex: 2,
         width: '100%', maxWidth: 1280, margin: '0 auto',
-        minHeight: '100vh',
+        minHeight: '86vh',
         display: 'grid',
         gridTemplateColumns: '1.05fr 0.95fr',
         alignItems: 'center',
         gap: 48,
-        padding: '96px 56px 72px',
+        padding: '88px 56px 56px',
       }}>
         <h1 style={{
           lineHeight: 1.0,
@@ -1414,23 +1414,9 @@ function Hero() {
         </div>
       </div>
 
-      {/* Scroll cue — bottom-left, mono caps in gold */}
-      <div ref={cueRef} style={{
-        position: 'absolute',
-        left: 56, bottom: 38, zIndex: 2,
-        fontFamily: MONO,
-        fontSize: 11.5, fontWeight: 500,
-        letterSpacing: '0.24em', textTransform: 'uppercase',
-        color: '#eabb71',
-        opacity: 0,
-        display: 'flex', alignItems: 'center', gap: 14,
-      }}>
-        <span aria-hidden="true" style={{
-          width: 46, height: 1, background: '#eabb71', opacity: 0.6,
-          display: 'inline-block',
-        }} />
-        Start with the foundation
-      </div>
+      {/* Scroll cue removed — copy direction was to drop the
+          "Start with the foundation" line and let the hero close
+          tighter against Row 2. */}
     </section>
   );
 }
@@ -4190,12 +4176,12 @@ function SectionDifferentApproach() {
               <p data-reveal style={{
                 ...revealBase,
                 fontFamily: SANS,
-                fontWeight: 500,
-                fontSize: 'clamp(20px, 1.9vw, 24px)',
-                lineHeight: 1.35,
-                color: '#143257',
+                fontWeight: 300,
+                fontSize: 17,
+                lineHeight: 1.65,
+                color: '#4a5568',
                 marginBottom: '1.25em',
-                maxWidth: '30em',
+                maxWidth: '34em',
               }}>
                 That&rsquo;s where we work.
               </p>
