@@ -295,10 +295,14 @@ const S = {
   bgDeep:  '#0d2442',
   bgInk:   '#0a1421',
 
-  // Vertical rhythm — every section uses these
-  sectionPadY: 'clamp(96px, 9vw, 128px)',
+  // Vertical rhythm — every section uses these. Tuned so that a
+  // typical content section lands around 720px total at desktop,
+  // fitting comfortably on a single laptop viewport with a slim
+  // "next-section peek" at the bottom. Hero is exempt (uses its own
+  // padding) and is intentionally taller.
+  sectionPadY: 'clamp(56px, 5vw, 72px)',
   sectionPadX: 'clamp(24px, 4vw, 48px)',
-  gapHeaderToBody: 64,
+  gapHeaderToBody: 36,
 
   // Measure widths — three only
   maxNarrow: 640,
@@ -1779,7 +1783,7 @@ function SectionThePrinciple() {
   return (
     <section ref={ref} style={{
       background: `linear-gradient(180deg, ${C.ink} 0%, ${C.navy900} 100%)`,
-      padding: `clamp(120px, 14vw, 200px) ${S.sectionPadX}`,
+      padding: `clamp(80px, 9vw, 120px) ${S.sectionPadX}`,
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -1795,7 +1799,7 @@ function SectionThePrinciple() {
         maxWidth: 1240, margin: '0 auto',
         display: 'grid',
         gridTemplateColumns: '1fr',
-        gap: 48,
+        gap: 28,
       }}>
         <ChapterMark n="02" light />
 
@@ -1871,7 +1875,7 @@ function SectionTheMoment() {
         <ChapterMark n="03" />
 
         {/* Header */}
-        <div style={{ maxWidth: S.maxRead, marginBottom: 56 }}>
+        <div style={{ maxWidth: S.maxRead, marginBottom: 28 }}>
           <Eyebrow label={"A Different Approach"} />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
@@ -1884,11 +1888,11 @@ function SectionTheMoment() {
         </div>
 
         {/* Opening — frames the antagonist */}
-        <div style={{ maxWidth: S.maxRead, marginBottom: 56 }}>
+        <div style={{ maxWidth: S.maxRead, marginBottom: 28 }}>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
-            margin: '0 0 22px', textWrap: 'pretty',
+            margin: '0 0 14px', textWrap: 'pretty',
           }}>
             {typo("Every firm in this category gets hired to move the same numbers. Throughput. OEE. Downtime. Labor productivity. Margin. The difference is where they go to do it.")}
           </p>
@@ -1908,8 +1912,8 @@ function SectionTheMoment() {
             "stated truth" rather than narration. */}
         <div style={{
           maxWidth: 920,
-          margin: '0 0 72px',
-          padding: '40px 0',
+          margin: '0 0 28px',
+          padding: '24px 0',
           borderTop: `1px solid ${C.gray200}`,
           borderBottom: `1px solid ${C.gray200}`,
         }}>
@@ -1927,11 +1931,11 @@ function SectionTheMoment() {
         </div>
 
         {/* The continuation — body + the "where they go to do it" pull */}
-        <div style={{ maxWidth: S.maxRead, marginBottom: 36 }}>
+        <div style={{ maxWidth: S.maxRead, marginBottom: 20 }}>
           <p style={{
             fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
-            margin: '0 0 22px', textWrap: 'pretty',
+            margin: '0 0 14px', textWrap: 'pretty',
           }}>
             {typo("That\u2019s where POWERS works. Not on the deck, not in the boardroom, not on the dashboard. On the floor. In the shifts. Inside the supervisors, the standards, and the daily operating routines where execution either holds up or breaks down.")}
           </p>
@@ -1941,19 +1945,19 @@ function SectionTheMoment() {
             right, copper rule beneath. The "radios get quiet"
             landing as a discrete typographic moment. */}
         <div style={{
-          maxWidth: 980, margin: '0 auto 56px 0',
-          padding: '56px 0 56px clamp(0px, 6vw, 80px)',
+          maxWidth: 980, margin: '0 auto 28px 0',
+          padding: '24px 0 24px clamp(0px, 6vw, 80px)',
           position: 'relative',
         }}>
           {/* Vertical copper rule on the left — anchors the quote */}
           <div aria-hidden="true" style={{
-            position: 'absolute', left: 'clamp(0px, 3vw, 40px)', top: 56, bottom: 56,
+            position: 'absolute', left: 'clamp(0px, 3vw, 40px)', top: 24, bottom: 24,
             width: 1, background: C.copper,
           }} />
           <blockquote style={{
             margin: 0,
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-            fontSize: 'clamp(26px, 3.4vw, 44px)',
+            fontSize: 'clamp(24px, 2.8vw, 36px)',
             lineHeight: 1.18, letterSpacing: '-0.012em',
             color: C.navy,
             textWrap: 'balance',
