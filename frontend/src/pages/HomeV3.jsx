@@ -4048,6 +4048,231 @@ function Footer() {
 }
 
 /* ── APP ── */
+/* SectionDifferentApproach — Row 2, sits directly below the hero.
+   Ported verbatim from the user-provided powers-row2.html.
+   Two-column layout: lead column carries the H2 + prose narrative,
+   right sticky aside carries the "radios get quiet" pull quote inside
+   a gold-rule left frame. Sequential 80ms-staggered reveal as each
+   element scrolls into view, honoring `prefers-reduced-motion`.
+   This replaces the previous SectionTheMoment / Diagnostic Chain. */
+function SectionDifferentApproach() {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+    const els = Array.from(root.querySelectorAll('[data-reveal]'));
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduce || !('IntersectionObserver' in window)) {
+      els.forEach((el) => el.setAttribute('data-revealed', 'true'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const i = els.indexOf(el);
+          setTimeout(() => el.setAttribute('data-revealed', 'true'), Math.max(0, i) * 80);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  // Shared "reveal" base style applied to every animated element.
+  // The actual transition uses the `[data-revealed="true"]` attribute,
+  // which the IntersectionObserver flips on enter. We inline both
+  // states because we don't have a stylesheet here.
+  const revealBase = {
+    opacity: 0,
+    transform: 'translateY(14px)',
+    transition: 'opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1)',
+  };
+  // The CSS attribute selector trick is replaced here with an inline
+  // ref-based toggle: the IntersectionObserver flips `data-revealed`,
+  // and we read that on mount via a small style override placed in a
+  // <style> tag scoped by an id. Cleaner than threading state up to
+  // every child.
+  return (
+    <section
+      ref={sectionRef}
+      aria-label="A different approach"
+      style={{
+        background: '#ffffff',
+      }}
+    >
+      <style>{`
+        [data-reveal][data-revealed="true"] {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
+        }
+      `}</style>
+      <div style={{
+        maxWidth: 1240,
+        margin: '0 auto',
+        padding: 'clamp(56px, 7vw, 104px) clamp(22px, 4vw, 56px) clamp(68px, 7vw, 112px)',
+      }}>
+        <p data-reveal style={{
+          ...revealBase,
+          fontFamily: MONO,
+          fontSize: 11.5,
+          fontWeight: 500,
+          letterSpacing: '0.24em',
+          textTransform: 'uppercase',
+          color: '#e89346',
+          marginBottom: 34,
+        }}>A Different Approach</p>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) 280px',
+          gap: 72,
+          alignItems: 'start',
+        }}
+          // Tailwind-style fluid override at narrow widths — kept
+          // inline by reading window width via a CSS media query in
+          // the outer <style> below.
+        >
+          {/* Main column */}
+          <div data-row2-main>
+            <h2 data-reveal style={{
+              ...revealBase,
+              lineHeight: 1.08,
+              letterSpacing: '-0.012em',
+              marginBottom: 40,
+            }}>
+              <span style={{
+                display: 'block',
+                fontFamily: SANS,
+                fontWeight: 800,
+                fontSize: 'clamp(30px, 3.6vw, 46px)',
+                color: '#143257',
+              }}>We don&rsquo;t work on the numbers.</span>
+              <span style={{
+                display: 'block',
+                fontFamily: SERIF,
+                fontStyle: 'italic',
+                fontWeight: 500,
+                fontSize: 'clamp(30px, 3.6vw, 46px)',
+                color: '#e89346',
+                marginTop: '0.05em',
+              }}>We work where the numbers come from.</span>
+            </h2>
+
+            <div>
+              <p data-reveal style={{
+                ...revealBase,
+                fontSize: 17,
+                fontWeight: 300,
+                lineHeight: 1.65,
+                color: '#4a5568',
+                marginBottom: '1.25em',
+                maxWidth: '34em',
+              }}>
+                {typo('Every firm in this category gets hired to improve the same metrics: throughput, OEE, downtime, margin. Most work on the numbers themselves. Move the metric, build the deck, present the gains.')}
+              </p>
+
+              <p data-reveal style={{
+                ...revealBase,
+                fontSize: 17,
+                fontWeight: 300,
+                lineHeight: 1.65,
+                color: '#4a5568',
+                marginBottom: '1.25em',
+                maxWidth: '34em',
+              }}>
+                {typo('The number lifts for a quarter, then drifts back, because nothing underneath the operation actually changed. Supervisors are still firefighting instead of leading. Standards still break down shift to shift. Daily execution is still unstable.')}
+              </p>
+
+              <p data-reveal style={{
+                ...revealBase,
+                fontFamily: SANS,
+                fontWeight: 500,
+                fontSize: 'clamp(20px, 1.9vw, 24px)',
+                lineHeight: 1.35,
+                color: '#143257',
+                marginBottom: '1.25em',
+                maxWidth: '30em',
+              }}>
+                That&rsquo;s where we work.
+              </p>
+
+              <p data-reveal style={{
+                ...revealBase,
+                fontSize: 17,
+                fontWeight: 300,
+                lineHeight: 1.65,
+                color: '#4a5568',
+                marginBottom: '1.25em',
+                maxWidth: '34em',
+              }}>
+                {typo('Not in the boardroom or on the dashboard. Where the work actually happens \u2014 on the floor, in the shifts, with the people, inside the standards, the supplier relationships, the payables process. Wherever performance either holds up or breaks down.')}
+              </p>
+
+              <p data-reveal style={{
+                ...revealBase,
+                fontSize: 17,
+                fontWeight: 300,
+                lineHeight: 1.65,
+                color: '#4a5568',
+                marginBottom: 0,
+                maxWidth: '34em',
+              }}>
+                {typo('That\u2019s what we build \u2014 with your people, inside your operation, in the routines that sustain performance long after we\u2019re gone.')}
+              </p>
+            </div>
+          </div>
+
+          {/* Aside — sticky pull quote in a gold-rule left frame */}
+          <aside
+            data-reveal
+            aria-label="What it sounds like when the foundation is in"
+            style={{
+              ...revealBase,
+              position: 'sticky',
+              top: 80,
+              padding: '8px 0 8px 28px',
+              borderLeft: '2px solid #e89346',
+              marginTop: 90,
+            }}
+          >
+            <p style={{
+              fontFamily: SERIF,
+              fontStyle: 'italic',
+              fontWeight: 500,
+              fontSize: 'clamp(20px, 1.6vw, 23px)',
+              lineHeight: 1.45,
+              color: '#143257',
+            }}>
+              When the foundation is in place, the operation changes. The line runs. The team works problems before they cascade. <span style={{ color: '#e89346' }}>The radios get quiet.</span>
+            </p>
+          </aside>
+        </div>
+      </div>
+
+      {/* Narrow-width responsive override — at <=900px the grid stacks
+          and the aside un-sticks. We can't write a media query inline
+          on a style object, so we use a scoped <style> block here. */}
+      <style>{`
+        @media (max-width: 900px) {
+          section[aria-label="A different approach"] > div > div {
+            grid-template-columns: 1fr !important;
+            gap: 56px !important;
+          }
+          section[aria-label="A different approach"] aside {
+            position: static !important;
+            margin-top: 8px !important;
+            padding-left: 22px !important;
+          }
+        }
+      `}</style>
+    </section>
+  );
+}
+
 function HomeV3() {
   useV3Fonts();
   return (
@@ -4055,10 +4280,11 @@ function HomeV3() {
       <ReadingProgress />
       <Header />
       <Hero />
+      <SectionDifferentApproach />
       {/* Section order matches the v3 copy spine:
-            01 — Five Disciplines (the foundation, made concrete)
-            02 — The Principle (redwood beat, single high-altitude moment)
-            03 — A Different Approach (the diagnostic chain + competitive cut)
+            01 — A Different Approach (sits directly under hero, replaces the old Diagnostic Chain)
+            02 — Five Disciplines (the foundation, made concrete)
+            03 — The Principle (redwood beat, single high-altitude moment)
             04 — Pressure In / Performance Out (visual restatement of the thesis)
             05 — How We Work (where the work happens)
             06 — The Proof, at Scale (metric stats)
@@ -4067,7 +4293,6 @@ function HomeV3() {
             09 — Insights (thinking) */}
       <SectionExpertiseAreas />
       <SectionThePrinciple />
-      <SectionTheMoment />
       <SectionExecutionEngine />
       <SectionHowWeWork />
       <PowersMetrics />
