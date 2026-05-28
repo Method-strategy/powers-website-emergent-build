@@ -61,6 +61,33 @@ const useV3Fonts = () => {
   }, []);
 };
 
+/* useSubheadReveal — page-wide IntersectionObserver that fades in any
+   <h2 data-subhead-reveal /> as it enters the viewport. The h2 itself
+   rises with opacity, then its inline <span> accent (the italic serif
+   pivot) fades in ~280ms later — producing the editorial
+   "statement → accent" beat on every subhead. Honors
+   prefers-reduced-motion (handled in CSS). */
+const useSubheadReveal = () => {
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll('[data-subhead-reveal]'));
+    if (!targets.length) return;
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach((el) => el.setAttribute('data-subhead-in', 'true'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.setAttribute('data-subhead-in', 'true');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25, rootMargin: '0px 0px -6% 0px' });
+    targets.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+};
+
 // Sans-serif workhorse — Proxima Nova (Adobe Typekit, loaded site-wide
 // in index.html). Reads clean, modern, and confident at every weight.
 const SANS = "'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
@@ -2393,7 +2420,7 @@ function SectionHowWeWork() {
         }}>
           <ChapterMark n="05" />
           <Eyebrow label="How We Work" />
-          <h2 style={{
+          <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: 0,
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
@@ -2545,7 +2572,7 @@ function SectionWhereWeWork() {
             argument rather than a header / multi-block stack. */}
         <div style={{ marginBottom: 36, maxWidth: 920 }}>
           <Eyebrow label="Where We Work" />
-          <h2 style={{
+          <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
@@ -2663,7 +2690,7 @@ function SectionResultsEntryPoint() {
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="08" light />
           <Eyebrow label="Proven Results" />
-          <h2 style={{
+          <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
@@ -2769,7 +2796,7 @@ function SectionInsightsEntryPoint() {
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="09" />
           <Eyebrow label="Insights" />
-          <h2 style={{
+          <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
@@ -2830,7 +2857,7 @@ function FooterCTA() {
             "Numbers."). The CTA mirrors that exact pairing as the
             page-closing resolve. Sits on the gold-wash surface so
             both colors hold their full weight. */}
-        <h2 style={{
+        <h2 data-subhead-reveal style={{
           fontSize: S.h2Size,
           fontWeight: S.h2Weight, lineHeight: S.h2LH,
           fontFamily: SANS,
@@ -3302,8 +3329,37 @@ function SectionDifferentApproach() {
 
 function HomeV3() {
   useV3Fonts();
+  useSubheadReveal();
   return (
     <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#ffffff' }}>
+      <style>{`
+        [data-subhead-reveal] {
+          opacity: 0;
+          transform: translateY(14px);
+          transition: opacity 0.85s cubic-bezier(0.22, 0.61, 0.36, 1),
+                      transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        [data-subhead-reveal] > span {
+          opacity: 0;
+          transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        [data-subhead-reveal][data-subhead-in="true"] {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        [data-subhead-reveal][data-subhead-in="true"] > span {
+          opacity: 1;
+          transition-delay: 0.28s;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-subhead-reveal],
+          [data-subhead-reveal] > span {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
+        }
+      `}</style>
       <ReadingProgress />
       <Header />
       <Hero />

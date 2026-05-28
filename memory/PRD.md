@@ -142,6 +142,8 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 - Row 2 subhead ("We don't work on the numbers. / We work where the numbers come from."): switched `textWrap: 'balance'` → `'pretty'` to eliminate awkward break point produced by the balance algorithm. Now wraps cleanly at "the numbers / come from."
 
 
+- Subhead staggered fade-in: added page-wide `useSubheadReveal` hook + `data-subhead-reveal` attribute on 5 subhead h2s. Each h2 fades up (opacity + 14px translateY, 0.85s cubic-bezier) as it enters the viewport at 25% threshold; the inline italic accent `<span>` then fades in 280ms later, producing the "statement → accent" editorial beat. Honors `prefers-reduced-motion`.
+
 ## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
 - P1: Wire Contact form to a FastAPI endpoint (currently UI-only per user choice; revisit when client supplies submission target).
