@@ -2315,9 +2315,13 @@ function ExecutionExhibit() {
     const core = { x: 0, y: 0, r: 0 };
 
     function aspectFor(w) {
-      if (w < 480) return 0.62;
-      if (w < 768) return 0.54;
-      return 0.46;
+      // Shorter canvas → less dead space inside the stage. Core circle
+      // stays the same physical size (radius is floor-locked at 82px),
+      // so this only removes empty vertical room above and below the
+      // circle — labels still have plenty of horizontal travel.
+      if (w < 480) return 0.50;
+      if (w < 768) return 0.42;
+      return 0.32;
     }
 
     function resize() {
@@ -2660,10 +2664,13 @@ function ExecutionExhibit() {
         />
       </div>
 
-      {/* Controls — Pause/Play, Operating pressure slider, Surge */}
+      {/* Controls — Pause/Play, Operating pressure slider, Surge.
+          Sit close to the canvas (marginTop tightened) so the exhibit
+          + controls read as a single composed unit, not two stacked
+          blocks. */}
       <div style={{
         display: 'flex', gap: 12, justifyContent: 'center', alignItems: 'center',
-        marginTop: 18, flexWrap: 'wrap',
+        marginTop: 6, flexWrap: 'wrap',
       }}>
         <button
           ref={toggleBtnRef}
@@ -2725,7 +2732,7 @@ function SectionExecutionEngine() {
   return (
     <section style={{
       background: `linear-gradient(180deg, ${C.navy900} 0%, ${C.ink} 100%)`,
-      padding: `${S.sectionPadY} ${S.sectionPadX} 120px`,
+      padding: `${S.sectionPadY} ${S.sectionPadX} ${S.sectionPadY}`,
       position: 'relative', overflow: 'hidden',
     }}>
       {/* Faint cobalt wash on the right, ice-blue glow on the left, to add
@@ -2739,8 +2746,9 @@ function SectionExecutionEngine() {
 
         {/* Header — left-anchored editorial, on dark. UNCHANGED from
             previous version per user direction; only the diagram block
-            below has been swapped. */}
-        <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
+            below has been swapped. Margin tightened so the exhibit
+            sits closer to the body copy. */}
+        <div style={{ marginBottom: 36, maxWidth: S.maxRead }}>
           <ChapterMark n="04" light />
           <Eyebrow label="When Everything Works Together" light />
           <h2 style={{
