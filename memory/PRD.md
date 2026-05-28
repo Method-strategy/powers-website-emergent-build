@@ -137,6 +137,11 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 - P2: Refresh the remaining 66 case studies from the master spreadsheet into the locked detail template (production data work, not a code change).
 - P3: Retire `/v1` and `/v2` aliases once the V3 home is fully signed off.
 
+## Implemented (2026-05-28)
+- Subhead capitalization sweep on `HomeV3.jsx`: 6 headlines converted from Title Case → Sentence case to align with 2026 editorial trend (Apple/Stripe/Linear standard): "We work where value gets won or lost.", "Wherever the work is physical, repeatable, and measured.", "The work, on the floor.", "The thinking behind the work.", "Stop chasing numbers. / Start building the foundation."
+- Row 2 subhead ("We don't work on the numbers. / We work where the numbers come from."): switched `textWrap: 'balance'` → `'pretty'` to eliminate awkward break point produced by the balance algorithm. Now wraps cleanly at "the numbers / come from."
+
+
 ## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
 - P1: Wire Contact form to a FastAPI endpoint (currently UI-only per user choice; revisit when client supplies submission target).

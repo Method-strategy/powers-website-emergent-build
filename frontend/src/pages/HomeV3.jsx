@@ -2398,7 +2398,7 @@ function SectionHowWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: 0,
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            We Work Where Value Gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Won or Lost.</span>
+            We work where value gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>won or lost.</span>
           </h2>
 
           <p style={{
@@ -2550,7 +2550,7 @@ function SectionWhereWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Wherever the Work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Physical, Repeatable, and Measured.</span>
+            Wherever the work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>physical, repeatable, and measured.</span>
           </h2>
         </div>
 
@@ -2667,7 +2667,7 @@ function SectionResultsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The Work, on the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>Floor.</span></h2>
+          }}>The work, on the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>floor.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
               reader's peers have built on the same five disciplines. */}
           <p style={{
@@ -2773,7 +2773,7 @@ function SectionInsightsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>Thinking</span>&nbsp;Behind the Work.</h2>
+          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>thinking</span>&nbsp;behind the work.</h2>
         </div>
         <div style={{
           display: 'grid',
@@ -2837,13 +2837,13 @@ function FooterCTA() {
           margin: '0 0 36px', maxWidth: 900,
           letterSpacing: S.h2Tracking, textWrap: 'balance',
         }}>
-          <span style={{ display: 'block', color: C.navy }}>Stop Chasing Numbers.</span>
+          <span style={{ display: 'block', color: C.navy }}>Stop chasing numbers.</span>
           <span style={{
             display: 'block',
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
             color: '#e89346', letterSpacing: '-0.014em',
             marginTop: '0.05em',
-          }}>Start Building the Foundation.</span>
+          }}>Start building the foundation.</span>
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'end' }}>
@@ -3168,7 +3168,7 @@ function SectionDifferentApproach() {
               lineHeight: 1.08,
               letterSpacing: '-0.012em',
               marginBottom: 40,
-              textWrap: 'balance',
+              textWrap: 'pretty',
             }}>
               <span style={{
                 display: 'block',
