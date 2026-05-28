@@ -318,10 +318,15 @@ const S = {
   maxWide: 1280,
 
   // Display type
-  h2Size: 'clamp(30px, 3.6vw, 46px)',
+  // H2 ladder — single size used by every content row + the CTA.
+  // Tuned as a balance between the previous section H2 (too small at
+  // 46px max) and the CTA H2 (too large at 84px max). At wide desktop
+  // this lands at 56px — emphatic but not shouting; at mobile 34px
+  // for clear readability without dominating the column.
+  h2Size: 'clamp(34px, 4.2vw, 56px)',
   h2Weight: 800,
-  h2LH: 1.1,
-  h2Tracking: '-0.012em',
+  h2LH: 1.08,
+  h2Tracking: '-0.014em',
   h3Size: 'clamp(20px, 2vw, 26px)',
   h3Weight: 700,
 
@@ -908,9 +913,10 @@ function Header() {
             />
           </a>
           <span className="tagline-text desktop-only" style={{
-            fontFamily: MONO,
-            fontSize: 11.5, fontWeight: 500,
-            letterSpacing: '0.24em', textTransform: 'uppercase',
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 500,
+            letterSpacing: '0.14em',
             color: C.navy,
             lineHeight: 1,
             whiteSpace: 'nowrap',
@@ -1454,13 +1460,18 @@ function Eyebrow({ label, light }) { // eslint-disable-line no-unused-vars
  * declaration of principle before the page descends into the
  * mechanism. No motion beyond a slow fade-up on scroll-in.
  * ────────────────────────────────────────────────────────────────── */
-/* SectionThePrinciple — compact "design violator" divider band.
-   Modeled after the metrics row's proportions (≈365px tall) so it
-   functions as a quiet visual breaker between two white sections —
-   not a full-bleed editorial cinema moment. Single-line redwood
-   thesis in Newsreader italic on navy, with a gold rule + small
-   closing line. Reads as a punctuation mark in the page rhythm,
-   not as its own argument. */
+/* SectionThePrinciple — ARCHIVED (not currently rendered).
+   Kept in source so it can be re-introduced later if needed. The
+   redwood thesis line is slated to be absorbed into the closing CTA
+   copy in a future pass per direction.
+
+   Compact "design violator" divider band, modeled after the metrics
+   row's proportions (~365px tall) so it functions as a quiet visual
+   breaker between two white sections — not a full-bleed editorial
+   cinema moment. Single-line redwood thesis in Newsreader italic on
+   navy, with a gold rule + small closing line. Reads as a punctuation
+   mark in the page rhythm, not as its own argument. */
+// eslint-disable-next-line no-unused-vars
 function SectionThePrinciple() {
   const ref = useRef(null);
   useEffect(() => {
@@ -2794,39 +2805,49 @@ function FooterCTA() {
   const [h, setH] = useState(false);
   return (
     <section style={{
-      background: `radial-gradient(ellipse 50% 50% at 70% 30%, rgba(232,147,70,0.18) 0%, rgba(232,147,70,0) 70%), linear-gradient(165deg, ${C.ink} 0%, ${C.navy900} 100%)`,
-      padding: `clamp(120px, 14vw, 180px) 0`,
+      // Gold-wash light surface — differentiates the closing CTA
+      // from the navy footer directly below it. The very subtle
+      // warm tint reads as a coda to the page, not another dark
+      // panel stacked on dark.
+      background: S.bgGoldWash,
+      padding: `clamp(80px, 9vw, 120px) 0`,
       position: 'relative', overflow: 'hidden',
     }}>
+      {/* Faint warm radial — kept low so it reads as light on the
+          wash rather than competing color. */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: `radial-gradient(ellipse 60% 60% at 75% 30%, rgba(232,147,70,0.06) 0%, rgba(232,147,70,0) 70%)`,
+      }} />
+
       <div style={{
         maxWidth: 1280, margin: '0 auto',
         padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         position: 'relative', zIndex: 1,
       }}>
-        <ChapterMark n="10" light />
-
         {/* H2 — editorial echo of the hero. "Stop Chasing Numbers."
-            now faded back, "Start Building the Foundation." in
-            full-bright Fraunces italic. The page closes by resolving
-            the provocation it opened with. */}
+            dimmed back, "Start Building the Foundation." in solid
+            navy with gold period. The page closes by resolving the
+            provocation it opened with. Set on the same H2 size
+            ladder as the rest of the page so the rhythm holds. */}
         <h2 style={{
-          fontSize: 'clamp(40px, 6vw, 84px)',
-          fontWeight: 800, lineHeight: 0.98,
-          color: C.white, fontFamily: 'inherit',
-          margin: '0 0 56px', maxWidth: 1000,
-          letterSpacing: '-0.022em', textWrap: 'balance',
+          fontSize: S.h2Size,
+          fontWeight: S.h2Weight, lineHeight: S.h2LH,
+          color: C.navy, fontFamily: SANS,
+          margin: '0 0 36px', maxWidth: 900,
+          letterSpacing: S.h2Tracking, textWrap: 'balance',
         }}>
-          <span style={{ color: 'rgba(255,255,255,0.32)' }}>Stop Chasing Numbers.</span><br/>
+          <span style={{ color: 'rgba(20, 50, 87, 0.35)' }}>Stop Chasing Numbers.</span><br/>
           <span style={{
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-            color: '#e89346', letterSpacing: '-0.025em',
-          }}>Start Building the Foundation.</span>
+            color: C.navy, letterSpacing: '-0.018em',
+          }}>Start Building the Foundation<span style={{ color: '#e89346' }}>.</span></span>
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'end' }}>
           <p style={{
-            fontSize: 19, fontWeight: 300, lineHeight: 1.55,
-            color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
+            fontSize: 17, fontWeight: 300, lineHeight: 1.65,
+            color: C.body, fontFamily: SANS,
             margin: 0, maxWidth: 600, textWrap: 'pretty',
           }}>{typo("Tell us where the operation is underperforming. We\u2019ll come see it, on the floor, and show you what\u2019s missing.")}</p>
 
@@ -2836,11 +2857,12 @@ function FooterCTA() {
               onMouseLeave={() => setH(false)}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 14,
-                background: h ? '#e89346' : '#e89346',
-                color: '#143257', fontSize: 15, fontWeight: 600,
+                background: h ? '#143257' : '#e89346',
+                color: h ? '#ffffff' : '#143257',
+                fontSize: 15, fontWeight: 600,
                 padding: '18px 32px', textDecoration: 'none',
-                fontFamily: 'inherit', letterSpacing: 0,
-                transition: 'background 160ms ease, transform 160ms ease',
+                fontFamily: SANS, letterSpacing: 0,
+                transition: 'background 160ms ease, color 160ms ease, transform 160ms ease',
                 transform: h ? 'translateY(-1px)' : 'translateY(0)',
               }}>
               Start a Conversation
@@ -3301,7 +3323,11 @@ function HomeV3() {
       <SectionWhereWeWork />
       <SectionResultsEntryPoint />
       <SectionInsightsEntryPoint />
-      <SectionThePrinciple />
+      {/* <SectionThePrinciple /> — archived. The component definition
+          remains in this file (search for `function SectionThePrinciple`)
+          so it can be re-introduced later if needed. The redwood thesis
+          line is being absorbed into the closing CTA copy in a future
+          pass per direction. */}
       <FooterCTA />
       <Footer />
       {/* Version indicator */}
