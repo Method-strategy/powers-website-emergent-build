@@ -1344,6 +1344,7 @@ function Hero() {
           lineHeight: 1.0,
           letterSpacing: '-0.025em',
           margin: 0,
+          textWrap: 'balance',
         }}>
           <span
             ref={stopRef}
@@ -1395,6 +1396,7 @@ function Hero() {
             opacity: 0,
             transform: 'translateY(12px)',
             margin: 0,
+            textWrap: 'pretty',
           }}>
             {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals at the root of your operation. When they\u2019re missing, your ability to execute is at the mercy of conditions. When they\u2019re built in, it isn\u2019t.")}
           </p>
@@ -1765,6 +1767,7 @@ function ValueChainDiagram() {
               <p style={{
                 fontSize: 15, fontWeight: 300, lineHeight: 1.65,
                 color: 'rgba(255,255,255,0.85)', fontFamily: 'inherit', margin: 0,
+                textWrap: 'pretty',
               }}>{activeData.challenge}</p>
             </div>
             {/* POWERS Response */}
@@ -1777,6 +1780,7 @@ function ValueChainDiagram() {
               <p style={{
                 fontSize: 15, fontWeight: 300, lineHeight: 1.65,
                 color: C.white, fontFamily: 'inherit', margin: 0,
+                textWrap: 'pretty',
               }}>{activeData.response}</p>
             </div>
           </div>
@@ -1862,6 +1866,7 @@ function StrategyBlock({ imageLeft, eyebrow, headline, body, italic }) {
           color: C.navy400,
           fontFamily: 'inherit',
           margin: 0,
+          textWrap: 'pretty',
         }}>{italic}</p>
       )}
     </div>
@@ -3035,6 +3040,7 @@ function DiagramColHead({ label }) {
       fontSize: 'clamp(20px, 1.9vw, 24px)', fontWeight: 700, lineHeight: 1.2,
       color: '#183a61', fontFamily: 'inherit',
       margin: '0 0 16px', letterSpacing: '-0.012em',
+      textWrap: 'balance',
     }}>{label}</h3>
   );
 }
@@ -3627,6 +3633,7 @@ function CaseStudyCard({ industry, result, summary }) {
       <p style={{
         fontSize: 14, fontWeight: 300, lineHeight: 1.65,
         color: '#3a3a38', fontFamily: 'inherit', margin: 0, flex: 1,
+        textWrap: 'pretty',
       }}>{summary}</p>
       <a href="#" style={{
         fontSize: 13, fontWeight: 500, color: h ? '#c9963e' : '#eabb71',
@@ -3731,6 +3738,7 @@ function InsightCard({ category, headline, summary }) {
       <p style={{
         fontSize: 14, fontWeight: 300, lineHeight: 1.65,
         color: '#3a3a38', fontFamily: 'inherit', margin: 0, flex: 1,
+        textWrap: 'pretty',
       }}>{summary}</p>
       <a href="#" style={{
         fontSize: 13, fontWeight: 500, color: '#eabb71',
@@ -3953,6 +3961,7 @@ function Footer() {
           <p style={{
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,
             color: 'rgba(255,255,255,0.60)', fontFamily: 'inherit', margin: 0,
+            textWrap: 'pretty',
           }}>
             Operations performance consulting that builds execution capability across teams, shifts, sites, and holdings.
           </p>
@@ -4129,6 +4138,7 @@ function SectionDifferentApproach() {
               lineHeight: 1.08,
               letterSpacing: '-0.012em',
               marginBottom: 40,
+              textWrap: 'balance',
             }}>
               <span style={{
                 display: 'block',
@@ -4232,6 +4242,7 @@ function SectionDifferentApproach() {
               fontSize: 'clamp(20px, 1.6vw, 23px)',
               lineHeight: 1.45,
               color: '#143257',
+              textWrap: 'balance',
             }}>
               When the foundation is in place, the operation changes. The line runs. The team works problems before they cascade. <span style={{ color: '#e89346' }}>The radios get quiet.</span>
             </p>
