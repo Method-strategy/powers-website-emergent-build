@@ -2369,7 +2369,7 @@ function SectionHowWeWork() {
       }}>
         {/* Left: copy */}
         <div style={{
-          padding: `0 clamp(24px, 4vw, 56px) 0 ${S.sectionPadX}`,
+          padding: `0 clamp(24px, 4vw, 56px) 0 0`,
           display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22,
         }}>
           <ChapterMark n="05" />
