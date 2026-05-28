@@ -2470,21 +2470,40 @@ function SectionHowWeWork() {
           </div>
         </div>
 
-        {/* Right: image — flush bleed to right edge of the container */}
+        {/* Right: media — flush bleed to right edge of the container.
+            Auto-playing, looping, muted background video replaces the
+            static placeholder. Preloads metadata only; the file itself
+            starts loading on user gesture or as the section nears the
+            viewport (browsers handle this automatically). `playsInline`
+            is required for iOS Safari to keep it inline (not fullscreen)
+            and `muted` is required for `autoPlay` to be honored on every
+            modern browser. */}
         <div style={{
           background: C.navy900,
           minHeight: 400,
           display: 'flex', alignItems: 'stretch',
           position: 'relative', overflow: 'hidden',
         }}>
-          <img
-            src="/uploads/POWERS Homepage Placeholder 1280 x 960.png"
-            alt="POWERS consultants working on the manufacturing floor"
+          <video
+            poster="/uploads/POWERS Homepage Placeholder 1280 x 960.png"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-label="POWERS consultants working on the manufacturing floor"
             style={{
               width: '100%', height: '100%', objectFit: 'cover',
               objectPosition: 'center', display: 'block', minHeight: 400,
             }}
-          />
+          >
+            {/* WebM (VP9) first — smaller and supported natively by Chromium-based
+                browsers without proprietary codec licensing. MP4 (H.264) as the
+                second source covers Safari + older browsers. The browser picks
+                the first source it can play. */}
+            <source src="/uploads/powers-banner-2026-v2.webm" type="video/webm" />
+            <source src="/uploads/powers-banner-2026-v2.mp4" type="video/mp4" />
+          </video>
         </div>
       </div>
     </section>
