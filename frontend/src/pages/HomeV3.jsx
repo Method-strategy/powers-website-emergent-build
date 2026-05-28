@@ -1055,120 +1055,381 @@ function Header() {
 }
 
 /* ── HERO ── */
+/* Hero — canvas-driven "number swarm" hero.
+   Ported verbatim from the user-provided powers-hero.html. Visual
+   thesis: a swarm of green +/red - percentage tickers builds, peaks,
+   and collapses behind the lede column — visualising the very thing
+   the operator is told to stop chasing. The H1 reveals word-by-word
+   ("Stop" → "Chasing" → "Numbers.") timed to the swarm's build, then
+   the lede + "We build what produces them." + scroll cue resolve in
+   sequence as the swarm collapses.
+
+   The animation runs as a perpetual 4-phase cycle:
+     build (3.6s) → peak (1.1s) → collapse (1.5s) → empty (0.65s)
+
+   Honors `prefers-reduced-motion`: numbers spawn once at low intensity,
+   freeze, and all type renders at full opacity with zero motion. */
 function Hero() {
+  const swarmRef = useRef(null);
+  const rightRef = useRef(null);
+  const stopRef = useRef(null);
+  const chasingRef = useRef(null);
+  const numbersRef = useRef(null);
+  const ledeRef = useRef(null);
+  const buildRef = useRef(null);
+  const cueRef = useRef(null);
+
+  useEffect(() => {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const stopEl = stopRef.current;
+    const chasingEl = chasingRef.current;
+    const numbersEl = numbersRef.current;
+    const rightEl = rightRef.current;
+    const cueEl = cueRef.current;
+    const buildEl = buildRef.current;
+    const ledeEl = ledeRef.current;
+    const headWords = [stopEl, chasingEl, numbersEl];
+
+    headWords.forEach((el) => {
+      if (!el) return;
+      el.style.transition = 'opacity .9s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1)';
+    });
+    function showWord(el) { if (!el) return; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
+    function dimWord(el) { if (!el) return; el.style.opacity = '0.22'; el.style.transform = 'translateY(0)'; }
+
+    function revealStatic(el, delay) {
+      setTimeout(() => {
+        if (!el) return;
+        el.style.transition = 'opacity 1.1s cubic-bezier(.22,.61,.36,1), transform 1.1s cubic-bezier(.22,.61,.36,1)';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, delay);
+    }
+    const timeouts = [];
+    if (!reduce) {
+      revealStatic(ledeEl, 3500);
+      const buildT = setTimeout(() => {
+        if (buildEl) {
+          buildEl.style.transition = 'opacity 1.3s cubic-bezier(.2,.6,.3,1), transform 1.3s cubic-bezier(.2,.6,.3,1)';
+          buildEl.style.opacity = '1';
+          buildEl.style.transform = 'translateY(0)';
+        }
+      }, 4500);
+      timeouts.push(buildT);
+      revealStatic(cueEl, 5100);
+    }
+
+    const canvas = swarmRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const RED = '#e0654f', GREEN = '#5bbf73';
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0;
+    const zone = { x: 0, y: 0, w: 0, h: 0 };
+    let textBox = null;
+
+    function measure() {
+      const cssW = canvas.clientWidth, cssH = canvas.clientHeight;
+      W = cssW; H = cssH;
+      canvas.width = Math.round(W * DPR);
+      canvas.height = Math.round(H * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      const narrow = W < 880;
+      if (narrow) {
+        zone.x = 0; zone.y = 0; zone.w = W; zone.h = H * 0.46;
+      } else {
+        zone.x = W * 0.40; zone.y = H * 0.06; zone.w = W * 0.60; zone.h = H * 0.72;
+      }
+
+      if (rightEl) {
+        const cRect = canvas.getBoundingClientRect();
+        const rRect = rightEl.getBoundingClientRect();
+        const pad = 26;
+        textBox = {
+          x: rRect.left - cRect.left - pad,
+          y: rRect.top - cRect.top - pad,
+          w: rRect.width + pad * 2,
+          h: rRect.height + pad * 2,
+        };
+      }
+    }
+
+    function inTextBox(x, y) {
+      if (!textBox) return false;
+      return x > textBox.x && x < textBox.x + textBox.w && y > textBox.y && y < textBox.y + textBox.h;
+    }
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    function fmt() {
+      const sign = Math.random() < 0.5 ? -1 : 1;
+      const mag = Math.random();
+      let v;
+      if (mag < 0.6) v = rand(1, 18).toFixed(0);
+      else if (mag < 0.9) v = rand(18, 45).toFixed(0);
+      else v = rand(45, 120).toFixed(0);
+      return (sign < 0 ? '-' : '+') + v + '%';
+    }
+
+    const nums = [];
+    function spawnNum(intensity) {
+      const positive = Math.random() < 0.5;
+      let size;
+      const r = Math.random();
+      if (r < 0.6) size = rand(13, 22);
+      else if (r < 0.88) size = rand(22, 40);
+      else size = rand(40, 72) * (0.7 + intensity * 0.5);
+
+      const x = zone.x + rand(0.04, 0.96) * zone.w;
+      const y = zone.y + rand(0.04, 0.96) * zone.h;
+
+      let maxOp;
+      const opr = Math.random();
+      if (opr < 0.65) maxOp = rand(0.06, 0.16);
+      else if (opr < 0.9) maxOp = rand(0.16, 0.32);
+      else maxOp = rand(0.32, 0.55);
+
+      if (inTextBox(x, y)) {
+        if (size > 26) return;
+        maxOp *= 0.18;
+      }
+
+      nums.push({
+        text: fmt(),
+        x, y, size,
+        color: positive ? GREEN : RED,
+        op: 0, maxOp,
+        vIn: rand(0.06, 0.16),
+        state: 'in',
+        hold: rand(140, 520),
+        tHold: 0,
+        vy: 0,
+      });
+    }
+
+    let phase = 'build';
+    let cycleStart = performance.now();
+    const BUILD = 3600, PEAK = 1100, COLLAPSE = 1500, EMPTY = 650;
+    let lastSpawn = 0;
+    let wordShown = [false, false, false];
+    function resetWords() { wordShown = [false, false, false]; }
+
+    let rafId = 0;
+    function step(now) {
+      ctx.clearRect(0, 0, W, H);
+      const elapsed = now - cycleStart;
+      let intensity = 0;
+      if (phase === 'build') {
+        intensity = Math.min(1, elapsed / BUILD);
+        const eased = intensity * intensity;
+        if (!reduce) {
+          if (!wordShown[0] && elapsed > 200) { showWord(stopEl); wordShown[0] = true; }
+          if (!wordShown[1] && elapsed > BUILD * 0.34) { showWord(chasingEl); wordShown[1] = true; }
+          if (!wordShown[2] && elapsed > BUILD * 0.66) { showWord(numbersEl); wordShown[2] = true; }
+        }
+        const spawnGap = 320 - eased * 295;
+        if (now - lastSpawn > spawnGap) {
+          const burst = 1 + Math.floor(eased * 4);
+          for (let i = 0; i < burst; i++) spawnNum(eased);
+          lastSpawn = now;
+        }
+        if (elapsed >= BUILD) { phase = 'peak'; cycleStart = now; }
+      } else if (phase === 'peak') {
+        if (now - lastSpawn > 70) { for (let i = 0; i < 3; i++) spawnNum(1); lastSpawn = now; }
+        if (now - cycleStart >= PEAK) {
+          phase = 'collapse'; cycleStart = now;
+          for (const n of nums) { n.state = 'fall'; n.vy = rand(0.4, 1.4); }
+          if (!reduce) headWords.forEach(dimWord);
+        }
+      } else if (phase === 'collapse') {
+        if (now - cycleStart >= COLLAPSE) { phase = 'empty'; cycleStart = now; }
+      } else if (phase === 'empty') {
+        if (now - cycleStart >= EMPTY) { phase = 'build'; cycleStart = now; resetWords(); }
+      }
+
+      for (let i = nums.length - 1; i >= 0; i--) {
+        const n = nums[i];
+        if (n.state === 'in') {
+          n.op = Math.min(n.maxOp, n.op + n.vIn);
+          if (n.op >= n.maxOp) { n.state = 'hold'; }
+        } else if (n.state === 'hold') {
+          n.tHold += 16;
+          if (phase === 'collapse') { n.state = 'fall'; n.vy = rand(0.4, 1.4); }
+        } else if (n.state === 'fall') {
+          n.vy += 0.06;
+          n.y += n.vy;
+          n.op *= 0.94;
+          if (n.op < 0.012) { nums.splice(i, 1); continue; }
+        }
+        drawNum(n);
+      }
+
+      rafId = requestAnimationFrame(step);
+    }
+
+    function drawNum(n) {
+      ctx.globalAlpha = Math.max(0, Math.min(1, n.op));
+      ctx.fillStyle = n.color;
+      ctx.font = '700 ' + n.size.toFixed(1) + 'px ' + SANS;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
+      ctx.fillText(n.text, n.x, n.y);
+      ctx.globalAlpha = 1;
+    }
+
+    measure();
+    if (reduce) {
+      for (let i = 0; i < 26; i++) { spawnNum(0.4); }
+      for (const n of nums) { n.op = n.maxOp; n.state = 'hold'; }
+      const frameFn = () => { ctx.clearRect(0, 0, W, H); for (const n of nums) drawNum(n); };
+      frameFn();
+      const onResize = () => { measure(); frameFn(); };
+      window.addEventListener('resize', onResize);
+      return () => {
+        window.removeEventListener('resize', onResize);
+        timeouts.forEach(clearTimeout);
+      };
+    }
+
+    const onResize = () => { measure(); };
+    window.addEventListener('resize', onResize);
+    cycleStart = performance.now();
+    rafId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', onResize);
+      timeouts.forEach(clearTimeout);
+    };
+  }, []);
+
   return (
-    <section style={{
-      position: 'relative',
-      minHeight: 760,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
-      // Layered ink + navy background with a soft warm radial light
-      // from upper-right — suggests something on the horizon without
-      // illustrating it.
-      background: `
-        radial-gradient(ellipse 60% 40% at 85% 20%, rgba(184,95,51,0.22) 0%, rgba(184,95,51,0) 70%),
-        radial-gradient(ellipse 80% 60% at 20% 90%, rgba(35, 74, 120, 0.45) 0%, rgba(35, 74, 120, 0) 65%),
-        linear-gradient(165deg, ${C.ink} 0%, ${C.navy900} 100%)
-      `,
-      overflow: 'hidden',
-    }}>
-      {/* Editorial chapter mark — "00" in copper Fraunces, top-left.
-          The hero is the prologue; the chaptered sections begin at 01. */}
-      <div style={{
-        position: 'absolute',
-        top: 'clamp(100px, 12vh, 140px)',
-        left: 'clamp(24px, 4vw, 64px)',
-        zIndex: 3,
-      }}>
-        <ChapterMark n="00" light />
-      </div>
+    <section
+      aria-label="POWERS hero. Headline: Stop chasing numbers."
+      style={{
+        position: 'relative',
+        width: '100%',
+        minHeight: '100vh',
+        overflow: 'hidden',
+        background: `
+          radial-gradient(120% 90% at 78% 18%, rgba(60,40,40,0.28) 0%, rgba(15,42,71,0) 55%),
+          radial-gradient(100% 100% at 50% 0%, #14304f 0%, #0f2a47 45%, #0a1f38 100%)
+        `,
+      }}
+    >
+      {/* Number swarm — full-bleed canvas behind the content */}
+      <canvas
+        ref={swarmRef}
+        aria-hidden="true"
+        style={{
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          zIndex: 1, pointerEvents: 'none',
+        }}
+      />
 
-      {/* Architectural rule — single thin copper line across 70%
-          of the hero, anchored at the bottom of the H1 baseline.
-          Editorial moment, not decoration. */}
-      <div aria-hidden="true" style={{
-        position: 'absolute',
-        left: 'clamp(24px, 4vw, 64px)',
-        right: 'clamp(80px, 10vw, 220px)',
-        bottom: 'clamp(160px, 18vh, 220px)',
-        height: 1,
-        background: 'linear-gradient(to right, rgba(184,95,51,0.6), rgba(184,95,51,0))',
-        zIndex: 1,
-      }} />
-
-      {/* Content — asymmetric two-column at the lower third. Left
-          column carries the H1 at oversized scale; right column
-          carries the subhead at a narrower measure, offset lower so
-          the layout has tension rather than symmetry. */}
+      {/* Content — asymmetric two-column at desktop */}
       <div style={{
         position: 'relative', zIndex: 2,
-        maxWidth: 1440,
-        margin: '0 auto',
-        padding: 'clamp(140px, 18vh, 200px) clamp(24px, 4vw, 64px) clamp(80px, 10vh, 120px)',
-        width: '100%',
+        width: '100%', maxWidth: 1280, margin: '0 auto',
+        minHeight: '100vh',
         display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1.4fr) minmax(280px, 1fr)',
-        gap: 'clamp(32px, 5vw, 80px)',
-        alignItems: 'end',
+        gridTemplateColumns: '1.05fr 0.95fr',
+        alignItems: 'center',
+        gap: 48,
+        padding: '96px 56px 72px',
       }}>
-        {/* H1 — oversized typographic moment.
-            "Stop Chasing" in sans 800 (the brand voice declaring).
-            "Numbers." in Fraunces italic — typographic break that
-            does the differentiation work the copy can't do alone. */}
         <h1 style={{
-          fontSize: 'clamp(56px, 8vw, 124px)',
-          fontWeight: 800,
-          lineHeight: 0.95,
-          color: C.white,
-          fontFamily: 'inherit',
+          lineHeight: 1.0,
+          letterSpacing: '-0.025em',
           margin: 0,
-          letterSpacing: '-0.028em',
-          textWrap: 'balance',
         }}>
-          <HeroHeadline />
+          <span
+            ref={stopRef}
+            style={{
+              display: 'block',
+              opacity: 0,
+              transform: 'translateY(14px)',
+              fontWeight: 800,
+              color: '#fff',
+              fontSize: 'clamp(56px, 9vw, 128px)',
+              textTransform: 'none',
+            }}
+          >Stop</span>
+          <span
+            ref={chasingRef}
+            style={{
+              display: 'block',
+              opacity: 0,
+              transform: 'translateY(14px)',
+              fontWeight: 800,
+              color: '#fff',
+              fontSize: 'clamp(56px, 9vw, 128px)',
+              textTransform: 'none',
+            }}
+          >Chasing</span>
+          <span
+            ref={numbersRef}
+            style={{
+              display: 'block',
+              opacity: 0,
+              transform: 'translateY(14px)',
+              fontFamily: SERIF,
+              fontStyle: 'italic',
+              fontWeight: 500,
+              color: '#e89346',
+              fontSize: 'clamp(56px, 9vw, 128px)',
+              lineHeight: 1.0,
+              letterSpacing: '-0.02em',
+              marginTop: '0.02em',
+            }}
+          >Numbers<span style={{ color: '#e89346' }}>.</span></span>
         </h1>
 
-        {/* Subhead — sits in the right column, narrow measure, smaller
-            than typical so it reads as caption-against-display. */}
-        <div>
-          <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
-            color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
-            maxWidth: 380, margin: '0 0 28px', textWrap: 'pretty',
+        <div ref={rightRef} style={{ alignSelf: 'center', maxWidth: 430 }}>
+          <p ref={ledeRef} style={{
+            fontSize: 17, lineHeight: 1.65,
+            color: 'rgba(230, 237, 246, 0.78)',
+            fontWeight: 300,
+            opacity: 0,
+            transform: 'translateY(12px)',
+            margin: 0,
           }}>
             {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals at the root of your operation. When they\u2019re missing, your ability to execute is at the mercy of conditions. When they\u2019re built in, it isn\u2019t.")}
           </p>
-          <p style={{
-            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-            fontSize: 20, lineHeight: 1.35,
-            color: C.gold, margin: 0,
-            letterSpacing: '-0.005em',
-            textWrap: 'balance', maxWidth: 380,
-          }}>
-            We build them in.
-          </p>
+          <p ref={buildRef} style={{
+            marginTop: 24,
+            fontFamily: SERIF,
+            fontStyle: 'italic',
+            fontWeight: 500,
+            fontSize: 'clamp(24px, 2.8vw, 34px)',
+            lineHeight: 1.15,
+            letterSpacing: '-0.01em',
+            color: '#e89346',
+            opacity: 0,
+            transform: 'translateY(14px)',
+            marginBottom: 0,
+          }}>We build what produces them.</p>
         </div>
       </div>
 
-      {/* Scroll cue — bottom-left, vertical rule + copper italic label.
-          Editorial signal that the document continues below. */}
-      <div style={{
+      {/* Scroll cue — bottom-left, mono caps in gold */}
+      <div ref={cueRef} style={{
         position: 'absolute',
-        left: 'clamp(24px, 4vw, 64px)',
-        bottom: 'clamp(28px, 4vh, 44px)',
+        left: 56, bottom: 38, zIndex: 2,
+        fontFamily: MONO,
+        fontSize: 11.5, fontWeight: 500,
+        letterSpacing: '0.24em', textTransform: 'uppercase',
+        color: '#eabb71',
+        opacity: 0,
         display: 'flex', alignItems: 'center', gap: 14,
-        zIndex: 3,
       }}>
-        <div style={{
-          width: 1, height: 38, background: 'rgba(232,147,70,0.55)',
+        <span aria-hidden="true" style={{
+          width: 46, height: 1, background: '#eabb71', opacity: 0.6,
+          display: 'inline-block',
         }} />
-        <div style={{
-          fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-          fontSize: 13, color: '#e89346', letterSpacing: '0.04em',
-        }}>
-          Start with the foundation
-        </div>
+        Start with the foundation
       </div>
     </section>
   );
