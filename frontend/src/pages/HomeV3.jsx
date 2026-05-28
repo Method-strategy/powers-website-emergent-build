@@ -286,11 +286,17 @@ const C = {
  * what makes the site feel coherent.
  * ────────────────────────────────────────────────────────────────── */
 const S = {
-  // Surface tokens
-  bgWhite: '#ffffff',
-  bgIvory: '#fbf9f4',
-  bgBone:  '#f4efe4',
-  bgPaper: '#f7f6f1',
+  // Surface tokens — pure white is the default for every content row.
+  // `bgGoldWash` is an opt-in low-opacity gold tint that any single
+  // section can use as a deliberate alternation between two white
+  // sections — a quiet warm break that doesn't jump to dark navy.
+  // Dark sections (Hero, Principle, Pressure In/Out, Metrics, CTA)
+  // use their own navy backgrounds inline.
+  bgWhite:     '#ffffff',
+  bgPaper:     '#ffffff',
+  bgIvory:     '#ffffff',
+  bgBone:      '#ffffff',
+  bgGoldWash:  'rgba(232,147,70,0.04)',
   bgNavy:  '#143257',
   bgDeep:  '#0f2a47',
   bgInk:   '#0f2a47',
@@ -1450,6 +1456,13 @@ function Eyebrow({ label, light }) { // eslint-disable-line no-unused-vars
  * declaration of principle before the page descends into the
  * mechanism. No motion beyond a slow fade-up on scroll-in.
  * ────────────────────────────────────────────────────────────────── */
+/* SectionThePrinciple — compact "design violator" divider band.
+   Modeled after the metrics row's proportions (≈365px tall) so it
+   functions as a quiet visual breaker between two white sections —
+   not a full-bleed editorial cinema moment. Single-line redwood
+   thesis in Newsreader italic on navy, with a gold rule + small
+   closing line. Reads as a punctuation mark in the page rhythm,
+   not as its own argument. */
 function SectionThePrinciple() {
   const ref = useRef(null);
   useEffect(() => {
@@ -1459,34 +1472,35 @@ function SectionThePrinciple() {
     const target = ref.current.querySelector('[data-principle-quote]');
     const attr = ref.current.querySelector('[data-principle-attr]');
     if (!target) return;
-    gsap.set([target, attr].filter(Boolean), { opacity: 0, y: 20 });
+    gsap.set([target, attr].filter(Boolean), { opacity: 0, y: 14 });
     const ctx = gsap.context(() => {
       gsap.timeline({
         scrollTrigger: {
           trigger: ref.current,
-          start: 'top 70%',
-          end: 'top 30%',
+          start: 'top 80%',
+          end: 'top 40%',
           scrub: 0.8,
         },
       })
-        .to(target, { opacity: 1, y: 0, ease: 'power3.out', duration: 1.2 }, 0)
-        .to(attr,  { opacity: 1, y: 0, ease: 'power2.out', duration: 1.0 }, 0.4);
+        .to(target, { opacity: 1, y: 0, ease: 'power3.out', duration: 1.0 }, 0)
+        .to(attr,   { opacity: 1, y: 0, ease: 'power2.out', duration: 0.8 }, 0.3);
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
     <section ref={ref} style={{
-      background: `linear-gradient(180deg, ${C.ink} 0%, ${C.navy900} 100%)`,
-      padding: `clamp(80px, 9vw, 120px) ${S.sectionPadX}`,
+      background: `linear-gradient(180deg, ${C.navy} 0%, ${C.navyDeep} 100%)`,
+      padding: `clamp(54px, 6vw, 76px) 0`,
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Background grain — faint warm radial that gives the deep-
-          ink surface a hint of dimensional warmth. */}
+      {/* Faint warm radial — same fireside glow used elsewhere on
+          navy surfaces, kept low so the band reads as a single
+          calm punctuation mark, not a moment. */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `radial-gradient(ellipse 60% 50% at 30% 50%, rgba(232,147,70,0.10) 0%, rgba(232,147,70,0) 70%)`,
+        background: `radial-gradient(ellipse 50% 60% at 22% 50%, rgba(232,147,70,0.10) 0%, rgba(232,147,70,0) 70%)`,
       }} />
 
       <div style={{
@@ -1494,44 +1508,40 @@ function SectionThePrinciple() {
         maxWidth: 1280, margin: '0 auto',
         padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         display: 'grid',
-        gridTemplateColumns: '1fr',
-        gap: 28,
+        // Two-column: thesis on the left, attribution on the right.
+        // Stacks at narrow widths via the auto-fit on minimax.
+        gridTemplateColumns: 'minmax(0, 1.4fr) minmax(220px, 1fr)',
+        alignItems: 'center',
+        gap: 'clamp(28px, 4vw, 56px)',
       }}>
-        <ChapterMark n="02" light />
-
-        {/* The principle — set huge, Fraunces italic, off-center left.
-            Treated like a magazine pull-spread, not a marketing
-            headline. The italic + copper period at the end is the
-            editorial signature. */}
+        {/* The principle — single line, navy serif italic, gold period.
+            Set markedly smaller than the previous cinematic treatment so
+            the band lands at metrics-row height. */}
         <blockquote data-principle-quote style={{
           margin: 0,
           fontFamily: SERIF,
           fontStyle: 'italic',
           fontWeight: 500,
-          fontSize: 'clamp(32px, 5.4vw, 76px)',
-          lineHeight: 1.05,
+          fontSize: 'clamp(22px, 2.6vw, 34px)',
+          lineHeight: 1.22,
           color: C.white,
-          letterSpacing: '-0.020em',
+          letterSpacing: '-0.014em',
           textWrap: 'balance',
-          maxWidth: '14ch',
         }}>
           The tallest trees on earth don&rsquo;t stand because of what you can see<span style={{ color: '#e89346' }}>.</span>
         </blockquote>
 
-        {/* Attribution — sits right, small caps in sans, copper rule
-            above. Editorial signature. */}
+        {/* Attribution — gold left rule + one body line + closing tag */}
         <div data-principle-attr style={{
-          justifySelf: 'end',
-          maxWidth: 460,
-          paddingTop: 28,
-          borderTop: `1px solid rgba(232,147,70,0.4)`,
+          paddingLeft: 22,
+          borderLeft: `1px solid rgba(232,147,70,0.6)`,
         }}>
           <p style={{
-            fontSize: 17, fontWeight: 300, lineHeight: 1.6,
-            color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
-            margin: '0 0 18px', textWrap: 'pretty',
+            fontSize: 14, fontWeight: 300, lineHeight: 1.55,
+            color: 'rgba(255,255,255,0.78)', fontFamily: SANS,
+            margin: '0 0 10px', textWrap: 'pretty',
           }}>
-            {typo("They stand because of a root system, decades deep, that most people never think about. Operations are no different. The ones that perform under pressure are the ones with something strong enough underneath to carry the weight.")}
+            {typo("Operations are no different. The ones that perform under pressure are the ones built on something strong enough underneath to carry the weight.")}
           </p>
           <div style={{
             fontFamily: MONO,
@@ -3272,7 +3282,7 @@ function SectionDifferentApproach() {
 function HomeV3() {
   useV3Fonts();
   return (
-    <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#fbf9f4' }}>
+    <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#ffffff' }}>
       <ReadingProgress />
       <Header />
       <Hero />
