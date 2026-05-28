@@ -1100,7 +1100,7 @@ function Header() {
    and collapses behind the lede column — visualising the very thing
    the operator is told to stop chasing. The H1 reveals word-by-word
    ("Stop" → "Chasing" → "Numbers.") timed to the swarm's build, then
-   the lede + "We build what produces them." + scroll cue resolve in
+   the lede + "We build the foundation." + scroll cue resolve in
    sequence as the swarm collapses.
 
    The animation runs as a perpetual 4-phase cycle:
@@ -1452,7 +1452,7 @@ function Hero() {
             opacity: 0,
             transform: 'translateY(14px)',
             marginBottom: 0,
-          }}>We build what produces them.</p>
+          }}>We build the foundation.</p>
         </div>
       </div>
 
@@ -2402,6 +2402,103 @@ function SectionExecutionEngine() {
  * pull-block — same device used elsewhere on the homepage so anchoring
  * declarations get the same visual weight.
  * ──────────────────────────────────────────────────────────────────── */
+
+/* LoopingVideoWithCrossfade — seamless-loop video component.
+   The video's first frame is captured into a separate poster JPG and
+   the component crossfades between the video and that poster image at
+   each loop boundary, hiding the hard cut. The poster matches the
+   video's first frame, so the transition is visually invisible — the
+   reader perceives a single continuous shot.
+
+   Implementation: the video fades to opacity 0 in the final
+   `FADE_SECONDS` of each playback, revealing the poster underneath.
+   After `loop` restarts playback at t=0, the video fades back in over
+   the next `FADE_SECONDS`. A rAF loop drives the fade for smoothness
+   (timeupdate only fires ~4x/sec which would step visibly).
+
+   Honors `prefers-reduced-motion` by disabling the fade and leaving
+   the video at full opacity — the loop seam stays visible but the
+   page doesn't animate. */
+const LoopingVideoWithCrossfade = ({ poster, sources, ariaLabel }) => {
+  const videoRef = useRef(null);
+  const [opacity, setOpacity] = useState(1);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { setOpacity(1); return; }
+
+    const FADE_SECONDS = 0.7;
+    let rafId = 0;
+    const tick = () => {
+      const dur = v.duration;
+      const t = v.currentTime;
+      if (!isFinite(dur) || dur <= 0) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      let next = 1;
+      if (t < FADE_SECONDS) {
+        // fade in after the loop reset
+        next = Math.min(1, t / FADE_SECONDS);
+      } else if (dur - t < FADE_SECONDS) {
+        // fade out toward the loop seam
+        next = Math.max(0, (dur - t) / FADE_SECONDS);
+      }
+      setOpacity(next);
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  return (
+    <div style={{
+      position: 'relative',
+      width: '100%', height: '100%',
+      minHeight: 400,
+    }}>
+      {/* Poster — sits behind the video, visible through the video's
+          opacity at the loop seam. Same first-frame image so the
+          crossfade is invisible. */}
+      <img
+        src={poster}
+        alt=""
+        aria-hidden="true"
+        style={{
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center',
+          display: 'block',
+        }}
+      />
+      <video
+        ref={videoRef}
+        poster={poster}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        aria-label={ariaLabel}
+        style={{
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center',
+          display: 'block',
+          opacity,
+        }}
+      >
+        {sources.map((s) => (
+          <source key={s.src} src={s.src} type={s.type} />
+        ))}
+      </video>
+    </div>
+  );
+};
+
+
 function SectionHowWeWork() {
   return (
     <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
@@ -2472,38 +2569,26 @@ function SectionHowWeWork() {
 
         {/* Right: media — flush bleed to right edge of the container.
             Auto-playing, looping, muted background video replaces the
-            static placeholder. Preloads metadata only; the file itself
-            starts loading on user gesture or as the section nears the
-            viewport (browsers handle this automatically). `playsInline`
-            is required for iOS Safari to keep it inline (not fullscreen)
-            and `muted` is required for `autoPlay` to be honored on every
-            modern browser. */}
+            static placeholder. The <LoopingVideoWithCrossfade /> component
+            crossfades to the first-frame poster image at each loop
+            boundary, hiding the hard cut and producing a seamless loop.
+            `playsInline` is required for iOS Safari to keep it inline
+            (not fullscreen) and `muted` is required for `autoPlay` to be
+            honored on every modern browser. */}
         <div style={{
           background: C.navy900,
           minHeight: 400,
           display: 'flex', alignItems: 'stretch',
           position: 'relative', overflow: 'hidden',
         }}>
-          <video
-            poster="/uploads/POWERS Homepage Placeholder 1280 x 960.png"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            aria-label="POWERS consultants working on the manufacturing floor"
-            style={{
-              width: '100%', height: '100%', objectFit: 'cover',
-              objectPosition: 'center', display: 'block', minHeight: 400,
-            }}
-          >
-            {/* WebM (VP9) first — smaller and supported natively by Chromium-based
-                browsers without proprietary codec licensing. MP4 (H.264) as the
-                second source covers Safari + older browsers. The browser picks
-                the first source it can play. */}
-            <source src="/uploads/powers-banner-2026-v2.webm" type="video/webm" />
-            <source src="/uploads/powers-banner-2026-v2.mp4" type="video/mp4" />
-          </video>
+          <LoopingVideoWithCrossfade
+            poster="/uploads/powers-banner-2026-v2-poster.jpg"
+            sources={[
+              { src: '/uploads/powers-banner-2026-v2.webm', type: 'video/webm' },
+              { src: '/uploads/powers-banner-2026-v2.mp4',  type: 'video/mp4'  },
+            ]}
+            ariaLabel="POWERS consultants working on the manufacturing floor"
+          />
         </div>
       </div>
     </section>

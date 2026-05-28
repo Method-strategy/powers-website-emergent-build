@@ -144,6 +144,9 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 
 - Subhead staggered fade-in: added page-wide `useSubheadReveal` hook + `data-subhead-reveal` attribute on 5 subhead h2s. Each h2 fades up (opacity + 14px translateY, 0.85s cubic-bezier) as it enters the viewport at 25% threshold; the inline italic accent `<span>` then fades in 280ms later, producing the "statement → accent" editorial beat. Honors `prefers-reduced-motion`.
 - "How We Work" row hero swapped from static image to autoplay/muted/loop background video (`powers-banner-2026-v2.webm` + `.mp4` H.264 fallback). 16.5s loop at 1080×1350 cropped to fill via `objectFit: cover`. Poster placeholder retained for fast first paint. Honors `playsInline` for iOS Safari. Original 14MB MP4 (MOOV at end, no faststart) re-encoded to ~8MB H.264 + ~6.8MB VP9 with `+faststart` for progressive playback.
+- Hero lede pivot updated: "We build what produces them." → "We build the foundation." (line 1455 in `HomeV3.jsx`). Doc comment at line 1103 updated to match.
+- Video loop crossfade: extracted first frame of `powers-banner-2026-v2.mp4` → `powers-banner-2026-v2-poster.jpg` (~134KB) and introduced `LoopingVideoWithCrossfade` component. Drives video opacity via rAF tick — fades to 0 over the final 0.7s of playback (revealing the matching first-frame poster underneath), then fades back in over the first 0.7s after the loop restart. Loop seam is now visually invisible. Honors `prefers-reduced-motion`.
+
 
 
 ## Pending / Backlog (legacy)
