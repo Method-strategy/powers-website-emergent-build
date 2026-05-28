@@ -4205,7 +4205,7 @@ function SectionDifferentApproach() {
                 marginBottom: '1.25em',
                 maxWidth: '34em',
               }}>
-                {typo('Not in the boardroom or on the dashboard. Where the work actually happens \u2014 on the floor, in the shifts, with the people, inside the standards, the supplier relationships, the payables process. Wherever performance either holds up or breaks down.')}
+                {typo('Not in the boardroom or on the dashboard. Where the work actually happens \u2014 on the floor, in the shifts, with the people, inside the standards, the supplier relationships, the AP/AR process. Wherever performance either holds up or breaks down.')}
               </p>
 
               <p data-reveal style={{
