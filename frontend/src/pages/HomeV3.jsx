@@ -2258,132 +2258,470 @@ function RotatingPaneList({
   );
 }
 
-function SectionExecutionEngine() {
-  const haloRef = useRef(null);
-  const pressureRef = useRef(null);
-  const outcomeRef = useRef(null);
-  const flowDotRef = useRef(null);
-  const flowLineRef = useRef(null);
+/* ExecutionExhibit — canvas-based animated exhibit.
+   Ported verbatim from the standalone HTML reference the user
+   provided. Visualises the "Pressure In / Performance Out" thesis as
+   a physics-like simulation: red pressure labels fly in from the
+   left with a wobble, are absorbed into a pulsing gold core
+   ("EXECUTION CAPABILITY ROOTED IN DISCIPLINE"), and green outcome
+   labels are emitted out to the right. Particle bursts on each
+   absorption + emission. Interactive: Pause/Play, an Operating
+   Pressure slider (1–10) controlling spawn rate, and a Surge button
+   that temporarily spikes pressure intensity.
 
-  // Continuous engine halo "heartbeat" — independent of scroll.
-  // Slow, even, ambient. Communicates "running" without using a
-  // literal pulse dot.
+   This component owns its own <canvas>, animation loop, and state
+   machine. It does not interact with React state per frame (rAF
+   loop reads refs only) to avoid render thrash. */
+function ExecutionExhibit() {
+  const canvasRef = useRef(null);
+  const toggleBtnRef = useRef(null);
+  const loadInputRef = useRef(null);
+  const loadValRef = useRef(null);
+  const burstBtnRef = useRef(null);
+
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return;
-    if (!haloRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
 
-    const tween = gsap.to(haloRef.current, {
-      opacity: 0.7,
-      scale: 1.05,
-      duration: 3.4,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-    });
-    return () => tween.kill();
-  }, []);
+    const NAVY_DEEP = '#0a1f38';
+    const RED = '#e05a47';
+    const GREEN = '#4aba6a';
+    const GOLD = '#eabb71';
 
-  // Cycling labels — single pressure / outcome each side, swapped via
-  // GSAP cross-fade every ~1700ms. Both sides flow LEFT → RIGHT:
-  //   • Pressures (left col):  enter from left → center → exit right
-  //     (toward the engine) — reads as "absorbed by the engine."
-  //   • Outcomes (right col):  enter from left → center → exit right
-  //     — reads as "emitted by the engine and carried onward."
-  // Unified left-to-right value-flow across the whole diagram,
-  // mirroring the gold dot traveling along the rail below.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return;
+    const pressures = [
+      'Market volatility', 'Tariff & trade shifts', 'Demand swings', 'Workforce turnover',
+      'Equipment breakdowns', 'Inexperienced supervisors', 'Margin compression', 'Schedule misses',
+      'Supply chain disruption', 'New site ramp-up', 'Raw material shortfall', 'Quality escapes',
+      'Absenteeism', 'Changeover delays', 'Unplanned downtime', 'Skilled labor shortage',
+      'Aging equipment', 'Rising input costs', 'Capacity constraints', 'Supplier delays',
+      'Rework & scrap', 'Safety incidents', 'Tribal knowledge loss', 'Forecast misses',
+      'Inventory imbalance', 'Shipping delays', 'Energy cost spikes', 'Regulatory changes',
+      'Customer escalations', 'Maintenance backlog', 'Bottleneck operations', 'Shift variance',
+      'Overtime creep', 'Yield loss', 'Material price swings',
+    ];
+    const outcomes = [
+      'Increased throughput', 'Higher OEE', 'Reduced downtime', 'Improved labor productivity',
+      'Expanded margin', 'Recovered working capital', 'Stronger frontline leadership', 'Sustained performance',
+      'Lower cost per unit', 'Workforce stability', 'Increased capacity', 'Higher quality', 'Less waste', 'Higher yield',
+      'Faster changeovers', 'On-time delivery', 'Predictable schedules', 'Fewer safety incidents',
+      'Improved first-pass yield', 'Lower scrap rate', 'Better asset reliability', 'Shorter lead times',
+      'Consistent shift output', 'Reduced overtime', 'Stronger accountability', 'Improved morale',
+      'Tighter cost control', 'Scalable operations', 'Repeatable execution', 'Higher utilization',
+    ];
 
-    // direction = +1 → exit right, enter from left
-    //
-    // PROBLEM with the previous version: `power1.in` ease pushed
-    // almost all of the lateral motion to the END of the exit window,
-    // which overlapped with the fade-out. The text barely moved while
-    // visible, then disappeared. Result was a centered cross-fade
-    // with no perceptible slide.
-    //
-    // FIX:
-    //   • Linear ease on x so the slide is uniform across the full
-    //     duration — viewer always sees lateral motion.
-    //   • Hold opacity at 1 for the first 80% of the slide; only
-    //     fade in the final 20%. The text is fully readable while
-    //     it travels right, then a quick fade at the very edge.
-    //   • 180px travel — at typical column widths the label clearly
-    //     exits past the visual "frame" of the column.
-    const cycle = (el, pool, cursor, interval, direction) => {
-      let i = cursor;
-      const TRAVEL = 180;
-      const EXIT_DUR = 0.70;
-      const ENTER_DUR = 0.70;
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0;
+    const core = { x: 0, y: 0, r: 0 };
 
-      const tick = () => {
-        if (!el) return;
-        i = (i + 1) % pool.length;
-        const exitX = direction * TRAVEL;
-        const enterX = -direction * TRAVEL;
+    function aspectFor(w) {
+      if (w < 480) return 0.62;
+      if (w < 768) return 0.54;
+      return 0.46;
+    }
 
-        const tl = gsap.timeline();
+    function resize() {
+      const cssW = canvas.clientWidth || canvas.parentElement.clientWidth;
+      const cssH = Math.round(cssW * aspectFor(cssW));
+      canvas.style.height = cssH + 'px';
+      W = cssW; H = cssH;
+      canvas.width = Math.round(W * DPR);
+      canvas.height = Math.round(H * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      core.x = W * 0.5;
+      core.y = H * 0.5;
+      core.r = Math.max(82, Math.min(W, H) * 0.17);
+    }
 
-        // === EXIT === slide + late fade
-        tl.to(el, {
-          x: exitX,
-          duration: EXIT_DUR,
-          ease: 'none', // linear — uniform velocity = clearly visible motion
-        }, 0);
-        tl.to(el, {
-          opacity: 0,
-          duration: EXIT_DUR * 0.25,
-          ease: 'power2.in',
-        }, EXIT_DUR * 0.75);
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Swap text right at the end of exit.
-        tl.call(() => { el.textContent = pool[i]; }, [], EXIT_DUR);
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    function pick(arr) { return arr[(Math.random() * arr.length) | 0]; }
 
-        // === ENTER === jump to entry position, fade up fast, slide to center
-        tl.set(el, { x: enterX, opacity: 0 }, EXIT_DUR);
-        tl.to(el, {
-          opacity: 1,
-          duration: ENTER_DUR * 0.25,
-          ease: 'power2.out',
-        }, EXIT_DUR);
-        tl.to(el, {
-          x: 0,
-          duration: ENTER_DUR,
-          ease: 'none', // linear — uniform motion across the full slide
-        }, EXIT_DUR);
-      };
-      return setInterval(tick, interval);
+    const inbound = [];
+    const outbound = [];
+    const particles = [];
+
+    function spawnPressure() {
+      const startX = -30;
+      const startY = rand(0.08, 0.92) * H;
+      inbound.push({
+        text: pick(pressures),
+        x: startX, y: startY,
+        speed: rand(2.0, 4.2),
+        wobble: rand(0, Math.PI * 2),
+        wobAmp: rand(0.15, 0.7),
+        size: rand(12, 17),
+        opacity: 0,
+        state: 'fly',
+        tAbsorb: 0,
+      });
+    }
+
+    function emitOutcome() {
+      outbound.push({
+        text: pick(outcomes),
+        x: core.x + core.r * 0.2,
+        y: core.y + rand(-core.r * 0.5, core.r * 0.5),
+        targetY: 0,
+        vx: 1.9,
+        size: 14,
+        opacity: 0,
+        life: 0,
+        state: 'birth',
+      });
+      const last = outbound[outbound.length - 1];
+      last.targetY = core.y + rand(-H * 0.30, H * 0.30);
+    }
+
+    function burstAbsorb(x, y, color) {
+      const n = 14;
+      for (let i = 0; i < n; i++) {
+        const a = rand(0, Math.PI * 2);
+        const sp = rand(0.6, 2.6);
+        particles.push({
+          x, y,
+          vx: Math.cos(a) * sp - 1.2,
+          vy: Math.sin(a) * sp,
+          r: rand(1, 2.6),
+          life: 1,
+          decay: rand(0.012, 0.03),
+          color,
+        });
+      }
+    }
+    function burstEmit(x, y, color) {
+      const n = 10;
+      for (let i = 0; i < n; i++) {
+        const a = rand(-0.7, 0.7);
+        const sp = rand(0.8, 2.2);
+        particles.push({
+          x, y,
+          vx: Math.cos(a) * sp + 0.8,
+          vy: Math.sin(a) * sp * 0.6,
+          r: rand(1, 2.4),
+          life: 1,
+          decay: rand(0.012, 0.028),
+          color,
+        });
+      }
+    }
+
+    let loadLevel = 6;
+    let lastSpawn = 0;
+    let lastEmit = 0;
+    const EMIT_GAP = 1150;
+    let surgeUntil = 0;
+    let surgeStart = 0;
+    const SURGE_DUR = 2600;
+    let surgeEase = 0;
+
+    function computeSpawnGap() {
+      const base = 1150 - (loadLevel - 1) * 95;
+      return base;
+    }
+
+    function updateSurgeEase(t) {
+      if (t >= surgeUntil) {
+        surgeEase += (0 - surgeEase) * 0.06;
+        if (surgeEase < 0.002) surgeEase = 0;
+        return;
+      }
+      const elapsed = t - surgeStart;
+      const p = Math.max(0, Math.min(1, elapsed / SURGE_DUR));
+      const target = Math.sin(p * Math.PI);
+      surgeEase += (target - surgeEase) * 0.08;
+    }
+
+    let running = true;
+    const speedScale = reduceMotion ? 0.35 : 1;
+    let pulse = 0;
+    let rafId = 0;
+
+    function frame(ts) {
+      const t = ts;
+      ctx.clearRect(0, 0, W, H);
+
+      updateSurgeEase(t);
+      drawCore(t);
+
+      const surging = t < surgeUntil;
+      const gap = surging ? 180 : computeSpawnGap();
+      if (running && t - lastSpawn > gap) {
+        spawnPressure();
+        if (surging && Math.random() < 0.6) spawnPressure();
+        lastSpawn = t;
+      }
+
+      if (running && t - lastEmit > EMIT_GAP) {
+        emitOutcome();
+        lastEmit = t;
+      }
+
+      for (let i = inbound.length - 1; i >= 0; i--) {
+        const p = inbound[i];
+        if (p.state === 'fly') {
+          p.opacity = Math.min(1, p.opacity + 0.06);
+          if (running) {
+            const dx = core.x - p.x, dy = core.y - p.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            const ux = dx / dist, uy = dy / dist;
+            const perpx = -uy, perpy = ux;
+            p.wobble += 0.05;
+            const wob = Math.sin(p.wobble) * p.wobAmp;
+            p.x += (ux * p.speed + perpx * wob) * speedScale;
+            p.y += (uy * p.speed + perpy * wob) * speedScale;
+            if (dist < core.r * 0.95) {
+              p.state = 'absorb';
+              p.tAbsorb = 0;
+              burstAbsorb(p.x, p.y, RED);
+            }
+          }
+          const ddx = core.x - p.x, ddy = core.y - p.y;
+          const ddist = Math.hypot(ddx, ddy);
+          drawLabel(p.x, p.y, p.text, RED, p.opacity * fadeNearCore(ddist), p.size);
+        } else if (p.state === 'absorb') {
+          p.tAbsorb += 0.06;
+          const k = 1 - p.tAbsorb;
+          if (running) {
+            p.x += (core.x - p.x) * 0.18;
+            p.y += (core.y - p.y) * 0.18;
+          }
+          drawLabel(p.x, p.y, p.text, RED, Math.max(0, k) * 0.6, p.size * Math.max(0.2, k));
+          if (p.tAbsorb >= 1) {
+            inbound.splice(i, 1);
+            pulse = Math.min(1, pulse + 0.10);
+          }
+        }
+      }
+
+      for (let i = outbound.length - 1; i >= 0; i--) {
+        const o = outbound[i];
+        if (o.state === 'birth') {
+          o.life += 0.05;
+          o.opacity = Math.min(1, o.opacity + 0.05);
+          if (running) {
+            o.y += (o.targetY - o.y) * 0.04;
+            o.x += o.vx * 0.4 * speedScale;
+          }
+          if (o.life >= 1) {
+            o.state = 'glide';
+            burstEmit(o.x, o.y, GREEN);
+          }
+          drawLabel(o.x, o.y, o.text, GREEN, o.opacity * 0.85, o.size);
+        } else {
+          if (running) {
+            o.x += o.vx * speedScale;
+            o.y += (o.targetY - o.y) * 0.02;
+          }
+          let op = o.opacity;
+          if (o.x > W * 0.86) { op = Math.max(0, op - 0.02); o.opacity = op; }
+          drawLabel(o.x, o.y, o.text, GREEN, op, o.size);
+          if (o.x > W + 40 || op <= 0.02) { outbound.splice(i, 1); }
+        }
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pa = particles[i];
+        if (running) { pa.x += pa.vx * speedScale; pa.y += pa.vy * speedScale; }
+        pa.life -= pa.decay;
+        if (pa.life <= 0) { particles.splice(i, 1); continue; }
+        ctx.globalAlpha = Math.max(0, pa.life) * 0.7;
+        ctx.fillStyle = pa.color;
+        ctx.beginPath();
+        ctx.arc(pa.x, pa.y, pa.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      pulse *= 0.94;
+
+      rafId = requestAnimationFrame(frame);
+    }
+
+    function fadeNearCore(dist) {
+      const edge = core.r * 1.25;
+      if (dist > edge) return 1;
+      return Math.max(0.15, (dist - core.r * 0.9) / (edge - core.r * 0.9));
+    }
+
+    function drawLabel(x, y, text, color, opacity, size) {
+      if (opacity <= 0.01) return;
+      ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+      ctx.fillStyle = color;
+      ctx.font = '500 ' + size.toFixed(1) + 'px ' + SANS;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, x, y);
+      ctx.globalAlpha = 1;
+    }
+
+    function drawCore(t) {
+      const baseBreath = Math.sin(t * 0.0015) * 0.012;
+      const surgeBreath = Math.sin(t * 0.0011) * 0.05 * surgeEase;
+      const swell = 1 + baseBreath + surgeBreath + surgeEase * 0.04;
+      const r = core.r * swell + pulse * 4;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(core.x, core.y, r * (1.5 + surgeEase * 0.5), 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(234,187,113,' + (0.05 + pulse * 0.05 + surgeEase * 0.07).toFixed(3) + ')';
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(core.x, core.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = NAVY_DEEP;
+      ctx.fill();
+      ctx.lineWidth = 1.5 + surgeEase * 1.0;
+      ctx.strokeStyle = 'rgba(234,187,113,' + (0.85 + surgeEase * 0.15).toFixed(2) + ')';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(core.x, core.y, r * 0.72, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(234,187,113,0.18)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.textBaseline = 'middle';
+      const titleSize = Math.max(12, r * 0.150);
+      ctx.font = '500 ' + titleSize.toFixed(0) + 'px ' + SANS;
+      ctx.fillStyle = GOLD;
+      const lines = ['EXECUTION', 'CAPABILITY', 'ROOTED IN', 'DISCIPLINE'];
+      const lh = titleSize * 1.42;
+      const startY = core.y - lh * 1.5;
+      const tracking = titleSize * 0.18;
+      for (let i = 0; i < lines.length; i++) {
+        drawTracked(lines[i], core.x, startY + i * lh, tracking);
+      }
+    }
+
+    function drawTracked(text, cx, y, tracking) {
+      ctx.textAlign = 'left';
+      const widths = [];
+      let total = 0;
+      for (const ch of text) {
+        const w = ctx.measureText(ch).width;
+        widths.push(w);
+        total += w + tracking;
+      }
+      total -= tracking;
+      let x = cx - total / 2;
+      let k = 0;
+      for (const ch of text) {
+        ctx.fillText(ch, x, y);
+        x += widths[k] + tracking;
+        k++;
+      }
+      ctx.textAlign = 'center';
+    }
+
+    const onToggle = () => {
+      running = !running;
+      if (toggleBtnRef.current) toggleBtnRef.current.textContent = running ? 'Pause' : 'Play';
+    };
+    const onLoadInput = (e) => {
+      loadLevel = +e.target.value;
+      if (loadValRef.current) loadValRef.current.textContent = e.target.value;
+    };
+    const onBurst = () => {
+      surgeStart = performance.now();
+      surgeUntil = surgeStart + SURGE_DUR;
     };
 
-    // Cycle is now total animation duration (~1.4s) + ~1s rest.
-    const t1 = cycle(pressureRef.current, FORCES_POOL, 0, 2600, +1);
-    const t2 = cycle(outcomeRef.current, RESULTS_POOL, 0, 2900, +1);
-    return () => { clearInterval(t1); clearInterval(t2); };
+    const toggleBtn = toggleBtnRef.current;
+    const loadInput = loadInputRef.current;
+    const burstBtn = burstBtnRef.current;
+    toggleBtn && toggleBtn.addEventListener('click', onToggle);
+    loadInput && loadInput.addEventListener('input', onLoadInput);
+    burstBtn && burstBtn.addEventListener('click', onBurst);
+    window.addEventListener('resize', resize);
+
+    resize();
+    for (let i = 0; i < 4; i++) { setTimeout(spawnPressure, i * 220); }
+    rafId = requestAnimationFrame(frame);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', resize);
+      toggleBtn && toggleBtn.removeEventListener('click', onToggle);
+      loadInput && loadInput.removeEventListener('input', onLoadInput);
+      burstBtn && burstBtn.removeEventListener('click', onBurst);
+    };
   }, []);
 
-  // Bottom flow rail — a gold dot travels left → right continuously,
-  // visualizing the direction of value. 4s loop (slightly faster to
-  // match the new label cadence), ease-linear so it reads as a
-  // measured pulse, not a bouncing ball.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || !flowDotRef.current || !flowLineRef.current) return;
+  return (
+    <div style={{ width: '100%' }}>
+      {/* Stage — canvas auto-sizes to parent width */}
+      <div style={{ position: 'relative', width: '100%', marginTop: 0 }}>
+        <canvas
+          ref={canvasRef}
+          aria-label="Animated exhibit: varied operational pressures are all absorbed by a steady execution-capability core, which emits a calm, even stream of positive outcomes."
+          style={{ display: 'block', width: '100%', height: 'auto' }}
+        />
+      </div>
 
-    gsap.set(flowDotRef.current, { left: '0%' });
-    const tween = gsap.to(flowDotRef.current, {
-      left: '100%',
-      duration: 4,
-      ease: 'none',
-      repeat: -1,
-    });
-    return () => tween.kill();
-  }, []);
+      {/* Controls — Pause/Play, Operating pressure slider, Surge */}
+      <div style={{
+        display: 'flex', gap: 12, justifyContent: 'center', alignItems: 'center',
+        marginTop: 18, flexWrap: 'wrap',
+      }}>
+        <button
+          ref={toggleBtnRef}
+          type="button"
+          style={{
+            background: 'transparent',
+            border: '1px solid rgba(255,255,255,0.25)',
+            color: 'rgba(255,255,255,0.85)',
+            fontSize: 12.5, letterSpacing: '0.04em',
+            padding: '8px 16px', borderRadius: 0,
+            cursor: 'pointer', fontFamily: SANS,
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
+        >Pause</button>
 
+        <label style={{
+          fontSize: 12, color: 'rgba(255,255,255,0.55)',
+          letterSpacing: '0.04em', fontFamily: SANS,
+        }}>Operating pressure</label>
+
+        <input
+          ref={loadInputRef}
+          type="range" min="1" max="10" defaultValue="6"
+          style={{ accentColor: C.gold, width: 120 }}
+        />
+
+        <span
+          ref={loadValRef}
+          style={{
+            fontVariantNumeric: 'tabular-nums',
+            minWidth: 34, textAlign: 'center', color: C.gold,
+            fontFamily: MONO, fontSize: 13,
+          }}
+        >6</span>
+
+        <button
+          ref={burstBtnRef}
+          type="button"
+          style={{
+            background: 'transparent',
+            border: '1px solid rgba(255,255,255,0.25)',
+            color: 'rgba(255,255,255,0.85)',
+            fontSize: 12.5, letterSpacing: '0.04em',
+            padding: '8px 16px', borderRadius: 0,
+            cursor: 'pointer', fontFamily: SANS,
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
+        >Surge</button>
+      </div>
+    </div>
+  );
+}
+
+function SectionExecutionEngine() {
   return (
     <section style={{
       background: `linear-gradient(180deg, ${C.navy900} 0%, ${C.ink} 100%)`,
@@ -2399,8 +2737,10 @@ function SectionExecutionEngine() {
 
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', position: 'relative' }}>
 
-        {/* Header — left-anchored editorial, on dark */}
-        <div style={{ marginBottom: 100, maxWidth: S.maxRead }}>
+        {/* Header — left-anchored editorial, on dark. UNCHANGED from
+            previous version per user direction; only the diagram block
+            below has been swapped. */}
+        <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
           <ChapterMark n="04" light />
           <Eyebrow label="When Everything Works Together" light />
           <h2 style={{
@@ -2419,129 +2759,8 @@ function SectionExecutionEngine() {
           </p>
         </div>
 
-        {/* DIAGRAM — three columns, simplified to a single signal per side.
-            Left: single red ▼ + cycling pressure label.
-            Center: gold-topped card with the thesis.
-            Right: single green ▲ + cycling outcome label. */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.4fr 1fr',
-          columnGap: 'clamp(20px, 5vw, 80px)',
-          alignItems: 'center',
-          position: 'relative',
-          minHeight: 320,
-        }}>
-          {/* LEFT — PRESSURES */}
-          <div style={{
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            textAlign: 'center', gap: 28,
-          }}>
-            <div style={{
-              fontFamily: SANS, fontSize: 11, fontWeight: 600,
-              letterSpacing: '0.32em', textTransform: 'uppercase',
-              color: 'rgba(230, 237, 246, 0.45)',
-            }}>Pressures</div>
-            <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
-              <path d="M6 10 L38 10 L22 38 Z" fill={C.signalRed} />
-            </svg>
-            <div
-              ref={pressureRef}
-              style={{
-                fontFamily: SANS, fontSize: 17, fontWeight: 500,
-                color: C.white, letterSpacing: '-0.005em',
-                minHeight: 26,
-                willChange: 'transform, opacity',
-              }}
-            >{FORCES_POOL[0]}</div>
-          </div>
-
-          {/* CENTER — engine card */}
-          <div style={{ position: 'relative' }}>
-            {/* Ambient cobalt halo — perpetual slow breath */}
-            <div
-              ref={haloRef}
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                inset: -28,
-                background: `radial-gradient(ellipse at center, rgba(234,187,113,0.18) 0%, rgba(44,95,163,0.10) 50%, rgba(44,95,163,0) 78%)`,
-                pointerEvents: 'none',
-                filter: 'blur(20px)',
-                opacity: 0.5,
-                zIndex: 0,
-              }}
-            />
-            {/* Card */}
-            <div style={{
-              position: 'relative', zIndex: 1,
-              background: 'rgba(13, 36, 66, 0.65)',
-              border: `1px solid rgba(72, 120, 184, 0.22)`,
-              borderTop: `2px solid ${C.gold}`,
-              padding: '44px 38px',
-              backdropFilter: 'blur(6px)',
-              WebkitBackdropFilter: 'blur(6px)',
-              minHeight: 240,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <p style={{
-                fontFamily: SANS, fontSize: 19, fontWeight: 400, lineHeight: 1.55,
-                color: C.white, margin: 0, textAlign: 'center', textWrap: 'balance',
-              }}>
-                <span style={{ color: C.gold, fontWeight: 600 }}>The Five Disciplines</span>{' '}
-                {typo("built into your operation. Held by your people. Compounds shift over shift.")}
-              </p>
-            </div>
-          </div>
-
-          {/* RIGHT — OUTCOMES */}
-          <div style={{
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            textAlign: 'center', gap: 28,
-          }}>
-            <div style={{
-              fontFamily: SANS, fontSize: 11, fontWeight: 600,
-              letterSpacing: '0.32em', textTransform: 'uppercase',
-              color: 'rgba(230, 237, 246, 0.45)',
-            }}>Outcomes</div>
-            <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
-              <path d="M22 6 L38 34 L6 34 Z" fill={C.signalGreen} />
-            </svg>
-            <div
-              ref={outcomeRef}
-              style={{
-                fontFamily: SANS, fontSize: 17, fontWeight: 500,
-                color: C.white, letterSpacing: '-0.005em',
-                minHeight: 26,
-                willChange: 'transform, opacity',
-              }}
-            >{RESULTS_POOL[0]}</div>
-          </div>
-        </div>
-
-        {/* BOTTOM FLOW RAIL — hairline gold with a single dot traveling
-            left → right. Reads as the direction of value across the
-            diagram above. Quiet, continuous, never re-triggered. */}
-        <div ref={flowLineRef} style={{
-          position: 'relative',
-          marginTop: 96,
-          height: 1,
-          background: 'linear-gradient(90deg, rgba(234,187,113,0) 0%, rgba(234,187,113,0.4) 12%, rgba(234,187,113,0.4) 88%, rgba(234,187,113,0) 100%)',
-        }}>
-          <span
-            ref={flowDotRef}
-            aria-hidden="true"
-            style={{
-              position: 'absolute', top: '50%', left: '0%',
-              transform: 'translate(-50%, -50%)',
-              width: 8, height: 8, borderRadius: '50%',
-              background: C.gold,
-              boxShadow: `0 0 0 4px rgba(234,187,113,0.18), 0 0 16px rgba(234,187,113,0.55)`,
-              willChange: 'left',
-            }}
-          />
-        </div>
+        {/* EXHIBIT — canvas-based animated demonstration of the engine. */}
+        <ExecutionExhibit />
       </div>
     </section>
   );
