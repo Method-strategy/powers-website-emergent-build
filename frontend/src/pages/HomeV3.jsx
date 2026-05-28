@@ -300,6 +300,8 @@ const S = {
   // fitting comfortably on a single laptop viewport with a slim
   // "next-section peek" at the bottom. Hero is exempt (uses its own
   // padding) and is intentionally taller.
+  // sectionPadX is the INNER gutter applied inside the maxWidth
+  // container so content edges align with the header.
   sectionPadY: 'clamp(56px, 5vw, 72px)',
   sectionPadX: 'clamp(24px, 4vw, 48px)',
   gapHeaderToBody: 36,
@@ -307,7 +309,7 @@ const S = {
   // Measure widths — three only
   maxNarrow: 640,
   maxRead: 760,
-  maxWide: 1240,
+  maxWide: 1280,
 
   // Display type
   h2Size: 'clamp(30px, 3.6vw, 46px)',
@@ -336,7 +338,7 @@ function SectionShell({ bg, maxWidth, align = 'left', overflow = false, style, c
   return (
     <section style={{
       background: bg || S.bgWhite,
-      padding: `${S.sectionPadY} ${S.sectionPadX}`,
+      padding: `${S.sectionPadY} 0`,
       position: 'relative',
       overflow: overflow ? 'visible' : 'hidden',
       ...(style || {}),
@@ -1338,7 +1340,8 @@ function Hero() {
         gridTemplateColumns: '1.05fr 0.95fr',
         alignItems: 'center',
         gap: 48,
-        padding: '88px 56px 56px',
+        padding: '88px 48px 56px',
+        boxSizing: 'border-box',
       }}>
         <h1 style={{
           lineHeight: 1.0,
@@ -1488,7 +1491,8 @@ function SectionThePrinciple() {
 
       <div style={{
         position: 'relative', zIndex: 1,
-        maxWidth: 1240, margin: '0 auto',
+        maxWidth: 1280, margin: '0 auto',
+        padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         display: 'grid',
         gridTemplateColumns: '1fr',
         gap: 28,
@@ -1734,8 +1738,8 @@ function SectionExpertiseAreas() {
   }, []);
 
   return (
-    <section style={{ background: C.white, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+    <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         {/* Header — left-anchored editorial */}
         <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
           <ChapterMark n="01" />
@@ -2300,7 +2304,7 @@ function SectionExecutionEngine() {
   return (
     <section style={{
       background: `linear-gradient(180deg, ${C.navy900} 0%, ${C.ink} 100%)`,
-      padding: `${S.sectionPadY} ${S.sectionPadX} ${S.sectionPadY}`,
+      padding: `${S.sectionPadY} 0`,
       position: 'relative', overflow: 'hidden',
     }}>
       {/* Faint cobalt wash on the right, ice-blue glow on the left, to add
@@ -2310,7 +2314,7 @@ function SectionExecutionEngine() {
         background: `radial-gradient(ellipse 80% 60% at 12% 30%, rgba(44,95,163,0.18) 0%, rgba(44,95,163,0) 60%), radial-gradient(ellipse 70% 50% at 88% 70%, rgba(72,120,184,0.12) 0%, rgba(72,120,184,0) 60%)`,
       }} />
 
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto', position: 'relative' }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box', position: 'relative' }}>
 
         {/* Header — left-anchored editorial, on dark. UNCHANGED from
             previous version per user direction; only the diagram block
@@ -2356,7 +2360,7 @@ function SectionHowWeWork() {
   return (
     <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
       <div style={{
-        maxWidth: S.maxWide, margin: '0 auto',
+        maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
         minHeight: 520,
@@ -2514,8 +2518,8 @@ function IndustryTile({ label, slug }) {
 function SectionWhereWeWork() {
   const [linkHover, setLinkHover] = useState(false);
   return (
-    <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+    <section style={{ background: S.bgWhite, padding: `${S.sectionPadY} 0` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
 
         {/* Section header — left-anchored column. Single 920px measure
             for header + body so the section reads as one continuous
@@ -2636,8 +2640,8 @@ function CaseStudyCard({ industry, result, summary }) {
 function SectionResultsEntryPoint() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: S.bgNavy, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+    <section style={{ background: S.bgNavy, padding: `${S.sectionPadY} 0` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="08" light />
           <Eyebrow label="Proven Results" />
@@ -2742,8 +2746,8 @@ function InsightCard({ category, headline, summary }) {
 function SectionInsightsEntryPoint() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: S.bgIvory, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+    <section style={{ background: S.bgIvory, padding: `${S.sectionPadY} 0` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="09" />
           <Eyebrow label="Insights" />
@@ -2784,10 +2788,14 @@ function FooterCTA() {
   return (
     <section style={{
       background: `radial-gradient(ellipse 50% 50% at 70% 30%, rgba(232,147,70,0.18) 0%, rgba(232,147,70,0) 70%), linear-gradient(165deg, ${C.ink} 0%, ${C.navy900} 100%)`,
-      padding: `clamp(120px, 14vw, 180px) ${S.sectionPadX}`,
+      padding: `clamp(120px, 14vw, 180px) 0`,
       position: 'relative', overflow: 'hidden',
     }}>
-      <div style={{ maxWidth: 1240, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <div style={{
+        maxWidth: 1280, margin: '0 auto',
+        padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
+        position: 'relative', zIndex: 1,
+      }}>
         <ChapterMark n="10" light />
 
         {/* H2 — editorial echo of the hero. "Stop Chasing Numbers."
@@ -3096,9 +3104,10 @@ function SectionDifferentApproach() {
         }
       `}</style>
       <div style={{
-        maxWidth: 1240,
+        maxWidth: 1280,
         margin: '0 auto',
-        padding: 'clamp(56px, 7vw, 104px) clamp(22px, 4vw, 56px) clamp(68px, 7vw, 112px)',
+        padding: `clamp(56px, 7vw, 104px) ${S.sectionPadX} clamp(68px, 7vw, 112px)`,
+        boxSizing: 'border-box',
       }}>
         <p data-reveal style={{
           ...revealBase,
