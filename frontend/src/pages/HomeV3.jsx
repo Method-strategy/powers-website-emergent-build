@@ -208,63 +208,63 @@ function ReadingProgress() {
   );
 }
 
-/* ── Tokens ── */
+/* ── Tokens — locked to the Type & Color System Spec ──
+   The spec defines: navy primary, navy deep, body-on-light, body-on-dark,
+   single gold accent, single structural blue, hairline rule, paper, plus
+   the canvas-only signal red/green for the hero swarm + execution exhibit.
+   No copper, no amber, no rust, no second gold, no cobalt/sapphire/ice/mist.
+   Deprecated aliases below are kept ONLY as redirects to spec colors so
+   ongoing call sites resolve correctly while we sweep the codebase. */
 const C = {
-  // ── Deep navy / blue stack — eight depths for editorial layering.
-  // Reads cool, technical, and confident; gives every section a
-  // distinct ambient temperature without breaking the brand.
-  midnight:'#050b1a',  // Near-black blue. Reserved for deepest surfaces.
-  ink:     '#0a1421',  // Deepest navy. Hero, footer CTA — max emphasis.
-  navy900: '#0d2442',  // Deep — case-study masthead, diagram backdrops
-  dusk:    '#13304f',  // Between navy900 and brand navy — section bands
-  navy:    '#183a61',  // Brand navy — primary copy, anchors
-  navy700: '#234a78',  // Mid-tone navy — secondary fills, hover lifts
-  cobalt:  '#2c5fa3',  // Vivid mid-blue — chromatic accent, links on dark
-  navy600: '#3a5d8a',  // Mid-tone navy — UI accents
-  sapphire:'#4878b8',  // Clear vibrant blue — interactive accent
-  navy400: '#4a6a8a',  // Muted navy — meta text, sub-labels
-  slate:   '#5c7896',  // Cool slate-blue — accent for technical UI
-  steel:   '#7a93b0',  // Lighter cool blue — secondary accent
-  mist:    '#b6c6d9',  // Pale blue surface — soft section dividers
-  ice:     '#e6edf6',  // Coolest neutral surface — alternative to bone
+  // ── SPEC: navy & deep navy
+  navy:     '#143257',  // Navy primary — text on light, surface on dark
+  navyDeep: '#0f2a47',  // Navy deep — hero backgrounds, dark sections
 
-  // Gold accent stack — pale wash through emphasis
-  gold200: '#f7e8c8',  // Pale gold wash — subtle backgrounds, surface lifts
-  gold:    '#eabb71',  // Brand gold — primary accent
-  gold600: '#c9963e',  // Deep gold — hover, emphasis on light surfaces
+  // ── SPEC: body text
+  body:     '#4a5568',  // Body text on light (LOCKED)
+  bodyDark: 'rgba(230,237,246,0.78)',  // Body text on dark (LOCKED)
 
-  // Orange / copper / rust stack — warm secondary accent paired with gold
-  // for variety. Reads as industrial heritage, not decorative.
-  amber:   '#e89346',  // Bright amber — accent on light backgrounds
-  copper:  '#b85f33',  // Copper — primary emphasis color (replaces gold800)
-  rust:    '#8a3f1f',  // Deep rust — max-emphasis warm accent
+  // ── SPEC: single gold accent (precious — max 3 per row)
+  gold:     '#e89346',
 
-  // Signal colors — semantic only. Red = down/pressure, green = up/result.
-  signalRed:   '#c84a3a',  // Pressure indicator (down triangle on dark navy)
-  signalGreen: '#4a9b6a',  // Outcome indicator (up triangle on dark navy)
+  // ── SPEC: structural blue (non-text only — dividers, borders, illustrative line work)
+  blue:     '#3e80c1',
 
-  // Neutral warm-light surface tones
-  ivory:   '#fbf9f4',  // Warmest off-white — premium content surfaces
-  bone:    '#f4efe4',  // Warm off-white — content sections
-  paper:   '#f7f6f1',  // Neutral off-white — section bands
-  white:   '#ffffff',
+  // ── SPEC: hairline rules + paper
+  hairline: 'rgba(20, 50, 87, 0.14)',
+  paper:    '#ffffff',
+  white:    '#ffffff',
 
-  // True gray ramp — cool, neutral. For dividers, captions, secondary type.
-  gray50:  '#f7f8fa',
-  gray100: '#eceef2',
-  gray200: '#dcdfe4',
-  gray300: '#c1c6cd',
-  gray400: '#8a9098',
-  gray500: '#6b7280',
-  gray600: '#4b5360',
-  gray700: '#363c47',
-  gray800: '#22262e',
+  // ── Canvas-only signal colors (hero swarm + execution exhibit ONLY)
+  signalRed:   '#e0654f',
+  signalGreen: '#5bbf73',
 
-  // Legacy aliases (kept for compatibility through ongoing migration)
-  fog:     '#dcdfe3',  // Cool light gray — dividers, fine borders
-  body:    '#3a3a38',  // Body text — warm dark gray
-  gray100Legacy: '#e8e8e4',
-  gray400Legacy: '#888884',
+  // ── Deprecated aliases → spec-equivalent values.
+  // These exist solely so legacy `C.copper`, `C.gold600`, `C.body` etc.
+  // call sites continue to render correctly until they're all swept out.
+  // DO NOT use these names in new code.
+  ink:      '#0f2a47',
+  navy900:  '#0f2a47',
+  navy400:  '#4a5568',
+  copper:   '#e89346',
+  gold200:  '#e89346',
+  gold600:  '#e89346',
+  amber:    '#e89346',
+  rust:     '#e89346',
+
+  // Neutral surface tones (used sparingly; preserved for off-white section bands)
+  ivory:    '#ffffff',
+  bone:     '#ffffff',
+
+  // Gray ramp — only for dividers / captions where pure navy is too heavy.
+  // Spec prefers hairline rgba(20,50,87,0.14) for most divider work.
+  gray50:   '#f7f8fa',
+  gray100:  '#eceef2',
+  gray200:  '#dcdfe4',
+  gray300:  '#c1c6cd',
+  gray400:  '#8a9098',
+  gray500:  '#6b7280',
+  fog:      '#dcdfe3',
 };
 
 /* ── HOMEPAGE DESIGN SYSTEM ──────────────────────────────────────────
@@ -291,9 +291,9 @@ const S = {
   bgIvory: '#fbf9f4',
   bgBone:  '#f4efe4',
   bgPaper: '#f7f6f1',
-  bgNavy:  '#183a61',
-  bgDeep:  '#0d2442',
-  bgInk:   '#0a1421',
+  bgNavy:  '#143257',
+  bgDeep:  '#0f2a47',
+  bgInk:   '#0f2a47',
 
   // Vertical rhythm — every section uses these. Tuned so that a
   // typical content section lands around 720px total at desktop,
@@ -310,9 +310,9 @@ const S = {
   maxWide: 1240,
 
   // Display type
-  h2Size: 'clamp(28px, 3.4vw, 42px)',
+  h2Size: 'clamp(30px, 3.6vw, 46px)',
   h2Weight: 800,
-  h2LH: 1.12,
+  h2LH: 1.1,
   h2Tracking: '-0.012em',
   h3Size: 'clamp(20px, 2vw, 26px)',
   h3Weight: 700,
@@ -681,7 +681,7 @@ function SearchBtn() {
         width: 27, height: 27,
         border: `1px solid ${h ? C.gold : C.gray100}`,
         borderRadius: 4,
-        background: h ? C.gold50 : 'transparent',
+        background: h ? 'rgba(232,147,70,0.10)' : 'transparent',
         color: h ? C.navy : C.navy400,
         cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -901,13 +901,13 @@ function Header() {
           </a>
           <span className="tagline-text desktop-only" style={{
             fontSize: 12,
-            fontWeight: 400,
+            fontWeight: 500,
             fontStyle: 'italic',
             letterSpacing: '0.01em',
-            color: C.navy400,
+            color: C.navy,
             lineHeight: 1,
             whiteSpace: 'nowrap',
-            fontFamily: 'inherit',
+            fontFamily: SERIF,
             paddingTop: 1,
           }}>
             Strong Foundation. Strong Performance.
@@ -1423,574 +1423,14 @@ function Hero() {
   );
 }
 
-/* HeroHeadline — GSAP-driven three-beat reveal: Stop · Chasing · Results.
-   Each word: opacity 0 + y 14 → opacity 1 + y 0, stagger 0.42s, eased
-   with power4.out for the lift and power2.out for the opacity to keep
-   the resolve crisp. The lift is intentionally small (14px) — the
-   spec calls for "no slide," and at this distance the y motion reads
-   as *weight settling* rather than slide-in. Period travels with
-   "Results." as a single token.
-
-   Accessibility / SEO: words render at their final state immediately
-   in the DOM. GSAP overrides to the start state only after mount, so
-   crawlers and reduced-motion users see the fully resolved headline
-   with zero animation. */
-function HeroHeadline() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return;
-
-    const words = ref.current ? ref.current.querySelectorAll('[data-hero-word]') : [];
-    if (!words.length) return;
-
-    // Set initial state in the same frame to avoid a flash of the
-    // resolved headline before the animation begins.
-    gsap.set(words, { opacity: 0, y: 14, willChange: 'transform, opacity' });
-
-    const tl = gsap.timeline({
-      defaults: { ease: 'power4.out' },
-      delay: 0.18,
-      onComplete: () => {
-        // Drop willChange after the timeline resolves so it doesn't
-        // sit on the GPU for the life of the page.
-        gsap.set(words, { willChange: 'auto' });
-      },
-    });
-    tl.to(words, {
-      opacity: 1,
-      y: 0,
-      duration: 0.62,
-      stagger: 0.42,
-    });
-
-    return () => {
-      tl.kill();
-    };
-  }, []);
-
-  return (
-    <span ref={ref}>
-      <span data-hero-word style={{ display: 'inline-block' }}>Stop</span>
-      {'\u00A0'}
-      <span data-hero-word style={{ display: 'inline-block' }}>Chasing</span>
-      {'\u00A0'}
-      <span data-hero-word style={{
-        display: 'inline-block',
-        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-        color: '#e89346',
-        letterSpacing: '-0.025em',
-      }}>Numbers.</span>
-    </span>
-  );
-}
-
-function PrimaryCTA() {
-  const [h, setH] = useState(false);
-  return (
-    <a
-      href="contact.html"
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      style={{
-        display: 'inline-block',
-        fontSize: 14,
-        fontWeight: 600,
-        color: C.navy,
-        background: h ? C.gold600 : C.gold,
-        padding: '14px 32px',
-        textDecoration: 'none',
-        fontFamily: 'inherit',
-        letterSpacing: '0.02em',
-        transition: 'background 160ms ease',
-        whiteSpace: 'nowrap',
-        lineHeight: 1,
-      }}
-    >
-      Start a Conversation
-    </a>
-  );
-}
-
-function SecondaryCTA() {
-  const [h, setH] = useState(false);
-  return (
-    <a
-      href="case-studies.html"
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        fontSize: 14,
-        fontWeight: 400,
-        color: C.white,
-        textDecoration: 'none',
-        fontFamily: 'inherit',
-        letterSpacing: '0.02em',
-        transition: 'gap 160ms ease',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      See Our Results
-      <span style={{
-        display: 'inline-block',
-        transform: h ? 'translateX(3px)' : 'translateX(0)',
-        transition: 'transform 160ms ease',
-      }}>→</span>
-    </a>
-  );
-}
-
-/* ── SECTION 5 — VALUE CHAIN DIAGRAM ── */
-const VALUE_CHAIN = [
-  {
-    id: 'supply',
-    label: 'Supply Chain',
-    powers: true,
-    challenge: 'Supplier variability and inbound disruptions absorb management bandwidth and create production instability.',
-    response: 'POWERS installs supplier performance standards and internal scheduling disciplines that absorb variability before it reaches the floor.',
-  },
-  {
-    id: 'inbound',
-    label: 'Inbound Logistics',
-    powers: true,
-    challenge: 'Materials arrive inconsistently. Receiving backlogs and inventory inaccuracies create unnecessary downtime and expediting costs.',
-    response: 'We establish receiving standards, inventory accuracy routines, and material flow disciplines that feed production reliably.',
-  },
-  {
-    id: 'manufacturing',
-    label: 'Manufacturing & Operations',
-    powers: true,
-    challenge: 'Performance varies by shift, by supervisor, and by day. The operation runs on heroics instead of systems.',
-    response: 'POWERS builds the operating system — standards, routines, accountability structures — that makes performance consistent regardless of who is on shift.',
-  },
-  {
-    id: 'outbound',
-    label: 'Outbound Logistics',
-    powers: true,
-    challenge: 'On-time delivery suffers when production variability hits the shipping dock. Customer commitments become reactive rather than planned.',
-    response: 'We connect production performance to outbound execution — building the scheduling and coordination disciplines that make delivery commitments stick.',
-  },
-  {
-    id: 'marketing',
-    label: 'Marketing & Sales',
-    powers: false,
-    challenge: null,
-    response: null,
-  },
-  {
-    id: 'aftersales',
-    label: 'After-Sales Service',
-    powers: false,
-    challenge: null,
-    response: null,
-  },
-];
-
-function ValueChainDiagram() {
-  const [active, setActive] = useState(null);
-  const [wavePos, setWavePos] = useState(0);
-  const animRef = useRef(null);
-
-  // Wave animation across POWERS segments
-  useEffect(() => {
-    let start = null;
-    const duration = 3000;
-    const animate = (ts) => {
-      if (!start) start = ts;
-      const elapsed = (ts - start) % duration;
-      setWavePos(elapsed / duration);
-      animRef.current = requestAnimationFrame(animate);
-    };
-    animRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animRef.current);
-  }, []);
-
-  const activeData = VALUE_CHAIN.find(s => s.id === active);
-
-  return (
-    <section style={{
-      background: C.gray50,
-      fontFamily: 'inherit',
-      padding: '88px 0 0',
-    }}>
-      <div style={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: '0 48px',
-      }}>
-        {/* Eyebrow */}
-        <div style={{
-          fontSize: 11, fontWeight: 500, letterSpacing: '0.18em',
-          textTransform: 'uppercase', color: C.gold,
-          marginBottom: 16, fontFamily: 'inherit',
-        }}>The Value Chain</div>
-
-        {/* Section headline */}
-        <h2 style={{
-          fontSize: 'clamp(24px, 2.4vw, 32px)',
-          fontWeight: 700,
-          lineHeight: 1.2,
-          color: C.navy,
-          fontFamily: 'inherit',
-          margin: '0 0 56px',
-          maxWidth: 640,
-          textWrap: 'pretty',
-        }}>
-          Where in Your Operations Does Performance Break Down?
-        </h2>
-      </div>
-
-      {/* Segments row */}
-      <div style={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: '0 48px',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(6, 1fr)',
-        gap: 0,
-        position: 'relative',
-      }}>
-        {VALUE_CHAIN.map((seg, i) => {
-          const isActive = active === seg.id;
-          // Wave highlight: compute local wave brightness for POWERS segments
-          const powersSegments = VALUE_CHAIN.filter(s => s.powers);
-          const powersIdx = powersSegments.findIndex(s => s.id === seg.id);
-          const waveIntensity = seg.powers
-            ? Math.max(0, Math.sin((wavePos * 2 * Math.PI) - (powersIdx / powersSegments.length) * Math.PI * 2) * 0.5 + 0.5)
-            : 0;
-
-          return (
-            <div
-              key={seg.id}
-              onMouseEnter={() => seg.powers && setActive(seg.id)}
-              onMouseLeave={() => setActive(null)}
-              style={{
-                padding: '24px 20px 28px',
-                background: isActive
-                  ? C.gold
-                  : seg.powers
-                    ? `rgba(247,228,184,${0.3 + waveIntensity * 0.25})`
-                    : C.white,
-                borderTop: seg.powers
-                  ? `3px solid ${isActive ? C.gold600 : C.gold}`
-                  : `3px solid ${C.gray100}`,
-                borderRight: i < 5 ? `1px solid ${C.gray100}` : 'none',
-                cursor: seg.powers ? 'pointer' : 'default',
-                transition: 'background 200ms ease',
-                position: 'relative',
-                minHeight: 140,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
-              {/* POWERS EXPERTISE badge */}
-              {seg.powers && (
-                <div style={{
-                  fontSize: 9,
-                  fontWeight: 500,
-                  letterSpacing: '0.16em',
-                  textTransform: 'uppercase',
-                  color: isActive ? C.navy : C.gold600,
-                  fontFamily: 'inherit',
-                  marginBottom: 12,
-                }}>
-                  POWERS Expertise
-                </div>
-              )}
-              {!seg.powers && <div style={{ height: 21 }} />}
-
-              {/* Segment label */}
-              <div style={{
-                fontSize: 13,
-                fontWeight: isActive ? 600 : 500,
-                lineHeight: 1.3,
-                color: isActive ? C.navy : seg.powers ? C.navy : C.gray400,
-                fontFamily: 'inherit',
-                transition: 'color 200ms ease',
-                flex: 1,
-                display: 'flex',
-                alignItems: 'flex-end',
-              }}>
-                {seg.label}
-              </div>
-
-              {/* Hover indicator */}
-              {seg.powers && (
-                <div style={{
-                  marginTop: 14,
-                  fontSize: 11,
-                  color: isActive ? C.navy : 'rgba(234,187,113,0.6)',
-                  fontFamily: 'inherit',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  transition: 'color 200ms ease',
-                }}>
-                  {isActive ? '↑ collapse' : '↓ explore'}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Detail panel */}
-      <div style={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: '0 48px',
-        overflow: 'hidden',
-        maxHeight: activeData ? 300 : 0,
-        transition: 'max-height 300ms ease',
-      }}>
-        {activeData && (
-          <div style={{
-            background: C.navy,
-            padding: '36px 40px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 48,
-          }}>
-            {/* Challenge */}
-            <div>
-              <div style={{
-                fontSize: 10, fontWeight: 500, letterSpacing: '0.18em',
-                textTransform: 'uppercase', color: 'rgba(234,187,113,0.7)',
-                marginBottom: 12, fontFamily: 'inherit',
-              }}>The Challenge</div>
-              <p style={{
-                fontSize: 15, fontWeight: 300, lineHeight: 1.65,
-                color: 'rgba(255,255,255,0.85)', fontFamily: 'inherit', margin: 0,
-                textWrap: 'pretty',
-              }}>{activeData.challenge}</p>
-            </div>
-            {/* POWERS Response */}
-            <div>
-              <div style={{
-                fontSize: 10, fontWeight: 500, letterSpacing: '0.18em',
-                textTransform: 'uppercase', color: C.gold,
-                marginBottom: 12, fontFamily: 'inherit',
-              }}>What POWERS Builds</div>
-              <p style={{
-                fontSize: 15, fontWeight: 300, lineHeight: 1.65,
-                color: C.white, fontFamily: 'inherit', margin: 0,
-                textWrap: 'pretty',
-              }}>{activeData.response}</p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Bottom padding */}
-      <div style={{ height: 88 }} />
-    </section>
-  );
-}
-
-/* ── SECTION 4 — STRATEGY TO EXECUTION ── */
-function ImagePlaceholder({ label }) {
-  return (
-    <div style={{
-      width: '100%',
-      aspectRatio: '4 / 3',
-      background: C.navy,
-      borderRadius: 10,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      overflow: 'hidden',
-      position: 'relative',
-    }}>
-      {/* Subtle grid texture */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        backgroundImage: 'linear-gradient(rgba(234,187,113,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(234,187,113,0.06) 1px, transparent 1px)',
-        backgroundSize: '40px 40px',
-      }} />
-      <span style={{
-        fontSize: 11, fontWeight: 500, letterSpacing: '0.18em',
-        textTransform: 'uppercase', color: 'rgba(234,187,113,0.5)',
-        fontFamily: 'inherit', position: 'relative', zIndex: 1,
-        textAlign: 'center', padding: '0 24px',
-      }}>{label}</span>
-    </div>
-  );
-}
-
-function StrategyBlock({ imageLeft, eyebrow, headline, body, italic }) {
-  const textCol = (
-    <div style={{
-      display: 'flex', flexDirection: 'column',
-      justifyContent: 'center', gap: 20,
-      padding: imageLeft ? '0 0 0 48px' : '0 48px 0 0',
-    }}>
-      <div style={{
-        fontSize: 11, fontWeight: 500, letterSpacing: '0.18em',
-        textTransform: 'uppercase', color: C.gold,
-        fontFamily: 'inherit',
-      }}>{eyebrow}</div>
-      <h2 style={{
-        fontSize: 'clamp(24px, 2.4vw, 32px)',
-        fontWeight: 700,
-        lineHeight: 1.2,
-        color: C.navy,
-        fontFamily: 'inherit',
-        margin: 0,
-        textWrap: 'pretty',
-      }}>{headline}</h2>
-      <div style={{
-        width: 40, height: 1,
-        background: C.gold, opacity: 0.5,
-      }} />
-      <p style={{
-        fontSize: 17,
-        fontWeight: 300,
-        lineHeight: 1.7,
-        color: C.body,
-        fontFamily: 'inherit',
-        margin: 0,
-        textWrap: 'pretty',
-      }}>{body}</p>
-      {italic && (
-        <p style={{
-          fontSize: 16,
-          fontWeight: 400,
-          fontStyle: 'italic',
-          lineHeight: 1.6,
-          color: C.navy400,
-          fontFamily: 'inherit',
-          margin: 0,
-          textWrap: 'pretty',
-        }}>{italic}</p>
-      )}
-    </div>
-  );
-
-  const imageCol = (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <ImagePlaceholder label="Manufacturing floor photography" />
-    </div>
-  );
-
-  return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 0,
-      alignItems: 'center',
-      minHeight: 480,
-    }}>
-      {imageLeft ? imageCol : textCol}
-      {imageLeft ? textCol : imageCol}
-    </div>
-  );
-}
-
-function StrategyToExecution() {
-  return (
-    <section style={{ background: C.white, fontFamily: 'inherit' }}>
-      {/* Block 1 — text left, image right, white bg */}
-      <div style={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: '96px 48px',
-      }}>
-        <StrategyBlock
-          imageLeft={false}
-          eyebrow="Our Work"
-          headline="From Strategy To Execution — And Every Shift In Between."
-          body="Most improvement programs stall between the boardroom and the floor. POWERS closes that gap by working directly inside the operation — with your people, on your processes, during your shifts. We don't hand off a playbook and leave."
-        />
-      </div>
-
-      {/* Divider */}
-      <div style={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: '0 48px',
-      }}>
-        <div style={{ height: 1, background: C.gray100 }} />
-      </div>
-
-      {/* Block 2 — image left, text right, white bg */}
-      <div style={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: '96px 48px',
-      }}>
-        <StrategyBlock
-          imageLeft={true}
-          eyebrow="How We Operate"
-          headline="We Work Where Performance Happens."
-          body="POWERS consultants are on the floor, in the shifts, inside the systems where performance actually breaks down. We build the discipline that runs after we leave — in your supervisors, your standards, and your daily operating routines."
-          italic={`"If you're working, we're working."`}
-        />
-      </div>
-    </section>
-  );
-}
-
-/* ── SECTION 3 — REINDUSTRIALIZATION BRIDGE ── */
-function ReindustrializationBridge() {
-  return (
-    <section style={{
-      background: C.navy,
-      width: '100%',
-      padding: '88px 48px',
-      fontFamily: 'inherit',
-    }}>
-      <div style={{
-        maxWidth: 860,
-        margin: '0 auto',
-      }}>
-        {/* Optional gold rule above */}
-        <div style={{
-          width: 48,
-          height: 1,
-          background: C.gold,
-          marginBottom: 40,
-          opacity: 0.7,
-        }} />
-
-        {/* Statement */}
-        <p style={{
-          fontSize: 'clamp(22px, 2.8vw, 32px)',
-          fontWeight: 300,
-          lineHeight: 1.6,
-          color: C.white,
-          fontFamily: 'inherit',
-          textWrap: 'pretty',
-          margin: 0,
-        }}>
-          American manufacturing is being rebuilt. The firms that outperform
-          in this moment are the ones that built operational discipline before
-          the pressure arrived — and sustain it regardless of what comes next.{' '}
-          <span style={{ fontWeight: 600 }}>That is what POWERS builds.</span>
-        </p>
-      </div>
-    </section>
-  );
-}
-
-/* ── SHARED: EYEBROW ──
-   Single canonical eyebrow used by every section. JetBrains Mono +
-   tight uppercase + wide tracking + copper (on light) / gold (on dark).
-   The mono face gives every section the same engineered/technical
-   voice and keeps the rhythm consistent across the page. */
-function Eyebrow({ label, light }) {
+function Eyebrow({ label, light }) { // eslint-disable-line no-unused-vars
   return (
     <div style={{
       fontFamily: MONO,
       fontSize: 11.5, fontWeight: 500,
       letterSpacing: '0.24em', textTransform: 'uppercase',
-      color: light ? '#eabb71' : '#b85f33',
-      marginBottom: 22,
+      color: C.gold,
+      marginBottom: 32,
     }}>{label}</div>
   );
 }
@@ -2043,7 +1483,7 @@ function SectionThePrinciple() {
           ink surface a hint of dimensional warmth. */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `radial-gradient(ellipse 60% 50% at 30% 50%, rgba(184,95,51,0.10) 0%, rgba(184,95,51,0) 70%)`,
+        background: `radial-gradient(ellipse 60% 50% at 30% 50%, rgba(232,147,70,0.10) 0%, rgba(232,147,70,0) 70%)`,
       }} />
 
       <div style={{
@@ -2090,9 +1530,10 @@ function SectionThePrinciple() {
             {typo("They stand because of a root system, decades deep, that most people never think about. Operations are no different. The ones that perform under pressure are the ones with something strong enough underneath to carry the weight.")}
           </p>
           <div style={{
-            fontSize: 11, fontWeight: 600,
-            letterSpacing: '0.22em', textTransform: 'uppercase',
-            color: '#e89346', fontFamily: 'inherit',
+            fontFamily: MONO,
+            fontSize: 11.5, fontWeight: 500,
+            letterSpacing: '0.24em', textTransform: 'uppercase',
+            color: '#e89346',
           }}>
             That&rsquo;s the level we work at.
           </div>
@@ -2120,414 +1561,285 @@ function SectionThePrinciple() {
  *   3. The "radios get quiet" line set oversized inline serif italic
  *      mid-paragraph for typographic punctuation.
  * ────────────────────────────────────────────────────────────────── */
-function SectionTheMoment() {
-  return (
-    <section style={{ background: S.bgWhite, width: '100%', padding: `${S.sectionPadY} ${S.sectionPadX}`, position: 'relative', overflow: 'hidden' }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <ChapterMark n="03" />
+/* ── SECTION (now position 3) — FIVE FUNDAMENTALS ── */
+const EXPERTISE_CARDS = [
+  {
+    headline: 'Operational Discipline',
+    body: 'Standards, routines, and structured practices that make consistent execution the default. When discipline is built in, the floor stops running on heroics and starts running on the system.',
+  },
+  {
+    headline: 'Frontline Leadership',
+    body: 'Supervisors who can plan a shift, run a problem to ground, and enforce the standard with their team. The single highest-leverage role in the operation, and the one most often handed a clipboard and left to figure it out alone.',
+  },
+  {
+    headline: 'Reliable Equipment',
+    body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable. When equipment performs, scheduling works, throughput stays consistent, and labor stops absorbing the variability the machines should have absorbed.',
+  },
+  {
+    headline: 'Workforce Capability',
+    body: "Skilled, engaged operators who know the work, own the outcome, and can train the next shift. Capability isn\u2019t a headcount problem. It\u2019s what each person on the line can actually do when the day gets hard.",
+  },
+  {
+    headline: 'Daily Accountability',
+    body: "The cadence, metrics, and conversations that close the loop every shift, every day. Without it, the other four drift. With it, they lock together and compound.",
+  },
+];
 
-        {/* Header */}
-        <div style={{ maxWidth: S.maxRead, marginBottom: 28 }}>
-          <Eyebrow label={"A Different Approach"} />
+function IconPlaceholder() {
+  return (
+    <div style={{
+      width: 32, height: 32, marginBottom: 20,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="1" y="1" width="30" height="30" rx="0" stroke="#143257" strokeWidth="1.5"/>
+        <line x1="8" y1="16" x2="24" y2="16" stroke="#143257" strokeWidth="1.5"/>
+        <line x1="16" y1="8" x2="16" y2="24" stroke="#143257" strokeWidth="1.5"/>
+      </svg>
+    </div>
+  );
+}
+
+/* ExpertiseCard — Five Disciplines accordion card. All five cards are
+   equal-weight (no keystone treatment); clicking the [+] toggles an
+   expansion that reveals the body text below the title. Closes when
+   another card opens (radio behavior). The card is white with no
+   internal border — the copper outer frame on the row carries the
+   structural weight. */
+/* DisciplineTab — small/short card. Just the title + [+/×] toggle.
+   Body text lives in a single shared panel below the row, not inside
+   the card. When this tab is active, a copper border highlights it
+   and the toggle rotates to ×. */
+function DisciplineTab({ headline, isOpen, onToggle, isLastInRow }) {
+  return (
+    <button
+      type="button"
+      data-discipline-tab
+      aria-expanded={isOpen}
+      onClick={onToggle}
+      style={{
+        background: '#ffffff',
+        // The active tab gets a copper outline that visually "extends"
+        // into the panel below via the panel's matching border.
+        border: isOpen
+          ? `1px solid ${C.gold600}`
+          : `1px solid transparent`,
+        // Subtle inter-card divider on non-active tabs.
+        borderRight: isOpen
+          ? `1px solid ${C.gold600}`
+          : (isLastInRow ? '1px solid transparent' : `1px solid rgba(232, 147, 70, 0.08)`),
+        padding: '32px 26px',
+        margin: 0,
+        textAlign: 'left',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        color: 'inherit',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        gap: 16,
+        // Short, fixed height — only enough for the title.
+        minHeight: 138,
+        position: 'relative',
+        outline: 'none',
+        transition: 'border-color 220ms ease, background 220ms ease',
+      }}
+      onMouseEnter={(e) => {
+        if (!isOpen) e.currentTarget.style.background = 'rgba(247, 232, 200, 0.20)';
+      }}
+      onMouseLeave={(e) => {
+        if (!isOpen) e.currentTarget.style.background = '#ffffff';
+      }}
+    >
+      <div style={{
+        fontFamily: 'inherit',
+        fontSize: 'clamp(18px, 1.4vw, 21px)',
+        fontWeight: 700, lineHeight: 1.18,
+        color: C.navy,
+        letterSpacing: '-0.012em',
+      }}>{headline}</div>
+      {/* [+] toggle — copper, rotates 45° to × when open */}
+      <span aria-hidden="true" style={{
+        flex: '0 0 auto',
+        width: 16, height: 16, position: 'relative',
+        color: C.copper,
+        transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+        transition: 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1)',
+        marginTop: 4,
+      }}>
+        <span style={{
+          position: 'absolute', top: '50%', left: 0,
+          width: '100%', height: 1.5,
+          background: 'currentColor',
+          transform: 'translateY(-50%)',
+        }} />
+        <span style={{
+          position: 'absolute', left: '50%', top: 0,
+          width: 1.5, height: '100%',
+          background: 'currentColor',
+          transform: 'translateX(-50%)',
+        }} />
+      </span>
+    </button>
+  );
+}
+
+function LearnMoreLink({ href }) {
+  const [h, setH] = useState(false);
+  return (
+    <a href={href || '#'} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+      style={{
+        fontSize: 14, fontWeight: 500, color: '#e89346',
+        textDecoration: h ? 'underline' : 'none',
+        textUnderlineOffset: 3, fontFamily: 'inherit',
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+      }}>
+      Learn More
+      <span style={{ transform: h ? 'translateX(3px)' : 'none', transition: 'transform 160ms ease', display: 'inline-block' }}>→</span>
+    </a>
+  );
+}
+
+/* SectionExpertiseAreas — Five Disciplines, "tab-strip + drawer" layout.
+   Top row: 5 short equal-weight cards, each showing only the discipline
+   title + a [+] toggle. The whole strip is wrapped in a single copper
+   hairline frame.
+
+   Below the strip: a single shared panel that opens when any tab is
+   activated. The panel reserves a 5-column grid the same width as the
+   row above, and the body text sits in the column matching the active
+   tab — so the text appears to "drop down" out of the clicked card.
+   Radio behavior: opening one closes any other; the panel itself slides
+   open/closed via max-height + opacity. */
+function SectionExpertiseAreas() {
+  const [openIdx, setOpenIdx] = useState(null);
+  const panelRef = useRef(null);
+  const [panelHeight, setPanelHeight] = useState(0);
+
+  // Measure the open card's body height so the panel animates to the
+  // real natural height. We measure the tallest body so the panel doesn't
+  // jump between card switches; this keeps the closing copper border
+  // sitting at a consistent baseline as the user clicks through tabs.
+  const bodyRefs = useRef([]);
+  useEffect(() => {
+    const measure = () => {
+      const heights = bodyRefs.current.map((el) => (el ? el.scrollHeight : 0));
+      const max = Math.max(0, ...heights);
+      setPanelHeight(max);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    bodyRefs.current.forEach((el) => el && ro.observe(el));
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <section style={{ background: C.white, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
+      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
+        {/* Header — left-anchored editorial */}
+        <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
+          <ChapterMark n="01" />
+          <Eyebrow label="What Gets Built In" />
           <h2 style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
+            color: C.navy, fontFamily: SANS, margin: '0 0 0',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            We Don&rsquo;t Work on the Numbers.<br/>
-            <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>We Work Where the Numbers Come From.</span>
+            Five disciplines.{' '}
+            <span style={{
+              fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+              color: C.gold600,
+            }}>One operation that doesn{'\u2019'}t break down.</span>
           </h2>
         </div>
 
-        {/* Opening — frames the antagonist */}
-        <div style={{ maxWidth: S.maxRead, marginBottom: 28 }}>
-          <p style={{
-            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            margin: '0 0 14px', textWrap: 'pretty',
-          }}>
-            {typo("Every firm in this category gets hired to move the same numbers. Throughput. OEE. Downtime. Labor productivity. Margin. The difference is where they go to do it.")}
-          </p>
-          <p style={{
-            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            margin: 0, textWrap: 'pretty',
-          }}>
-            {typo("Most consulting firms work on the numbers themselves. They target a metric, move it, write the deck, and leave. The result lifts for a quarter, then drifts back, because nothing underneath the number actually changed.")}
-          </p>
-        </div>
-
-        {/* THE DIAGNOSTIC CHAIN — typographic proof
-            Three bold conclusions stacked with copper "BECAUSE"
-            connectors. Each line is set at a step down from the H2
-            scale but well above body — a register that reads as
-            "stated truth" rather than narration. */}
+        {/* Tab strip + drawer panel wrapped in a single copper frame. */}
         <div style={{
-          maxWidth: 920,
-          margin: '0 0 28px',
-          padding: '24px 0',
-          borderTop: `1px solid ${C.gray200}`,
-          borderBottom: `1px solid ${C.gray200}`,
-        }}>
-          <DiagnosticLink>
-            The numbers miss
-          </DiagnosticLink>
-          <DiagnosticConnector />
-          <DiagnosticLink>
-            Your supervisors are firefighting instead of leading
-          </DiagnosticLink>
-          <DiagnosticConnector />
-          <DiagnosticLink emphasized>
-            The foundation underneath the operation isn&rsquo;t built
-          </DiagnosticLink>
-        </div>
-
-        {/* The continuation — body + the "where they go to do it" pull */}
-        <div style={{ maxWidth: S.maxRead, marginBottom: 20 }}>
-          <p style={{
-            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            margin: '0 0 14px', textWrap: 'pretty',
-          }}>
-            {typo("That\u2019s where POWERS works. Not on the deck, not in the boardroom, not on the dashboard. On the floor. In the shifts. Inside the supervisors, the standards, and the daily operating routines where execution either holds up or breaks down.")}
-          </p>
-        </div>
-
-        {/* Editorial pull — large Fraunces italic, off-center to the
-            right, copper rule beneath. The "radios get quiet"
-            landing as a discrete typographic moment. */}
-        <div style={{
-          maxWidth: 980, margin: '0 auto 28px 0',
-          padding: '24px 0 24px clamp(0px, 6vw, 80px)',
           position: 'relative',
+          border: `1px solid ${C.gold600}`,
+          padding: 10,
+          background: 'rgba(255, 255, 255, 0.4)',
         }}>
-          {/* Vertical copper rule on the left — anchors the quote */}
-          <div aria-hidden="true" style={{
-            position: 'absolute', left: 'clamp(0px, 3vw, 40px)', top: 24, bottom: 24,
-            width: 1, background: C.copper,
-          }} />
-          <blockquote style={{
-            margin: 0,
-            fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-            fontSize: 'clamp(24px, 2.8vw, 36px)',
-            lineHeight: 1.18, letterSpacing: '-0.012em',
-            color: C.navy,
-            textWrap: 'balance',
-            maxWidth: 720,
+          {/* Row — 5 short cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gap: 0,
+            background: '#ffffff',
           }}>
-            When the foundation is in, the operation changes. The line runs. The team works problems before they cascade.
-            <span style={{ color: C.copper, fontWeight: 500 }}> The radios get quiet.</span>
-          </blockquote>
+            {EXPERTISE_CARDS.map((card, i) => (
+              <DisciplineTab
+                key={card.headline}
+                headline={card.headline}
+                isOpen={openIdx === i}
+                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+                isLastInRow={i === EXPERTISE_CARDS.length - 1}
+              />
+            ))}
+          </div>
+
+          {/* Drawer — single shared panel below the row. Reserves the
+              same 5-column grid so the active body text drops into the
+              column of the clicked card. Other columns stay empty. */}
+          <div
+            ref={panelRef}
+            style={{
+              overflow: 'hidden',
+              maxHeight: openIdx !== null ? panelHeight + 64 : 0,
+              opacity: openIdx !== null ? 1 : 0,
+              transition: 'max-height 460ms cubic-bezier(0.4, 0, 0.2, 1), opacity 320ms ease',
+              willChange: 'max-height, opacity',
+              marginTop: openIdx !== null ? 0 : 0,
+              background: '#ffffff',
+              borderTop: openIdx !== null ? `1px solid ${C.gold600}` : '1px solid transparent',
+              transitionProperty: 'max-height, opacity, border-top-color',
+            }}
+          >
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              padding: '28px 0 36px',
+            }}>
+              {EXPERTISE_CARDS.map((card, i) => (
+                <div
+                  key={card.headline}
+                  style={{
+                    padding: '0 26px',
+                    visibility: openIdx === i ? 'visible' : 'hidden',
+                    // Keep refs measurable while hidden — `visibility:
+                    // hidden` preserves layout, unlike `display: none`.
+                    height: openIdx === i ? 'auto' : 0,
+                  }}
+                >
+                  <p
+                    ref={(el) => { bodyRefs.current[i] = el; }}
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 15, fontWeight: 300, lineHeight: 1.7,
+                      color: C.body, margin: 0, textWrap: 'pretty',
+                    }}
+                  >{typo(card.body)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Closing — the resolution */}
-        <div style={{ maxWidth: S.maxRead }}>
-          <p style={{
-            fontSize: 18, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit',
-            margin: 0, textWrap: 'pretty',
-          }}>
-            {typo("That\u2019s what POWERS builds. With your people, in your operation, in the routines that make the work execute itself long after we\u2019re gone.")}
-          </p>
-        </div>
+        {/* Closing paragraph — sits below the framed row */}
+        <p style={{
+          fontFamily: SANS,
+          marginTop: 56,
+          fontSize: S.ledeSize, fontWeight: 300, lineHeight: 1.65,
+          color: C.body, maxWidth: S.maxRead,
+          textWrap: 'pretty', margin: '56px 0 0',
+        }}>
+          {typo("Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn\u2019t break down when conditions do.")}
+        </p>
       </div>
     </section>
   );
 }
 
-/* DiagnosticLink — one line in the typographic chain. Editorial
-   scale, navy, weight-700. Variant `emphasized` lifts the final link
-   to gold-emphasis to signal the diagnostic landing. */
-function DiagnosticLink({ children, emphasized = false }) {
-  return (
-    <div style={{
-      fontSize: 'clamp(20px, 2.6vw, 32px)',
-      fontWeight: 700, lineHeight: 1.18,
-      color: emphasized ? C.navy : C.navy,
-      fontFamily: 'inherit',
-      letterSpacing: '-0.012em',
-      textWrap: 'balance',
-      display: 'flex', alignItems: 'baseline', gap: 18,
-    }}>
-      <span aria-hidden="true" style={{
-        fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-        fontSize: 'clamp(15px, 1.6vw, 20px)',
-        color: emphasized ? C.copper : C.gray400,
-        flex: '0 0 auto',
-      }}>↳</span>
-      <span style={emphasized ? {
-        background: `linear-gradient(180deg, transparent 65%, ${C.gold200} 65%)`,
-        paddingRight: 6,
-      } : {}}>
-        {children}
-      </span>
-    </div>
-  );
-}
-
-/* DiagnosticConnector — small "BECAUSE" link between chain items.
-   Tracked uppercase, copper italic small-caps register. Vertical
-   spacing on either side gives the chain visual breath. */
-function DiagnosticConnector() {
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 14,
-      margin: '18px 0 18px 32px',
-    }}>
-      <div aria-hidden="true" style={{
-        width: 28, height: 1, background: C.copper,
-      }} />
-      <div style={{
-        fontSize: 11, fontWeight: 600,
-        letterSpacing: '0.24em', textTransform: 'uppercase',
-        color: C.copper, fontFamily: 'inherit',
-      }}>because</div>
-    </div>
-  );
-}
-
-/* ── NEW SECTION — THE ROOT CAUSE ── */
-/* ── SECTION 4 — HOW EXECUTION CAPABILITY CREATES VALUE ─────────────
- *
- * Three-column diagram + thesis. This is the load-bearing visual of the
- * homepage, illustrating how "Execution Capability" (the center engine)
- * converts uncontrollable inputs (left, "Varying Forces") into reliable
- * outputs (right, "Consistent Results").
- *
- * Visual intent:
- *   - Left column = pressures arriving. Slight amber tension on each item.
- *   - Center column = the architecture. Heavy navy panel. Carries a
- *     small "ACTIVE" indicator with a slowly pulsing gold dot — the only
- *     persistent motion on the page.
- *   - Right column = outputs leaving. Lighter, gold accent on each item.
- *   - Flow indicators: 3 dashed lines between columns that "draw" from
- *     left to right when the section enters the viewport, then settle.
- *
- * Motion: an IntersectionObserver triggers a one-time stagger reveal
- * when the section scrolls into view. Header → left items (top-down)
- * → flow lines draw → center engine establishes → right items (top-down).
- * Honors `prefers-reduced-motion`: when reduced motion is requested,
- * everything renders in its final state with no animation.
- * ──────────────────────────────────────────────────────────────────── */
-const VARYING_FORCES = [
-  'Market volatility',
-  'Tariff and trade shifts',
-  'Demand swings',
-  'Workforce turnover',
-  'Equipment breakdowns',
-  'Inexperienced supervisors',
-  'Margin compression',
-  'Schedule misses',
-];
-
-const CONSISTENT_RESULTS = [
-  'Increased throughput',
-  'Higher OEE',
-  'Reduced downtime',
-  'Improved labor productivity',
-  'Expanded margin',
-  'Recovered working capital',
-  'Stronger frontline leadership',
-  'Sustained operational performance',
-];
-
-function useReveal() {
-  const ref = useRef(null);
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    if (!ref.current) return;
-    if (typeof window === 'undefined') return;
-    // Honor reduced-motion: snap straight to revealed state, skip observer.
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) { setSeen(true); return; }
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setSeen(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.18, rootMargin: '0px 0px -10% 0px' }
-    );
-    obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-  return [ref, seen];
-}
-
-/* ── PRESSURE IN / PERFORMANCE OUT — continuous ambient choreography ─
- *
- * Concept: an immovable engine in the center; ever-changing forces on
- * the left arrive against it; ever-changing results on the right are
- * produced by it. No scroll trigger — the diagram runs constantly,
- * autonomously, like a live system dashboard.
- *
- * Mechanics: 5 visible slots per side. Each slot independently cycles
- * through a pool of forces (left) or results (right) on a randomized
- * 2.8-4.4 second interval, with per-slot stagger so the columns
- * shimmer rather than tick in sync. The slot animation is a small
- * fade-up exit followed by a fade-down entrance; reads as turbulence
- * on the left and production on the right.
- *
- * The engine card is treated to match the 5-Disciplines card
- * vocabulary: square corners, 3px gold top rule (matching the
- * keystone treatment from Row 2), thin border, fine grid pattern
- * inside, ambient gold halo behind. Content is top-justified so the
- * card has presence at the top edge of the column. The halo
- * perpetually breathes at a slow cadence — a heartbeat for the
- * "system active" idea, without the literal pulse dot.
- *
- * Reduced-motion: rotation interval is skipped; initial slot items
- * are rendered statically; halo holds at its mid state.
- * ────────────────────────────────────────────────────────────────── */
-
-const FORCES_POOL = [
-  'Market volatility', 'Tariff and trade shifts', 'Demand swings',
-  'Workforce turnover', 'Equipment breakdowns', 'Inexperienced supervisors',
-  'Margin compression', 'Schedule misses', 'Supply chain disruption',
-  'Raw material cost spikes', 'Quality variation', 'Capacity constraints',
-  'Energy cost swings', 'Regulatory pressure', 'Customer escalations',
-];
-
-const RESULTS_POOL = [
-  'Increased throughput', 'Higher OEE', 'Reduced downtime',
-  'Improved labor productivity', 'Expanded margin', 'Recovered working capital',
-  'Stronger frontline leadership', 'Sustained operational performance',
-  'Faster cycle times', 'Lower scrap rates', 'Predictable on-time delivery',
-  'Resilient supply', 'Stable cost structure', 'Compounding shift performance',
-];
-
-/* RotatingPaneList — continuous slot-rotation primitive.
-
-   Renders `slotCount` <li>s. Each slot owns a cursor into the pool
-   and independently cycles to its next pool item on a randomized
-   interval. Animation is driven directly through GSAP into the DOM
-   so cycles don't trigger React re-renders. Initial items are
-   evenly distributed across the pool so the visible set starts
-   diverse from frame one.
-
-   Props:
-     pool         — array of strings to rotate through
-     slotCount    — number of visible slots
-     Marker       — component that renders the per-row indicator
-     markerColor  — color passed to the marker
-     side         — 'left' or 'right'; controls exit direction so
-                    forces feel like they leave inward toward the
-                    engine, results feel like they leave outward
-     intervalMs   — base interval between cycles per slot
-     jitter       — randomized addition to interval
-     baseDelay    — global delay before the first cycle starts */
-function RotatingPaneList({
-  pool, slotCount = 5, Marker, markerColor, side = 'left',
-  intervalMs = 3000, jitter = 1800, baseDelay = 800,
-}) {
-  const ulRef = useRef(null);
-  // Per-slot cursors live in a ref so cycles don't cause re-renders.
-  // Initial values evenly stride across the pool.
-  const stride = Math.max(1, Math.floor(pool.length / slotCount));
-  const cursorsRef = useRef(
-    Array.from({ length: slotCount }, (_, i) => (i * stride) % pool.length)
-  );
-  const reduceRef = useRef(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    reduceRef.current = reduce;
-    if (reduce) return;
-
-    const ul = ulRef.current;
-    if (!ul) return;
-    const slots = Array.from(ul.querySelectorAll('[data-slot-text]'));
-    const timers = [];
-
-    // Cycle one slot: animate text out, swap, animate new text in,
-    // schedule next cycle with randomized delay.
-    const cycle = (slotIdx) => {
-      const textEl = slots[slotIdx];
-      if (!textEl) return;
-
-      // Pick next pool index. Skips ahead by slotCount to ensure
-      // adjacent slots don't all land on the same item; modulo by
-      // pool.length keeps it in range. Then steps an extra +1 with
-      // a 30% probability for a small amount of unpredictability.
-      let nextCursor = (cursorsRef.current[slotIdx] + slotCount) % pool.length;
-      if (Math.random() < 0.3) nextCursor = (nextCursor + 1) % pool.length;
-      cursorsRef.current[slotIdx] = nextCursor;
-
-      gsap.timeline()
-        .to(textEl, {
-          opacity: 0,
-          y: -10,
-          duration: 0.42,
-          ease: 'power2.in',
-        })
-        .call(() => {
-          textEl.textContent = pool[nextCursor];
-        })
-        .fromTo(textEl,
-          { opacity: 0, y: 10 },
-          { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
-        );
-
-      const nextDelay = intervalMs + Math.random() * jitter;
-      timers[slotIdx] = setTimeout(() => cycle(slotIdx), nextDelay);
-    };
-
-    // Initial start — each slot gets its own delay so they rotate
-    // out of phase. Without this they'd all fire together on the
-    // first cycle and the column would tick like a clock.
-    slots.forEach((_, i) => {
-      const initial = baseDelay + i * 420 + Math.random() * 280;
-      timers[i] = setTimeout(() => cycle(i), initial);
-    });
-
-    return () => timers.forEach((t) => clearTimeout(t));
-  }, [pool, slotCount, intervalMs, jitter, baseDelay]);
-
-  // Initial render — populate each slot with the item at its cursor.
-  const initial = cursorsRef.current.map((idx) => pool[idx]);
-
-  return (
-    <ul ref={ulRef} style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-      {initial.map((item, i) => (
-        <li key={i} style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          fontSize: 14.5, fontWeight: 500, color: C.navy, fontFamily: 'inherit',
-          padding: '14px 0', borderBottom: `1px solid ${C.gray200}`,
-          position: 'relative',
-          minHeight: 48,
-        }}>
-          <Marker color={markerColor} />
-          <span
-            data-slot-text
-            style={{
-              display: 'inline-block',
-              willChange: 'transform, opacity',
-              flex: 1,
-              textAlign: side === 'right' ? 'left' : 'left',
-            }}
-          >{item}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/* ExecutionExhibit — canvas-based animated exhibit.
-   Ported verbatim from the standalone HTML reference the user
-   provided. Visualises the "Pressure In / Performance Out" thesis as
-   a physics-like simulation: red pressure labels fly in from the
-   left with a wobble, are absorbed into a pulsing gold core
-   ("EXECUTION CAPABILITY ROOTED IN DISCIPLINE"), and green outcome
-   labels are emitted out to the right. Particle bursts on each
-   absorption + emission. Interactive: Pause/Play, an Operating
-   Pressure slider (1–10) controlling spawn rate, and a Surge button
-   that temporarily spikes pressure intensity.
-
-   This component owns its own <canvas>, animation loop, and state
-   machine. It does not interact with React state per frame (rAF
-   loop reads refs only) to avoid render thrash. */
 function ExecutionExhibit() {
   const canvasRef = useRef(null);
   const toggleBtnRef = useRef(null);
@@ -2540,10 +1852,10 @@ function ExecutionExhibit() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const NAVY_DEEP = '#0a1f38';
-    const RED = '#e05a47';
-    const GREEN = '#4aba6a';
-    const GOLD = '#eabb71';
+    const NAVY_DEEP = '#0f2a47';
+    const RED = '#e0654f';
+    const GREEN = '#5bbf73';
+    const GOLD = '#e89346';
 
     const pressures = [
       'Market volatility', 'Tariff & trade shifts', 'Demand swings', 'Workforce turnover',
@@ -2824,7 +2136,7 @@ function ExecutionExhibit() {
       ctx.save();
       ctx.beginPath();
       ctx.arc(core.x, core.y, r * (1.5 + surgeEase * 0.5), 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(234,187,113,' + (0.05 + pulse * 0.05 + surgeEase * 0.07).toFixed(3) + ')';
+      ctx.fillStyle = 'rgba(232,147,70,' + (0.05 + pulse * 0.05 + surgeEase * 0.07).toFixed(3) + ')';
       ctx.fill();
       ctx.restore();
 
@@ -2833,12 +2145,12 @@ function ExecutionExhibit() {
       ctx.fillStyle = NAVY_DEEP;
       ctx.fill();
       ctx.lineWidth = 1.5 + surgeEase * 1.0;
-      ctx.strokeStyle = 'rgba(234,187,113,' + (0.85 + surgeEase * 0.15).toFixed(2) + ')';
+      ctx.strokeStyle = 'rgba(232,147,70,' + (0.85 + surgeEase * 0.15).toFixed(2) + ')';
       ctx.stroke();
 
       ctx.beginPath();
       ctx.arc(core.x, core.y, r * 0.72, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(234,187,113,0.18)';
+      ctx.strokeStyle = 'rgba(232,147,70,0.18)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
@@ -3030,331 +2342,7 @@ function SectionExecutionEngine() {
   );
 }
 
-function DiagramColHead({ label }) {
-  // Column titles use the same display family + bold weight as the section
-  // subhead, sized down so they sit one tier below the section H2. No rule
-  // above — the title alone carries the weight. (Center column has its
-  // title inside the navy panel, so this only renders on left + right.)
-  return (
-    <h3 style={{
-      fontSize: 'clamp(20px, 1.9vw, 24px)', fontWeight: 700, lineHeight: 1.2,
-      color: '#183a61', fontFamily: 'inherit',
-      margin: '0 0 16px', letterSpacing: '-0.012em',
-      textWrap: 'balance',
-    }}>{label}</h3>
-  );
-}
 
-/* Red trend-down marker — appears next to every "Varying Forces" line.
-   Reads as "this is a red number." Filled triangle + small descending
-   tick gives it the feel of a financial dashboard down-indicator without
-   importing an icon library. */
-function RedDownMarker({ color }) {
-  return (
-    <span aria-hidden="true" style={{
-      flex: '0 0 auto', width: 14, height: 14, display: 'inline-block',
-      lineHeight: 0,
-    }}>
-      <svg width="14" height="14" viewBox="0 0 14 14">
-        <path d="M2 4 L12 4 L7 12 Z" fill={color} />
-      </svg>
-    </span>
-  );
-}
-
-/* Green trend-up marker — mirror of the red one. Reads as "this is a
-   green number." Same visual weight so the columns balance. */
-function GreenUpMarker({ color }) {
-  return (
-    <span aria-hidden="true" style={{
-      flex: '0 0 auto', width: 14, height: 14, display: 'inline-block',
-      lineHeight: 0,
-    }}>
-      <svg width="14" height="14" viewBox="0 0 14 14">
-        <path d="M7 2 L12 10 L2 10 Z" fill={color} />
-      </svg>
-    </span>
-  );
-}
-
-/* ── SECTION (now position 3) — FIVE FUNDAMENTALS ── */
-const EXPERTISE_CARDS = [
-  {
-    headline: 'Operational Discipline',
-    body: 'Standards, routines, and structured practices that make consistent execution the default. When discipline is built in, the floor stops running on heroics and starts running on the system.',
-  },
-  {
-    headline: 'Frontline Leadership',
-    body: 'Supervisors who can plan a shift, run a problem to ground, and enforce the standard with their team. The single highest-leverage role in the operation, and the one most often handed a clipboard and left to figure it out alone.',
-  },
-  {
-    headline: 'Reliable Equipment',
-    body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable. When equipment performs, scheduling works, throughput stays consistent, and labor stops absorbing the variability the machines should have absorbed.',
-  },
-  {
-    headline: 'Workforce Capability',
-    body: "Skilled, engaged operators who know the work, own the outcome, and can train the next shift. Capability isn\u2019t a headcount problem. It\u2019s what each person on the line can actually do when the day gets hard.",
-  },
-  {
-    headline: 'Daily Accountability',
-    body: "The cadence, metrics, and conversations that close the loop every shift, every day. Without it, the other four drift. With it, they lock together and compound.",
-  },
-];
-
-function IconPlaceholder() {
-  return (
-    <div style={{
-      width: 32, height: 32, marginBottom: 20,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-    }}>
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect x="1" y="1" width="30" height="30" rx="0" stroke="#183a61" strokeWidth="1.5"/>
-        <line x1="8" y1="16" x2="24" y2="16" stroke="#183a61" strokeWidth="1.5"/>
-        <line x1="16" y1="8" x2="16" y2="24" stroke="#183a61" strokeWidth="1.5"/>
-      </svg>
-    </div>
-  );
-}
-
-/* ExpertiseCard — Five Disciplines accordion card. All five cards are
-   equal-weight (no keystone treatment); clicking the [+] toggles an
-   expansion that reveals the body text below the title. Closes when
-   another card opens (radio behavior). The card is white with no
-   internal border — the copper outer frame on the row carries the
-   structural weight. */
-/* DisciplineTab — small/short card. Just the title + [+/×] toggle.
-   Body text lives in a single shared panel below the row, not inside
-   the card. When this tab is active, a copper border highlights it
-   and the toggle rotates to ×. */
-function DisciplineTab({ headline, isOpen, onToggle, isLastInRow }) {
-  return (
-    <button
-      type="button"
-      data-discipline-tab
-      aria-expanded={isOpen}
-      onClick={onToggle}
-      style={{
-        background: '#ffffff',
-        // The active tab gets a copper outline that visually "extends"
-        // into the panel below via the panel's matching border.
-        border: isOpen
-          ? `1px solid ${C.gold600}`
-          : `1px solid transparent`,
-        // Subtle inter-card divider on non-active tabs.
-        borderRight: isOpen
-          ? `1px solid ${C.gold600}`
-          : (isLastInRow ? '1px solid transparent' : `1px solid rgba(184, 95, 51, 0.08)`),
-        padding: '32px 26px',
-        margin: 0,
-        textAlign: 'left',
-        cursor: 'pointer',
-        fontFamily: 'inherit',
-        color: 'inherit',
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: 16,
-        // Short, fixed height — only enough for the title.
-        minHeight: 138,
-        position: 'relative',
-        outline: 'none',
-        transition: 'border-color 220ms ease, background 220ms ease',
-      }}
-      onMouseEnter={(e) => {
-        if (!isOpen) e.currentTarget.style.background = 'rgba(247, 232, 200, 0.20)';
-      }}
-      onMouseLeave={(e) => {
-        if (!isOpen) e.currentTarget.style.background = '#ffffff';
-      }}
-    >
-      <div style={{
-        fontFamily: 'inherit',
-        fontSize: 'clamp(18px, 1.4vw, 21px)',
-        fontWeight: 700, lineHeight: 1.18,
-        color: C.navy,
-        letterSpacing: '-0.012em',
-      }}>{headline}</div>
-      {/* [+] toggle — copper, rotates 45° to × when open */}
-      <span aria-hidden="true" style={{
-        flex: '0 0 auto',
-        width: 16, height: 16, position: 'relative',
-        color: C.copper,
-        transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
-        transition: 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1)',
-        marginTop: 4,
-      }}>
-        <span style={{
-          position: 'absolute', top: '50%', left: 0,
-          width: '100%', height: 1.5,
-          background: 'currentColor',
-          transform: 'translateY(-50%)',
-        }} />
-        <span style={{
-          position: 'absolute', left: '50%', top: 0,
-          width: 1.5, height: '100%',
-          background: 'currentColor',
-          transform: 'translateX(-50%)',
-        }} />
-      </span>
-    </button>
-  );
-}
-
-function LearnMoreLink({ href }) {
-  const [h, setH] = useState(false);
-  return (
-    <a href={href || '#'} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
-      style={{
-        fontSize: 14, fontWeight: 500, color: '#eabb71',
-        textDecoration: h ? 'underline' : 'none',
-        textUnderlineOffset: 3, fontFamily: 'inherit',
-        display: 'inline-flex', alignItems: 'center', gap: 4,
-      }}>
-      Learn More
-      <span style={{ transform: h ? 'translateX(3px)' : 'none', transition: 'transform 160ms ease', display: 'inline-block' }}>→</span>
-    </a>
-  );
-}
-
-/* SectionExpertiseAreas — Five Disciplines, "tab-strip + drawer" layout.
-   Top row: 5 short equal-weight cards, each showing only the discipline
-   title + a [+] toggle. The whole strip is wrapped in a single copper
-   hairline frame.
-
-   Below the strip: a single shared panel that opens when any tab is
-   activated. The panel reserves a 5-column grid the same width as the
-   row above, and the body text sits in the column matching the active
-   tab — so the text appears to "drop down" out of the clicked card.
-   Radio behavior: opening one closes any other; the panel itself slides
-   open/closed via max-height + opacity. */
-function SectionExpertiseAreas() {
-  const [openIdx, setOpenIdx] = useState(null);
-  const panelRef = useRef(null);
-  const [panelHeight, setPanelHeight] = useState(0);
-
-  // Measure the open card's body height so the panel animates to the
-  // real natural height. We measure the tallest body so the panel doesn't
-  // jump between card switches; this keeps the closing copper border
-  // sitting at a consistent baseline as the user clicks through tabs.
-  const bodyRefs = useRef([]);
-  useEffect(() => {
-    const measure = () => {
-      const heights = bodyRefs.current.map((el) => (el ? el.scrollHeight : 0));
-      const max = Math.max(0, ...heights);
-      setPanelHeight(max);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    bodyRefs.current.forEach((el) => el && ro.observe(el));
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <section style={{ background: C.white, padding: `${S.sectionPadY} ${S.sectionPadX}` }}>
-      <div style={{ maxWidth: S.maxWide, margin: '0 auto' }}>
-        {/* Header — left-anchored editorial */}
-        <div style={{ marginBottom: 64, maxWidth: S.maxRead }}>
-          <ChapterMark n="01" />
-          <Eyebrow label="What Gets Built In" />
-          <h2 style={{
-            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: SANS, margin: '0 0 0',
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>
-            Five disciplines.{' '}
-            <span style={{
-              fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-              color: C.gold600,
-            }}>One operation that doesn{'\u2019'}t break down.</span>
-          </h2>
-        </div>
-
-        {/* Tab strip + drawer panel wrapped in a single copper frame. */}
-        <div style={{
-          position: 'relative',
-          border: `1px solid ${C.gold600}`,
-          padding: 10,
-          background: 'rgba(255, 255, 255, 0.4)',
-        }}>
-          {/* Row — 5 short cards */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
-            gap: 0,
-            background: '#ffffff',
-          }}>
-            {EXPERTISE_CARDS.map((card, i) => (
-              <DisciplineTab
-                key={card.headline}
-                headline={card.headline}
-                isOpen={openIdx === i}
-                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-                isLastInRow={i === EXPERTISE_CARDS.length - 1}
-              />
-            ))}
-          </div>
-
-          {/* Drawer — single shared panel below the row. Reserves the
-              same 5-column grid so the active body text drops into the
-              column of the clicked card. Other columns stay empty. */}
-          <div
-            ref={panelRef}
-            style={{
-              overflow: 'hidden',
-              maxHeight: openIdx !== null ? panelHeight + 64 : 0,
-              opacity: openIdx !== null ? 1 : 0,
-              transition: 'max-height 460ms cubic-bezier(0.4, 0, 0.2, 1), opacity 320ms ease',
-              willChange: 'max-height, opacity',
-              marginTop: openIdx !== null ? 0 : 0,
-              background: '#ffffff',
-              borderTop: openIdx !== null ? `1px solid ${C.gold600}` : '1px solid transparent',
-              transitionProperty: 'max-height, opacity, border-top-color',
-            }}
-          >
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(5, 1fr)',
-              padding: '28px 0 36px',
-            }}>
-              {EXPERTISE_CARDS.map((card, i) => (
-                <div
-                  key={card.headline}
-                  style={{
-                    padding: '0 26px',
-                    visibility: openIdx === i ? 'visible' : 'hidden',
-                    // Keep refs measurable while hidden — `visibility:
-                    // hidden` preserves layout, unlike `display: none`.
-                    height: openIdx === i ? 'auto' : 0,
-                  }}
-                >
-                  <p
-                    ref={(el) => { bodyRefs.current[i] = el; }}
-                    style={{
-                      fontFamily: SANS,
-                      fontSize: 15, fontWeight: 400, lineHeight: 1.7,
-                      color: C.body, margin: 0, textWrap: 'pretty',
-                    }}
-                  >{typo(card.body)}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Closing paragraph — sits below the framed row */}
-        <p style={{
-          fontFamily: SANS,
-          marginTop: 56,
-          fontSize: S.ledeSize, fontWeight: 400, lineHeight: 1.65,
-          color: C.body, maxWidth: S.maxRead,
-          textWrap: 'pretty', margin: '56px 0 0',
-        }}>
-          {typo("Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn\u2019t break down when conditions do.")}
-        </p>
-      </div>
-    </section>
-  );
-}
 
 /* ── SECTION 5 — HOW WE WORK ──────────────────────────────────────────
  * Two-column layout: copy on the left, image on the right. Copy carries
@@ -3422,8 +2410,8 @@ function SectionHowWeWork() {
               boxShadow: `0 24px 60px -32px rgba(13,36,66,0.45)`,
             }}>
               <span style={{
-                fontSize: 'clamp(20px, 2vw, 24px)', fontWeight: 700, fontStyle: 'italic',
-                color: C.white, fontFamily: 'inherit', lineHeight: 1.3,
+                fontSize: 'clamp(20px, 2vw, 24px)', fontWeight: 500, fontStyle: 'italic',
+                color: C.white, fontFamily: SERIF, lineHeight: 1.3,
                 letterSpacing: '-0.008em',
               }}>
                 {typo("\u201cIf you\u2019re working, we\u2019re working.\u201d")}
@@ -3499,9 +2487,9 @@ function IndustryTile({ label, slug }) {
         textAlign: 'center',
         padding: '28px 18px',
         minHeight: 96,
-        background: hovered ? '#183a61' : '#ffffff',
-        color: hovered ? '#ffffff' : '#183a61',
-        border: `1px solid ${hovered ? '#183a61' : '#e2e2dc'}`,
+        background: hovered ? '#143257' : '#ffffff',
+        color: hovered ? '#ffffff' : '#143257',
+        border: `1px solid ${hovered ? '#143257' : '#e2e2dc'}`,
         textDecoration: 'none',
         fontFamily: 'inherit',
         fontSize: 15, fontWeight: 600, lineHeight: 1.25,
@@ -3515,7 +2503,7 @@ function IndustryTile({ label, slug }) {
       <span aria-hidden="true" style={{
         position: 'absolute', right: 12, bottom: 10,
         fontSize: 14, fontWeight: 500,
-        color: hovered ? '#eabb71' : 'transparent',
+        color: hovered ? '#e89346' : 'transparent',
         transition: 'color 180ms ease',
         lineHeight: 1,
       }}>→</span>
@@ -3616,27 +2604,28 @@ function CaseStudyCard({ industry, result, summary }) {
       onMouseLeave={() => setH(false)}
       style={{
         background: '#ffffff',
-        borderTop: `3px solid #183a61`,
+        borderTop: `3px solid #143257`,
         padding: '32px 28px 28px',
         display: 'flex', flexDirection: 'column', gap: 12,
         transition: 'border-top-color 200ms ease',
       }}
     >
       <div style={{
-        fontSize: 11, fontWeight: 500, letterSpacing: '0.18em',
-        textTransform: 'uppercase', color: '#eabb71', fontFamily: 'inherit',
+        fontFamily: MONO,
+        fontSize: 11.5, fontWeight: 500, letterSpacing: '0.24em',
+        textTransform: 'uppercase', color: '#e89346',
       }}>{industry}</div>
       <div style={{
         fontSize: 17, fontWeight: 700, lineHeight: 1.3,
-        color: '#183a61', fontFamily: 'inherit',
+        color: '#143257', fontFamily: 'inherit',
       }}>{result}</div>
       <p style={{
         fontSize: 14, fontWeight: 300, lineHeight: 1.65,
-        color: '#3a3a38', fontFamily: 'inherit', margin: 0, flex: 1,
+        color: '#4a5568', fontFamily: 'inherit', margin: 0, flex: 1,
         textWrap: 'pretty',
       }}>{summary}</p>
       <a href="#" style={{
-        fontSize: 13, fontWeight: 500, color: h ? '#c9963e' : '#eabb71',
+        fontSize: 13, fontWeight: 500, color: h ? '#e89346' : '#e89346',
         textDecoration: 'none', fontFamily: 'inherit',
         transition: 'color 150ms ease',
       }}>Read the case study →</a>
@@ -3726,22 +2715,23 @@ function InsightCard({ category, headline, summary }) {
       }}
     >
       <div style={{
-        fontSize: 11, fontWeight: 500, letterSpacing: '0.18em',
-        textTransform: 'uppercase', color: '#eabb71', fontFamily: 'inherit',
+        fontFamily: MONO,
+        fontSize: 11.5, fontWeight: 500, letterSpacing: '0.24em',
+        textTransform: 'uppercase', color: '#e89346',
       }}>{category}</div>
       <div style={{
         fontSize: 18, fontWeight: 700, lineHeight: 1.3,
-        color: h ? '#4a6a8a' : '#183a61', fontFamily: 'inherit',
+        color: h ? '#4a6a8a' : '#143257', fontFamily: 'inherit',
         transition: 'color 150ms ease',
         textWrap: 'pretty',
       }}>{headline}</div>
       <p style={{
         fontSize: 14, fontWeight: 300, lineHeight: 1.65,
-        color: '#3a3a38', fontFamily: 'inherit', margin: 0, flex: 1,
+        color: '#4a5568', fontFamily: 'inherit', margin: 0, flex: 1,
         textWrap: 'pretty',
       }}>{summary}</p>
       <a href="#" style={{
-        fontSize: 13, fontWeight: 500, color: '#eabb71',
+        fontSize: 13, fontWeight: 500, color: '#e89346',
         textDecoration: h ? 'underline' : 'none',
         textUnderlineOffset: 3, fontFamily: 'inherit',
       }}>Read more →</a>
@@ -3793,7 +2783,7 @@ function FooterCTA() {
   const [h, setH] = useState(false);
   return (
     <section style={{
-      background: `radial-gradient(ellipse 50% 50% at 70% 30%, rgba(184,95,51,0.18) 0%, rgba(184,95,51,0) 70%), linear-gradient(165deg, ${C.ink} 0%, ${C.navy900} 100%)`,
+      background: `radial-gradient(ellipse 50% 50% at 70% 30%, rgba(232,147,70,0.18) 0%, rgba(232,147,70,0) 70%), linear-gradient(165deg, ${C.ink} 0%, ${C.navy900} 100%)`,
       padding: `clamp(120px, 14vw, 180px) ${S.sectionPadX}`,
       position: 'relative', overflow: 'hidden',
     }}>
@@ -3831,11 +2821,10 @@ function FooterCTA() {
               onMouseLeave={() => setH(false)}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 14,
-                background: h ? '#c9963e' : '#eabb71',
-                color: '#183a61', fontSize: 15, fontWeight: 600,
+                background: h ? '#e89346' : '#e89346',
+                color: '#143257', fontSize: 15, fontWeight: 600,
                 padding: '18px 32px', textDecoration: 'none',
-                fontFamily: 'inherit', letterSpacing: '0.04em',
-                textTransform: 'uppercase',
+                fontFamily: 'inherit', letterSpacing: 0,
                 transition: 'background 160ms ease, transform 160ms ease',
                 transform: h ? 'translateY(-1px)' : 'translateY(0)',
               }}>
@@ -3870,9 +2859,10 @@ function FooterLink({ href, children }) {
 function FooterColHeader({ children }) {
   return (
     <div style={{
-      fontSize: 11, fontWeight: 600,
-      letterSpacing: '0.14em', textTransform: 'uppercase',
-      color: '#ffffff', fontFamily: 'inherit',
+      fontFamily: MONO,
+      fontSize: 11.5, fontWeight: 500,
+      letterSpacing: '0.24em', textTransform: 'uppercase',
+      color: '#ffffff',
       marginBottom: 16,
     }}>{children}</div>
   );
@@ -3884,7 +2874,7 @@ function LinkedInIcon() {
     <a href="#" aria-label="POWERS on LinkedIn"
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
-      style={{ display: 'inline-block', marginTop: 20, color: h ? '#eabb71' : '#ffffff', transition: 'color 160ms ease' }}
+      style={{ display: 'inline-block', marginTop: 20, color: h ? '#e89346' : '#ffffff', transition: 'color 160ms ease' }}
     >
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <rect x="1" y="1" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.4"/>
@@ -3906,9 +2896,9 @@ function FooterGhostBtn() {
         display: 'inline-block',
         marginTop: 20,
         fontSize: 13, fontWeight: 500,
-        color: h ? '#183a61' : '#eabb71',
-        background: h ? '#eabb71' : 'transparent',
-        border: '1px solid #eabb71',
+        color: h ? '#143257' : '#e89346',
+        background: h ? '#e89346' : 'transparent',
+        border: '1px solid #e89346',
         padding: '9px 20px',
         textDecoration: 'none', fontFamily: 'inherit',
         letterSpacing: '0.02em',
@@ -3935,7 +2925,7 @@ function LegalLink({ children }) {
 
 function Footer() {
   return (
-    <footer style={{ background: '#0d2442', fontFamily: 'inherit', borderTop: '1px solid #eabb71' }}>
+    <footer style={{ background: '#0f2a47', fontFamily: 'inherit', borderTop: '1px solid #e89346' }}>
       {/* Main columns */}
       <div style={{
         maxWidth: 1280, margin: '0 auto',
@@ -3956,7 +2946,7 @@ function Footer() {
           </a>
           <div style={{
             fontSize: 13, fontWeight: 500, letterSpacing: '0.14em',
-            color: '#eabb71', fontFamily: 'inherit', marginBottom: 14,
+            color: '#e89346', fontFamily: 'inherit', marginBottom: 14,
           }}>Strong Foundation. Strong Performance.</div>
           <p style={{
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,
@@ -4017,7 +3007,7 @@ function Footer() {
       }}>
         <div style={{
           height: 1,
-          background: 'rgba(234,187,113,0.20)',
+          background: 'rgba(232,147,70,0.20)',
           marginBottom: 20,
         }} />
         <div style={{
@@ -4300,7 +3290,7 @@ function HomeV3() {
       <Footer />
       {/* Version indicator */}
       <div style={{
-        background: '#0d2442',
+        background: '#0f2a47',
         borderTop: '1px solid rgba(255,255,255,0.06)',
         padding: '10px 48px',
         display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
