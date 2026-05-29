@@ -166,6 +166,10 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 
 
 
+- Hero animation re-tuned per `POWERS_Hero_Integration_Brief.md`: BUILD lengthened 3600→4400ms, PEAK lengthened 1100→3500ms (the "executive watching readouts they can't control" beat now registers as chaos, not flash-by). Word reveal milestones updated from 3 (0.34/0.66) to 5 (0.30/0.58/0.78/0.92) so the lede + "We build the foundation." line now ride the BUILD/PEAK/COLLAPSE/EMPTY cycle with the headline words — they fade up in build, hold in peak, and fade out during collapse. Produces a perpetual emotional rhythm rather than a one-shot reveal. Verified live across one full cycle.
+- Section 4 ("Strong numbers. Regardless of conditions.") now has a "What that means" mono eyebrow above the h2, styled to match the Section 3 "What we build" eyebrow exactly (same color, size, tracking). Creates a paired narrative beat: S3 = what we build → S4 = what that means.
+
+
 ## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
 - P1: Wire Contact form to a FastAPI endpoint (currently UI-only per user choice; revisit when client supplies submission target).

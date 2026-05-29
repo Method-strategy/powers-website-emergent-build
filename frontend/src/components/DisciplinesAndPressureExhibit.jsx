@@ -1255,6 +1255,19 @@ export function SectionPressureExhibit() {
             transform .9s cubic-bezier(.22,.61,.36,1);
         }
         .s4-copy.s4-in { opacity: 1; transform: translateY(0); }
+        .s4-eyebrow {
+          /* Matches the s3-eyebrow treatment one-for-one so the two
+             sections read as a paired narrative: "what we build" →
+             "what that means". Mono, gold, 0.24em tracking, sits
+             above the h2 with the same 28px gap. */
+          font-family: ${MONO};
+          font-size: 11.5px;
+          font-weight: 500;
+          letter-spacing: .24em;
+          text-transform: uppercase;
+          color: ${C.gold};
+          margin-bottom: 28px;
+        }
         .s4-h2 {
           line-height: 1.08;
           letter-spacing: -.012em;
@@ -1403,6 +1416,7 @@ export function SectionPressureExhibit() {
       <section ref={sectionRef} className="s4-section">
         <div className="s4-exhibit" ref={exhibitRef}>
           <div className="s4-copy" ref={copyRef}>
+            <p className="s4-eyebrow">What that means</p>
             <h2 className="s4-h2">
               <span className="sans">Strong numbers.</span>
               <span className="serif">Regardless of conditions.</span>

@@ -1142,6 +1142,12 @@ function Hero() {
     function dimWord(el) { if (!el) return; el.style.opacity = '0.22'; el.style.transform = 'translateY(0)'; }
 
     function revealStatic(el, delay) {
+      // Kept for parity with the original API; the new brief moves
+      // both support elements (lede + build) into the per-cycle
+      // reveal driven by the swarm cycle, so this helper is no longer
+      // called at boot. Leaving the definition in place lets us
+      // toggle back to a "first-cycle freeze" behaviour quickly if
+      // stakeholder feedback says the per-cycle ride feels too busy.
       setTimeout(() => {
         if (!el) return;
         el.style.transition = 'opacity 1.1s cubic-bezier(.22,.61,.36,1), transform 1.1s cubic-bezier(.22,.61,.36,1)';
@@ -1149,17 +1155,31 @@ function Hero() {
         el.style.transform = 'translateY(0)';
       }, delay);
     }
+    // Per the new brief: the lede + "We build the foundation." line
+    // ride the same per-cycle reveal beat as the headline words. They
+    // fade up in the BUILD phase and fade out in the COLLAPSE phase
+    // alongside the headline dim, producing the perpetual
+    // emotional rhythm: readouts pile up → executive sees the chaos →
+    // they collapse → the message momentarily disappears with them →
+    // it all comes back. The current loop applies the corresponding
+    // transitions once at boot; the actual opacity/transform values
+    // are driven by the step loop below.
     const timeouts = [];
-    if (!reduce) {
-      revealStatic(ledeEl, 3500);
-      const buildT = setTimeout(() => {
-        if (buildEl) {
-          buildEl.style.transition = 'opacity 1.3s cubic-bezier(.2,.6,.3,1), transform 1.3s cubic-bezier(.2,.6,.3,1)';
-          buildEl.style.opacity = '1';
-          buildEl.style.transform = 'translateY(0)';
-        }
-      }, 4500);
-      timeouts.push(buildT);
+    if (ledeEl) {
+      ledeEl.style.transition = 'opacity 1.1s cubic-bezier(.22,.61,.36,1), transform 1.1s cubic-bezier(.22,.61,.36,1)';
+    }
+    if (buildEl) {
+      buildEl.style.transition = 'opacity 1.3s cubic-bezier(.2,.6,.3,1), transform 1.3s cubic-bezier(.2,.6,.3,1)';
+    }
+    function showSupport(el) {
+      if (!el) return;
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }
+    function hideSupport(el) {
+      if (!el) return;
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(12px)';
     }
 
     const canvas = swarmRef.current;
@@ -1252,10 +1272,20 @@ function Hero() {
 
     let phase = 'build';
     let cycleStart = performance.now();
-    const BUILD = 3600, PEAK = 1100, COLLAPSE = 1500, EMPTY = 650;
+    // Timings tuned per the new Hero Integration Brief (2026-05-29):
+    // - BUILD lengthened 3600→4400ms so the swarm has room to assemble
+    //   without crowding the headline reveal beats.
+    // - PEAK lengthened 1100→3500ms — "see how many readouts the
+    //   executive is tracking" should sit long enough to register as
+    //   chaos, not flash by.
+    // - COLLAPSE/EMPTY unchanged.
+    const BUILD = 4400, PEAK = 3500, COLLAPSE = 1500, EMPTY = 650;
     let lastSpawn = 0;
-    let wordShown = [false, false, false];
-    function resetWords() { wordShown = [false, false, false]; }
+    // Tracks reveal state for all five animated elements (3 headline
+    // words + lede + build line). Reset each EMPTY→BUILD transition
+    // so subsequent cycles re-reveal everything in lockstep.
+    let shown = [false, false, false, false, false];
+    function resetShown() { shown = [false, false, false, false, false]; }
 
     let rafId = 0;
     function step(now) {
@@ -1266,9 +1296,16 @@ function Hero() {
         intensity = Math.min(1, elapsed / BUILD);
         const eased = intensity * intensity;
         if (!reduce) {
-          if (!wordShown[0] && elapsed > 200) { showWord(stopEl); wordShown[0] = true; }
-          if (!wordShown[1] && elapsed > BUILD * 0.34) { showWord(chasingEl); wordShown[1] = true; }
-          if (!wordShown[2] && elapsed > BUILD * 0.66) { showWord(numbersEl); wordShown[2] = true; }
+          // Five staggered reveals tied to BUILD's elapsed fraction.
+          // Headline words first (0.30 / 0.58), then the lede and
+          // closing brand line ride the back half of the build phase
+          // (0.78 / 0.92). Each milestone fires exactly once per
+          // cycle (guarded by `shown`).
+          if (!shown[0] && elapsed > 200)             { showWord(stopEl);       shown[0] = true; }
+          if (!shown[1] && elapsed > BUILD * 0.30)    { showWord(chasingEl);    shown[1] = true; }
+          if (!shown[2] && elapsed > BUILD * 0.58)    { showWord(numbersEl);    shown[2] = true; }
+          if (!shown[3] && elapsed > BUILD * 0.78)    { showSupport(ledeEl);    shown[3] = true; }
+          if (!shown[4] && elapsed > BUILD * 0.92)    { showSupport(buildEl);   shown[4] = true; }
         }
         const spawnGap = 320 - eased * 295;
         if (now - lastSpawn > spawnGap) {
@@ -1282,12 +1319,20 @@ function Hero() {
         if (now - cycleStart >= PEAK) {
           phase = 'collapse'; cycleStart = now;
           for (const n of nums) { n.state = 'fall'; n.vy = rand(0.4, 1.4); }
-          if (!reduce) headWords.forEach(dimWord);
+          if (!reduce) {
+            // Collapse beat: dim the headline (don't hide — it stays
+            // legibly present at 0.22 opacity) and fully hide the
+            // lede + brand line. Both fade back in during the next
+            // BUILD cycle alongside the headline words.
+            headWords.forEach(dimWord);
+            hideSupport(ledeEl);
+            hideSupport(buildEl);
+          }
         }
       } else if (phase === 'collapse') {
         if (now - cycleStart >= COLLAPSE) { phase = 'empty'; cycleStart = now; }
       } else if (phase === 'empty') {
-        if (now - cycleStart >= EMPTY) { phase = 'build'; cycleStart = now; resetWords(); }
+        if (now - cycleStart >= EMPTY) { phase = 'build'; cycleStart = now; resetShown(); }
       }
 
       for (let i = nums.length - 1; i >= 0; i--) {
