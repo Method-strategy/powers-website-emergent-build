@@ -1224,14 +1224,18 @@ function Hero() {
     }
 
     function rand(a, b) { return a + Math.random() * (b - a); }
-    function fmt() {
-      const sign = Math.random() < 0.5 ? -1 : 1;
+    function fmt(positive) {
+      // Sign is tied to the spawn-time `positive` flag so each
+      // number's color and sign are always consistent: green = +,
+      // red = -. Previously rolled an independent random sign here,
+      // which produced visually wrong combos (green negatives and
+      // red positives) about half the time.
       const mag = Math.random();
       let v;
       if (mag < 0.6) v = rand(1, 18).toFixed(0);
       else if (mag < 0.9) v = rand(18, 45).toFixed(0);
       else v = rand(45, 120).toFixed(0);
-      return (sign < 0 ? '-' : '+') + v + '%';
+      return (positive ? '+' : '-') + v + '%';
     }
 
     const nums = [];
@@ -1258,7 +1262,7 @@ function Hero() {
       }
 
       nums.push({
-        text: fmt(),
+        text: fmt(positive),
         x, y, size,
         color: positive ? GREEN : RED,
         op: 0, maxOp,
