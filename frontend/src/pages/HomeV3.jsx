@@ -1951,6 +1951,202 @@ function SectionExpertiseAreas() {
   );
 }
 
+/* ── SECTION (alt) — FIVE DISCIPLINES, EDITORIAL STACK ──────────────
+ * Alternate treatment for the Five Disciplines section, rendered only
+ * on the /v3-disciplines-stack comparison route. Restructures the same
+ * five cards (no copy changes) from a tab-strip + drawer into a
+ * vertical editorial stack — one row per discipline.
+ *
+ * Each row carries:
+ *   - mono numeric eyebrow (01 — 05) — re-using the page's mono label idiom
+ *   - large sans headline with the gold (italic serif) accent on the
+ *     concept keyword (matches Row 2 / How We Work / CTA pivot pattern)
+ *   - existing body paragraph at lede size on the right
+ *   - existing routed "Learn more" link at the row foot
+ *   - thin hairline rule between rows
+ *
+ * No copy is altered. The headlines are split in code so the gold
+ * accent can fall on a sub-word; the full text of the headline still
+ * reads exactly as in EXPERTISE_CARDS.
+ * ───────────────────────────────────────────────────────────────── */
+
+/* Headline split table — each entry produces the exact same string as
+   the matching EXPERTISE_CARDS[i].headline when concatenated. The
+   `accent` chunk is rendered in serif italic gold; the other chunk in
+   sans navy. We keep this as data (not jsx) so the data file stays the
+   single source of truth for the headline strings. */
+const DISCIPLINE_HEADLINE_PARTS = [
+  // 'Operational Discipline' → "Operational " + italic "Discipline."
+  { lead: 'Operational',   accent: 'Discipline.'   },
+  { lead: 'Frontline',     accent: 'Leadership.'   },
+  { lead: 'Equipment',     accent: 'Reliability.'  },
+  { lead: 'Workforce',     accent: 'Capability.'   },
+  { lead: 'Daily',         accent: 'Accountability.' },
+];
+
+function DisciplineRow({ index, card, accentParts, isLast }) {
+  // Defensive: if the headline somehow doesn't match the split table,
+  // fall back to rendering the headline as-is in sans navy. This keeps
+  // the row from breaking if EXPERTISE_CARDS is reordered.
+  const matchesSplit =
+    `${accentParts.lead} ${accentParts.accent}`.replace(/\.$/, '') ===
+    card.headline.replace(/\.$/, '');
+
+  return (
+    <div style={{
+      borderBottom: isLast ? 'none' : `1px solid ${C.hairline}`,
+      padding: 'clamp(40px, 5vw, 64px) 0',
+    }}>
+      <div
+        data-row-grid
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 5fr) minmax(0, 6fr)',
+          columnGap: 'clamp(32px, 5vw, 88px)',
+          alignItems: 'start',
+        }}
+      >
+        {/* Left column — numeric eyebrow + headline. Headline sits
+            close to the eyebrow so the number reads as a chapter
+            marker, not a list item. */}
+        <div>
+          <div style={{
+            fontFamily: MONO,
+            fontSize: 12,
+            fontWeight: 500,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: C.gold,
+            marginBottom: 18,
+          }}>
+            {String(index + 1).padStart(2, '0')} — Discipline
+          </div>
+          <h3 style={{
+            fontFamily: SANS,
+            fontSize: 'clamp(30px, 3.4vw, 48px)',
+            fontWeight: S.h2Weight,
+            lineHeight: 1.06,
+            letterSpacing: '-0.012em',
+            color: C.navy,
+            margin: 0,
+            textWrap: 'balance',
+          }}>
+            {matchesSplit ? (
+              <>
+                {accentParts.lead}{'\u00a0'}
+                <span style={{
+                  fontFamily: SERIF,
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                  color: C.gold,
+                  letterSpacing: '-0.014em',
+                }}>{accentParts.accent}</span>
+              </>
+            ) : card.headline}
+          </h3>
+        </div>
+
+        {/* Right column — body + Learn more. Body uses the same lede
+            type sizing as How We Work / Where We Work so this section
+            reads as a peer to those rows, not as a different
+            component. Learn more sits at the foot of the column so
+            the row's reading rhythm ends on a forward-arrow CTA. */}
+        <div data-row-body style={{ paddingTop: 4 }}>
+          <p style={{
+            fontFamily: SANS,
+            fontSize: S.ledeSize,
+            fontWeight: 300,
+            lineHeight: 1.65,
+            color: C.body,
+            margin: 0,
+            textWrap: 'pretty',
+          }}>{typo(card.body)}</p>
+          <ExpertiseLearnMoreLink href={card.href} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SectionDisciplinesStack() {
+  return (
+    <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
+      <div style={{
+        maxWidth: S.maxWide,
+        margin: '0 auto',
+        padding: `0 ${S.sectionPadX}`,
+        boxSizing: 'border-box',
+      }}>
+        {/* Header — same eyebrow + h2 pairing as the existing accordion
+            section, so the swap is a body-content change only. Copy
+            unchanged. */}
+        <div style={{ marginBottom: 'clamp(40px, 5vw, 72px)', maxWidth: S.maxRead }}>
+          <ChapterMark n="01" />
+          <Eyebrow label="What Gets Built In" />
+          <h2 style={{
+            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+            color: C.navy, fontFamily: SANS, margin: '0 0 0',
+            letterSpacing: S.h2Tracking, textWrap: 'pretty',
+          }}>
+            Five disciplines.{' '}
+            <span style={{
+              fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
+              color: C.gold,
+            }}>One operation that doesn{'\u2019'}t break down.</span>
+          </h2>
+        </div>
+
+        {/* Stack — one row per discipline. Top + bottom hairlines
+            bracket the set without re-using the framed-box pattern. */}
+        <div style={{
+          borderTop: `1px solid ${C.hairline}`,
+        }}>
+          {EXPERTISE_CARDS.map((card, i) => (
+            <DisciplineRow
+              key={card.headline}
+              index={i}
+              card={card}
+              accentParts={DISCIPLINE_HEADLINE_PARTS[i]}
+              isLast={i === EXPERTISE_CARDS.length - 1}
+            />
+          ))}
+        </div>
+
+        {/* Closing paragraph — unchanged copy from the accordion
+            version. Sits below the stack with the same breathing room
+            as before. */}
+        <p style={{
+          fontFamily: SANS,
+          marginTop: 'clamp(40px, 5vw, 64px)',
+          fontSize: S.ledeSize, fontWeight: 300, lineHeight: 1.65,
+          color: C.body, maxWidth: S.maxRead,
+          textWrap: 'pretty',
+        }}>
+          {typo("Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn\u2019t break down when conditions do.")}
+        </p>
+      </div>
+
+      {/* Responsive: collapse the 2-column row to a single column on
+          mobile so the headline sits above its body instead of
+          competing for narrow column width. Tunes type-scale a touch
+          tighter at narrow widths. */}
+      <style>{`
+        @media (max-width: 820px) {
+          [data-row-grid] {
+            grid-template-columns: 1fr !important;
+            row-gap: 20px !important;
+          }
+          [data-row-body] {
+            padding-top: 0 !important;
+          }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+
+
 function ExecutionExhibit() {
   const canvasRef = useRef(null);
   const toggleBtnRef = useRef(null);
@@ -3492,9 +3688,11 @@ function SectionDifferentApproach() {
   );
 }
 
-function HomeV3() {
+function HomeV3({ disciplinesVariant = 'accordion' }) {
   useV3Fonts();
   useSubheadReveal();
+  const DisciplinesSection =
+    disciplinesVariant === 'stack' ? SectionDisciplinesStack : SectionExpertiseAreas;
   return (
     <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#ffffff' }}>
       <style>{`
@@ -3539,7 +3737,7 @@ function HomeV3() {
             07 — Proven Results (peer evidence)
             08 — Insights (thinking)
             09 — Principle + CTA (redwood beat + closing CTA, paired) */}
-      <SectionExpertiseAreas />
+      <DisciplinesSection />
       <SectionExecutionEngine />
       <SectionHowWeWork />
       <PowersMetrics />
@@ -3564,7 +3762,7 @@ function HomeV3() {
           fontSize: 11, fontWeight: 400, color: 'rgba(255,255,255,0.20)',
           fontFamily: 'inherit', letterSpacing: '0.06em',
         }}>
-          POWERS Website Evolution — v0.4.0 · /v3 design iteration
+          POWERS Website Evolution — v0.4.0 · /v3 design iteration{disciplinesVariant === 'stack' ? ' · disciplines: stack' : ''}
         </span>
       </div>
     </div>
