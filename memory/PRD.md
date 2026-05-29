@@ -169,6 +169,32 @@ The case-study system is built to migrate cleanly to Faust.js + WP Engine + WPGr
 - Hero animation re-tuned per `POWERS_Hero_Integration_Brief.md`: BUILD lengthened 3600→4400ms, PEAK lengthened 1100→3500ms (the "executive watching readouts they can't control" beat now registers as chaos, not flash-by). Word reveal milestones updated from 3 (0.34/0.66) to 5 (0.30/0.58/0.78/0.92) so the lede + "We build the foundation." line now ride the BUILD/PEAK/COLLAPSE/EMPTY cycle with the headline words — they fade up in build, hold in peak, and fade out during collapse. Produces a perpetual emotional rhythm rather than a one-shot reveal. Verified live across one full cycle.
 - Section 4 ("Strong numbers. Regardless of conditions.") now has a "What that means" mono eyebrow above the h2, styled to match the Section 3 "What we build" eyebrow exactly (same color, size, tracking). Creates a paired narrative beat: S3 = what we build → S4 = what that means.
 
+## Handoff Package (2026-05-29)
+
+The homepage + shell + chrome + architecture is feature-complete for the Monday CEO concept review. A full handoff package has been produced for Patrik (senior dev) to begin headless integration onto Faust.js + WP Engine. Subsequent pages (Industries Served, expertise area body content, remaining case studies, Approach, Discovery, Careers, etc.) will be built in their own focused conversations and wired in by Patrik between builds.
+
+Handoff package lives at `/app/handoff/`:
+
+- `README.md` — entry point, what's in the box, reading order
+- `ARCHITECTURE.md` — file tree, routing, conventions, quirks
+- `DESIGN_SYSTEM.md` — locked type/color tokens, naming rules, editorial pivot pattern
+- `COMPONENT_INVENTORY.md` — every component, data shape contract (CMS-agnostic per Patrik's preference)
+- `SECTION_CHOREOGRAPHY.md` — Hero, S3, S4, video loop, subhead reveal animation specs
+- `ASSET_MANIFEST.md` — fonts, video, images, brand docs
+- `ROUTES_AND_REDIRECTS.md` — active routes + legacy .html slug aliases
+- `KNOWN_TUNING_LEVERS.md` — explicitly flagged tuning points + things NOT to change
+- `screenshots/` — 8 canonical desktop captures of each section in final state
+
+Total handoff size: 88KB markdown + 8 JPEG screenshots (~530KB).
+
+Patrik's preferences (asked & answered):
+- Stack: Faust.js + WP Engine
+- Schema: agnostic — describe data shapes per component, let him model
+- Format: markdown files under `/app/handoff/`
+- History doc: skipped (no design archaeology — current state only)
+- Timeline: hand off now, integration begins before/during/after Monday CEO review
+
+
 
 ## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).
