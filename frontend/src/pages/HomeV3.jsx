@@ -1993,10 +1993,14 @@ function DisciplineRow({ index, card, accentParts, isLast }) {
     card.headline.replace(/\.$/, '');
 
   return (
-    <div style={{
-      borderBottom: isLast ? 'none' : `1px solid ${C.hairline}`,
-      padding: 'clamp(40px, 5vw, 64px) 0',
-    }}>
+    <div
+      data-discipline-row
+      data-discipline-index={index}
+      style={{
+        borderBottom: isLast ? 'none' : `1px solid ${C.hairline}`,
+        padding: 'clamp(40px, 5vw, 64px) 0',
+      }}
+    >
       <div
         data-row-grid
         style={{
@@ -2068,7 +2072,108 @@ function DisciplineRow({ index, card, accentParts, isLast }) {
   );
 }
 
+/* FoundationDiagram — small SVG schematic of the five disciplines as
+   an interlocking foundation. Five gold-hairline segments laid end to
+   end, each labeled 01–05; small horizontal "joinery ticks" sit at
+   each segment boundary, suggesting dovetail/mortised joints. The
+   segment matching `activeIndex` fills solid gold (label flips to
+   white); the others remain outlined.
+
+   Visual purpose: this is the section's structural "key" — it shows
+   that the rows are pieces of one continuous foundation, not five
+   independent items. The active highlight, driven by the row currently
+   in the reader's viewport, gives the diagram the sense of being built
+   piece by piece as the reader scrolls through the rows. */
+function FoundationDiagram({ activeIndex }) {
+  const COUNT = 5;
+  const SEG_W = 64;
+  const H = 44;
+  const W = SEG_W * COUNT;
+  return (
+    <svg
+      width={W}
+      height={H}
+      viewBox={`0 0 ${W} ${H}`}
+      aria-hidden="true"
+      style={{ display: 'block' }}
+    >
+      {Array.from({ length: COUNT }).map((_, i) => {
+        const x = i * SEG_W;
+        const isActive = i === activeIndex;
+        return (
+          <g key={i}>
+            <rect
+              x={x + 0.5}
+              y={0.5}
+              width={SEG_W - 1}
+              height={H - 1}
+              fill={isActive ? C.gold : 'transparent'}
+              stroke={C.gold}
+              strokeWidth={1}
+              style={{ transition: 'fill 360ms cubic-bezier(0.22, 0.61, 0.36, 1)' }}
+            />
+            <text
+              x={x + SEG_W / 2}
+              y={H / 2 + 0.5}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontFamily={MONO}
+              fontSize={11}
+              fontWeight={500}
+              letterSpacing="0.12em"
+              fill={isActive ? '#ffffff' : C.navy}
+              style={{ transition: 'fill 360ms cubic-bezier(0.22, 0.61, 0.36, 1)' }}
+            >
+              {String(i + 1).padStart(2, '0')}
+            </text>
+          </g>
+        );
+      })}
+      {/* Joinery ticks — small horizontal hairlines at the top and
+          bottom of each segment boundary. They read as dovetail-joint
+          marks on an architectural elevation drawing. */}
+      {Array.from({ length: COUNT - 1 }).map((_, i) => {
+        const cx = (i + 1) * SEG_W;
+        return (
+          <g key={`joint-${i}`} stroke={C.gold} strokeWidth={1}>
+            <line x1={cx - 4} y1={4} x2={cx + 4} y2={4} />
+            <line x1={cx - 4} y1={H - 4} x2={cx + 4} y2={H - 4} />
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 function SectionDisciplinesStack() {
+  // Track which row is currently in the reader's focal band of the
+  // viewport. Drives the FoundationDiagram's active-segment highlight.
+  // We use a rootMargin that defines the band as the middle ~20% of the
+  // viewport, so the highlight feels like it follows the reader's
+  // attention rather than just the first row that enters the screen.
+  const [activeIndex, setActiveIndex] = useState(0);
+  const rowsRef = useRef(null);
+
+  useEffect(() => {
+    const container = rowsRef.current;
+    if (!container) return;
+    const elements = Array.from(container.querySelectorAll('[data-discipline-row]'));
+    if (!elements.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number(entry.target.getAttribute('data-discipline-index'));
+            if (!Number.isNaN(idx)) setActiveIndex(idx);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: '-40% 0px -40% 0px' }
+    );
+    elements.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
       <div style={{
@@ -2078,9 +2183,8 @@ function SectionDisciplinesStack() {
         boxSizing: 'border-box',
       }}>
         {/* Header — same eyebrow + h2 pairing as the existing accordion
-            section, so the swap is a body-content change only. Copy
-            unchanged. */}
-        <div style={{ marginBottom: 'clamp(40px, 5vw, 72px)', maxWidth: S.maxRead }}>
+            section. */}
+        <div style={{ marginBottom: 'clamp(28px, 3.2vw, 40px)', maxWidth: S.maxRead }}>
           <ChapterMark n="01" />
           <Eyebrow label="What Gets Built In" />
           <h2 style={{
@@ -2096,41 +2200,64 @@ function SectionDisciplinesStack() {
           </h2>
         </div>
 
-        {/* Stack — one row per discipline. Top + bottom hairlines
-            bracket the set without re-using the framed-box pattern. */}
-        <div style={{
-          borderTop: `1px solid ${C.hairline}`,
-        }}>
-          {EXPERTISE_CARDS.map((card, i) => (
-            <DisciplineRow
-              key={card.headline}
-              index={i}
-              card={card}
-              accentParts={DISCIPLINE_HEADLINE_PARTS[i]}
-              isLast={i === EXPERTISE_CARDS.length - 1}
-            />
-          ))}
-        </div>
-
-        {/* Closing paragraph — unchanged copy from the accordion
-            version. Sits below the stack with the same breathing room
-            as before. */}
+        {/* Closing paragraph — relocated up under the h2 so it supports
+            the subhead it's tied to. Same copy as before, unchanged. */}
         <p style={{
           fontFamily: SANS,
-          marginTop: 'clamp(40px, 5vw, 64px)',
           fontSize: S.ledeSize, fontWeight: 300, lineHeight: 1.65,
           color: C.body, maxWidth: S.maxRead,
           textWrap: 'pretty',
+          margin: '0 0 clamp(36px, 4vw, 56px)',
         }}>
           {typo("Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn\u2019t break down when conditions do.")}
         </p>
+
+        {/* Diagram + rows container. The diagram is `position: sticky`
+            on desktop so it stays in view at the top of the row column
+            as the reader scrolls past each discipline — visually
+            asserting that all five rows are pieces of the same
+            foundation. On mobile the sticky behavior is disabled and
+            the diagram simply sits at the top of the stack. */}
+        <div style={{ position: 'relative' }}>
+          <div
+            data-foundation-sticky
+            style={{
+              background: C.white,
+              padding: 'clamp(20px, 2.5vw, 32px) 0 clamp(20px, 2.5vw, 32px)',
+              borderBottom: `1px solid ${C.hairline}`,
+              zIndex: 5,
+            }}
+          >
+            <FoundationDiagram activeIndex={activeIndex} />
+          </div>
+          <div ref={rowsRef}>
+            {EXPERTISE_CARDS.map((card, i) => (
+              <DisciplineRow
+                key={card.headline}
+                index={i}
+                card={card}
+                accentParts={DISCIPLINE_HEADLINE_PARTS[i]}
+                isLast={i === EXPERTISE_CARDS.length - 1}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Responsive: collapse the 2-column row to a single column on
-          mobile so the headline sits above its body instead of
-          competing for narrow column width. Tunes type-scale a touch
-          tighter at narrow widths. */}
+      {/* Responsive:
+          - <=820px: rows collapse to single column; sticky diagram
+            falls back to static positioning (sticky inside a narrow
+            column reads as visual noise on phones). */}
       <style>{`
+        [data-foundation-sticky] {
+          position: relative;
+        }
+        @media (min-width: 821px) {
+          [data-foundation-sticky] {
+            position: sticky;
+            top: 96px;
+          }
+        }
         @media (max-width: 820px) {
           [data-row-grid] {
             grid-template-columns: 1fr !important;
@@ -2138,6 +2265,11 @@ function SectionDisciplinesStack() {
           }
           [data-row-body] {
             padding-top: 0 !important;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-foundation-sticky] {
+            position: relative !important;
           }
         }
       `}</style>
@@ -3688,11 +3820,9 @@ function SectionDifferentApproach() {
   );
 }
 
-function HomeV3({ disciplinesVariant = 'accordion' }) {
+function HomeV3() {
   useV3Fonts();
   useSubheadReveal();
-  const DisciplinesSection =
-    disciplinesVariant === 'stack' ? SectionDisciplinesStack : SectionExpertiseAreas;
   return (
     <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#ffffff' }}>
       <style>{`
@@ -3737,7 +3867,7 @@ function HomeV3({ disciplinesVariant = 'accordion' }) {
             07 — Proven Results (peer evidence)
             08 — Insights (thinking)
             09 — Principle + CTA (redwood beat + closing CTA, paired) */}
-      <DisciplinesSection />
+      <SectionDisciplinesStack />
       <SectionExecutionEngine />
       <SectionHowWeWork />
       <PowersMetrics />
@@ -3762,7 +3892,7 @@ function HomeV3({ disciplinesVariant = 'accordion' }) {
           fontSize: 11, fontWeight: 400, color: 'rgba(255,255,255,0.20)',
           fontFamily: 'inherit', letterSpacing: '0.06em',
         }}>
-          POWERS Website Evolution — v0.4.0 · /v3 design iteration{disciplinesVariant === 'stack' ? ' · disciplines: stack' : ''}
+          POWERS Website Evolution — v0.4.0 · /v3 design iteration
         </span>
       </div>
     </div>
