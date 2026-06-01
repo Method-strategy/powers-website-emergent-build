@@ -71,9 +71,36 @@ function NLegalLink({ href, children }) {
 export default function SiteFooter() {
   return (
     <footer data-testid="site-footer" style={{ background: NC.navy900, fontFamily: FONT, borderTop: `1px solid ${NC.gold}` }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 48px 64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px 40px' }}>
+      {/* Responsive footer grid — see HomeV3 Footer for the same recipe.
+          Brand column gets a wider track so the tagline lands on one line
+          and the link columns aren't left swimming in whitespace. */}
+      <style>{`
+        .pf-footer-grid {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 72px 48px 64px;
+          display: grid;
+          gap: 56px 32px;
+          grid-template-columns: minmax(340px, 1.7fr) repeat(3, minmax(140px, 1fr));
+          box-sizing: border-box;
+        }
+        @media (max-width: 980px) {
+          .pf-footer-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 48px 32px;
+          }
+        }
+        @media (max-width: 560px) {
+          .pf-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 40px 0;
+            padding: 56px 24px 48px;
+          }
+        }
+      `}</style>
+      <div className="pf-footer-grid">
 
-        <div style={{ maxWidth: 340 }}>
+        <div style={{ maxWidth: 380 }}>
           <Anchor href="index.html" style={{ textDecoration: 'none', display: 'inline-block' }}>
             <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" style={{ width: 140, height: 'auto', display: 'block', marginBottom: 16 }} />
           </Anchor>

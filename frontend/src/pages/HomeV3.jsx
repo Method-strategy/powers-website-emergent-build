@@ -2418,17 +2418,41 @@ function LegalLink({ children }) {
 function Footer() {
   return (
     <footer style={{ background: '#0f2a47', fontFamily: 'inherit', borderTop: '1px solid #e89346' }}>
+      {/* Responsive footer grid.
+          Desktop: brand column gets a wider track (1.7fr vs 1fr) so the
+          "Strong Execution. Strong Performance." tagline lands on one
+          line and the link columns aren't left swimming in whitespace.
+          Tablet (≤980): collapses to 2×2.  Phone (≤560): single column. */}
+      <style>{`
+        .pf-footer-grid {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 72px 48px 64px;
+          display: grid;
+          gap: 56px 32px;
+          grid-template-columns: minmax(340px, 1.7fr) repeat(3, minmax(140px, 1fr));
+          box-sizing: border-box;
+        }
+        @media (max-width: 980px) {
+          .pf-footer-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 48px 32px;
+          }
+        }
+        @media (max-width: 560px) {
+          .pf-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 40px 0;
+            padding: 56px 24px 48px;
+          }
+        }
+      `}</style>
+
       {/* Main columns */}
-      <div style={{
-        maxWidth: 1280, margin: '0 auto',
-        padding: '72px 48px 64px',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '48px 40px',
-      }}>
+      <div className="pf-footer-grid">
 
         {/* Col 1: Brand */}
-        <div style={{ maxWidth: 340 }}>
+        <div style={{ maxWidth: 380 }}>
           <a href="index.html" style={{ textDecoration: 'none', display: 'inline-block' }}>
             <img
               src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png"
