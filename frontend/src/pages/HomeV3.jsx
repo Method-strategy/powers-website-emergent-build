@@ -1106,7 +1106,7 @@ function Header() {
    and collapses behind the lede column — visualising the very thing
    the operator is told to stop chasing. The H1 reveals word-by-word
    ("Stop" → "Chasing" → "Numbers.") timed to the swarm's build, then
-   the lede + "We build the capacity to execute." + scroll cue resolve in
+   the lede + "We build your capacity to execute." + scroll cue resolve in
    sequence as the swarm collapses.
 
    The animation runs as a perpetual 4-phase cycle:
@@ -1141,7 +1141,7 @@ function Hero() {
     function showWord(el) { if (!el) return; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
     function dimWord(el) { if (!el) return; el.style.opacity = '0.22'; el.style.transform = 'translateY(0)'; }
 
-    // The lede + "We build the capacity to execute." line ride the
+    // The lede + "We build your capacity to execute." line ride the
     // same per-cycle reveal beat as the headline words. They fade up
     // in the BUILD phase and fade out in the COLLAPSE phase alongside
     // the headline dim, producing the perpetual emotional rhythm:
@@ -1493,7 +1493,7 @@ function Hero() {
             opacity: 0,
             transform: 'translateY(14px)',
             marginBottom: 0,
-          }}>We build the capacity to execute.</p>
+          }}>We build your capacity to execute.</p>
         </div>
       </div>
 
