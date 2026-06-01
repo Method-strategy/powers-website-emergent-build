@@ -2255,7 +2255,7 @@ function FooterCTA() {
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
             color: '#e89346', letterSpacing: '-0.014em',
             marginTop: '0.05em',
-          }}>Start building the foundation.</span>
+          }}>Start building execution capacity.</span>
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'end' }}>
