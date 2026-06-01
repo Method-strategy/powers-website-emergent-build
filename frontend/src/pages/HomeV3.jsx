@@ -954,7 +954,7 @@ function Header() {
             whiteSpace: 'nowrap',
             paddingTop: 1,
           }}>
-            Strong Foundation. Strong Performance.
+            Strong Execution. Strong Performance.
           </span>
         </div>
 
@@ -1106,7 +1106,7 @@ function Header() {
    and collapses behind the lede column — visualising the very thing
    the operator is told to stop chasing. The H1 reveals word-by-word
    ("Stop" → "Chasing" → "Numbers.") timed to the swarm's build, then
-   the lede + "We build the foundation." + scroll cue resolve in
+   the lede + "We build the capacity to execute." + scroll cue resolve in
    sequence as the swarm collapses.
 
    The animation runs as a perpetual 4-phase cycle:
@@ -1155,7 +1155,7 @@ function Hero() {
         el.style.transform = 'translateY(0)';
       }, delay);
     }
-    // Per the new brief: the lede + "We build the foundation." line
+    // Per the new brief: the lede + "We build the capacity to execute." line
     // ride the same per-cycle reveal beat as the headline words. They
     // fade up in the BUILD phase and fade out in the COLLAPSE phase
     // alongside the headline dim, producing the perpetual
@@ -1494,7 +1494,7 @@ function Hero() {
             margin: 0,
             textWrap: 'pretty',
           }}>
-            {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals at the root of your operation. When they\u2019re missing, your ability to execute is at the mercy of conditions. When they\u2019re built in, it isn\u2019t.")}
+            {typo("Strong quarters and weak ones are both readouts of the same thing: the fundamentals of execution at the root of your operation. When they\u2019re missing, your operation\u2019s performance is at the mercy of conditions. When they\u2019re built in, it isn\u2019t.")}
           </p>
           <p ref={buildRef} style={{
             marginTop: 24,
@@ -1508,7 +1508,7 @@ function Hero() {
             opacity: 0,
             transform: 'translateY(14px)',
             marginBottom: 0,
-          }}>We build the foundation.</p>
+          }}>We build the capacity to execute.</p>
         </div>
       </div>
 
@@ -2408,7 +2408,7 @@ function Footer() {
           <div style={{
             fontSize: 13, fontWeight: 500, letterSpacing: '0.14em',
             color: '#e89346', fontFamily: 'inherit', marginBottom: 14,
-          }}>Strong Foundation. Strong Performance.</div>
+          }}>Strong Execution. Strong Performance.</div>
           <p style={{
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,
             color: 'rgba(255,255,255,0.60)', fontFamily: 'inherit', margin: 0,
