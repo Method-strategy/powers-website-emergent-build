@@ -1279,11 +1279,12 @@ function Hero() {
     // Timings tuned per the new Hero Integration Brief (2026-05-29):
     // - BUILD lengthened 3600→4400ms so the swarm has room to assemble
     //   without crowding the headline reveal beats.
-    // - PEAK lengthened 1100→3500ms — "see how many readouts the
+    // - PEAK lengthened 1100→3500→5500ms — "see how many readouts the
     //   executive is tracking" should sit long enough to register as
-    //   chaos, not flash by.
+    //   chaos, not flash by. 2026-05-30 bumped +2000ms to give the
+    //   blurb + closing line longer dwell time on screen.
     // - COLLAPSE/EMPTY unchanged.
-    const BUILD = 4400, PEAK = 3500, COLLAPSE = 1500, EMPTY = 650;
+    const BUILD = 4400, PEAK = 5500, COLLAPSE = 1500, EMPTY = 650;
     let lastSpawn = 0;
     // Tracks reveal state for all five animated elements (3 headline
     // words + lede + build line). Reset each EMPTY→BUILD transition
