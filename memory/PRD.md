@@ -195,6 +195,23 @@ Patrik's preferences (asked & answered):
 - Timeline: hand off now, integration begins before/during/after Monday CEO review
 
 
+## Cleanup Pass (2026-06-01)
+
+After the client kick-off home run, the user requested a responsive audit + code cleanup. Findings & changes:
+
+- **7 deprecated color alias usages replaced with canonical names** (per `DESIGN_SYSTEM.md` rule "do not introduce deprecated aliases in new code"):
+  - `C.copper` × 2 → `C.gold` (Row 5 + Row 8 italic accents)
+  - `C.gold600` × 2 → `C.gold` (industries + case studies hover states — see next item)
+  - `C.navy900` → `C.navyDeep` (How We Work video container background)
+  - `C.navy400` × 2 → `C.body` (footer small text hover states)
+- **Fixed 2 no-op hover states** (color-toggle between identical values now that the deprecated aliases all resolve to `C.gold`) by upgrading to `underline-on-hover + arrow-nudge` pattern (matches the discipline `CardLearnMore` treatment). Affects "Explore the industries we serve →" and "See All Case Studies →" links.
+- **Deleted ~20 lines of dead code** in Hero: the `revealStatic` function was defined but never called (replaced months ago by `showSupport`/`hideSupport` per the per-cycle reveal brief). Stale comment also removed.
+- **Tagline column re-balance** (separate prior request): brand column maxWidth widened 280→340px so "Strong Execution. Strong Performance." fits one line at desktop. Each sentence wrapped in `whiteSpace: 'nowrap'` so narrower viewports break cleanly between sentences. Applied to both `SiteFooter` and the inline `HomeV3` footer.
+- **Lint clean** across all modified files.
+- **Responsive audit**: media queries verified present at 480 / 880 / 900 / 980 px + reduced-motion in the rendered DOM. Playwright's screenshot tool doesn't honor viewport changes, so visual mobile QA was inconclusive from here — real-device testing on Netlify is the ground truth. Architectural note carried into handoff: S3 uses 980px breakpoint (5-card spatial grid needs the wider room), S4 + chrome use 880px — intentional per choreography briefs.
+- **One pre-existing React console warning noted but not chased**: "mixing shorthand and non-shorthand style properties during rerender." Cosmetic warning, not functional. Pre-existed this pass.
+
+
 
 ## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).

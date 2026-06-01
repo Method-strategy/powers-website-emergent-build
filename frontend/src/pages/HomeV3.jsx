@@ -726,7 +726,7 @@ function SearchBtn() {
         border: `1px solid ${h ? C.gold : C.gray100}`,
         borderRadius: 4,
         background: h ? 'rgba(232,147,70,0.10)' : 'transparent',
-        color: h ? C.navy : C.navy400,
+        color: h ? C.navy : C.body,
         cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         transition: 'all 160ms ease',
@@ -1141,29 +1141,14 @@ function Hero() {
     function showWord(el) { if (!el) return; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
     function dimWord(el) { if (!el) return; el.style.opacity = '0.22'; el.style.transform = 'translateY(0)'; }
 
-    function revealStatic(el, delay) {
-      // Kept for parity with the original API; the new brief moves
-      // both support elements (lede + build) into the per-cycle
-      // reveal driven by the swarm cycle, so this helper is no longer
-      // called at boot. Leaving the definition in place lets us
-      // toggle back to a "first-cycle freeze" behaviour quickly if
-      // stakeholder feedback says the per-cycle ride feels too busy.
-      setTimeout(() => {
-        if (!el) return;
-        el.style.transition = 'opacity 1.1s cubic-bezier(.22,.61,.36,1), transform 1.1s cubic-bezier(.22,.61,.36,1)';
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, delay);
-    }
-    // Per the new brief: the lede + "We build the capacity to execute." line
-    // ride the same per-cycle reveal beat as the headline words. They
-    // fade up in the BUILD phase and fade out in the COLLAPSE phase
-    // alongside the headline dim, producing the perpetual
-    // emotional rhythm: readouts pile up → executive sees the chaos →
-    // they collapse → the message momentarily disappears with them →
-    // it all comes back. The current loop applies the corresponding
-    // transitions once at boot; the actual opacity/transform values
-    // are driven by the step loop below.
+    // The lede + "We build the capacity to execute." line ride the
+    // same per-cycle reveal beat as the headline words. They fade up
+    // in the BUILD phase and fade out in the COLLAPSE phase alongside
+    // the headline dim, producing the perpetual emotional rhythm:
+    // readouts pile up → executive sees the chaos → they collapse →
+    // the message momentarily disappears with them → it all comes
+    // back. The transitions get attached once at boot; the actual
+    // opacity/transform values are driven by the step loop below.
     const timeouts = [];
     if (ledeEl) {
       ledeEl.style.transition = 'opacity 1.1s cubic-bezier(.22,.61,.36,1), transform 1.1s cubic-bezier(.22,.61,.36,1)';
@@ -1803,7 +1788,7 @@ function SectionHowWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: 0,
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            We work where value gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>won or lost.</span>
+            We work where value gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>won or lost.</span>
           </h2>
 
           <p style={{
@@ -1857,7 +1842,7 @@ function SectionHowWeWork() {
             (not fullscreen) and `muted` is required for `autoPlay` to be
             honored on every modern browser. */}
         <div style={{
-          background: C.navy900,
+          background: C.navyDeep,
           minHeight: 400,
           display: 'flex', alignItems: 'stretch',
           position: 'relative', overflow: 'hidden',
@@ -1962,7 +1947,7 @@ function SectionWhereWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Wherever the work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>physical, repeatable, and measured.</span>
+            Wherever the work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>physical, repeatable, and measured.</span>
           </h2>
         </div>
 
@@ -1994,16 +1979,30 @@ function SectionWhereWeWork() {
             onMouseEnter={() => setLinkHover(true)}
             onMouseLeave={() => setLinkHover(false)}
             style={{
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 5,
               marginTop: 6,
               fontSize: 15, fontWeight: 600,
-              color: linkHover ? C.gold600 : C.gold,
-              textDecoration: 'none', fontFamily: 'inherit',
-              transition: 'color 150ms ease',
+              color: C.gold,
+              textDecoration: linkHover ? 'underline' : 'none',
+              textUnderlineOffset: 4,
+              textDecorationColor: C.gold,
+              fontFamily: 'inherit',
               letterSpacing: '0.01em',
             }}
           >
-            Explore the industries we serve →
+            Explore the industries we serve
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'inline-block',
+                transform: linkHover ? 'translateX(4px)' : 'translateX(0)',
+                transition: 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+              }}
+            >
+              →
+            </span>
           </Link>
         </div>
       </div>
@@ -2103,12 +2102,27 @@ function SectionResultsEntryPoint() {
             onMouseEnter={() => setH(true)}
             onMouseLeave={() => setH(false)}
             style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 5,
               fontSize: 16, fontWeight: 600,
-              color: h ? C.gold600 : C.gold,
-              textDecoration: 'none', fontFamily: 'inherit',
-              transition: 'color 150ms ease',
+              color: C.gold,
+              textDecoration: h ? 'underline' : 'none',
+              textUnderlineOffset: 4,
+              textDecorationColor: C.gold,
+              fontFamily: 'inherit',
             }}>
-            See All Case Studies →
+            See All Case Studies
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'inline-block',
+                transform: h ? 'translateX(4px)' : 'translateX(0)',
+                transition: 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+              }}
+            >
+              →
+            </span>
           </a>
         </div>
       </div>
@@ -2210,7 +2224,7 @@ function SectionInsightsEntryPoint() {
             onMouseLeave={() => setH(false)}
             style={{
               fontSize: 16, fontWeight: 600,
-              color: h ? C.navy400 : C.navy,
+              color: h ? C.body : C.navy,
               textDecoration: 'none', fontFamily: 'inherit',
               transition: 'color 150ms ease',
             }}>
