@@ -73,11 +73,19 @@ export default function SiteFooter() {
     <footer data-testid="site-footer" style={{ background: NC.navy900, fontFamily: FONT, borderTop: `1px solid ${NC.gold}` }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 48px 64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px 40px' }}>
 
-        <div style={{ maxWidth: 280 }}>
+        <div style={{ maxWidth: 340 }}>
           <Anchor href="index.html" style={{ textDecoration: 'none', display: 'inline-block' }}>
             <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" style={{ width: 140, height: 'auto', display: 'block', marginBottom: 16 }} />
           </Anchor>
-          <div style={{ fontSize: 13, fontWeight: 500, letterSpacing: '0.10em', color: NC.gold, fontFamily: FONT, marginBottom: 14 }}>Strong Execution. Strong Performance.</div>
+          <div style={{ fontSize: 13, fontWeight: 500, letterSpacing: '0.10em', color: NC.gold, fontFamily: FONT, marginBottom: 14 }}>
+            {/* Two-span structure: each sentence is unbreakable, but the
+                container can wrap between them. Result: at any column
+                width that fits both sentences, the tagline reads on one
+                line; at any narrower width, the break always lands
+                between the sentences and never inside one. */}
+            <span style={{ whiteSpace: 'nowrap' }}>Strong Execution.</span>{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Strong Performance.</span>
+          </div>
           <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.65, color: 'rgba(255,255,255,0.60)', fontFamily: FONT, margin: 0 }}>
             Management consulting for manufacturers who need performance that holds across teams, shifts, sites, and holdings.
           </p>

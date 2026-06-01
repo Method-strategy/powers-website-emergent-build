@@ -2397,7 +2397,7 @@ function Footer() {
       }}>
 
         {/* Col 1: Brand */}
-        <div style={{ maxWidth: 280 }}>
+        <div style={{ maxWidth: 340 }}>
           <a href="index.html" style={{ textDecoration: 'none', display: 'inline-block' }}>
             <img
               src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png"
@@ -2408,7 +2408,14 @@ function Footer() {
           <div style={{
             fontSize: 13, fontWeight: 500, letterSpacing: '0.10em',
             color: '#e89346', fontFamily: 'inherit', marginBottom: 14,
-          }}>Strong Execution. Strong Performance.</div>
+          }}>
+            {/* Two-span structure: each sentence is unbreakable, but the
+                container can wrap between them. Result: any width that
+                fits both stays on one line; narrower widths always break
+                cleanly between the sentences. */}
+            <span style={{ whiteSpace: 'nowrap' }}>Strong Execution.</span>{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Strong Performance.</span>
+          </div>
           <p style={{
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,
             color: 'rgba(255,255,255,0.60)', fontFamily: 'inherit', margin: 0,
