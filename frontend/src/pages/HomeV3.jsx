@@ -2404,7 +2404,7 @@ function Footer() {
             color: 'rgba(255,255,255,0.60)', fontFamily: 'inherit', margin: 0,
             textWrap: 'pretty',
           }}>
-            Operations performance consulting that builds execution capability across teams, shifts, sites, and holdings.
+            Operations performance consulting that builds execution capacity across teams, shifts, sites, and holdings.
           </p>
           <LinkedInIcon />
         </div>

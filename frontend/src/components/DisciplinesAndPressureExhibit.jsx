@@ -1441,7 +1441,7 @@ export function SectionPressureExhibit() {
             <canvas
               ref={canvasRef}
               className="s4-canvas"
-              aria-label="Animated exhibit: varied operational pressures are all absorbed by a steady execution-capability core, which emits a calm, even stream of positive outcomes."
+              aria-label="Animated exhibit: varied operational pressures are all absorbed by a steady execution-capacity core, which emits a calm, even stream of positive outcomes."
             />
           </div>
 
