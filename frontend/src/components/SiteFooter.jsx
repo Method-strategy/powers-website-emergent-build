@@ -77,7 +77,7 @@ export default function SiteFooter() {
           <Anchor href="index.html" style={{ textDecoration: 'none', display: 'inline-block' }}>
             <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" style={{ width: 140, height: 'auto', display: 'block', marginBottom: 16 }} />
           </Anchor>
-          <div style={{ fontSize: 13, fontWeight: 500, letterSpacing: '0.14em', color: NC.gold, fontFamily: FONT, marginBottom: 14 }}>Strong Execution. Strong Performance.</div>
+          <div style={{ fontSize: 13, fontWeight: 500, letterSpacing: '0.10em', color: NC.gold, fontFamily: FONT, marginBottom: 14 }}>Strong Execution. Strong Performance.</div>
           <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.65, color: 'rgba(255,255,255,0.60)', fontFamily: FONT, margin: 0 }}>
             Management consulting for manufacturers who need performance that holds across teams, shifts, sites, and holdings.
           </p>

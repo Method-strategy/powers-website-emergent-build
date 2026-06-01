@@ -948,7 +948,7 @@ function Header() {
             fontFamily: SANS,
             fontSize: 13,
             fontWeight: 500,
-            letterSpacing: '0.14em',
+            letterSpacing: '0.10em',
             color: C.navy,
             lineHeight: 1,
             whiteSpace: 'nowrap',
@@ -2406,7 +2406,7 @@ function Footer() {
             />
           </a>
           <div style={{
-            fontSize: 13, fontWeight: 500, letterSpacing: '0.14em',
+            fontSize: 13, fontWeight: 500, letterSpacing: '0.10em',
             color: '#e89346', fontFamily: 'inherit', marginBottom: 14,
           }}>Strong Execution. Strong Performance.</div>
           <p style={{
