@@ -405,7 +405,7 @@ export function SectionDisciplinesFoundation() {
         .s3-h2 {
           line-height: 1.08;
           letter-spacing: -0.012em;
-          margin-bottom: 32px;
+          margin-bottom: 14px;
         }
         .s3-h2 .sans {
           display: inline;
