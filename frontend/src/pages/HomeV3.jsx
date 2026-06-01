@@ -2183,9 +2183,19 @@ function SectionInsightsEntryPoint() {
           <Eyebrow label="Insights" />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 0',
+            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.copper }}>thinking</span>&nbsp;behind the work.</h2>
+          }}>Dig deeper into the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>discipline of execution.</span></h2>
+          {/* Insights lede — matches the Proven Results lede treatment:
+              body color, left-aligned within a centered 720px column. */}
+          <p style={{
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit',
+            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            textWrap: 'pretty',
+          }}>
+            {typo("Nearly thirty years of helping build some of the top-performing operations on the planet. Read how the five disciplines produce sustainable, scalable gains \u2014 shift after shift, year after year.")}
+          </p>
         </div>
         <div style={{
           display: 'grid',
