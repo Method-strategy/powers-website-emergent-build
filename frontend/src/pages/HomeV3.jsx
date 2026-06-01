@@ -1469,7 +1469,7 @@ function Hero() {
           >Numbers<span style={{ color: '#e89346' }}>.</span></span>
         </h1>
 
-        <div ref={rightRef} style={{ alignSelf: 'center', maxWidth: 430 }}>
+        <div ref={rightRef} style={{ alignSelf: 'center', maxWidth: 540 }}>
           <p ref={ledeRef} style={{
             fontSize: 17, lineHeight: 1.65,
             color: 'rgba(230, 237, 246, 0.78)',
