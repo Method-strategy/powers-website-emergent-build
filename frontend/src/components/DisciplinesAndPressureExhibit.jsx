@@ -640,7 +640,7 @@ export function SectionDisciplinesFoundation() {
               <span className="serif">One foundation built to execute no matter what.</span>
             </h2>
             <p className="s3-lede">
-              Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing &mdash; deep enough that performance doesn&rsquo;t break down when conditions do.
+              Not five initiatives or five priorities. Five disciplines built into how the operation executes every shift, every day, every quarter. Weaken one and the others drift. Build them together and they interlock into something load-bearing &mdash; deep enough that performance doesn&rsquo;t break down when conditions do.
             </p>
           </div>
 
