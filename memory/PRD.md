@@ -212,6 +212,15 @@ After the client kick-off home run, the user requested a responsive audit + code
 - **One pre-existing React console warning noted but not chased**: "mixing shorthand and non-shorthand style properties during rerender." Cosmetic warning, not functional. Pre-existed this pass.
 
 
+### Feb 2026 — 5th Metric Card ($1B+ Client Savings) — DONE
+- Added a 5th card to `PowersMetrics.jsx` in the first position: **$1B+ Client Savings** with description "Annualized cost savings produced across engagements, when execution capacity replaces firefighting."
+- Extended the `STATS` schema with an optional `format(n)` function so the count-up can render "$XYZM" mid-animation and snap to "$1B+" at the final frame (the target is `1000`, `Math.round(eased * 1000)` hits exactly `1000` at progress=1 → "$1B+").
+- Extended the `CountUp` sub-component to accept and use the `format` prop; legacy cards without `format` continue to render the default `<number><suffix>` output (zero regression risk for the other 4 cards).
+- Order at `/` is now: **$1B+ Client Savings → 98% Client Retention → 5 WKS Time to Impact → 500+ Operations Strengthened → 30+ Years of Expertise**.
+- Verified via screenshot: all 5 cards render, first-card value reads `$1B+`, label reads `CLIENT SAVINGS`. Lint clean.
+- Resolved blocker carried over from previous fork: malformed JSX + duplicate `export default` at the tail of the file (lines 261-270 in the previous state) — file now ends cleanly at the single `export default PowersMetrics;`.
+
+
 
 ## Pending / Backlog (legacy)
 - P1: Real Insights & Company News content (legacy site marks them as skeleton-only per CLAUDE.md page index).

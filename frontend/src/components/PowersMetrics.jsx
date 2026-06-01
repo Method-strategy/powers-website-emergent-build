@@ -180,8 +180,16 @@ const useStyleInjector = () => {
   }, []);
 };
 
-/* ---------- Count-up sub-component ---------- */
-const CountUp = ({ target, suffix, active }) => {
+/* ---------- Count-up sub-component ----------
+ * Renders an animated number that counts 0 → target over
+ * COUNT_UP_DURATION_MS once `active` flips true.
+ *
+ * `format(n)` (optional) gives the caller full control over the
+ * rendered string at every animation frame — used by the Client
+ * Savings card to display "$XYZM" mid-animation and snap to "$1B+"
+ * at the final frame. When `format` is omitted we fall back to the
+ * default "<number><suffix>" render. */
+const CountUp = ({ target, suffix, active, format }) => {
   const [count, setCount] = useState(0);
   const rafRef = useRef(null);
 
@@ -205,6 +213,10 @@ const CountUp = ({ target, suffix, active }) => {
     animate();
     return () => cancelAnimationFrame(rafRef.current);
   }, [active, animate]);
+
+  if (typeof format === 'function') {
+    return <span>{format(count)}</span>;
+  }
 
   return (
     <span>
@@ -249,16 +261,6 @@ const PowersMetrics = () => {
               <CountUp target={stat.value} suffix={stat.suffix} format={stat.format} active={active} />
             </div>
             <div className="pm-label">{stat.label}</div>
-            <p className="pm-desc">{stat.description}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-export default PowersMetrics;
--label">{stat.label}</div>
             <p className="pm-desc">{stat.description}</p>
           </div>
         ))}
