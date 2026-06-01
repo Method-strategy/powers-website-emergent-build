@@ -1978,7 +1978,7 @@ function SectionWhereWeWork() {
             color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
             textWrap: 'pretty',
           }}>
-            {typo("Execution capability doesn\u2019t belong to one corner of the operation. We build it across production and maintenance, supply chain and procurement, warehousing and logistics, quality and safety, and the working capital and financial flow the operation produces. Whenever the gap between intent and output shows up, that\u2019s where the work happens.")}
+            {typo("Execution capacity doesn\u2019t belong to one corner of the operation. We build it across production and maintenance, supply chain and procurement, warehousing and logistics, quality and safety, and the working capital and financial flow the operation produces. Whenever the gap between intent and output shows up, that\u2019s where the work happens.")}
           </p>
           <p style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,

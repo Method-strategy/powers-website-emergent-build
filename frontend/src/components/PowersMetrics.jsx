@@ -43,13 +43,13 @@ const STATS = [
     value: 500,
     suffix: '+',
     label: 'Operations Strengthened',
-    description: 'Manufacturing, processing, and distribution operations with built-in execution capability.',
+    description: 'Manufacturing, processing, and distribution operations with built-in execution capacity.',
   },
   {
     value: 30,
     suffix: '+',
     label: 'Years of Expertise',
-    description: 'Frontline operations leadership, building execution capability where the work happens.',
+    description: 'Frontline operations leadership, building execution capacity where the work happens.',
   },
 ];
 
