@@ -6,7 +6,7 @@
  * Section 3 builds the foundation: five discipline cards arrange
  * clockwise around a central "core" element. Cards stagger in, the
  * core materializes, connector lines draw from each card to the core,
- * the payoff line lands.
+ * the connector lines draw.
  *
  * Section 3 then exits with the core translating downward 220px and
  * fading out — the optical illusion is that the core is *leaving*
@@ -143,7 +143,6 @@ export function SectionDisciplinesFoundation() {
   const coreRef     = useRef(null);
   const softRef     = useRef(null);
   const anchorRef   = useRef(null);
-  const payoffRef   = useRef(null);
   const discRefs    = useRef([]);
   const sentinelRef = useRef(null);
 
@@ -153,7 +152,6 @@ export function SectionDisciplinesFoundation() {
     const core    = coreRef.current;
     const soft    = softRef.current;
     const anchor  = anchorRef.current;
-    const payoff  = payoffRef.current;
     const discs   = discRefs.current.filter(Boolean);
     const section = sectionRef.current;
     const sentinel = sentinelRef.current;
@@ -250,8 +248,6 @@ export function SectionDisciplinesFoundation() {
       discs.forEach((d) => { d.classList.remove('s3-in'); d.classList.remove('s3-fading'); });
       core.classList.remove('s3-in');
       soft.classList.remove('s3-in');
-      payoff.classList.remove('s3-in');
-      payoff.classList.remove('s3-fading');
 
       connectorOpacity = 1;
       const w = stage.clientWidth, h = stage.clientHeight;
@@ -295,11 +291,9 @@ export function SectionDisciplinesFoundation() {
         connectorRAF = requestAnimationFrame(step);
       }, connectorStart));
 
-      // Payoff lands 100ms before the connectors finish
-      entryTimers.push(setTimeout(() => {
-        payoff.classList.add('s3-in');
-      }, connectorStart + connectorDur - 100));
-
+      // The closing payoff line was removed in v0.4.2 (its content was
+      // merged into the section h2). The connector animation now ends
+      // the entry sequence on its own.
       const totalDur = connectorStart + connectorDur + 100;
       entryTimers.push(setTimeout(() => { sequencePlaying = false; }, totalDur));
     }
@@ -309,7 +303,6 @@ export function SectionDisciplinesFoundation() {
       exitPlaying = true;
       if (anchor) anchor.classList.add('s3-exiting');
       discs.forEach((d) => d.classList.add('s3-fading'));
-      if (payoff) payoff.classList.add('s3-fading');
 
       let t0 = null;
       const fadeStep = (ts) => {
@@ -333,7 +326,6 @@ export function SectionDisciplinesFoundation() {
       discs.forEach((d) => d.classList.add('s3-in'));
       core.classList.add('s3-in');
       soft.classList.add('s3-in');
-      payoff.classList.add('s3-in');
       requestAnimationFrame(() => drawConnectors(1));
       // Still install the resize listener; skip observers.
       const onResize = () => { fitCanvas(); drawConnectors(1); };
@@ -583,34 +575,9 @@ export function SectionDisciplinesFoundation() {
         .s3-disc.d5.s3-in { transform: translate(-50%, 0); }
         .s3-disc.s3-fading { opacity: 0; transition: opacity 1s cubic-bezier(.22,.61,.36,1); }
 
-        .s3-below {
-          max-width: 1240px;
-          margin: 32px auto 0;
-          text-align: center;
-          padding: 0 12px;
-        }
-        .s3-payoff {
-          font-family: ${SANS};
-          font-weight: 800;
-          font-size: clamp(24px, 2.6vw, 36px);
-          line-height: 1.1;
-          color: ${C.navy};
-          letter-spacing: -.012em;
-          opacity: 0;
-          transform: translateY(12px);
-          transition:
-            opacity .9s cubic-bezier(.22,.61,.36,1),
-            transform .9s cubic-bezier(.22,.61,.36,1);
-        }
-        .s3-payoff.s3-in { opacity: 1; transform: translateY(0); }
-        .s3-payoff.s3-fading { opacity: 0; transition: opacity 1s cubic-bezier(.22,.61,.36,1); }
-        .s3-payoff .gold {
-          color: ${C.gold};
-          font-family: ${SERIF};
-          font-style: italic;
-          font-weight: 500;
-          font-size: clamp(24px, 2.6vw, 36px);
-        }
+        /* Removed in v0.4.2: .s3-below / .s3-payoff (the closing
+           "Together, they form your ability to execute…" line). Its
+           message was merged into the section h2. */
 
         @media (max-width: 980px) {
           .s3-row { padding: 80px 32px 56px; }
@@ -648,7 +615,7 @@ export function SectionDisciplinesFoundation() {
           .s3-core-anchor { width: 150px; height: 150px; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .s3-disc, .s3-core, .s3-core-soft, .s3-payoff, .s3-core-text .line {
+          .s3-disc, .s3-core, .s3-core-soft, .s3-core-text .line {
             opacity: 1 !important;
             transform: none !important;
             transition: none !important;
@@ -670,7 +637,7 @@ export function SectionDisciplinesFoundation() {
             <p className="s3-eyebrow">What we build</p>
             <h2 className="s3-h2">
               <span className="sans">Five disciplines.</span>
-              <span className="serif">One foundation.</span>
+              <span className="serif">One foundation built to execute no matter what.</span>
             </h2>
             <p className="s3-lede">
               Not five initiatives or five priorities. Five disciplines built into how the operation runs every shift. Weaken one and the others drift. Build them together and they interlock into something load-bearing &mdash; deep enough that performance doesn&rsquo;t break down when conditions do.
@@ -702,12 +669,6 @@ export function SectionDisciplinesFoundation() {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="s3-below">
-            <p className="s3-payoff" ref={payoffRef}>
-              Together, they form your <span className="gold">ability to execute no matter what.</span>
-            </p>
           </div>
         </div>
         {/* Bottom-of-section sentinel for the exit observer */}
@@ -1418,11 +1379,11 @@ export function SectionPressureExhibit() {
           <div className="s4-copy" ref={copyRef}>
             <p className="s4-eyebrow">What that means</p>
             <h2 className="s4-h2">
-              <span className="sans">Strong numbers.</span>
+              <span className="sans">Strong execution. Strong numbers.</span>
               <span className="serif">Regardless of conditions.</span>
             </h2>
             <p className="s4-lede">
-              Market conditions don&rsquo;t stop coming. The foundation decides what gets through &mdash; and what comes out is strong performance.
+              Market conditions don&rsquo;t stop changing. Your capacity to execute decides whether performance tanks or holds up under pressure.
             </p>
           </div>
 
