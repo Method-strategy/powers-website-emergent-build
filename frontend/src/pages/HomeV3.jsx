@@ -67,20 +67,35 @@ const useV3Fonts = () => {
    <h2 data-subhead-reveal /> as it enters the viewport. The h2 itself
    rises with opacity, then its inline <span> accent (the italic serif
    pivot) fades in ~280ms later — producing the editorial
-   "statement → accent" beat on every subhead. Honors
-   prefers-reduced-motion (handled in CSS). */
+   "statement → accent" beat on every subhead.
+
+   ROW CASCADE: when an H2 reveals, the hook also flips
+   `data-row-revealed="true"` on the nearest <section>. That lets the
+   sibling eyebrow ([data-eyebrow-reveal]) and lede paragraphs
+   ([data-lede-reveal]) cascade off the same trigger via CSS only —
+   producing a consistent "course-by-course lay-in" beat across every
+   row of the page (eyebrow → H2 → accent → lede), without each child
+   needing its own observer (which would desync on tall mobile rows
+   where the eyebrow and lede cross the viewport at different times).
+
+   Honors prefers-reduced-motion (handled in CSS). */
 const useSubheadReveal = () => {
   useEffect(() => {
     const targets = Array.from(document.querySelectorAll('[data-subhead-reveal]'));
     if (!targets.length) return;
+    const markIn = (el) => {
+      el.setAttribute('data-subhead-in', 'true');
+      const row = el.closest('section');
+      if (row) row.setAttribute('data-row-revealed', 'true');
+    };
     if (!('IntersectionObserver' in window)) {
-      targets.forEach((el) => el.setAttribute('data-subhead-in', 'true'));
+      targets.forEach(markIn);
       return;
     }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.setAttribute('data-subhead-in', 'true');
+          markIn(entry.target);
           io.unobserve(entry.target);
         }
       });
@@ -1504,15 +1519,17 @@ function Hero() {
   );
 }
 
-function Eyebrow({ label, light }) { // eslint-disable-line no-unused-vars
+function Eyebrow({ label, light, reveal }) { // eslint-disable-line no-unused-vars
   return (
-    <div style={{
-      fontFamily: MONO,
-      fontSize: 11.5, fontWeight: 500,
-      letterSpacing: '0.24em', textTransform: 'uppercase',
-      color: C.gold,
-      marginBottom: 32,
-    }}>{label}</div>
+    <div
+      {...(reveal ? { 'data-eyebrow-reveal': '' } : {})}
+      style={{
+        fontFamily: MONO,
+        fontSize: 11.5, fontWeight: 500,
+        letterSpacing: '0.24em', textTransform: 'uppercase',
+        color: C.gold,
+        marginBottom: 32,
+      }}>{label}</div>
   );
 }
 
@@ -1782,7 +1799,7 @@ function SectionHowWeWork() {
           display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22,
         }}>
           <ChapterMark n="05" />
-          <Eyebrow label="How We Work" />
+          <Eyebrow label="How We Work" reveal />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: 0,
@@ -1791,21 +1808,21 @@ function SectionHowWeWork() {
             We work where value gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>won or lost.</span>
           </h2>
 
-          <p style={{
+          <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
             {typo("Most consulting firms diagnose, recommend, and leave. They\u2019re out the door at 3pm and don\u2019t work Fridays. The slide decks are sharp. The results never last.")}
           </p>
 
-          <p style={{
+          <p data-lede-reveal data-lede-step="2" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
             {typo("POWERS works differently. We\u2019re on the floor, in the shifts, inside the systems and understanding the behaviors where performance actually breaks down. We build discipline directly into your supervisors, your standards, and your daily operating routines. If the problem is on third-shift maintenance, we\u2019re there on third shift. If the decision gets made at 5\u00a0a.m. before the line starts, we\u2019re there at 5\u00a0a.m.")}
           </p>
 
-          <p style={{
+          <p data-lede-reveal data-lede-step="3" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
@@ -1941,7 +1958,7 @@ function SectionWhereWeWork() {
             for header + body so the section reads as one continuous
             argument rather than a header / multi-block stack. */}
         <div style={{ marginBottom: 36, maxWidth: 920 }}>
-          <Eyebrow label="Where We Work" />
+          <Eyebrow label="Where We Work" reveal />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
@@ -1958,14 +1975,14 @@ function SectionWhereWeWork() {
             argument is now made in prose, and the link below routes
             curious visitors to the dedicated Industries page. */}
         <div style={{ maxWidth: 920 }}>
-          <p style={{
+          <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
             textWrap: 'pretty',
           }}>
             {typo("Execution capacity doesn\u2019t belong to one corner of the operation. We build it across production and maintenance, supply chain and procurement, warehousing and logistics, quality and safety, and the working capital and financial flow the operation produces. Whenever the gap between intent and output shows up, that\u2019s where the work happens.")}
           </p>
-          <p style={{
+          <p data-lede-reveal data-lede-step="2" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
             textWrap: 'pretty',
@@ -2073,7 +2090,7 @@ function SectionResultsEntryPoint() {
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="08" light />
-          <Eyebrow label="Proven Results" />
+          <Eyebrow label="Proven Results" reveal />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
@@ -2081,7 +2098,7 @@ function SectionResultsEntryPoint() {
           }}>Operations built on rock-solid execution produce&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
               reader's peers have built on the same five disciplines. */}
-          <p style={{
+          <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
@@ -2194,7 +2211,7 @@ function SectionInsightsEntryPoint() {
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="09" />
-          <Eyebrow label="Insights" />
+          <Eyebrow label="Insights" reveal />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
@@ -2202,7 +2219,7 @@ function SectionInsightsEntryPoint() {
           }}>Dig deeper into the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>discipline of execution.</span></h2>
           {/* Insights lede — matches the Proven Results lede treatment:
               body color, left-aligned within a centered 720px column. */}
-          <p style={{
+          <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
@@ -2283,7 +2300,7 @@ function FooterCTA() {
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'end' }}>
-          <p style={{
+          <p data-lede-reveal data-lede-step="1" style={{
             fontSize: 17, fontWeight: 300, lineHeight: 1.65,
             color: C.body, fontFamily: SANS,
             margin: 0, maxWidth: 600, textWrap: 'pretty',
@@ -2754,11 +2771,30 @@ function HomeV3() {
   return (
     <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#ffffff' }}>
       <style>{`
+        /* ── COURSE-BY-COURSE LAY-IN ────────────────────────────────
+         * One reveal recipe for every row's eyebrow → H2 → accent →
+         * lede cascade. The H2's IntersectionObserver is the trigger
+         * anchor (see useSubheadReveal); on enter it marks the row
+         * with [data-row-revealed="true"], and the sibling eyebrow /
+         * lede cascade off the same signal via transition-delay.
+         *
+         * Timing (cubic-bezier(0.22, 0.61, 0.36, 1) throughout):
+         *   eyebrow   →   0ms      (8px rise, opacity)
+         *   H2        → 180ms      (12px rise + 6px brick-seat in)
+         *   accent    → 460ms      (italic span inside H2, opacity)
+         *   lede #1   → 360ms      (8px rise, opacity)
+         *   lede #2   → 480ms      (+120ms per additional paragraph)
+         *   lede #3   → 600ms
+         *
+         * Reads as a course of bricks being seated: chalk line first
+         * (eyebrow), then the header brick lays in from the left,
+         * accent pivot settles after, body courses follow.
+         * ──────────────────────────────────────────────────────── */
         [data-subhead-reveal] {
           opacity: 0;
-          transform: translateY(14px);
-          transition: opacity 0.85s cubic-bezier(0.22, 0.61, 0.36, 1),
-                      transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+          transform: translate3d(-6px, 14px, 0);
+          transition: opacity 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) 0.18s,
+                      transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) 0.18s;
         }
         [data-subhead-reveal] > span {
           opacity: 0;
@@ -2766,15 +2802,46 @@ function HomeV3() {
         }
         [data-subhead-reveal][data-subhead-in="true"] {
           opacity: 1;
-          transform: translateY(0);
+          transform: translate3d(0, 0, 0);
         }
         [data-subhead-reveal][data-subhead-in="true"] > span {
           opacity: 1;
-          transition-delay: 0.28s;
+          transition-delay: 0.46s;
         }
+
+        [data-eyebrow-reveal] {
+          opacity: 0;
+          transform: translateY(8px);
+          transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+                      transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        [data-row-revealed="true"] [data-eyebrow-reveal] {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        [data-lede-reveal] {
+          opacity: 0;
+          transform: translateY(8px);
+          transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.36s,
+                      transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.36s;
+        }
+        [data-row-revealed="true"] [data-lede-reveal] {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        [data-lede-reveal][data-lede-step="2"] {
+          transition-delay: 0.48s;
+        }
+        [data-lede-reveal][data-lede-step="3"] {
+          transition-delay: 0.60s;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           [data-subhead-reveal],
-          [data-subhead-reveal] > span {
+          [data-subhead-reveal] > span,
+          [data-eyebrow-reveal],
+          [data-lede-reveal] {
             opacity: 1 !important;
             transform: none !important;
             transition: none !important;
