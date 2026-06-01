@@ -2079,7 +2079,7 @@ function SectionResultsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>The work, on the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>floor.</span></h2>
+          }}>Operations built on rock-solid execution produce&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
               reader's peers have built on the same five disciplines. */}
           <p style={{
@@ -2088,7 +2088,7 @@ function SectionResultsEntryPoint() {
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
-            {typo("The operations below were built on the same five disciplines. Different industries, different pressures, the same foundation underneath.")}
+            {typo("Different industries, different pressures, same five disciplines underneath. The successes below are what that execution looks like in operations like yours.")}
           </p>
         </div>
         <div style={{
