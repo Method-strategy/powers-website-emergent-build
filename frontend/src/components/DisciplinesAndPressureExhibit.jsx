@@ -779,7 +779,7 @@ export function SectionPressureExhibit() {
 
     const ctx = canvas.getContext('2d');
     const NAVY_DEEP = '#0f2a47';
-    const RED = '#d8523c', GREEN = '#3fb364', GOLD = '#e89346';
+    const RED = '#fa4b4b', GREEN = '#4dc774', GOLD = '#e89346';
 
     let DPR = Math.min(window.devicePixelRatio || 1, 2);
     let W = 0, H = 0;
@@ -992,7 +992,7 @@ export function SectionPressureExhibit() {
       if (opacity <= 0.01) return;
       ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
       ctx.fillStyle = color;
-      ctx.font = '500 ' + size.toFixed(1) + 'px "proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
+      ctx.font = '600 ' + size.toFixed(1) + 'px "proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
       ctx.textBaseline = 'middle';
       ctx.textAlign = 'center';
       ctx.fillText(text, x, y);

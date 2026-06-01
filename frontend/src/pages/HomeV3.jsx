@@ -2608,7 +2608,8 @@ function SectionDifferentApproach() {
                 lineHeight: 1.65,
                 color: '#4a5568',
                 marginBottom: '1.25em',
-                maxWidth: '34em',
+                maxWidth: '44em',
+                textWrap: 'pretty',
               }}>
                 {typo('Every firm in this category gets hired to improve the same metrics: throughput, OEE, downtime, margin. Most work on the numbers themselves. Move the metric, build the deck, present the gains.')}
               </p>
@@ -2620,7 +2621,8 @@ function SectionDifferentApproach() {
                 lineHeight: 1.65,
                 color: '#4a5568',
                 marginBottom: '1.25em',
-                maxWidth: '34em',
+                maxWidth: '44em',
+                textWrap: 'pretty',
               }}>
                 {typo('The number lifts for a quarter, then drifts back, because nothing underneath the operation actually changed. Supervisors are still firefighting instead of leading. Standards still break down shift to shift. Daily execution is still unstable.')}
               </p>
@@ -2633,7 +2635,8 @@ function SectionDifferentApproach() {
                 lineHeight: 1.65,
                 color: '#4a5568',
                 marginBottom: '1.25em',
-                maxWidth: '34em',
+                maxWidth: '44em',
+                textWrap: 'pretty',
               }}>
                 That&rsquo;s where we work.
               </p>
@@ -2645,7 +2648,8 @@ function SectionDifferentApproach() {
                 lineHeight: 1.65,
                 color: '#4a5568',
                 marginBottom: '1.25em',
-                maxWidth: '34em',
+                maxWidth: '44em',
+                textWrap: 'pretty',
               }}>
                 {typo('Not in the boardroom or on the dashboard. Where the work actually happens \u2014 on the floor, in the shifts, with the people, inside the standards, the supplier relationships, the AP/AR process. Wherever performance either holds up or breaks down.')}
               </p>
@@ -2657,7 +2661,8 @@ function SectionDifferentApproach() {
                 lineHeight: 1.65,
                 color: '#4a5568',
                 marginBottom: 0,
-                maxWidth: '34em',
+                maxWidth: '44em',
+                textWrap: 'pretty',
               }}>
                 {typo('That\u2019s what we build \u2014 with your people, inside your operation, in the routines that sustain performance long after we\u2019re gone.')}
               </p>
