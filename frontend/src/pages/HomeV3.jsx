@@ -2597,7 +2597,7 @@ function SectionDifferentApproach() {
                 fontSize: S.h2Size,
                 color: '#e89346',
                 marginTop: '0.05em',
-              }}>We work where the numbers come from.</span>
+              }}>We work on the execution that produces them.</span>
             </h2>
 
             <div>
