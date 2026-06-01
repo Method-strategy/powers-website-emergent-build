@@ -25,8 +25,26 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-/* ---------- TWEAK: stat data ---------- */
+/* ---------- TWEAK: stat data ----------
+ * `value` is the animation target (the count animates 0 → value over
+ * COUNT_UP_DURATION_MS).
+ * `suffix` is appended after the rendered number.
+ * `format(n)` is an optional escape hatch — when provided, it takes
+ *   the current animated value and returns the full string to render
+ *   (overriding the default "value+suffix" output). Used for cards
+ *   like Client Savings where the displayed format ($XYZM → $1B+)
+ *   doesn't decompose cleanly into a single value+suffix pair. */
 const STATS = [
+  {
+    value: 1000,
+    suffix: '',
+    label: 'Client Savings',
+    description: 'Annualized cost savings produced across engagements, when execution capacity replaces firefighting.',
+    // Count climbs through millions ($XYZM) and lands on $1B+ at the
+    // end. Math.round(eased * 1000) hits 1000 exactly at progress=1,
+    // so the snap to "$1B+" is the natural final frame.
+    format: (n) => (n >= 1000 ? '$1B+' : `$${n}M`),
+  },
   {
     value: 98,
     suffix: '%',
@@ -89,7 +107,7 @@ const STYLES = `
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   width: 100%;
-  max-width: 960px;
+  max-width: 1180px;
   background: var(--pm-border);
   gap: 1px;
 }
@@ -228,9 +246,19 @@ const PowersMetrics = () => {
             data-testid={`metric-card-${i}`}
           >
             <div className="pm-value" data-testid={`metric-value-${i}`}>
-              <CountUp target={stat.value} suffix={stat.suffix} active={active} />
+              <CountUp target={stat.value} suffix={stat.suffix} format={stat.format} active={active} />
             </div>
             <div className="pm-label">{stat.label}</div>
+            <p className="pm-desc">{stat.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default PowersMetrics;
+-label">{stat.label}</div>
             <p className="pm-desc">{stat.description}</p>
           </div>
         ))}
