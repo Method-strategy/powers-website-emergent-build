@@ -663,7 +663,7 @@ export function SectionDisciplinesFoundation() {
               <div className="s3-core" ref={coreRef}>
                 <div className="s3-core-text">
                   <span className="line">Execution</span>
-                  <span className="line">Capacity</span>
+                  <span className="line">Capability</span>
                   <span className="line">Rooted in</span>
                   <span className="line">Discipline</span>
                 </div>
@@ -1016,7 +1016,7 @@ export function SectionPressureExhibit() {
       const titleSize = Math.max(12, r * 0.150);
       ctx.font = '500 ' + titleSize.toFixed(0) + 'px "proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
       ctx.fillStyle = GOLD;
-      const lines = ['EXECUTION', 'CAPACITY', 'ROOTED IN', 'DISCIPLINE'];
+      const lines = ['EXECUTION', 'CAPABILITY', 'ROOTED IN', 'DISCIPLINE'];
       const lh = titleSize * 1.42;
       const startY = drawY - lh * 1.5;
       const tracking = titleSize * 0.18;
@@ -1391,7 +1391,7 @@ export function SectionPressureExhibit() {
             <div className="s4-ghost-core">
               <div className="s4-ghost-core-text">
                 <span>EXECUTION</span>
-                <span>CAPACITY</span>
+                <span>CAPABILITY</span>
                 <span>ROOTED IN</span>
                 <span>DISCIPLINE</span>
               </div>
