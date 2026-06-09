@@ -79,46 +79,60 @@ const OUTCOMES = [
   'Tighter cost control','Scalable operations','Repeatable execution','Higher utilization',
 ];
 
-/* Stepped waypoints (normalized 0..1 of canvas W,H) for the two trend
- * lines. Irregular runs/drops — not a perfect staircase — so the chart
- * reads as data, not decoration.
+/* Waypoints (normalized 0..1 of canvas W,H) for the two trend lines.
  *
- * LEFT line: upper-left → lower-right, descending in 6 step pairs that
- * land just shy of the core on the left side. Each (x,y) waypoint is a
- * polyline vertex.
+ * These are designed to read as ACTUAL operational performance under
+ * pressure (and recovery), not as architectural staircases. Real
+ * performance under stress doesn't drop in equal steps — it loses
+ * ground in fits and starts, with the occasional small recovery that
+ * fails before the next bigger fall ("capitulation drops" alternating
+ * with "failed bounces"). The green line is the mirror — climbs in
+ * uneven gains with the occasional small setback before the next push.
  *
- * RIGHT line: lower-left (just right of core) → upper-right in mirror
- * pattern. Both lines stay in the chip flight band so they read as the
- * *trend* the chips are causing. */
+ * Rules followed when laying these out:
+ *   • Both endpoints terminate at (0.50, 0.50) — the literal core
+ *     center. The core is drawn AFTER the lines in frame(), so it
+ *     overpaints the inner portion; visually the lines "feed into"
+ *     and "emerge from" the core.
+ *   • No pure 90° corners — segments are diagonal so joins read as
+ *     data, not as CSS staircase widgets.
+ *   • Counter-trend wiggles built in: red has 3 small upticks
+ *     scattered through its descent; green has 3 small dips through
+ *     its climb.
+ *   • Uneven amplitudes — the biggest "capitulation" drop is ~3× the
+ *     smallest, and the smallest drops are sometimes followed by
+ *     tinier ones rather than recoveries.
+ */
 const LEFT_LINE_WAYPOINTS = [
-  [0.04, 0.12],
-  [0.10, 0.12],
-  [0.10, 0.22],
-  [0.16, 0.22],
-  [0.16, 0.34],
-  [0.22, 0.34],
-  [0.22, 0.46],
-  [0.28, 0.46],
-  [0.28, 0.60],
-  [0.34, 0.60],
-  [0.34, 0.74],
-  [0.41, 0.74],
-  [0.41, 0.86],
+  [0.03, 0.10],   // start — upper-left, well above flight band
+  [0.08, 0.12],   // gentle initial decline (early stress signal)
+  [0.11, 0.10],   // micro-recovery (false sense of stability)
+  [0.16, 0.18],   // first real drop
+  [0.19, 0.16],   // small bounce
+  [0.23, 0.27],   // capitulation drop (largest single fall)
+  [0.27, 0.26],   // failed recovery — barely moves
+  [0.31, 0.36],   // continued grind down
+  [0.34, 0.34],   // tiny uptick
+  [0.39, 0.45],   // accelerating decline
+  [0.43, 0.47],   // continued
+  [0.46, 0.46],   // last hopeful blip
+  [0.50, 0.50],   // absorbed into core center
 ];
 const RIGHT_LINE_WAYPOINTS = [
-  [0.59, 0.86],
-  [0.66, 0.86],
-  [0.66, 0.74],
-  [0.72, 0.74],
-  [0.72, 0.60],
-  [0.78, 0.60],
-  [0.78, 0.46],
-  [0.84, 0.46],
-  [0.84, 0.34],
-  [0.90, 0.34],
-  [0.90, 0.22],
-  [0.96, 0.22],
-  [0.96, 0.12],
+  [0.50, 0.50],   // start — emerges from core center
+  [0.54, 0.48],   // initial small recovery
+  [0.57, 0.49],   // micro setback
+  [0.61, 0.42],   // first real gain
+  [0.64, 0.43],   // tiny stall
+  [0.68, 0.34],   // breakthrough gain (mirror of capitulation)
+  [0.71, 0.35],   // brief consolidation
+  [0.75, 0.26],   // continued climb
+  [0.78, 0.27],   // micro setback
+  [0.82, 0.18],   // accelerating gains
+  [0.85, 0.19],   // brief plateau
+  [0.89, 0.13],   // strong push
+  [0.94, 0.10],   // continued
+  [0.97, 0.08],   // terminate upper-right
 ];
 
 /* Brighter than the chip palette per the brief ("fairly thick, brighter
@@ -151,8 +165,8 @@ function drawProgressivePath(ctx, path, progress, color, lineWidth) {
   ctx.save();
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
-  ctx.lineCap = 'square';
-  ctx.lineJoin = 'miter';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
   ctx.shadowColor = color;
   ctx.shadowBlur = 8;          // subtle glow to keep the line readable behind chips
   ctx.beginPath();
@@ -502,11 +516,12 @@ export default function HeroPressureExhibit() {
       ctx.clearRect(0, 0, W, H);
       updateSurgeEase(t);
       updateEntry(t);
-      drawCore(t);
 
-      // Trend lines — drawn AFTER the core but BEFORE chips, so chip
-      // labels remain readable in the foreground while the chart sits
-      // in the environmental layer.
+      // Trend lines drawn FIRST so the core (drawn next) overpaints
+      // their inner endpoints. Each line's literal terminus is (0.50,
+      // 0.50) — dead center of the canvas, which is also the core's
+      // center — so the lines visually "feed into" / "emerge from"
+      // the core rather than terminating at its edge in a hard stop.
       if (lineStart > 0) {
         if (!leftPath)  leftPath  = buildPath(LEFT_LINE_WAYPOINTS,  W, H);
         if (!rightPath) rightPath = buildPath(RIGHT_LINE_WAYPOINTS, W, H);
@@ -514,6 +529,8 @@ export default function HeroPressureExhibit() {
         drawProgressivePath(ctx, leftPath,  lineProgress, LINE_RED,   LINE_WIDTH);
         drawProgressivePath(ctx, rightPath, lineProgress, LINE_GREEN, LINE_WIDTH);
       }
+
+      drawCore(t);
 
       const swarmActive = entryComplete;
       const surging = t < surgeUntil;
