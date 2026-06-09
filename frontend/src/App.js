@@ -6,6 +6,7 @@ import HomeLayout from './components/HomeLayout';
 import Home from './pages/Home';
 import HomeV2 from './pages/HomeV2';
 import HomeV3 from './pages/HomeV3';
+import HomeV4 from './pages/HomeV4';
 import Approach from './pages/Approach';
 import DiscoveryProcess from './pages/DiscoveryProcess';
 import IndustriesServed from './pages/IndustriesServed';
@@ -36,13 +37,19 @@ function App() {
       <Routes>
         {/* Homepage renders its own inline Header + Footer — no shared chrome */}
         <Route element={<HomeLayout />}>
-          {/* Primary homepage — now the editorial V3 iteration.
-              Older iterations remain at /v1 (original) and /v2 (copy rewrite)
-              for stakeholder comparison until they're retired. */}
-          <Route path="/" element={<HomeV3 />} />
+          {/* Primary homepage — HomeV4 is the active working surface
+              as of Feb 2026 (post-Sean/Justin review pivot).
+              Older iterations stay live for stakeholder comparison:
+                /v1  → original copy port
+                /v2  → first copy rewrite
+                /v3  → LOCKED pre-pivot version (archive — do not edit)
+                /v4  → current working surface (same as /). */}
+          <Route path="/" element={<HomeV4 />} />
           <Route path="/v1" element={<Home />} />
           <Route path="/v2" element={<HomeV2 />} />
           <Route path="/v3" element={<HomeV3 />} />
+          <Route path="/v3-locked" element={<HomeV3 />} />
+          <Route path="/v4" element={<HomeV4 />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}

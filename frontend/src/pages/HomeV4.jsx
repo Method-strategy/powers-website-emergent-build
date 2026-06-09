@@ -1,24 +1,21 @@
 /* eslint-disable */
 /* ════════════════════════════════════════════════════════════════
- * ✦ LOCKED ARCHIVE — DO NOT EDIT ✦
+ * ★ HomeV4 — ACTIVE WORKING SURFACE ★
  * ════════════════════════════════════════════════════════════════
  *
- * This is the FINAL V3 homepage as of the Sean/Justin review
- * meeting (Feb 2026). Frozen for reference while V4 is in active
- * development against the new thesis spine (capacity → capability,
- * post-"stop chasing numbers" tone).
+ * Forked from HomeV3 on the Feb 2026 review meeting with Sean and
+ * Justin. This is the editable copy going forward (post-"stop
+ * chasing numbers" pivot toward the capacity → capability thesis).
  *
- *   Live at:  /v3 (and /v3-locked for clarity)
- *   Replaces: no live primary route — V4 owns "/"
+ *   Live at:  /  (and /v4 for clarity)
+ *   Sibling:  /v3 (the LOCKED archive of the pre-pivot version)
  *
- * Its two non-trivial dependencies are also snapshotted alongside:
- *   • components/PowersMetricsV3.jsx
- *   • components/DisciplinesAndPressureExhibitV3.jsx
- * (Imports rewired below to those V3-suffixed copies so future
- *  edits to the un-suffixed working components don't drift this
- *  archive visually.)
+ * Imports the WORKING component files (un-suffixed):
+ *   • components/PowersMetrics.jsx
+ *   • components/DisciplinesAndPressureExhibit.jsx
  *
- * If you need to evolve the page, edit /pages/HomeV4.jsx instead.
+ * Their V3-suffixed snapshots are frozen for the archive route.
+ * Edit freely — V3 will not drift.
  * ════════════════════════════════════════════════════════════════
  */
 /* This file is a lossless port of the legacy index.html homepage.
@@ -29,8 +26,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toRoute } from '../lib/routes';
 import { typo } from '../lib/typo';
-import PowersMetrics from '../components/PowersMetricsV3';
-import { SectionDisciplinesFoundation, SectionPressureExhibit } from '../components/DisciplinesAndPressureExhibitV3';
+import PowersMetrics from '../components/PowersMetrics';
+import { SectionDisciplinesFoundation, SectionPressureExhibit } from '../components/DisciplinesAndPressureExhibit';
+import HeroPressureExhibit from '../components/HeroPressureExhibit';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -2811,7 +2809,7 @@ function SectionDifferentApproach() {
   );
 }
 
-function HomeV3() {
+function HomeV4() {
   useV3Fonts();
   useSubheadReveal();
   return (
@@ -2896,6 +2894,12 @@ function HomeV3() {
       `}</style>
       <ReadingProgress />
       <Header />
+      {/* New V4 hero — pressures/outcomes exhibit forked from S4 with
+          stepped trend lines (red descent left, green rise right) and
+          the H1 promoted to the page-opening claim. The legacy
+          "Stop chasing numbers" Hero below is retained intentionally
+          per direction (Feb 2026 review). */}
+      <HeroPressureExhibit />
       <Hero />
       <SectionDifferentApproach />
       {/* Section order matches the v3 copy spine:
@@ -2940,4 +2944,4 @@ function HomeV3() {
   );
 }
 
-export default HomeV3;
+export default HomeV4;
