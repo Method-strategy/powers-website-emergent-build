@@ -694,8 +694,11 @@ export default function HeroPressureExhibit() {
       lastTs = ts;
 
       // Ambient number swarm — its own canvas (behind everything),
-      // continuous spawn + churn, decoupled from the chip cycle.
-      if (running && nctx && NW > 0 && ts - lastNumSpawn > NUM_SPAWN_GAP) {
+      // continuous spawn + churn. Gated on `lineStart` so the swarm
+      // begins at the same moment the trend lines do (i.e., 500ms
+      // after the chip entry completes — see LINE_DELAY_AFTER_ENTRY_MS).
+      // Before that, the canvas stays blank.
+      if (running && nctx && NW > 0 && lineStart > 0 && ts - lastNumSpawn > NUM_SPAWN_GAP) {
         spawnNumber();
         lastNumSpawn = ts;
       }
@@ -954,8 +957,16 @@ export default function HeroPressureExhibit() {
            Hero ("Stop chasing / Numbers."), sized down because the new
            line is three sentences instead of two display words. Lands
            between the legacy H1 (clamp 56→128px) and the standard H2
-           (clamp 30→46px). Tight line-height (1.0) so the three blocks
-           stack as a single typographic mass, not three loose lines. */
+           (clamp 30→46px).
+
+           OPTICAL LINE BALANCE: Newsreader italic uses more vertical
+           extent of its line-box than Proxima Nova 800 does — taller
+           ascenders, lower descenders — so with a uniform line-height
+           the sans→sans gap reads OPEN while the sans→serif gap reads
+           TIGHT. Both fonts are the same nominal font-size (clamp
+           44→92px); the difference is typeface metrics, not sizing.
+           We correct optically by pulling the second sans up and
+           pushing the serif down with small em-relative margins. */
         .hpe-h1 {
           line-height: 1.0;
           letter-spacing: -.014em;
@@ -968,6 +979,11 @@ export default function HeroPressureExhibit() {
           font-size: clamp(44px, 6.5vw, 92px);
           color: ${C.navy};
         }
+        .hpe-h1 .sans + .sans {
+          margin-top: -0.04em;  /* close the sans→sans gap without
+                                   letting the descenders crowd the
+                                   next line's cap-height */
+        }
         .hpe-h1 .serif {
           display: block;
           font-family: ${SERIF};
@@ -975,6 +991,9 @@ export default function HeroPressureExhibit() {
           font-weight: 500;
           font-size: clamp(44px, 6.5vw, 92px);
           color: ${C.gold};
+          margin-top: 0.08em;   /* open the gap before the serif so the
+                                   italic's tall ascenders don't crowd
+                                   the sans line above */
         }
         .hpe-lede {
           font-family: ${SANS};

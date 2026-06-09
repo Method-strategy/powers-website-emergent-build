@@ -2892,7 +2892,10 @@ function HomeV4() {
           }
         }
       `}</style>
-      <ReadingProgress />
+      {/* <ReadingProgress /> — removed Feb 2026 per direction.
+          The vertical rail + tick dots on the right edge read as busy
+          alongside the chip exhibits. Component definition kept above
+          for later re-introduction if needed. */}
       <Header />
       {/* New V4 hero — pressures/outcomes exhibit forked from S4 with
           stepped trend lines (red descent left, green rise right) and
