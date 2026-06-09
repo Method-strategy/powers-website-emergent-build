@@ -954,9 +954,10 @@ export default function HeroPressureExhibit() {
            Hero ("Stop chasing / Numbers."), sized down because the new
            line is three sentences instead of two display words. Lands
            between the legacy H1 (clamp 56→128px) and the standard H2
-           (clamp 30→46px). */
+           (clamp 30→46px). Tight line-height (1.0) so the three blocks
+           stack as a single typographic mass, not three loose lines. */
         .hpe-h1 {
-          line-height: 1.06;
+          line-height: 1.0;
           letter-spacing: -.014em;
           margin: 0 0 22px;
         }
@@ -974,7 +975,6 @@ export default function HeroPressureExhibit() {
           font-weight: 500;
           font-size: clamp(44px, 6.5vw, 92px);
           color: ${C.gold};
-          margin-top: .06em;
         }
         .hpe-lede {
           font-family: ${SANS};
@@ -982,7 +982,7 @@ export default function HeroPressureExhibit() {
           font-weight: 300;
           line-height: 1.6;
           color: ${C.body};
-          max-width: 56em;
+          max-width: 820px;
           margin: 0 auto;
         }
         .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: 12px; }
@@ -1122,7 +1122,7 @@ export default function HeroPressureExhibit() {
               <span className="serif">Regardless of conditions.</span>
             </h1>
             <p className="hpe-lede">
-              Market conditions don&rsquo;t stop changing. Your ability to execute no matter what decides whether performance tanks or holds up under pressure.
+              Market conditions don&rsquo;t stop changing. Strong quarters and weak ones are readouts of the same thing &mdash; the fundamentals of execution at the root of your operation. When they&rsquo;re missing, performance is at the mercy of conditions. When they&rsquo;re built in, it isn&rsquo;t. That&rsquo;s what we build: the ability to execute, no matter what.
             </p>
           </div>
 
