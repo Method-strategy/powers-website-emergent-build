@@ -307,17 +307,22 @@ export default function HeroPressureExhibit() {
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function aspectFor(w) {
-      // Shorter aspect ratios than the mid-page exhibit — this is the
-      // hero so the core needs to sit closer to the lede above and
-      // the controls below. Less dead space, denser composition.
-      if (w < 480) return 0.50;
-      if (w < 768) return 0.40;
-      return 0.32;
+      // Tight aspect ratios for the hero — the canvas needs to read
+      // as a *band* under the H1+lede, not a full second viewport.
+      if (w < 480) return 0.42;
+      if (w < 768) return 0.32;
+      return 0.24;
     }
     function coreSizeFor(w) {
-      if (w < 480) return 150;
-      if (w < 880) return 170;
-      return 188;
+      // Hero core is intentionally smaller than the mid-page exhibit's
+      // core. The hero canvas is short by design (fits within hero
+      // depth), so an oversized core would crowd out the trend lines.
+      // These sizes leave 40–60px of chart band above and below the
+      // core at desktop, which lets the red descent / green rise read
+      // as actual chart trends rather than miniature notches.
+      if (w < 480) return 120;
+      if (w < 880) return 134;
+      return 150;
     }
     function resize() {
       const cssW = canvas.clientWidth || canvas.parentElement.clientWidth;
@@ -602,7 +607,10 @@ export default function HeroPressureExhibit() {
       ctx.textBaseline = 'middle';
       const titleSize = Math.max(12, r * 0.150);
       ctx.font = '500 ' + titleSize.toFixed(0) + 'px ' + SANS;
-      ctx.fillStyle = GOLD;
+      // White at 72% opacity (per direction Feb 2026) — softer than
+      // gold on the navy core fill, lets the gold halo + ring carry
+      // the brand color while the core text reads as quiet authority.
+      ctx.fillStyle = 'rgba(255,255,255,0.72)';
       const lines = ['EXECUTION', 'CAPABILITY', 'ROOTED IN', 'DISCIPLINE'];
       const lh = titleSize * 1.42;
       const startY = drawY - lh * 1.5;
@@ -937,7 +945,10 @@ export default function HeroPressureExhibit() {
           width: 100%;
           max-width: 1240px;
           margin: 0 auto;
-          padding: 72px 56px 56px;
+          /* Hero depth tuned to fit a standard 900–1000px viewport
+             below the header without overflowing. If you ever want
+             more room for the chart band, raise top/bottom padding. */
+          padding: 48px 56px 36px;
         }
         /* Ambient number swarm — absolutely positioned across the full
            exhibit, behind every other layer. pointer-events:none so it
@@ -980,13 +991,13 @@ export default function HeroPressureExhibit() {
         .hpe-h1 {
           line-height: 1.0;
           letter-spacing: -.014em;
-          margin: 0 0 22px;
+          margin: 0 0 14px;
         }
         .hpe-h1 .sans {
           display: block;
           font-family: ${SANS};
           font-weight: 800;
-          font-size: clamp(44px, 6.5vw, 92px);
+          font-size: clamp(38px, 5.2vw, 76px);
           color: ${C.paper};
         }
         .hpe-h1 .sans + .sans {
@@ -999,7 +1010,7 @@ export default function HeroPressureExhibit() {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(44px, 6.5vw, 92px);
+          font-size: clamp(38px, 5.2vw, 76px);
           color: ${C.gold};
           margin-top: 0.08em;   /* open the gap before the serif so the
                                    italic's tall ascenders don't crowd
@@ -1013,20 +1024,20 @@ export default function HeroPressureExhibit() {
           color: rgba(255, 255, 255, 0.72);
           max-width: 820px;
           margin: 0 auto;
+          /* text-wrap: pretty avoids orphan tails (single short words
+             stranded at the end of a line, like "— the" and "of") in
+             modern browsers. Falls back gracefully where unsupported. */
+          text-wrap: pretty;
         }
-        /* Stage wrap — pulled tight against the lede above. The canvas
-           inside has its own aspect-ratio sizing (see aspectFor in JS),
-           which we tightened to lift the core closer to the lede and
-           cut dead space at the top of the chart band. */
-        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: -8px; }
+        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: -20px; }
         .hpe-canvas { display: block; width: 100%; height: auto; }
         .hpe-ghost-wrap {
           position: absolute;
           top: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 188px;
-          height: 188px;
+          width: 150px;
+          height: 150px;
           pointer-events: none;
           z-index: 5;
           opacity: 0;
@@ -1035,7 +1046,7 @@ export default function HeroPressureExhibit() {
         .hpe-ghost-wrap::before {
           content: "";
           position: absolute;
-          inset: -47px;
+          inset: -38px;
           border-radius: 50%;
           background: radial-gradient(circle,
             rgba(232,147,70,0.12) 0%,
@@ -1062,7 +1073,7 @@ export default function HeroPressureExhibit() {
           border-radius: 50%;
         }
         .hpe-ghost-core-text {
-          color: ${C.gold};
+          color: rgba(255, 255, 255, 0.72);
           font-family: ${SANS};
           font-size: 14px;
           font-weight: 500;
@@ -1155,7 +1166,7 @@ export default function HeroPressureExhibit() {
               <span className="serif">Regardless of conditions.</span>
             </h1>
             <p className="hpe-lede">
-              Market conditions don&rsquo;t stop changing. Strong quarters and weak ones are readouts of the same thing &mdash; the fundamentals of execution at the root of your operation. When they&rsquo;re missing, performance is at the mercy of conditions. When they&rsquo;re built in, it isn&rsquo;t. That&rsquo;s what we build: the ability to execute, no matter what.
+              Market conditions don&rsquo;t stop changing. Strong quarters and weak ones are readouts of the same thing&nbsp;&mdash;&nbsp;the fundamentals of execution at the root of your operation. When they&rsquo;re missing, performance is at the mercy of conditions. When they&rsquo;re built in, it isn&rsquo;t. That&rsquo;s what we build: the ability to execute, no matter what.
             </p>
           </div>
 

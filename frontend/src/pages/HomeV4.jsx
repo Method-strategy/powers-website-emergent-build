@@ -2903,19 +2903,25 @@ function HomeV4() {
           "Stop chasing numbers" Hero below is retained intentionally
           per direction (Feb 2026 review). */}
       <HeroPressureExhibit />
+      {/* Row 2 — Five Disciplines foundation. Promoted directly below
+          the hero per Feb 2026 direction. The disciplines row IS the
+          product diagram for "what we build," so it earns the lead
+          position over A Different Approach (which now follows). */}
+      <SectionDisciplinesFoundation />
       <Hero />
       <SectionDifferentApproach />
-      {/* Section order matches the v3 copy spine:
-            01 — A Different Approach (sits directly under hero)
-            02 — Five Disciplines (the foundation, made concrete)
-            03 — Pressure In / Performance Out (visual restatement of the thesis)
-            04 — How We Work (where the work happens)
-            05 — The Proof, at Scale (metric stats)
-            06 — Where We Work (industries prose)
-            07 — Proven Results (peer evidence)
-            08 — Insights (thinking)
-            09 — Principle + CTA (redwood beat + closing CTA, paired) */}
-      <SectionDisciplinesFoundation />
+      {/* Section order (Feb 2026 spine):
+            HERO — pressure/outcomes exhibit
+            01 — Five Disciplines (foundation — what we build)
+            02 — legacy "Stop chasing numbers" hero (retained per direction)
+            03 — A Different Approach
+            04 — Pressure In / Performance Out (mid-page restatement)
+            05 — How We Work
+            06 — Metric proof
+            07 — Where We Work
+            08 — Proven Results
+            09 — Insights
+            10 — Closing CTA */}
       <SectionPressureExhibit />
       <SectionHowWeWork />
       <PowersMetrics />
