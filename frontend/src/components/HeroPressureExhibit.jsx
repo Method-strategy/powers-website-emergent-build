@@ -252,6 +252,7 @@ export default function HeroPressureExhibit() {
   const sectionRef    = useRef(null);
   const exhibitRef    = useRef(null);
   const canvasRef     = useRef(null);
+  const numbersRef    = useRef(null); // ambient ±% number swarm (full-hero layer)
   const copyRef       = useRef(null);
   const ghostWrapRef  = useRef(null);
   const controlsRef   = useRef(null);
@@ -275,6 +276,25 @@ export default function HeroPressureExhibit() {
     const ctx = canvas.getContext('2d');
     const NAVY_DEEP = '#0f2a47';
     const RED = '#fa4b4b', GREEN = '#4dc774', GOLD = '#e89346';
+
+    /* ── Ambient ±% number swarm (background layer) ─────────────────
+     * Mirrors the legacy hero's number swarm character (value/size/
+     * opacity distributions identical) but hemisphere-locked by sign:
+     * red negatives on the left half of the hero, green positives on
+     * the right. Lives on its OWN canvas (behind everything else),
+     * not the chip exhibit canvas — so the numbers appear across the
+     * full hero region, including behind the H1 / lede / chart area.
+     * Continuous churn (no phased cycle), capped population, low
+     * opacity — reads as atmosphere, not headline. */
+    const numbersCanvas = numbersRef.current;
+    const nctx = numbersCanvas ? numbersCanvas.getContext('2d') : null;
+    let NW = 0, NH = 0;
+    const numSwarm = [];
+    const NUM_RED   = '#fa4b4b';
+    const NUM_GREEN = '#4dc774';
+    const NUM_MAX_POP = 28;
+    const NUM_SPAWN_GAP = 150; // ms between spawns
+    let lastNumSpawn = 0;
 
     let DPR = Math.min(window.devicePixelRatio || 1, 2);
     let W = 0, H = 0;
@@ -317,6 +337,20 @@ export default function HeroPressureExhibit() {
       leftPath = null;
       rightPath = null;
       lineCycleIdx = -1;
+
+      // Resize the ambient number-swarm canvas to fill the full
+      // exhibit (parent of both canvases). Numbers spawn across this
+      // wider field, not just within the chip-flight band.
+      if (numbersCanvas && nctx) {
+        const swarmCssW = exhibitEl.clientWidth;
+        const swarmCssH = exhibitEl.clientHeight;
+        NW = swarmCssW; NH = swarmCssH;
+        numbersCanvas.style.width  = swarmCssW + 'px';
+        numbersCanvas.style.height = swarmCssH + 'px';
+        numbersCanvas.width  = Math.round(NW * DPR);
+        numbersCanvas.height = Math.round(NH * DPR);
+        nctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
     }
 
     function rand(a, b) { return a + Math.random() * (b - a); }
@@ -491,6 +525,7 @@ export default function HeroPressureExhibit() {
     let speedScale = reduceMotion ? 0.35 : 1;
     let pulse = 0;
     let rafId = 0;
+    let lastTs = 0;
 
     function fadeNearCore(dist) {
       const edge = core.r * 1.25;
@@ -575,8 +610,97 @@ export default function HeroPressureExhibit() {
       ctx.restore();
     }
 
+    /* ── Number-swarm helpers ──────────────────────────────────────
+     * Distributions are 1:1 with the legacy hero. Differences from
+     * the legacy implementation:
+     *   • Sign is determined by spawn hemisphere, not coin flip — red
+     *     negatives only spawn on the left half, green positives only
+     *     on the right.
+     *   • Lifecycle is a self-contained churn (in → hold → out),
+     *     not phased with a build/peak/collapse cycle. Each number
+     *     spawns, peaks at its random maxOp, holds, then fades on its
+     *     own schedule. New ones spawn at NUM_SPAWN_GAP ms.
+     *   • Population capped at NUM_MAX_POP so the layer never gets
+     *     loud enough to fight the H1/lede/chart. */
+    function fmtPct(positive) {
+      const mag = Math.random();
+      let v;
+      if (mag < 0.6) v = rand(1, 18).toFixed(0);
+      else if (mag < 0.9) v = rand(18, 45).toFixed(0);
+      else v = rand(45, 120).toFixed(0);
+      return (positive ? '+' : '-') + v + '%';
+    }
+    function spawnNumber() {
+      if (numSwarm.length >= NUM_MAX_POP) return;
+      const positive = Math.random() < 0.5; // left/right hemisphere choice
+      let size;
+      const r = Math.random();
+      if (r < 0.6) size = rand(13, 22);
+      else if (r < 0.88) size = rand(22, 40);
+      else size = rand(40, 72);
+
+      // Hemisphere-locked: negatives on the left, positives on the right.
+      const xMin = positive ? NW * 0.52 : NW * 0.02;
+      const xMax = positive ? NW * 0.98 : NW * 0.48;
+      const x = rand(xMin, xMax);
+      const y = rand(NH * 0.04, NH * 0.96);
+
+      let maxOp;
+      const opr = Math.random();
+      if (opr < 0.65) maxOp = rand(0.06, 0.16);
+      else if (opr < 0.9) maxOp = rand(0.16, 0.32);
+      else maxOp = rand(0.32, 0.55);
+
+      numSwarm.push({
+        text: fmtPct(positive),
+        x, y, size,
+        color: positive ? NUM_GREEN : NUM_RED,
+        op: 0, maxOp,
+        vIn:  rand(0.012, 0.024),  // per-frame opacity rise during 'in'
+        vOut: rand(0.006, 0.014),  // per-frame opacity decay during 'out'
+        state: 'in',
+        hold: rand(900, 2400),     // ms to hold at maxOp
+        tHold: 0,
+      });
+    }
+    function drawNumberSwarm(dtMs) {
+      if (!nctx) return;
+      nctx.clearRect(0, 0, NW, NH);
+      for (let i = numSwarm.length - 1; i >= 0; i--) {
+        const n = numSwarm[i];
+        if (n.state === 'in') {
+          n.op = Math.min(n.maxOp, n.op + n.vIn);
+          if (n.op >= n.maxOp) n.state = 'hold';
+        } else if (n.state === 'hold') {
+          n.tHold += dtMs;
+          if (n.tHold >= n.hold) n.state = 'out';
+        } else {
+          n.op -= n.vOut;
+          if (n.op <= 0) { numSwarm.splice(i, 1); continue; }
+        }
+        nctx.globalAlpha = Math.max(0, n.op);
+        nctx.fillStyle = n.color;
+        nctx.font = '700 ' + n.size.toFixed(1) + 'px ' + SANS;
+        nctx.textBaseline = 'middle';
+        nctx.textAlign = 'center';
+        nctx.fillText(n.text, n.x, n.y);
+      }
+      nctx.globalAlpha = 1;
+    }
+
     function frame(ts) {
       const t = ts;
+      const dtMs = lastTs ? Math.min(64, ts - lastTs) : 16; // clamp to avoid huge jumps after tab-idle
+      lastTs = ts;
+
+      // Ambient number swarm — its own canvas (behind everything),
+      // continuous spawn + churn, decoupled from the chip cycle.
+      if (running && nctx && NW > 0 && ts - lastNumSpawn > NUM_SPAWN_GAP) {
+        spawnNumber();
+        lastNumSpawn = ts;
+      }
+      drawNumberSwarm(dtMs);
+
       ctx.clearRect(0, 0, W, H);
       updateSurgeEase(t);
       updateEntry(t);
@@ -802,10 +926,23 @@ export default function HeroPressureExhibit() {
           margin: 0 auto;
           padding: 72px 56px 64px;
         }
+        /* Ambient number swarm — absolutely positioned across the full
+           exhibit, behind every other layer. pointer-events:none so it
+           never intercepts cursor; aria-hidden in markup. */
+        .hpe-numbers {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 0;
+        }
         .hpe-copy {
           max-width: 1040px;
           margin: 0 auto;
           text-align: center;
+          position: relative;
+          z-index: 1;
           opacity: 0;
           transform: translateY(12px);
           transition:
@@ -848,7 +985,7 @@ export default function HeroPressureExhibit() {
           max-width: 56em;
           margin: 0 auto;
         }
-        .hpe-stage-wrap { position: relative; width: 100%; margin-top: 12px; }
+        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: 12px; }
         .hpe-canvas { display: block; width: 100%; height: auto; }
         .hpe-ghost-wrap {
           position: absolute;
@@ -911,6 +1048,8 @@ export default function HeroPressureExhibit() {
           margin-top: 14px;
           flex-wrap: wrap;
           opacity: 0;
+          position: relative;
+          z-index: 1;
           transition: opacity 1.2s cubic-bezier(.22,.61,.36,1);
         }
         .hpe-controls.hpe-in { opacity: 1; }
@@ -965,6 +1104,18 @@ export default function HeroPressureExhibit() {
 
       <section ref={sectionRef} className="hpe-section" data-testid="hero-pressure-exhibit">
         <div className="hpe-exhibit" ref={exhibitRef}>
+          {/* Ambient ±% number swarm — sits BEHIND everything else
+              in the hero. Red negatives spawn in the left hemisphere,
+              green positives in the right. Continuous low-opacity
+              churn (~28 alive max) so it reads as environmental
+              atmosphere, not a feature. aria-hidden because it's
+              decorative; the chart canvas below carries the
+              semantic aria-label. */}
+          <canvas
+            ref={numbersRef}
+            className="hpe-numbers"
+            aria-hidden="true"
+          />
           <div className="hpe-copy" ref={copyRef}>
             <h1 className="hpe-h1" data-testid="hero-h1">
               <span className="sans">Strong execution. Strong performance.</span>
