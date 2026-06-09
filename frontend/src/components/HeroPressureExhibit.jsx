@@ -292,7 +292,7 @@ export default function HeroPressureExhibit() {
     const numSwarm = [];
     const NUM_RED   = '#fa4b4b';
     const NUM_GREEN = '#4dc774';
-    const NUM_MAX_POP = 28;
+    const NUM_MAX_POP = 18;
     const NUM_SPAWN_GAP = 150; // ms between spawns
     let lastNumSpawn = 0;
 
@@ -307,9 +307,12 @@ export default function HeroPressureExhibit() {
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function aspectFor(w) {
-      if (w < 480) return 0.56;
-      if (w < 768) return 0.46;
-      return 0.38;
+      // Shorter aspect ratios than the mid-page exhibit — this is the
+      // hero so the core needs to sit closer to the lede above and
+      // the controls below. Less dead space, denser composition.
+      if (w < 480) return 0.50;
+      if (w < 768) return 0.40;
+      return 0.32;
     }
     function coreSizeFor(w) {
       if (w < 480) return 150;
@@ -635,9 +638,9 @@ export default function HeroPressureExhibit() {
       const positive = Math.random() < 0.5; // left/right hemisphere choice
       let size;
       const r = Math.random();
-      if (r < 0.6) size = rand(13, 22);
-      else if (r < 0.88) size = rand(22, 40);
-      else size = rand(40, 72);
+      if (r < 0.60) size = rand(13, 22);       // small everyday — 60%
+      else if (r < 0.94) size = rand(22, 40);  // medium — 34%
+      else size = rand(40, 72);                // large dramatic — 6%
 
       // Hemisphere-locked: negatives on the left, positives on the right.
       const xMin = positive ? NW * 0.52 : NW * 0.02;
@@ -920,14 +923,21 @@ export default function HeroPressureExhibit() {
   return (
     <>
       <style>{`
-        /* ── HERO PRESSURE EXHIBIT (hpe-) — scoped to this component ── */
-        .hpe-section { background: ${C.paper}; }
+        /* ── HERO PRESSURE EXHIBIT (hpe-) — scoped to this component ──
+         * Dark hero — section bg is navyDeep so the layer reads as the
+         * "command surface" of the page. The chart, the core, the chips,
+         * and the ambient ±% swarm all sit on top of that surface; the
+         * canvas chips were already designed against a light bg but the
+         * red/green palette holds on navy too (matches the disciplines
+         * exhibit downstream). H1 sans flips to white; the italic gold
+         * pivot is unchanged. */
+        .hpe-section { background: ${C.navyDeep}; }
         .hpe-exhibit {
           position: relative;
           width: 100%;
           max-width: 1240px;
           margin: 0 auto;
-          padding: 72px 56px 64px;
+          padding: 72px 56px 56px;
         }
         /* Ambient number swarm — absolutely positioned across the full
            exhibit, behind every other layer. pointer-events:none so it
@@ -977,7 +987,7 @@ export default function HeroPressureExhibit() {
           font-family: ${SANS};
           font-weight: 800;
           font-size: clamp(44px, 6.5vw, 92px);
-          color: ${C.navy};
+          color: ${C.paper};
         }
         .hpe-h1 .sans + .sans {
           margin-top: -0.04em;  /* close the sans→sans gap without
@@ -1000,11 +1010,15 @@ export default function HeroPressureExhibit() {
           font-size: clamp(16px, 1.3vw, 19px);
           font-weight: 300;
           line-height: 1.6;
-          color: ${C.body};
+          color: rgba(255, 255, 255, 0.72);
           max-width: 820px;
           margin: 0 auto;
         }
-        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: 12px; }
+        /* Stage wrap — pulled tight against the lede above. The canvas
+           inside has its own aspect-ratio sizing (see aspectFor in JS),
+           which we tightened to lift the core closer to the lede and
+           cut dead space at the top of the chart band. */
+        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: -8px; }
         .hpe-canvas { display: block; width: 100%; height: auto; }
         .hpe-ghost-wrap {
           position: absolute;
@@ -1074,8 +1088,8 @@ export default function HeroPressureExhibit() {
         .hpe-controls.hpe-in { opacity: 1; }
         .hpe-controls button {
           background: transparent;
-          border: 1px solid ${C.line};
-          color: ${C.navy};
+          border: 1px solid rgba(255,255,255,0.18);
+          color: rgba(255,255,255,0.80);
           font-size: 12.5px;
           letter-spacing: .04em;
           padding: 8px 16px;
@@ -1085,7 +1099,7 @@ export default function HeroPressureExhibit() {
           font-family: ${SANS};
           font-weight: 500;
         }
-        .hpe-controls button:hover  { background: rgba(20,50,87,.04); border-color: rgba(20,50,87,.28); }
+        .hpe-controls button:hover  { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.34); color: #fff; }
         .hpe-controls button:active { transform: scale(.97); }
         .hpe-controls .val {
           font-variant-numeric: tabular-nums;
@@ -1099,7 +1113,7 @@ export default function HeroPressureExhibit() {
         .hpe-controls label {
           font-family: ${SANS};
           font-size: 12px;
-          color: ${C.body};
+          color: rgba(255,255,255,0.60);
           letter-spacing: .04em;
         }
         .hpe-controls input[type=range] {
