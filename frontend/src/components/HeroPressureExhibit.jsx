@@ -79,71 +79,130 @@ const OUTCOMES = [
   'Tighter cost control','Scalable operations','Repeatable execution','Higher utilization',
 ];
 
-/* Waypoints (normalized 0..1 of canvas W,H) for the two trend lines.
+/* Trend-line behavior — generators, not fixed waypoints.
  *
- * These are designed to read as ACTUAL operational performance under
- * pressure (and recovery), not as architectural staircases. Real
- * performance under stress doesn't drop in equal steps — it loses
- * ground in fits and starts, with the occasional small recovery that
- * fails before the next bigger fall ("capitulation drops" alternating
- * with "failed bounces"). The green line is the mirror — climbs in
- * uneven gains with the occasional small setback before the next push.
+ * Each cycle, we generate a fresh randomized polyline that ALWAYS:
+ *   • Red:   starts upper-left (~0.02–0.06, ~0.06–0.13), ends at the
+ *            literal core center (0.50, 0.50). Net trend down with
+ *            2–3 counter-trend upticks (failed bounces) scattered
+ *            through the middle.
+ *   • Green: starts at the core center (0.50, 0.50), ends upper-right
+ *            (~0.94–0.98, ~0.04–0.12). Net trend up with 2–3
+ *            counter-trend dips (setbacks) scattered through.
  *
- * Rules followed when laying these out:
- *   • Both endpoints terminate at (0.50, 0.50) — the literal core
- *     center. The core is drawn AFTER the lines in frame(), so it
- *     overpaints the inner portion; visually the lines "feed into"
- *     and "emerge from" the core.
- *   • No pure 90° corners — segments are diagonal so joins read as
- *     data, not as CSS staircase widgets.
- *   • Counter-trend wiggles built in: red has 3 small upticks
- *     scattered through its descent; green has 3 small dips through
- *     its climb.
- *   • Uneven amplitudes — the biggest "capitulation" drop is ~3× the
- *     smallest, and the smallest drops are sometimes followed by
- *     tinier ones rather than recoveries.
- */
-const LEFT_LINE_WAYPOINTS = [
-  [0.03, 0.10],   // start — upper-left, well above flight band
-  [0.08, 0.12],   // gentle initial decline (early stress signal)
-  [0.11, 0.10],   // micro-recovery (false sense of stability)
-  [0.16, 0.18],   // first real drop
-  [0.19, 0.16],   // small bounce
-  [0.23, 0.27],   // capitulation drop (largest single fall)
-  [0.27, 0.26],   // failed recovery — barely moves
-  [0.31, 0.36],   // continued grind down
-  [0.34, 0.34],   // tiny uptick
-  [0.39, 0.45],   // accelerating decline
-  [0.43, 0.47],   // continued
-  [0.46, 0.46],   // last hopeful blip
-  [0.50, 0.50],   // absorbed into core center
-];
-const RIGHT_LINE_WAYPOINTS = [
-  [0.50, 0.50],   // start — emerges from core center
-  [0.54, 0.48],   // initial small recovery
-  [0.57, 0.49],   // micro setback
-  [0.61, 0.42],   // first real gain
-  [0.64, 0.43],   // tiny stall
-  [0.68, 0.34],   // breakthrough gain (mirror of capitulation)
-  [0.71, 0.35],   // brief consolidation
-  [0.75, 0.26],   // continued climb
-  [0.78, 0.27],   // micro setback
-  [0.82, 0.18],   // accelerating gains
-  [0.85, 0.19],   // brief plateau
-  [0.89, 0.13],   // strong push
-  [0.94, 0.10],   // continued
-  [0.97, 0.08],   // terminate upper-right
-];
+ * Both lines share a cycle clock so they animate as a paired pulse:
+ *
+ *   draw  (3500ms)  →  hold (1500ms)  →  fade (700ms)  →  regenerate
+ *
+ * The result reads as the operation's performance trend continuously
+ * recomposing under a steady cascade of pressures — same story, never
+ * the same exact curve. The chip swarm (already on its own clock,
+ * driven by the Operating Pressure slider) and this cycle clock are
+ * fully decoupled. */
+const LINE_DRAW_MS = 3500;
+const LINE_HOLD_MS = 1500;
+const LINE_FADE_MS = 700;
+const LINE_CYCLE_MS = LINE_DRAW_MS + LINE_HOLD_MS + LINE_FADE_MS;
+
+function generateLeftWaypoints() {
+  const N = 12; // number of segments
+  const startX = 0.02 + Math.random() * 0.04;
+  const startY = 0.06 + Math.random() * 0.07;
+  const endX = 0.50, endY = 0.50;
+
+  // 2–3 middle segments will counter-trend (small uptick within the
+  // overall descent — a failed bounce).
+  const counterTrend = new Set();
+  const numCT = 2 + (Math.random() < 0.5 ? 0 : 1);
+  while (counterTrend.size < numCT) {
+    counterTrend.add(2 + Math.floor(Math.random() * (N - 3)));
+  }
+
+  // Build x positions evenly spaced with small jitter so the polyline
+  // doesn't read as a metronomic grid.
+  const xs = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    let x = startX + (endX - startX) * t;
+    if (i > 0 && i < N) x += (Math.random() - 0.5) * 0.012;
+    xs.push(x);
+  }
+
+  // Allocate descent across non-counter-trend segments so the line
+  // still lands at (endX, endY) regardless of how many CT bumps we
+  // injected.
+  const ctMagnitude = 0.035;
+  const totalDescent = (endY - startY) + numCT * ctMagnitude;
+  const descentSegments = N - numCT;
+  const avgDescent = totalDescent / descentSegments;
+
+  const points = [[xs[0], startY]];
+  let y = startY;
+  for (let i = 1; i < N; i++) {
+    let dy;
+    if (counterTrend.has(i)) {
+      dy = -(0.020 + Math.random() * 0.030);
+    } else {
+      // 0.55× – 1.45× the average descent — uneven amplitudes
+      dy = avgDescent * (0.55 + Math.random() * 0.9);
+    }
+    y = Math.max(0.05, Math.min(0.52, y + dy));
+    points.push([xs[i], y]);
+  }
+  points.push([endX, endY]);
+  return points;
+}
+
+function generateRightWaypoints() {
+  const N = 12;
+  const startX = 0.50, startY = 0.50;
+  const endX = 0.94 + Math.random() * 0.04;
+  const endY = 0.04 + Math.random() * 0.08;
+
+  const counterTrend = new Set();
+  const numCT = 2 + (Math.random() < 0.5 ? 0 : 1);
+  while (counterTrend.size < numCT) {
+    counterTrend.add(2 + Math.floor(Math.random() * (N - 3)));
+  }
+
+  const xs = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    let x = startX + (endX - startX) * t;
+    if (i > 0 && i < N) x += (Math.random() - 0.5) * 0.012;
+    xs.push(x);
+  }
+
+  const ctMagnitude = 0.035;
+  const totalAscent = (startY - endY) + numCT * ctMagnitude; // y decreases as we climb
+  const ascentSegments = N - numCT;
+  const avgAscent = totalAscent / ascentSegments;
+
+  const points = [[xs[0], startY]];
+  let y = startY;
+  for (let i = 1; i < N; i++) {
+    let dy;
+    if (counterTrend.has(i)) {
+      dy = +(0.020 + Math.random() * 0.030); // small dip (y increases)
+    } else {
+      dy = -avgAscent * (0.55 + Math.random() * 0.9);
+    }
+    y = Math.max(0.04, Math.min(0.55, y + dy));
+    points.push([xs[i], y]);
+  }
+  points.push([endX, endY]);
+  return points;
+}
 
 /* Brighter than the chip palette per the brief ("fairly thick, brighter
- * red"). These read as the dominant chart layer; chip text remains
- * legible because we draw chips AFTER the lines. */
+ * red"). These read as the dominant chart layer; chips remain legible
+ * because we draw chips AFTER the lines (and after the core), so the
+ * lines sit in the environmental layer. */
 const LINE_RED   = '#ff2d2d';
 const LINE_GREEN = '#19d76a';
-const LINE_WIDTH = 5;
+const LINE_WIDTH = 3.5;
 
 const LINE_DELAY_AFTER_ENTRY_MS = 500;   // wait for chips to start before drawing
-const LINE_DRAW_DUR_MS          = 3500;  // full traverse, decoupled from chip speed
 
 function buildPath(waypoints, W, H) {
   const points = waypoints.map(([nx, ny]) => ({ x: nx * W, y: ny * H }));
@@ -159,16 +218,17 @@ function buildPath(waypoints, W, H) {
   return { points, segments, totalLength };
 }
 
-function drawProgressivePath(ctx, path, progress, color, lineWidth) {
+function drawProgressivePath(ctx, path, progress, color, lineWidth, alpha) {
   if (!path || path.totalLength === 0) return;
+  const a = (alpha == null) ? 1 : Math.max(0, Math.min(1, alpha));
+  if (a <= 0.001) return;
   const targetLen = path.totalLength * Math.max(0, Math.min(1, progress));
   ctx.save();
+  ctx.globalAlpha = a;
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 8;          // subtle glow to keep the line readable behind chips
   ctx.beginPath();
   ctx.moveTo(path.points[0].x, path.points[0].y);
   for (const seg of path.segments) {
@@ -221,7 +281,8 @@ export default function HeroPressureExhibit() {
     let core = { x: 0, y: 0, r: 0 };
 
     let leftPath = null, rightPath = null;
-    let lineStart = 0; // ms when the trend lines began their draw
+    let lineStart = 0; // ms when the trend lines began their first cycle
+    let lineCycleIdx = -1; // which cycle we're currently in; -1 sentinel = not yet started
 
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -251,9 +312,11 @@ export default function HeroPressureExhibit() {
         ghostWrap.style.width  = coreDiameter + 'px';
         ghostWrap.style.height = coreDiameter + 'px';
       }
-      // Invalidate cached line paths so they rebuild against the new W/H
+      // Invalidate cached line paths so they rebuild against the new W/H.
+      // Force a regenerate on the next frame by resetting the cycle index.
       leftPath = null;
       rightPath = null;
+      lineCycleIdx = -1;
     }
 
     function rand(a, b) { return a + Math.random() * (b - a); }
@@ -405,6 +468,7 @@ export default function HeroPressureExhibit() {
       outbound.length = 0;
       particles.length = 0;
       lineStart = 0;
+      lineCycleIdx = -1;
     }
 
     function computeSpawnGap() {
@@ -522,12 +586,38 @@ export default function HeroPressureExhibit() {
       // 0.50) — dead center of the canvas, which is also the core's
       // center — so the lines visually "feed into" / "emerge from"
       // the core rather than terminating at its edge in a hard stop.
+      //
+      // CYCLING: every LINE_CYCLE_MS we regenerate a fresh randomized
+      // path for both lines so the chart continually recomposes —
+      // same story (down on the left, up on the right), never the
+      // exact same curve. Phases within each cycle:
+      //   [0,                  LINE_DRAW_MS)              draw progressively (α=1)
+      //   [LINE_DRAW_MS,       +LINE_HOLD_MS)             hold fully drawn  (α=1)
+      //   [+HOLD,              +LINE_FADE_MS)             fade out          (α→0)
       if (lineStart > 0) {
-        if (!leftPath)  leftPath  = buildPath(LEFT_LINE_WAYPOINTS,  W, H);
-        if (!rightPath) rightPath = buildPath(RIGHT_LINE_WAYPOINTS, W, H);
-        const lineProgress = Math.min(1, (t - lineStart) / LINE_DRAW_DUR_MS);
-        drawProgressivePath(ctx, leftPath,  lineProgress, LINE_RED,   LINE_WIDTH);
-        drawProgressivePath(ctx, rightPath, lineProgress, LINE_GREEN, LINE_WIDTH);
+        const elapsed = ts - lineStart;
+        const idx = Math.floor(elapsed / LINE_CYCLE_MS);
+        const cycleT = elapsed - idx * LINE_CYCLE_MS;
+        if (idx !== lineCycleIdx) {
+          // New cycle (or first time after a reset) — regenerate.
+          lineCycleIdx = idx;
+          leftPath  = buildPath(generateLeftWaypoints(),  W, H);
+          rightPath = buildPath(generateRightWaypoints(), W, H);
+        }
+        let progress, alpha;
+        if (cycleT < LINE_DRAW_MS) {
+          progress = cycleT / LINE_DRAW_MS;
+          alpha = 1;
+        } else if (cycleT < LINE_DRAW_MS + LINE_HOLD_MS) {
+          progress = 1;
+          alpha = 1;
+        } else {
+          progress = 1;
+          const fadeT = (cycleT - LINE_DRAW_MS - LINE_HOLD_MS) / LINE_FADE_MS;
+          alpha = 1 - fadeT;
+        }
+        drawProgressivePath(ctx, leftPath,  progress, LINE_RED,   LINE_WIDTH, alpha);
+        drawProgressivePath(ctx, rightPath, progress, LINE_GREEN, LINE_WIDTH, alpha);
       }
 
       drawCore(t);
@@ -656,7 +746,9 @@ export default function HeroPressureExhibit() {
       ghostWrap.style.display = 'none';
       // In reduce-motion mode, snap the chart lines into their final
       // state (drawn fully) so the message lands without animation.
-      lineStart = performance.now() - LINE_DRAW_DUR_MS;
+      // We still want a chart visible, so seed lineStart in the past
+      // so the first frame computes progress=1, alpha=1 immediately.
+      lineStart = performance.now() - LINE_DRAW_MS;
       for (let i = 0; i < 3; i++) {
         setTimeout(spawnPressure, i * 250);
       }
