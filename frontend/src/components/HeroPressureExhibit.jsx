@@ -877,23 +877,25 @@ export default function HeroPressureExhibit() {
         setTimeout(spawnPressure, i * 250);
       }
     } else if ('IntersectionObserver' in window) {
-      // Hero sits at the very top of the page, so the observer fires
-      // on mount. Same replay-on-reentry contract as the mid-page
-      // exhibit — if the reader scrolls all the way back up, the
-      // entry animation replays.
-      let exhibitInView = false;
+      // Play-once-on-first-entry contract.
+      //
+      // The exhibit lives mid-page (Row 3), so we want the entry
+      // sequence to fire exactly ONCE — when the reader first scrolls
+      // it into view. After that, the chart cycle, chip swarm, and
+      // number swarm all run steady-state forever. Scrolling away and
+      // back does NOT replay the entry.
+      //
+      // (Earlier rev had a replay-on-reenter contract, but that
+      // caused visible hiccups: the IntersectionObserver could fire
+      // multiple times during a scroll-back, calling resetExhibit()
+      // mid-animation and stomping the in-flight draw loop. We
+      // keep state once it's been built.)
       observer = new IntersectionObserver((entries) => {
         entries.forEach((en) => {
-          if (en.isIntersecting) {
-            if (!exhibitInView) {
-              exhibitInView = true;
-              if (!entryTriggered || entryComplete) {
-                resetExhibit();
-                triggerEntry();
-              }
-            }
-          } else {
-            exhibitInView = false;
+          if (en.isIntersecting && !entryTriggered) {
+            triggerEntry();
+            observer.disconnect();
+            observer = null;
           }
         });
       }, { threshold: 0.25 });
@@ -973,6 +975,20 @@ export default function HeroPressureExhibit() {
           font-style: italic;
           font-weight: 500;
           color: ${C.gold};
+        }
+
+        /* Lede — the payoff paragraph that sits below the subhead.
+           Body-weight prose, navy body color, narrow column for
+           readability. */
+        .hpe-lede {
+          font-family: ${SANS};
+          font-size: clamp(16px, 1.25vw, 19px);
+          font-weight: 300;
+          line-height: 1.6;
+          color: ${C.body};
+          max-width: 720px;
+          margin: 18px auto 0;
+          text-wrap: pretty;
         }
         .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: 12px; }
         .hpe-canvas { display: block; width: 100%; height: auto; }
@@ -1107,9 +1123,11 @@ export default function HeroPressureExhibit() {
           />
           <div className="hpe-copy" ref={copyRef}>
             <h2 className="hpe-subhead">
-              When the five disciplines are missing, performance is at the mercy of conditions.{' '}
-              <span className="pivot">When they&rsquo;re built in, it isn&rsquo;t.</span>
+              When execution is built on these disciplines, <span className="pivot">performance is not at the mercy of conditions.</span>
             </h2>
+            <p className="hpe-lede">
+              Market pressures don&rsquo;t stop. Strong quarters and weak ones are readouts of the same thing&nbsp;&mdash;&nbsp;the execution capability at the root of your operation.
+            </p>
           </div>
 
           <div className="hpe-ghost-wrap" ref={ghostWrapRef} aria-hidden="true">

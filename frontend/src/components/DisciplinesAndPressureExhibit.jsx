@@ -340,40 +340,34 @@ export function SectionDisciplinesFoundation() {
     };
     window.addEventListener('resize', onResize);
 
-    // Stage-in observer — fires entry sequence (replay-on-re-entry)
+    // Stage-in observer — fires entry sequence ONCE on first entry.
+    //
+    // Earlier rev had replay-on-reentry, but that caused visible
+    // hiccups: scrolling back up into the section called resetSection
+    // (clears all card visibility) then re-ran the staggered entry,
+    // which read as the whole layout dissolving and re-building. We
+    // keep state once it's been built.
+    let entryFired = false;
     const stageIO = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
-        if (en.isIntersecting) {
-          if (!stageInView) {
-            stageInView = true;
-            resetSection();
-            runSequence();
-          }
-        } else {
-          stageInView = false;
+        if (en.isIntersecting && !entryFired) {
+          entryFired = true;
+          runSequence();
+          stageIO.disconnect();
         }
       });
     }, { threshold: 0.18 });
     stageIO.observe(stage);
 
-    // Exit-trigger observer — fires when bottom of section approaches top of viewport
-    const exitIO = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting) {
-          if (!exitBottomCrossed) {
-            exitBottomCrossed = true;
-            runExit();
-          }
-        } else {
-          exitBottomCrossed = false;
-        }
-      });
-    }, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
-    if (sentinel) exitIO.observe(sentinel);
+    // Exit-trigger observer — also retired with the play-once rev.
+    // The exit fade was the second source of "hinky" scroll behavior:
+    // cards faded out when you scrolled past the bottom, then the
+    // stage observer re-fired the entry when you scrolled back. We
+    // disable both. The section now just sits in its built state.
+    // (Sentinel still rendered for backwards compat; nothing observes it.)
 
     return () => {
       stageIO.disconnect();
-      exitIO.disconnect();
       window.removeEventListener('resize', onResize);
       entryTimers.forEach(clearTimeout);
       if (exitRAF) cancelAnimationFrame(exitRAF);
@@ -634,9 +628,8 @@ export function SectionDisciplinesFoundation() {
       >
         <div className="s3-row">
           <div className="s3-intro">
-            <p className="s3-eyebrow">What we build</p>
             <h2 className="s3-h2">
-              <span className="sans">The ability to execute.</span>
+              <span className="sans">We build the disciplines to execute at a consistently high level.</span>
               <span className="serif">No matter what.</span>
             </h2>
             <p className="s3-lede">
