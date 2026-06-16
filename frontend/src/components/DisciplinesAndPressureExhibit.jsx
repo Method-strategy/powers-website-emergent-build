@@ -106,7 +106,7 @@ function CardLearnMore({ href }) {
         display: 'inline-flex',
         alignItems: 'center',
         gap: 5,
-        marginTop: 10,
+        marginTop: 4,
         fontFamily: SANS,
         fontSize: 12.5,
         fontWeight: 600,
@@ -409,7 +409,9 @@ export function SectionDisciplinesFoundation() {
           display: inline;
           font-family: ${SANS};
           font-weight: 800;
-          font-size: clamp(30px, 3.6vw, 46px);
+          /* Matches hero H1 scale (Feb 2026) so Row 2 H2 reads at
+             the same display tier. */
+          font-size: clamp(54px, 7vw, 108px);
           color: ${C.navy};
         }
         .s3-h2 .serif {
@@ -417,7 +419,7 @@ export function SectionDisciplinesFoundation() {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(30px, 3.6vw, 46px);
+          font-size: clamp(54px, 7vw, 108px);
           color: ${C.gold};
           margin-left: 0.2em;
         }
@@ -433,12 +435,12 @@ export function SectionDisciplinesFoundation() {
         .s3-stage {
           position: relative;
           width: 100%;
-          /* Tightened Feb 2026: 540 → 480 to remove the dead space
-             under Daily Accountability and bring the second discipline
-             row closer to the first. Stays tall enough that d5 (Daily
-             Accountability) clears the bottom of the core without
-             overlapping its text. */
-          height: 480px;
+          /* Stage height tuned Feb 2026 — d5 (Daily Accountability)
+             needs ~40px clearance below the core (which extends to
+             top:50% + 94px radius = top:50% + 94 = 334 at 500h).
+             Stage 500 with d5 at bottom:0 gives ~35–40px gap, clean.
+             Total row is still ~140px shorter than the original 540h. */
+          height: 500px;
           margin: 20px auto 0;
         }
         .s3-canvas {
@@ -562,14 +564,18 @@ export function SectionDisciplinesFoundation() {
           line-height: 1.18;
           color: ${C.navy};
           letter-spacing: -.005em;
-          margin-bottom: 8px;
+          /* Tightened Feb 2026 — was 8px, dropped to 2px so the
+             discipline name sits tight against its descriptor. */
+          margin-bottom: 2px;
         }
         .s3-disc .s3-copy {
           font-family: ${SANS};
           font-weight: 300;
           font-size: 14px;
-          line-height: 1.5;
+          /* Tightened Feb 2026 — line-height 1.5 → 1.42. */
+          line-height: 1.42;
           color: ${C.body};
+          margin: 0;
         }
         /* Discipline positions (entered state). Tightened Feb 2026:
               d1/d2 → top:2%   (tucked just under the lede)
@@ -580,7 +586,7 @@ export function SectionDisciplinesFoundation() {
         .s3-disc.d2 { right: 12%; top: 2%;   transform: translate(20px, -16px);  text-align: right; }
         .s3-disc.d3 { left: 8%;  top: 48%;   transform: translate(-30px, 0); }
         .s3-disc.d4 { right: 8%; top: 48%;   transform: translate(30px, 0);     text-align: right; }
-        .s3-disc.d5 { left: 50%; bottom: 4%; transform: translate(-50%, 24px);  text-align: center; }
+        .s3-disc.d5 { left: 50%; bottom: 0%; transform: translate(-50%, 24px);  text-align: center; }
         .s3-disc.s3-in { opacity: 1; transform: translate(0, 0); }
         .s3-disc.d5.s3-in { transform: translate(-50%, 0); }
         .s3-disc.s3-fading { opacity: 0; transition: opacity 1s cubic-bezier(.22,.61,.36,1); }

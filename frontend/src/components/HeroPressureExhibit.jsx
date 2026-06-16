@@ -963,8 +963,10 @@ export default function HeroPressureExhibit() {
         .hpe-subhead {
           font-family: ${SANS};
           font-weight: 800;
-          font-size: clamp(30px, 3.6vw, 46px);
-          line-height: 1.10;
+          /* Matches hero H1 scale (Feb 2026) so Row 3 subhead reads
+             at the same display tier as the hero and Row 2 H2. */
+          font-size: clamp(54px, 7vw, 108px);
+          line-height: 1.04;
           letter-spacing: -.012em;
           color: ${C.navy};
           margin: 0;

@@ -87,16 +87,14 @@ export default function HeroNavyClaim() {
           text-align: center;
         }
 
-        /* H1 — staggered line-by-line reveal. Each line starts hidden
-           (opacity 0, 14px down) and fades up on its own timer. Hero
-           sits at the top of the page, so the IntersectionObserver
-           fires immediately on mount; the staggered animation-delays
-           below produce a "claim is being made" cadence on first paint.
-              Strong execution.       →   90ms
-              Strong performance.     →  690ms
-              Regardless of cond.     → 1290ms (gold italic — the
-                                                resolution beat lands
-                                                last and loudest) */
+        /* H1 — looping line-by-line reveal.
+           The hero loops on a 10s cycle so a visitor who lands on
+           the page mid-stream still gets the full claim. Each line
+           uses its own keyframe so they enter in sequence (line 1 at
+           ~1.4s into the cycle, line 2 at ~2.4s, line 3 at ~3.4s),
+           all hold visible together until ~7.0s, then fade out
+           together over 0.8s, and the cycle restarts after a brief
+           dark beat. Reduced motion snaps everything visible. */
         .hnc-h1 {
           line-height: 1.0;
           letter-spacing: -.014em;
@@ -105,14 +103,30 @@ export default function HeroNavyClaim() {
         .hnc-h1 > span {
           opacity: 0;
           transform: translateY(14px);
-          animation: hnc-line-in 1.1s cubic-bezier(.22,.61,.36,1) forwards;
+          animation-duration: 10s;
+          animation-timing-function: cubic-bezier(.22,.61,.36,1);
+          animation-iteration-count: infinite;
         }
-        .hnc-h1 > span:nth-child(1) { animation-delay: 0.09s; }
-        .hnc-h1 > span:nth-child(2) { animation-delay: 0.69s; }
-        .hnc-h1 > span:nth-child(3) { animation-delay: 1.29s; }
-        @keyframes hnc-line-in {
-          to { opacity: 1; transform: translateY(0); }
+        .hnc-h1 > span:nth-child(1) { animation-name: hnc-line-1; }
+        .hnc-h1 > span:nth-child(2) { animation-name: hnc-line-2; }
+        .hnc-h1 > span:nth-child(3) { animation-name: hnc-line-3; }
+
+        @keyframes hnc-line-1 {
+          0%, 4%   { opacity: 0; transform: translateY(14px); }
+          14%, 70% { opacity: 1; transform: translateY(0); }
+          78%, 100%{ opacity: 0; transform: translateY(-8px); }
         }
+        @keyframes hnc-line-2 {
+          0%, 10%  { opacity: 0; transform: translateY(14px); }
+          20%, 70% { opacity: 1; transform: translateY(0); }
+          78%, 100%{ opacity: 0; transform: translateY(-8px); }
+        }
+        @keyframes hnc-line-3 {
+          0%, 16%  { opacity: 0; transform: translateY(14px); }
+          26%, 70% { opacity: 1; transform: translateY(0); }
+          78%, 100%{ opacity: 0; transform: translateY(-8px); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .hnc-h1 > span {
             opacity: 1;
@@ -124,7 +138,11 @@ export default function HeroNavyClaim() {
           display: block;
           font-family: ${SANS};
           font-weight: 800;
-          font-size: clamp(38px, 5.2vw, 76px);
+          /* Hero scale (Feb 2026 rev). Up significantly from
+             clamp(38, 5.2vw, 76) so the H1 has actual hero
+             presence. Row 2 H2 and Row 3 subhead inherit this
+             same clamp to read at consistent display level. */
+          font-size: clamp(54px, 7vw, 108px);
           color: ${C.paper};
         }
         .hnc-h1 .sans + .sans {
@@ -135,7 +153,7 @@ export default function HeroNavyClaim() {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(38px, 5.2vw, 76px);
+          font-size: clamp(54px, 7vw, 108px);
           color: ${C.gold};
         }
         /* First serif line after the sans block — open the transition. */
