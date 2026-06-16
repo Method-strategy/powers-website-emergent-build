@@ -384,7 +384,11 @@ export function SectionDisciplinesFoundation() {
           position: relative;
           max-width: 1240px;
           margin: 0 auto;
-          padding: 96px 56px 56px;
+          /* Tightened Feb 2026 — the eyebrows-per-card were removed,
+             so the section no longer needs as much vertical breathing
+             room. Keeps the disciplines diagram comfortable but stops
+             the row from feeling cavernous. */
+          padding: 64px 56px 48px;
         }
         .s3-intro { max-width: 880px; margin: 0 auto 16px; text-align: center; }
         .s3-eyebrow {
@@ -574,7 +578,7 @@ export function SectionDisciplinesFoundation() {
            message was merged into the section h2. */
 
         @media (max-width: 980px) {
-          .s3-row { padding: 80px 32px 56px; }
+          .s3-row { padding: 56px 32px 48px; }
           .s3-stage { height: auto; min-height: auto; }
           .s3-core-anchor {
             position: relative;
@@ -605,7 +609,7 @@ export function SectionDisciplinesFoundation() {
           .s3-canvas { display: none; }
         }
         @media (max-width: 480px) {
-          .s3-row { padding: 64px 22px 48px; }
+          .s3-row { padding: 48px 22px 40px; }
           .s3-core-anchor { width: 150px; height: 150px; }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -645,7 +649,11 @@ export function SectionDisciplinesFoundation() {
                 ref={(el) => { discRefs.current[i] = el; }}
                 className={`s3-disc ${d.pos}`}
               >
-                <span className="s3-num">{d.num}</span>
+                {/* `<span className="s3-num">{d.num}</span>` removed
+                    Feb 2026 — eyebrows like "01 — Discipline" were
+                    redundant with the discipline NAME itself
+                    ("Operational Discipline"), and they added vertical
+                    height that the row didn't need. */}
                 <p className="s3-name">{d.name}</p>
                 <p className="s3-copy">{d.body}</p>
                 <CardLearnMore href={d.href} />

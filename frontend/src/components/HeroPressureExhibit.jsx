@@ -962,7 +962,7 @@ export default function HeroPressureExhibit() {
            for the resolution clause. */
         .hpe-subhead {
           font-family: ${SANS};
-          font-weight: 700;
+          font-weight: 800;
           font-size: clamp(30px, 3.6vw, 46px);
           line-height: 1.10;
           letter-spacing: -.012em;
@@ -1126,7 +1126,7 @@ export default function HeroPressureExhibit() {
               When execution is built on these disciplines, <span className="pivot">performance is not at the mercy of conditions.</span>
             </h2>
             <p className="hpe-lede">
-              Market pressures don&rsquo;t stop. Strong quarters and weak ones are readouts of the same thing&nbsp;&mdash;&nbsp;the execution capability at the root of your operation.
+              Market pressures don&rsquo;t stop. Operations built with these core disciplines as their foundation don&rsquo;t lose ground when conditions shift. They hold position, recover faster, and compound gains regardless of conditions.
             </p>
           </div>
 
