@@ -18,7 +18,8 @@
  *  No lede, no animation, no chart — the proof lives in Row 3.
  * ════════════════════════════════════════════════════════════════════ */
 
-import React from 'react';
+import React, { useRef } from 'react';
+import { useScrollBuild } from '../lib/useScrollBuild';
 
 const SANS  = '"proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
 const SERIF = '"Newsreader","Source Serif 4","Tiempos Headline",Georgia,"Times New Roman",serif';
@@ -30,6 +31,8 @@ const C = {
 };
 
 export default function HeroNavyClaim() {
+  const sectionRef = useRef(null);
+  useScrollBuild(sectionRef);
   return (
     <>
       <style>{`
@@ -87,52 +90,26 @@ export default function HeroNavyClaim() {
           text-align: center;
         }
 
-        /* H1 — looping line-by-line reveal.
-           The hero loops on a 10s cycle so a visitor who lands on
-           the page mid-stream still gets the full claim. Each line
-           uses its own keyframe so they enter in sequence (line 1 at
-           ~1.4s into the cycle, line 2 at ~2.4s, line 3 at ~3.4s),
-           all hold visible together until ~7.0s, then fade out
-           together over 0.8s, and the cycle restarts after a brief
-           dark beat. Reduced motion snaps everything visible. */
+        /* H1 — each line is bound to the section's scroll progress
+           via the useScrollBuild hook. Lines rise from below as the
+           hero enters the viewport and lift up out the top as the
+           reader scrolls past. The looping keyframes that lived here
+           previously were retired Feb 2026 — scroll-driven build
+           covers the same "claim is being made" cadence, more
+           coherently with the rest of the page. */
         .hnc-h1 {
           line-height: 1.0;
           letter-spacing: -.014em;
           margin: 0;
         }
         .hnc-h1 > span {
+          /* Initial state — scroll-build hook will overwrite each
+             frame. CSS values here are the fallback shown before the
+             first useScrollBuild update fires (essentially never
+             visible to the user, but defensive). */
           opacity: 0;
           transform: translateY(14px);
-          animation-duration: 10s;
-          animation-timing-function: cubic-bezier(.22,.61,.36,1);
-          animation-iteration-count: infinite;
-        }
-        .hnc-h1 > span:nth-child(1) { animation-name: hnc-line-1; }
-        .hnc-h1 > span:nth-child(2) { animation-name: hnc-line-2; }
-        .hnc-h1 > span:nth-child(3) { animation-name: hnc-line-3; }
-
-        @keyframes hnc-line-1 {
-          0%, 4%   { opacity: 0; transform: translateY(14px); }
-          14%, 70% { opacity: 1; transform: translateY(0); }
-          78%, 100%{ opacity: 0; transform: translateY(-8px); }
-        }
-        @keyframes hnc-line-2 {
-          0%, 10%  { opacity: 0; transform: translateY(14px); }
-          20%, 70% { opacity: 1; transform: translateY(0); }
-          78%, 100%{ opacity: 0; transform: translateY(-8px); }
-        }
-        @keyframes hnc-line-3 {
-          0%, 16%  { opacity: 0; transform: translateY(14px); }
-          26%, 70% { opacity: 1; transform: translateY(0); }
-          78%, 100%{ opacity: 0; transform: translateY(-8px); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .hnc-h1 > span {
-            opacity: 1;
-            transform: none;
-            animation: none;
-          }
+          will-change: opacity, transform;
         }
         .hnc-h1 .sans {
           display: block;
@@ -169,7 +146,7 @@ export default function HeroNavyClaim() {
         }
       `}</style>
 
-      <section className="hnc-section" data-testid="hero-navy-claim">
+      <section ref={sectionRef} className="hnc-section" data-testid="hero-navy-claim">
         {/* Background atmosphere — looped video of POWERS consultants
             on the manufacturing floor, served from /uploads so it's
             same-origin (no CORS issues). Behind a heavy navy overlay
@@ -190,9 +167,9 @@ export default function HeroNavyClaim() {
 
         <div className="hnc-inner">
           <h1 className="hnc-h1" data-testid="hero-h1">
-            <span className="sans">Strong execution.</span>
-            <span className="sans">Strong performance.</span>
-            <span className="serif">Regardless of conditions.</span>
+            <span className="sans" data-build>Strong execution.</span>
+            <span className="sans" data-build>Strong performance.</span>
+            <span className="serif" data-build>Regardless of conditions.</span>
           </h1>
         </div>
       </section>

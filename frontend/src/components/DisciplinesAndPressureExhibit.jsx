@@ -36,6 +36,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toRoute } from '../lib/routes';
+import { useScrollBuild } from '../lib/useScrollBuild';
 
 /* ── Locked design tokens (from the brief) ──────────────────────── */
 const SANS  = '"proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
@@ -145,6 +146,12 @@ export function SectionDisciplinesFoundation() {
   const anchorRef   = useRef(null);
   const discRefs    = useRef([]);
   const sentinelRef = useRef(null);
+
+  // Scroll-driven build/unbuild for the H2 + lede typography. The
+  // pentagon of disciplines (cards) is structural geometry and keeps
+  // its existing first-entry stagger; only the editorial copy
+  // builds and unbuilds with scroll.
+  useScrollBuild(sectionRef);
 
   useEffect(() => {
     const stage   = stageRef.current;
@@ -407,7 +414,7 @@ export function SectionDisciplinesFoundation() {
           margin-bottom: 14px;
         }
         .s3-h2 .sans {
-          display: inline;
+          display: inline-block;
           font-family: ${SANS};
           font-weight: 800;
           /* Matches the prior hero scale (Feb 2026) so Row 2 H2 sits
@@ -415,15 +422,26 @@ export function SectionDisciplinesFoundation() {
              smaller scale. */
           font-size: clamp(38px, 5.2vw, 76px);
           color: ${C.navy};
+          will-change: opacity, transform;
         }
         .s3-h2 .serif {
-          display: inline;
+          display: inline-block;
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
           font-size: clamp(38px, 5.2vw, 76px);
           color: ${C.gold};
           margin-left: 0.2em;
+          will-change: opacity, transform;
+        }
+        /* Lede sentences — each <span class="s3-lede-sent"> is an
+           independent build target so the four-sentence paragraph
+           cascades in / out sentence by sentence. inline-block keeps
+           the natural paragraph flow; the spans wrap at word
+           boundaries between them. */
+        .s3-lede-sent {
+          display: inline;
+          will-change: opacity, transform;
         }
         .s3-lede {
           font-family: ${SANS};
@@ -653,11 +671,14 @@ export function SectionDisciplinesFoundation() {
         <div className="s3-row">
           <div className="s3-intro">
             <h2 className="s3-h2">
-              <span className="sans">We build the disciplines to execute at a consistently high level.</span>
-              <span className="serif">No matter what.</span>
+              <span className="sans" data-build>We build the disciplines to execute at a consistently high level.</span>
+              <span className="serif" data-build>No matter what.</span>
             </h2>
             <p className="s3-lede">
-              Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
+              <span className="s3-lede-sent" data-build>Five disciplines built into how the operation executes every shift, every day, every quarter.</span>{' '}
+              <span className="s3-lede-sent" data-build>Not five initiatives. Not five priorities.</span>{' '}
+              <span className="s3-lede-sent" data-build>Weaken one and the others drift.</span>{' '}
+              <span className="s3-lede-sent" data-build>Build them together and they interlock into something load-bearing, deep enough that performance doesn&rsquo;t break down when conditions do.</span>
             </p>
           </div>
 

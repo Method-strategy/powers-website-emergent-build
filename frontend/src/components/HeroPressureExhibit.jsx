@@ -28,6 +28,7 @@
  * ════════════════════════════════════════════════════════════════════ */
 
 import React, { useEffect, useRef } from 'react';
+import { useScrollBuild } from '../lib/useScrollBuild';
 
 /* ── Locked design tokens (mirrors DisciplinesAndPressureExhibit) ── */
 const SANS  = '"proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
@@ -250,6 +251,12 @@ export default function HeroPressureExhibit() {
   const loadRef       = useRef(null);
   const loadValRef    = useRef(null);
   const burstRef      = useRef(null);
+
+  // Scroll-driven build/unbuild for the H2 + lede typography.
+  // The chart canvas, chip swarm, number swarm, and core all keep
+  // their own animation engines running independently. Only the
+  // editorial copy is bound to scroll position.
+  useScrollBuild(sectionRef);
 
   useEffect(() => {
     const canvas    = canvasRef.current;
@@ -948,13 +955,13 @@ export default function HeroPressureExhibit() {
           text-align: center;
           position: relative;
           z-index: 1;
-          opacity: 0;
-          transform: translateY(12px);
-          transition:
-            opacity .9s cubic-bezier(.22,.61,.36,1),
-            transform .9s cubic-bezier(.22,.61,.36,1);
         }
-        .hpe-copy.hpe-in { opacity: 1; transform: translateY(0); }
+        /* H2 subhead + lede are bound to scroll progress via the
+           useScrollBuild hook on this section's ref. Each
+           [data-build] child element animates independently. Older
+           ".hpe-in" entry-fade is retired Feb 2026 — scroll-build
+           handles the same job in a way that responds to the
+           reader's scroll speed. */
 
         /* H2 subhead — the diagnostic. Matches the Row 2 H2 size
            (clamp 30→46) so the two beats read at the same display
@@ -974,11 +981,20 @@ export default function HeroPressureExhibit() {
           margin: 0;
           text-wrap: pretty;
         }
+        .hpe-subhead .hpe-h2-main,
+        .hpe-subhead .pivot {
+          display: inline-block;
+          will-change: opacity, transform;
+        }
         .hpe-subhead .pivot {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
           color: ${C.gold};
+        }
+
+        .hpe-lede-sent {
+          will-change: opacity, transform;
         }
 
         /* Lede — the payoff paragraph that sits below the subhead.
@@ -1127,10 +1143,13 @@ export default function HeroPressureExhibit() {
           />
           <div className="hpe-copy" ref={copyRef}>
             <h2 className="hpe-subhead">
-              When execution is built on these disciplines, <span className="pivot">performance is not at the mercy of conditions.</span>
+              <span className="hpe-h2-main" data-build>When execution is built on these disciplines,</span>{' '}
+              <span className="pivot" data-build>performance is not at the mercy of conditions.</span>
             </h2>
             <p className="hpe-lede">
-              Market pressures don&rsquo;t stop. Operations built with these core disciplines as their foundation don&rsquo;t lose ground when conditions shift. They hold position, recover faster, and compound gains regardless.
+              <span className="hpe-lede-sent" data-build>Market pressures don&rsquo;t stop.</span>{' '}
+              <span className="hpe-lede-sent" data-build>Operations built with these core disciplines as their foundation don&rsquo;t lose ground when conditions shift.</span>{' '}
+              <span className="hpe-lede-sent" data-build>They hold position, recover faster, and compound gains regardless.</span>
             </p>
           </div>
 
