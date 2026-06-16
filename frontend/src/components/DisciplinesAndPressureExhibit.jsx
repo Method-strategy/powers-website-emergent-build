@@ -388,7 +388,7 @@ export function SectionDisciplinesFoundation() {
              so the section no longer needs as much vertical breathing
              room. Keeps the disciplines diagram comfortable but stops
              the row from feeling cavernous. */
-          padding: 64px 56px 48px;
+          padding: 64px 56px 24px;
         }
         .s3-intro { max-width: 880px; margin: 0 auto 16px; text-align: center; }
         .s3-eyebrow {
@@ -433,8 +433,13 @@ export function SectionDisciplinesFoundation() {
         .s3-stage {
           position: relative;
           width: 100%;
-          height: 540px;
-          margin: 48px auto 0;
+          /* Tightened Feb 2026: 540 → 480 to remove the dead space
+             under Daily Accountability and bring the second discipline
+             row closer to the first. Stays tall enough that d5 (Daily
+             Accountability) clears the bottom of the core without
+             overlapping its text. */
+          height: 480px;
+          margin: 20px auto 0;
         }
         .s3-canvas {
           position: absolute;
@@ -445,7 +450,9 @@ export function SectionDisciplinesFoundation() {
         .s3-core-anchor {
           position: absolute;
           left: 50%;
-          top: 38%;
+          /* Vertically centered in the stage. The disciplines arrange
+             around it: d1/d2 above, d3/d4 level, d5 below. */
+          top: 50%;
           transform: translate(-50%, -50%);
           width: 188px;
           height: 188px;
@@ -564,11 +571,16 @@ export function SectionDisciplinesFoundation() {
           line-height: 1.5;
           color: ${C.body};
         }
-        .s3-disc.d1 { left: 12%; top: 0%;    transform: translate(-20px, -16px); }
-        .s3-disc.d2 { right: 12%; top: 0%;   transform: translate(20px, -16px);  text-align: right; }
-        .s3-disc.d3 { left: 8%;  top: 44%;   transform: translate(-30px, 0); }
-        .s3-disc.d4 { right: 8%; top: 44%;   transform: translate(30px, 0);     text-align: right; }
-        .s3-disc.d5 { left: 50%; bottom: 0%; transform: translate(-50%, 24px);  text-align: center; }
+        /* Discipline positions (entered state). Tightened Feb 2026:
+              d1/d2 → top:2%   (tucked just under the lede)
+              d3/d4 → top:48%  (level with the core's vertical middle)
+              d5    → bottom:4% (pulled up from the stage floor — was
+                                 hanging way low at bottom:0%) */
+        .s3-disc.d1 { left: 12%; top: 2%;    transform: translate(-20px, -16px); }
+        .s3-disc.d2 { right: 12%; top: 2%;   transform: translate(20px, -16px);  text-align: right; }
+        .s3-disc.d3 { left: 8%;  top: 48%;   transform: translate(-30px, 0); }
+        .s3-disc.d4 { right: 8%; top: 48%;   transform: translate(30px, 0);     text-align: right; }
+        .s3-disc.d5 { left: 50%; bottom: 4%; transform: translate(-50%, 24px);  text-align: center; }
         .s3-disc.s3-in { opacity: 1; transform: translate(0, 0); }
         .s3-disc.d5.s3-in { transform: translate(-50%, 0); }
         .s3-disc.s3-fading { opacity: 0; transition: opacity 1s cubic-bezier(.22,.61,.36,1); }

@@ -36,24 +36,59 @@ export default function HeroNavyClaim() {
         .hnc-section {
           background: ${C.navyDeep};
           position: relative;
+          /* Hero fills the visible viewport, regardless of device.
+             Accounts for the sticky site header above (~85px) via
+             100svh - header so the hero never overflows into a
+             scrollbar nor leaves visible chrome below it. svh ("small
+             viewport height") is the browser-UI-aware unit so mobile
+             address-bar collapse doesn't shrink the hero mid-scroll.
+             vh fallback first for older Safari. */
+          min-height: calc(100vh - 85px);
+          min-height: calc(100svh - 85px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .hnc-inner {
           max-width: 1180px;
+          width: 100%;
           margin: 0 auto;
-          padding: 112px 56px 104px;
+          padding: 56px 56px;
           text-align: center;
         }
 
-        /* H1 — four-line display claim. Optical line balance: small
-           negative margin-top tightens the sans→sans gap, small
-           positive margin-top on the first serif opens the sans→serif
-           transition (italic ascenders need more breathing room than
-           sans). The serif→serif gap inherits a neutral line-height
-           since both share the same typeface metrics. */
+        /* H1 — staggered line-by-line reveal. Each line starts hidden
+           (opacity 0, 14px down) and fades up on its own timer. Hero
+           sits at the top of the page, so the IntersectionObserver
+           fires immediately on mount; the staggered animation-delays
+           below produce a "claim is being made" cadence on first paint.
+              Strong execution.       →   90ms
+              Strong performance.     →  690ms
+              Regardless of cond.     → 1290ms (gold italic — the
+                                                resolution beat lands
+                                                last and loudest) */
         .hnc-h1 {
           line-height: 1.0;
           letter-spacing: -.014em;
           margin: 0;
+        }
+        .hnc-h1 > span {
+          opacity: 0;
+          transform: translateY(14px);
+          animation: hnc-line-in 1.1s cubic-bezier(.22,.61,.36,1) forwards;
+        }
+        .hnc-h1 > span:nth-child(1) { animation-delay: 0.09s; }
+        .hnc-h1 > span:nth-child(2) { animation-delay: 0.69s; }
+        .hnc-h1 > span:nth-child(3) { animation-delay: 1.29s; }
+        @keyframes hnc-line-in {
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hnc-h1 > span {
+            opacity: 1;
+            transform: none;
+            animation: none;
+          }
         }
         .hnc-h1 .sans {
           display: block;
@@ -77,17 +112,12 @@ export default function HeroNavyClaim() {
         .hnc-h1 .sans + .serif {
           margin-top: 0.08em;
         }
-        /* Subsequent serif lines — gentle additional gap, since the
-           two italic resolutions are separate beats, not a continuation. */
-        .hnc-h1 .serif + .serif {
-          margin-top: 0.04em;
-        }
 
         @media (max-width: 880px) {
-          .hnc-inner { padding: 88px 32px 80px; }
+          .hnc-inner { padding: 48px 32px; }
         }
         @media (max-width: 480px) {
-          .hnc-inner { padding: 64px 22px 56px; }
+          .hnc-inner { padding: 32px 22px; }
         }
       `}</style>
 
