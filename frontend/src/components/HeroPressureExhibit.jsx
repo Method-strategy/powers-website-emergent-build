@@ -954,30 +954,25 @@ export default function HeroPressureExhibit() {
         }
         .hpe-copy.hpe-in { opacity: 1; transform: translateY(0); }
 
-        /* H2 subhead — the problem statement. Navy sans. */
+        /* H2 subhead — the diagnostic. Matches the Row 2 H2 size
+           (clamp 30→46) so the two beats read at the same display
+           level. Sans navy for the problem; italic-gold pivot inline
+           for the resolution clause. */
         .hpe-subhead {
           font-family: ${SANS};
           font-weight: 700;
-          font-size: clamp(28px, 3.2vw, 44px);
-          line-height: 1.18;
+          font-size: clamp(30px, 3.6vw, 46px);
+          line-height: 1.10;
           letter-spacing: -.012em;
           color: ${C.navy};
-          margin: 0 0 14px;
+          margin: 0;
           text-wrap: pretty;
         }
-
-        /* Lede — the resolution clause as a short italic-gold serif
-           statement that answers the subhead's problem. Same gold-
-           italic gesture used by every other H2 pivot on the page,
-           lifted out as its own line because the pairing IS the beat. */
-        .hpe-lede {
+        .hpe-subhead .pivot {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(24px, 2.6vw, 36px);
-          line-height: 1.18;
           color: ${C.gold};
-          margin: 0;
         }
         .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: 12px; }
         .hpe-canvas { display: block; width: 100%; height: auto; }
@@ -1112,11 +1107,9 @@ export default function HeroPressureExhibit() {
           />
           <div className="hpe-copy" ref={copyRef}>
             <h2 className="hpe-subhead">
-              When the fundamentals are missing, performance is at the mercy of conditions.
+              When the five disciplines are missing, performance is at the mercy of conditions.{' '}
+              <span className="pivot">When they&rsquo;re built in, it isn&rsquo;t.</span>
             </h2>
-            <p className="hpe-lede">
-              When they&rsquo;re built in, it isn&rsquo;t.
-            </p>
           </div>
 
           <div className="hpe-ghost-wrap" ref={ghostWrapRef} aria-hidden="true">

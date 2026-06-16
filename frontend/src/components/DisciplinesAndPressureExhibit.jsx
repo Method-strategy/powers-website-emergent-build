@@ -630,17 +630,17 @@ export function SectionDisciplinesFoundation() {
       <section
         ref={sectionRef}
         className="s3-section"
-        aria-label="Five disciplines, one foundation"
+        aria-label="What we build — the ability to execute, no matter what"
       >
         <div className="s3-row">
           <div className="s3-intro">
             <p className="s3-eyebrow">What we build</p>
             <h2 className="s3-h2">
-              <span className="sans">Five disciplines.</span>
-              <span className="serif">One foundation built to execute no matter what.</span>
+              <span className="sans">The ability to execute.</span>
+              <span className="serif">No matter what.</span>
             </h2>
             <p className="s3-lede">
-              Not five initiatives or five priorities. Five disciplines built into how the operation executes every shift, every day, every quarter. Weaken one and the others drift. Build them together and they interlock into something load-bearing &mdash; deep enough that performance doesn&rsquo;t break down when conditions do.
+              Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
             </p>
           </div>
 

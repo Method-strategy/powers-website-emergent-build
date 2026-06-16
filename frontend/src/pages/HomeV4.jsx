@@ -30,7 +30,7 @@ import PowersMetrics from '../components/PowersMetrics';
 import { SectionDisciplinesFoundation, SectionPressureExhibit } from '../components/DisciplinesAndPressureExhibit'; // eslint-disable-line no-unused-vars
 import HeroNavyClaim from '../components/HeroNavyClaim';
 import HeroPressureExhibit from '../components/HeroPressureExhibit';
-import RowAbilityToExecute from '../components/RowAbilityToExecute';
+import RowAbilityToExecute from '../components/RowAbilityToExecute'; // eslint-disable-line no-unused-vars
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -2899,30 +2899,38 @@ function HomeV4() {
           alongside the chip exhibits. Component definition kept above
           for later re-introduction if needed. */}
       <Header />
-      {/* ── V4 SPINE (Feb 2026 — Sean/Justin pivot) ─────────────────
-          HERO  — HeroNavyClaim   (navy, typography only)
-          ROW 2 — HeroPressureExhibit (white, animation + diagnostic)
-          ROW 3 — RowAbilityToExecute (white, display declaration)
-          ROW 4 — SectionDisciplinesFoundation (the five disciplines)
+      {/* ── V4 SPINE (Feb 2026 rev — Sean/Justin pivot, post-meeting) ─
+          HERO  — HeroNavyClaim          (navy, 4-line display H1 only)
+          ROW 2 — SectionDisciplinesFoundation
+                                          (WHAT WE BUILD eyebrow,
+                                           "The ability to execute.
+                                            No matter what." H2,
+                                           combined disciplines lede,
+                                           and the disciplines exhibit
+                                           diagram below)
+          ROW 3 — HeroPressureExhibit     (big display subhead with
+                                           inline italic-gold pivot,
+                                           pressure/outcomes animation)
             ↓ existing downstream rows
           A Different Approach → How We Work → Metric proof →
           Where We Work → Proven Results → Insights → Closing CTA
 
-          RETIRED in this pass (Feb 2026):
-            • legacy <Hero /> ("Stop chasing numbers") — see commented
-              render below; component fn kept in this file for archive
-            • mid-page <SectionPressureExhibit /> — redundant once the
-              hero animation moved to Row 2; component fn kept in
-              DisciplinesAndPressureExhibit.jsx for archive */}
+          RETIRED in this rev:
+            • <RowAbilityToExecute /> — its display line was absorbed
+              into Row 2's H2 (the disciplines section). The component
+              file remains in /components/ for archive.
+            • <Hero /> (legacy "Stop chasing numbers") — retired prior
+              rev; component fn still defined further down in this file.
+            • <SectionPressureExhibit /> (mid-page exhibit) — retired
+              prior rev; redundant with Row 3's captioned version. */}
       <HeroNavyClaim />
-      <HeroPressureExhibit />
-      <RowAbilityToExecute />
       <SectionDisciplinesFoundation />
+      <HeroPressureExhibit />
       {/* <Hero /> — retired Feb 2026 per direction. The component
           function is still defined further down in this file; if you
           need to reintroduce it, just re-add this render line. */}
       <SectionDifferentApproach />
-      {/* <SectionPressureExhibit /> — retired Feb 2026. The new Row 2
+      {/* <SectionPressureExhibit /> — retired Feb 2026. The new Row 3
           (HeroPressureExhibit) is the better, captioned version of
           this exhibit. */}
       <SectionHowWeWork />
