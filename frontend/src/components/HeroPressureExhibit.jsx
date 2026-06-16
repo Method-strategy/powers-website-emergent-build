@@ -1126,7 +1126,7 @@ export default function HeroPressureExhibit() {
               When execution is built on these disciplines, <span className="pivot">performance is not at the mercy of conditions.</span>
             </h2>
             <p className="hpe-lede">
-              Market pressures don&rsquo;t stop. Operations built with these core disciplines as their foundation don&rsquo;t lose ground when conditions shift. They hold position, recover faster, and compound gains regardless of conditions.
+              Market pressures don&rsquo;t stop. Operations built with these core disciplines as their foundation don&rsquo;t lose ground when conditions shift. They hold position, recover faster, and compound gains regardless.
             </p>
           </div>
 
