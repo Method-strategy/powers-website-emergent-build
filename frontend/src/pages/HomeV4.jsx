@@ -27,8 +27,10 @@ import { Link } from 'react-router-dom';
 import { toRoute } from '../lib/routes';
 import { typo } from '../lib/typo';
 import PowersMetrics from '../components/PowersMetrics';
-import { SectionDisciplinesFoundation, SectionPressureExhibit } from '../components/DisciplinesAndPressureExhibit';
+import { SectionDisciplinesFoundation, SectionPressureExhibit } from '../components/DisciplinesAndPressureExhibit'; // eslint-disable-line no-unused-vars
+import HeroNavyClaim from '../components/HeroNavyClaim';
 import HeroPressureExhibit from '../components/HeroPressureExhibit';
+import RowAbilityToExecute from '../components/RowAbilityToExecute';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -2897,32 +2899,32 @@ function HomeV4() {
           alongside the chip exhibits. Component definition kept above
           for later re-introduction if needed. */}
       <Header />
-      {/* New V4 hero — pressures/outcomes exhibit forked from S4 with
-          stepped trend lines (red descent left, green rise right) and
-          the H1 promoted to the page-opening claim. The legacy
-          "Stop chasing numbers" Hero below is retained intentionally
-          per direction (Feb 2026 review). */}
+      {/* ── V4 SPINE (Feb 2026 — Sean/Justin pivot) ─────────────────
+          HERO  — HeroNavyClaim   (navy, typography only)
+          ROW 2 — HeroPressureExhibit (white, animation + diagnostic)
+          ROW 3 — RowAbilityToExecute (white, display declaration)
+          ROW 4 — SectionDisciplinesFoundation (the five disciplines)
+            ↓ existing downstream rows
+          A Different Approach → How We Work → Metric proof →
+          Where We Work → Proven Results → Insights → Closing CTA
+
+          RETIRED in this pass (Feb 2026):
+            • legacy <Hero /> ("Stop chasing numbers") — see commented
+              render below; component fn kept in this file for archive
+            • mid-page <SectionPressureExhibit /> — redundant once the
+              hero animation moved to Row 2; component fn kept in
+              DisciplinesAndPressureExhibit.jsx for archive */}
+      <HeroNavyClaim />
       <HeroPressureExhibit />
-      {/* Row 2 — Five Disciplines foundation. Promoted directly below
-          the hero per Feb 2026 direction. The disciplines row IS the
-          product diagram for "what we build," so it earns the lead
-          position over A Different Approach (which now follows). */}
+      <RowAbilityToExecute />
       <SectionDisciplinesFoundation />
-      <Hero />
+      {/* <Hero /> — retired Feb 2026 per direction. The component
+          function is still defined further down in this file; if you
+          need to reintroduce it, just re-add this render line. */}
       <SectionDifferentApproach />
-      {/* Section order (Feb 2026 spine):
-            HERO — pressure/outcomes exhibit
-            01 — Five Disciplines (foundation — what we build)
-            02 — legacy "Stop chasing numbers" hero (retained per direction)
-            03 — A Different Approach
-            04 — Pressure In / Performance Out (mid-page restatement)
-            05 — How We Work
-            06 — Metric proof
-            07 — Where We Work
-            08 — Proven Results
-            09 — Insights
-            10 — Closing CTA */}
-      <SectionPressureExhibit />
+      {/* <SectionPressureExhibit /> — retired Feb 2026. The new Row 2
+          (HeroPressureExhibit) is the better, captioned version of
+          this exhibit. */}
       <SectionHowWeWork />
       <PowersMetrics />
       <SectionWhereWeWork />

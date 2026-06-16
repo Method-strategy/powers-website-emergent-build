@@ -1,40 +1,30 @@
 /* ════════════════════════════════════════════════════════════════════
- *  HERO PRESSURE EXHIBIT  (Feb 2026 — V4 spine)
+ *  PRESSURE EXHIBIT — ROW 2  (Feb 2026 — V4 spine)
  * ════════════════════════════════════════════════════════════════════
  *
- *  Variant of the mid-page pressure exhibit, hoisted to the TOP of the
- *  homepage as the new hero. Forked from SectionPressureExhibit so the
- *  animation engine (chips, core, particle bursts, controls, ghost
- *  drop-in entry) is preserved verbatim. Two things are new:
+ *  Was the V4 hero. Repurposed Feb 2026 as the page's Row 2 — the
+ *  *proof* row that sits below the navy typography hero. Hosts the
+ *  red-descent / green-rise chart, the chip swarm, the ambient ±%
+ *  number background, and the animated core. The hero above
+ *  ("Strong execution. Strong performance. Regardless of conditions.")
+ *  states the thesis; this row shows the diagnostic underneath.
  *
- *    1. Copy. H1 (not H2) — "Strong execution. Strong performance.
- *       Regardless of conditions." Size lives between the legacy hero
- *       H1 (clamp 56→128px) and the S4 H2 (clamp 30→46px) — sized for
- *       a longer line at hero scale. No eyebrow. Lede reframes
- *       "capacity" → "ability to execute no matter what" per the
- *       Sean/Justin pivot.
+ *  Copy structure was inverted in this pass:
+ *    OLD: H1 + long four-sentence lede
+ *    NEW: H2 subhead (problem statement) + short italic-gold lede
+ *         (the resolution clause)
+ *      Subhead: "When the fundamentals are missing, performance is
+ *                at the mercy of conditions."
+ *      Lede:    "When they're built in, it isn't."
  *
- *    2. Two stepped chart lines flanking the core:
- *         • RED, left side — starts upper-left, steps DOWN and to the
- *           right toward the core. Reads as performance trending down
- *           under the cascade of pressures arriving from the same side.
- *         • GREEN, right side — starts at the core, steps UP and to
- *           the right out to the upper edge. Reads as outcomes lifting
- *           performance back above the line.
- *       Both lines draw progressively, starting ~500ms AFTER the chip
- *       swarm activates so causation reads "pressures cause the
- *       descent / outcomes cause the rise" rather than appearing in
- *       parallel. Their draw speed is decoupled from chip speed (the
- *       operator can drag the Operating Pressure slider without
- *       affecting how the chart steps).
+ *  Theme inverted from dark→light: section bg back to white, copy
+ *  back to navy/body, core text back to gold, controls back to
+ *  navy-on-light. Animation engine unchanged.
  *
- *  CSS prefix: `hpe-*` (Hero Pressure Exhibit) — DO NOT use `s4-*`
- *  here, those classes are shared with the mid-page SectionPressureExhibit
- *  and we want zero collision when both live on the same page.
- *
- *  This file is self-contained (its own tokens + chip pools) so the
- *  hero text/chip vocabulary can diverge from the mid-page exhibit
- *  without coupling.
+ *  CSS prefix: `hpe-*` retained for git-diff legibility — the file
+ *  used to be the hero so the class lineage tells the history. (If
+ *  we ever spin off another pressure exhibit on the page we'll need
+ *  to rename to avoid collision, but right now this is the only one.)
  * ════════════════════════════════════════════════════════════════════ */
 
 import React, { useEffect, useRef } from 'react';
@@ -307,22 +297,21 @@ export default function HeroPressureExhibit() {
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function aspectFor(w) {
-      // Tight aspect ratios for the hero — the canvas needs to read
-      // as a *band* under the H1+lede, not a full second viewport.
-      if (w < 480) return 0.42;
-      if (w < 768) return 0.32;
-      return 0.24;
+      // Row-2 aspect ratios — taller than the hero version was
+      // (the chart is now the dominant element of its row, not a
+      // supporting actor in a hero), so the trend lines have proper
+      // vertical room to read as trends.
+      if (w < 480) return 0.56;
+      if (w < 768) return 0.46;
+      return 0.38;
     }
     function coreSizeFor(w) {
-      // Hero core is intentionally smaller than the mid-page exhibit's
-      // core. The hero canvas is short by design (fits within hero
-      // depth), so an oversized core would crowd out the trend lines.
-      // These sizes leave 40–60px of chart band above and below the
-      // core at desktop, which lets the red descent / green rise read
-      // as actual chart trends rather than miniature notches.
-      if (w < 480) return 120;
-      if (w < 880) return 134;
-      return 150;
+      // Restored to the original hero proportions — the chart band is
+      // taller now (row-2 aspect), so the core can be larger without
+      // crowding the trend lines.
+      if (w < 480) return 150;
+      if (w < 880) return 170;
+      return 188;
     }
     function resize() {
       const cssW = canvas.clientWidth || canvas.parentElement.clientWidth;
@@ -607,10 +596,7 @@ export default function HeroPressureExhibit() {
       ctx.textBaseline = 'middle';
       const titleSize = Math.max(12, r * 0.150);
       ctx.font = '500 ' + titleSize.toFixed(0) + 'px ' + SANS;
-      // White at 72% opacity (per direction Feb 2026) — softer than
-      // gold on the navy core fill, lets the gold halo + ring carry
-      // the brand color while the core text reads as quiet authority.
-      ctx.fillStyle = 'rgba(255,255,255,0.72)';
+      ctx.fillStyle = GOLD;
       const lines = ['EXECUTION', 'CAPABILITY', 'ROOTED IN', 'DISCIPLINE'];
       const lh = titleSize * 1.42;
       const startY = drawY - lh * 1.5;
@@ -931,24 +917,17 @@ export default function HeroPressureExhibit() {
   return (
     <>
       <style>{`
-        /* ── HERO PRESSURE EXHIBIT (hpe-) — scoped to this component ──
-         * Dark hero — section bg is navyDeep so the layer reads as the
-         * "command surface" of the page. The chart, the core, the chips,
-         * and the ambient ±% swarm all sit on top of that surface; the
-         * canvas chips were already designed against a light bg but the
-         * red/green palette holds on navy too (matches the disciplines
-         * exhibit downstream). H1 sans flips to white; the italic gold
-         * pivot is unchanged. */
-        .hpe-section { background: ${C.navyDeep}; }
+        /* ── PRESSURE EXHIBIT ROW (hpe-) — scoped to this component ─
+         * Row 2 of the V4 spine. White background, navy + gold copy,
+         * gold core text. The hero above sets the claim; this row
+         * delivers the diagnostic + proof. */
+        .hpe-section { background: ${C.paper}; }
         .hpe-exhibit {
           position: relative;
           width: 100%;
           max-width: 1240px;
           margin: 0 auto;
-          /* Hero depth tuned to fit a standard 900–1000px viewport
-             below the header without overflowing. If you ever want
-             more room for the chart band, raise top/bottom padding. */
-          padding: 48px 56px 36px;
+          padding: 96px 56px 80px;
         }
         /* Ambient number swarm — absolutely positioned across the full
            exhibit, behind every other layer. pointer-events:none so it
@@ -962,8 +941,8 @@ export default function HeroPressureExhibit() {
           z-index: 0;
         }
         .hpe-copy {
-          max-width: 1040px;
-          margin: 0 auto;
+          max-width: 920px;
+          margin: 0 auto 24px;
           text-align: center;
           position: relative;
           z-index: 1;
@@ -974,70 +953,41 @@ export default function HeroPressureExhibit() {
             transform .9s cubic-bezier(.22,.61,.36,1);
         }
         .hpe-copy.hpe-in { opacity: 1; transform: translateY(0); }
-        /* Hero-scale H1 — same sans+serif-italic pairing as the legacy
-           Hero ("Stop chasing / Numbers."), sized down because the new
-           line is three sentences instead of two display words. Lands
-           between the legacy H1 (clamp 56→128px) and the standard H2
-           (clamp 30→46px).
 
-           OPTICAL LINE BALANCE: Newsreader italic uses more vertical
-           extent of its line-box than Proxima Nova 800 does — taller
-           ascenders, lower descenders — so with a uniform line-height
-           the sans→sans gap reads OPEN while the sans→serif gap reads
-           TIGHT. Both fonts are the same nominal font-size (clamp
-           44→92px); the difference is typeface metrics, not sizing.
-           We correct optically by pulling the second sans up and
-           pushing the serif down with small em-relative margins. */
-        .hpe-h1 {
-          line-height: 1.0;
-          letter-spacing: -.014em;
-          margin: 0 0 14px;
-        }
-        .hpe-h1 .sans {
-          display: block;
+        /* H2 subhead — the problem statement. Navy sans. */
+        .hpe-subhead {
           font-family: ${SANS};
-          font-weight: 800;
-          font-size: clamp(38px, 5.2vw, 76px);
-          color: ${C.paper};
+          font-weight: 700;
+          font-size: clamp(28px, 3.2vw, 44px);
+          line-height: 1.18;
+          letter-spacing: -.012em;
+          color: ${C.navy};
+          margin: 0 0 14px;
+          text-wrap: pretty;
         }
-        .hpe-h1 .sans + .sans {
-          margin-top: -0.04em;  /* close the sans→sans gap without
-                                   letting the descenders crowd the
-                                   next line's cap-height */
-        }
-        .hpe-h1 .serif {
-          display: block;
+
+        /* Lede — the resolution clause as a short italic-gold serif
+           statement that answers the subhead's problem. Same gold-
+           italic gesture used by every other H2 pivot on the page,
+           lifted out as its own line because the pairing IS the beat. */
+        .hpe-lede {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(38px, 5.2vw, 76px);
+          font-size: clamp(24px, 2.6vw, 36px);
+          line-height: 1.18;
           color: ${C.gold};
-          margin-top: 0.08em;   /* open the gap before the serif so the
-                                   italic's tall ascenders don't crowd
-                                   the sans line above */
+          margin: 0;
         }
-        .hpe-lede {
-          font-family: ${SANS};
-          font-size: clamp(16px, 1.3vw, 19px);
-          font-weight: 300;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.72);
-          max-width: 820px;
-          margin: 0 auto;
-          /* text-wrap: pretty avoids orphan tails (single short words
-             stranded at the end of a line, like "— the" and "of") in
-             modern browsers. Falls back gracefully where unsupported. */
-          text-wrap: pretty;
-        }
-        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: -20px; }
+        .hpe-stage-wrap { position: relative; z-index: 1; width: 100%; margin-top: 12px; }
         .hpe-canvas { display: block; width: 100%; height: auto; }
         .hpe-ghost-wrap {
           position: absolute;
           top: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 150px;
-          height: 150px;
+          width: 188px;
+          height: 188px;
           pointer-events: none;
           z-index: 5;
           opacity: 0;
@@ -1046,7 +996,7 @@ export default function HeroPressureExhibit() {
         .hpe-ghost-wrap::before {
           content: "";
           position: absolute;
-          inset: -38px;
+          inset: -47px;
           border-radius: 50%;
           background: radial-gradient(circle,
             rgba(232,147,70,0.12) 0%,
@@ -1073,7 +1023,7 @@ export default function HeroPressureExhibit() {
           border-radius: 50%;
         }
         .hpe-ghost-core-text {
-          color: rgba(255, 255, 255, 0.72);
+          color: ${C.gold};
           font-family: ${SANS};
           font-size: 14px;
           font-weight: 500;
@@ -1099,8 +1049,8 @@ export default function HeroPressureExhibit() {
         .hpe-controls.hpe-in { opacity: 1; }
         .hpe-controls button {
           background: transparent;
-          border: 1px solid rgba(255,255,255,0.18);
-          color: rgba(255,255,255,0.80);
+          border: 1px solid ${C.line};
+          color: ${C.navy};
           font-size: 12.5px;
           letter-spacing: .04em;
           padding: 8px 16px;
@@ -1110,7 +1060,7 @@ export default function HeroPressureExhibit() {
           font-family: ${SANS};
           font-weight: 500;
         }
-        .hpe-controls button:hover  { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.34); color: #fff; }
+        .hpe-controls button:hover  { background: rgba(20,50,87,.04); border-color: rgba(20,50,87,.28); }
         .hpe-controls button:active { transform: scale(.97); }
         .hpe-controls .val {
           font-variant-numeric: tabular-nums;
@@ -1124,7 +1074,7 @@ export default function HeroPressureExhibit() {
         .hpe-controls label {
           font-family: ${SANS};
           font-size: 12px;
-          color: rgba(255,255,255,0.60);
+          color: ${C.body};
           letter-spacing: .04em;
         }
         .hpe-controls input[type=range] {
@@ -1161,12 +1111,11 @@ export default function HeroPressureExhibit() {
             aria-hidden="true"
           />
           <div className="hpe-copy" ref={copyRef}>
-            <h1 className="hpe-h1" data-testid="hero-h1">
-              <span className="sans">Strong execution. Strong performance.</span>
-              <span className="serif">Regardless of conditions.</span>
-            </h1>
+            <h2 className="hpe-subhead">
+              When the fundamentals are missing, performance is at the mercy of conditions.
+            </h2>
             <p className="hpe-lede">
-              Market conditions don&rsquo;t stop changing. Strong quarters and weak ones are readouts of the same thing&nbsp;&mdash;&nbsp;the fundamentals of execution at the root of your operation. When they&rsquo;re missing, performance is at the mercy of conditions. When they&rsquo;re built in, it isn&rsquo;t. That&rsquo;s what we build: the ability to execute, no matter what.
+              When they&rsquo;re built in, it isn&rsquo;t.
             </p>
           </div>
 
