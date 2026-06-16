@@ -409,9 +409,10 @@ export function SectionDisciplinesFoundation() {
           display: inline;
           font-family: ${SANS};
           font-weight: 800;
-          /* Matches hero H1 scale (Feb 2026) so Row 2 H2 reads at
-             the same display tier. */
-          font-size: clamp(54px, 7vw, 108px);
+          /* Matches the prior hero scale (Feb 2026) so Row 2 H2 sits
+             one display tier below the new larger hero — same family,
+             smaller scale. */
+          font-size: clamp(38px, 5.2vw, 76px);
           color: ${C.navy};
         }
         .s3-h2 .serif {
@@ -419,7 +420,7 @@ export function SectionDisciplinesFoundation() {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(54px, 7vw, 108px);
+          font-size: clamp(38px, 5.2vw, 76px);
           color: ${C.gold};
           margin-left: 0.2em;
         }
