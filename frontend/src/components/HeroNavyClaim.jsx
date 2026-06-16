@@ -2,22 +2,20 @@
  *  HERO NAVY CLAIM  (Feb 2026 — V4 spine, Sean/Justin pivot)
  * ════════════════════════════════════════════════════════════════════
  *
- *  Pure-typography hero on navy. Two beats only:
- *    1. Four-line display H1 — the complete claim:
- *         Strong execution.            (sans white)
- *         Strong performance.          (sans white)
- *         Regardless of conditions.    (italic gold)
- *         That's what we build.        (italic gold)
+ *  Pure-typography hero on navy. Three beats:
+ *    Strong execution.            (sans white)
+ *    Strong performance.          (sans white)
+ *    Regardless of conditions.    (italic gold)
  *
- *  Two sans-white lines (the universal claim), two italic-gold lines
- *  (the resolutions). The first gold line resolves the conditions
- *  problem; the second gold line resolves the question "by whom."
- *  Together they form a parallel-construction display — a complete
- *  pitch in 9 words.
+ *  A positioning statement, not a sales pitch — the hero declares
+ *  where POWERS stands, the rows below say how. Earlier rev had a
+ *  fourth gold-italic line ("That's what we build.") but it competed
+ *  with Row 2's "We build the disciplines..." H2; dropping it gave
+ *  the hero a confident three-beat cadence ending on the resolution
+ *  clause, and moved the active "we build" verb to Row 2 where it
+ *  triggers the disciplines diagram directly below.
  *
- *  No lede, no animation, no chart. The premise / diagnostic moved
- *  to Row 3 (which is now the pressure animation row); the resolution
- *  copy lives in Row 2's combined eyebrow / subhead / lede block.
+ *  No lede, no animation, no chart — the proof lives in Row 3.
  * ════════════════════════════════════════════════════════════════════ */
 
 import React from 'react';
@@ -99,7 +97,6 @@ export default function HeroNavyClaim() {
             <span className="sans">Strong execution.</span>
             <span className="sans">Strong performance.</span>
             <span className="serif">Regardless of conditions.</span>
-            <span className="serif" data-testid="hero-signature">That&rsquo;s what we build.</span>
           </h1>
         </div>
       </section>
