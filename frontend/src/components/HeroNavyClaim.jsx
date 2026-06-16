@@ -36,6 +36,7 @@ export default function HeroNavyClaim() {
         .hnc-section {
           background: ${C.navyDeep};
           position: relative;
+          overflow: hidden;
           /* Hero fills the visible viewport, regardless of device.
              Accounts for the sticky site header above (~85px) via
              100svh - header so the hero never overflows into a
@@ -49,7 +50,36 @@ export default function HeroNavyClaim() {
           align-items: center;
           justify-content: center;
         }
+        /* Background video — same source as the mid-page "How We Work"
+           row but used full-bleed here. Sits at z-index 0, the navy
+           overlay at z-index 1 (very heavy at 88% opacity so the video
+           reads as a textured atmosphere rather than a featured clip),
+           and the H1 above at z-index 2. */
+        .hnc-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 0;
+          pointer-events: none;
+        }
+        .hnc-overlay {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          background:
+            linear-gradient(
+              180deg,
+              rgba(15, 42, 71, 0.92) 0%,
+              rgba(15, 42, 71, 0.88) 50%,
+              rgba(15, 42, 71, 0.92) 100%
+            );
+          pointer-events: none;
+        }
         .hnc-inner {
+          position: relative;
+          z-index: 2;
           max-width: 1180px;
           width: 100%;
           margin: 0 auto;
@@ -122,6 +152,24 @@ export default function HeroNavyClaim() {
       `}</style>
 
       <section className="hnc-section" data-testid="hero-navy-claim">
+        {/* Background atmosphere — looped video of POWERS consultants
+            on the manufacturing floor, served from /uploads so it's
+            same-origin (no CORS issues). Behind a heavy navy overlay
+            (~88%) so the video reads as texture, not as a featured
+            clip. A separate /uploads/powers-banner-2026-v2.mp4 (the
+            cropped version) is used downstream in How We Work. */}
+        <video
+          className="hnc-video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          src="/uploads/powers-banner-2026-hero.mp4"
+        />
+        <div className="hnc-overlay" aria-hidden="true" />
+
         <div className="hnc-inner">
           <h1 className="hnc-h1" data-testid="hero-h1">
             <span className="sans">Strong execution.</span>
