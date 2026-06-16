@@ -967,8 +967,9 @@ export default function HeroPressureExhibit() {
              the same display tier as Row 2 — one tier below the
              new larger hero. */
           font-size: clamp(38px, 5.2vw, 76px);
-          line-height: 1.04;
-          letter-spacing: -.012em;
+          /* Tightened Feb 2026 to 1.0 to match Row 2 + hero. */
+          line-height: 1.0;
+          letter-spacing: -.014em;
           color: ${C.navy};
           margin: 0;
           text-wrap: pretty;

@@ -401,8 +401,9 @@ export function SectionDisciplinesFoundation() {
           margin-bottom: 28px;
         }
         .s3-h2 {
-          line-height: 1.08;
-          letter-spacing: -0.012em;
+          /* Tightened Feb 2026 to 1.0 to match Row 3 + hero. */
+          line-height: 1.0;
+          letter-spacing: -0.014em;
           margin-bottom: 14px;
         }
         .s3-h2 .sans {
