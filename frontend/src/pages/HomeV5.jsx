@@ -660,7 +660,7 @@ function HomeV5() {
         </div>
       </section>
 
-      {/* ── Beat 02 — Thesis (demo of the station grammar) ────── */}
+      {/* ── Beat II — Thesis ────────────────────────────────────── */}
       <Station
         index="II  /  Thesis"
         headline="We build the disciplines to execute. No matter what."
@@ -669,42 +669,439 @@ function HomeV5() {
         attr="Floor practice · POWERS"
       />
 
-      {/* ── Foundation placeholder ─────────────────────────────── */}
-      <section style={{
-        padding: '12vh max(40px, calc((100% - 1240px) / 2)) 16vh',
-        boxSizing: 'border-box',
-      }}>
-        <div style={{
-          maxWidth: 640,
-          fontFamily: TYPE.mono,
-          fontSize: 11,
-          letterSpacing: '0.30em',
-          textTransform: 'uppercase',
-          color: TEXT_MUTED,
-          marginBottom: 18,
-        }}>
-          — Foundation pass
-        </div>
-        <div style={{
-          maxWidth: 640,
-          fontFamily: TYPE.sans,
-          fontWeight: 400,
-          fontSize: 17,
-          lineHeight: 1.62,
-          color: TEXT_BODY,
-        }}>
-          Sections III–IX (Mechanism, Pressure, Evidence, Industries, Results,
-          Insights, Action) thread onto this same skeleton once the grammar above
-          reads right. V4 stays live at <a href="/v4-locked" style={{ color: GOLD, textDecoration: 'none', borderBottom: '1px solid ' + GOLD }}>/v4-locked</a> for side-by-side.
-        </div>
-      </section>
+      {/* ── Beat III — Pressure (the dramatic dark spread) ───────
+          The single navy beat. Reserved for the moment in the
+          document where the argument has to land with weight: the
+          conditions under which most operations break, and what
+          built-in discipline does about that. Everything else is
+          paper; this is the one moment of dark. */}
+      <PressureBeat />
 
-      {/* ── Footer ─────────────────────────────────────────────── */}
-      <footer className="brief-footer">
-        <span>POWERS &middot; Operations performance consulting</span>
-        <span className="brief-footer-tag">Strong Execution. Strong Performance.</span>
-      </footer>
+      {/* ── Beat IV — Mechanism ─────────────────────────────────── */}
+      <Station
+        index="IV  /  Mechanism"
+        headline="We work where value gets won or lost."
+        body="Most consulting firms diagnose, recommend, and leave. They’re out the door at 3pm and don’t work Fridays. The slide decks are sharp. The results don’t last. Our approach is very different. We build the disciplines where the work actually happens and value is created. On the floor. In the shifts. Inside the standards, the supplier relationships, the AP/AR process. We put skin in the game — paid on results, not recommendations."
+      />
+
+      {/* ── Beat V — Evidence (metrics) ─────────────────────────── */}
+      <EvidenceBeat />
+
+      {/* ── Beat VI — Industries ────────────────────────────────── */}
+      <Station
+        index="VI  /  Industries"
+        headline="Different industries. The same execution discipline."
+        body="We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound."
+      />
+
+      {/* ── Beat VII — Results (case study entry point) ─────────── */}
+      <CardsBeat
+        index="VII  /  Results"
+        headline="Operations built on strong execution produce results that speak for themselves."
+        body="Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours."
+        cards={[
+          { kind: 'Case study', title: 'Defense & aerospace OTD lift', meta: '$2.4B platform · 18 mo' },
+          { kind: 'Case study', title: 'Food & beverage labor productivity', meta: 'PE-backed multi-site · 9 mo' },
+          { kind: 'Case study', title: 'Metals throughput recovery', meta: '$700M operator · 12 mo' },
+        ]}
+        cta={{ label: 'See all case studies', href: '/case-studies' }}
+      />
+
+      {/* ── Beat VIII — Insights (blog entry point) ─────────────── */}
+      <CardsBeat
+        index="VIII  /  Insights"
+        headline="Dig deeper into the discipline of execution."
+        body="Nearly thirty years of helping build some of the top-performing operations on the planet. Read how we install the five disciplines and produce sustainable, scalable financial gains."
+        cards={[
+          { kind: 'Field note',  title: 'Why standards drift the moment the consultant leaves', meta: '6 min read' },
+          { kind: 'Field note',  title: 'The third-shift maintenance gap nobody is measuring',  meta: '8 min read' },
+          { kind: 'Field note',  title: 'Why pay-for-results changes which problems get solved', meta: '7 min read' },
+        ]}
+        cta={{ label: 'Visit the Insights Hub', href: '/insights' }}
+      />
+
+      {/* ── Beat IX — Action (closing CTA) ─────────────────────── */}
+      <ActionBeat />
+
+      {/* ── V4 Footer (locked — replicated exactly) ─────────────── */}
+      <SiteFooter />
     </div>
+  );
+}
+
+/* ── V4 Footer (locked structure) ────────────────────────────────
+ * Replicated verbatim from V4's <Footer /> so the home grid +
+ * legal bar + brand block + 3 link columns + contact column are
+ * identical to /v4-locked. Only thing that differs is which page
+ * embeds it. Menu items, copy, and link targets are all locked. */
+function SiteFooter() {
+  return (
+    <footer style={{ background: '#0f2a47', fontFamily: TYPE.sans, borderTop: '1px solid #e89346' }}>
+      <style>{`
+        .v5-footer-grid {
+          max-width: 1240px;
+          margin: 0 auto;
+          padding: 72px 48px 64px;
+          display: grid;
+          gap: 56px 32px;
+          grid-template-columns: minmax(340px, 1.7fr) repeat(3, minmax(140px, 1fr));
+          box-sizing: border-box;
+        }
+        @media (max-width: 980px) {
+          .v5-footer-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 48px 32px;
+          }
+        }
+        @media (max-width: 560px) {
+          .v5-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 40px 0;
+            padding: 56px 24px 48px;
+          }
+        }
+        .v5-foot-link {
+          font-family: ${TYPE.sans};
+          font-size: 13px;
+          font-weight: 300;
+          color: rgba(255,255,255,0.70);
+          text-decoration: none;
+          padding: 4px 0;
+          display: block;
+          transition: color 140ms ease;
+        }
+        .v5-foot-link:hover { color: ${GOLD_BRIGHT}; }
+        .v5-foot-head {
+          font-family: ${TYPE.sans};
+          font-size: 13px;
+          font-weight: 600;
+          color: #ffffff;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          margin-bottom: 14px;
+        }
+      `}</style>
+
+      <div className="v5-footer-grid">
+        {/* Col 1: Brand */}
+        <div style={{ maxWidth: 380 }}>
+          <a href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            <img
+              src="/uploads/powers-logo-dark.png"
+              alt="POWERS"
+              style={{ width: 140, height: 'auto', display: 'block', marginBottom: 16 }}
+            />
+          </a>
+          <div style={{
+            fontSize: 13, fontWeight: 500, letterSpacing: '0.10em',
+            color: GOLD_BRIGHT, marginBottom: 14,
+          }}>
+            <span style={{ whiteSpace: 'nowrap' }}>Strong Execution.</span>{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Strong Performance.</span>
+          </div>
+          <p style={{
+            fontSize: 13, fontWeight: 300, lineHeight: 1.65,
+            color: 'rgba(255,255,255,0.60)', margin: 0,
+            textWrap: 'pretty',
+          }}>
+            Operations performance consulting that builds execution capability across teams, shifts, sites, and holdings.
+          </p>
+        </div>
+
+        {/* Col 2: Results */}
+        <div>
+          <div className="v5-foot-head">Results</div>
+          <a className="v5-foot-link" href="/approach">Approach</a>
+          <a className="v5-foot-link" href="/discovery-process">Discovery Process</a>
+          <a className="v5-foot-link" href="/operational-readiness">Expertise Areas</a>
+          <a className="v5-foot-link" href="/industries-served">Industries Served</a>
+          <a className="v5-foot-link" href="/case-studies">Case Studies</a>
+        </div>
+
+        {/* Col 3: About */}
+        <div>
+          <div className="v5-foot-head">About</div>
+          <a className="v5-foot-link" href="/history">History</a>
+          <a className="v5-foot-link" href="/leadership">Leadership</a>
+          <a className="v5-foot-link" href="/company-news">Company News</a>
+          <a className="v5-foot-link" href="/careers">Careers</a>
+        </div>
+
+        {/* Col 4: Let's Talk */}
+        <div>
+          <div className="v5-foot-head">Let&rsquo;s Talk</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <a className="v5-foot-link" href="tel:+16789714711">+1 678-971-4711</a>
+            <a className="v5-foot-link" href="mailto:info@thepowerscompany.com">info@thepowerscompany.com</a>
+            <div style={{
+              fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,0.70)',
+              padding: '4px 0', lineHeight: 1.5,
+            }}>
+              1801 Peachtree St NE, Suite 200<br />Atlanta, GA 30309
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Legal bar */}
+      <div style={{
+        maxWidth: 1240, margin: '0 auto',
+        padding: '0 48px 40px',
+      }}>
+        <div style={{ height: 1, background: 'rgba(232,147,70,0.20)', marginBottom: 20 }} />
+        <div style={{
+          display: 'flex', flexWrap: 'wrap',
+          alignItems: 'center', gap: '6px 12px',
+        }}>
+          <span style={{ fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.40)' }}>
+            Copyright 2026 The POWERS Company, Inc. All Rights Reserved.
+          </span>
+          <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11 }}>|</span>
+          <a className="v5-foot-link" href="/sitemap" style={{ fontSize: 11, padding: 0 }}>Sitemap</a>
+          <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11 }}>|</span>
+          <a className="v5-foot-link" href="/privacy" style={{ fontSize: 11, padding: 0 }}>Privacy Policy</a>
+          <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11 }}>|</span>
+          <span style={{ fontSize: 11, fontWeight: 300, color: 'rgba(255,255,255,0.40)' }}>
+            Powered by <a className="v5-foot-link" href="https://methodmarketing.com" style={{ fontSize: 11, padding: 0, display: 'inline' }}>Method Marketing</a>
+          </span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ── Beat III: Pressure (the dark dramatic spread) ───────────────
+ * The single navy beat in the brief. Visually distinct so the
+ * argument lands with weight — everything else is paper. No
+ * exhibit canvas yet (foundation pass); the H2 carries the moment. */
+function PressureBeat() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      { threshold: 0.18 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <section ref={ref} className="brief-station" style={{
+      background: NAVY_DEEP,
+      color: '#f3f0e8',
+      gridTemplateColumns: '1fr',
+      paddingTop: '18vh',
+      paddingBottom: '18vh',
+      borderTop: '1px solid rgba(232,147,70, 0.22)',
+      borderBottom: '1px solid rgba(232,147,70, 0.22)',
+    }}>
+      <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)' }} aria-hidden="true" />
+      <div style={{ maxWidth: 1040 }}>
+        <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>III  /  Pressure</div>
+        <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8', maxWidth: 1040 }}>
+          When execution is built on these disciplines, performance is not at the mercy of conditions.
+        </h2>
+      </div>
+      <div className="wipe wipe-d2" style={{ maxWidth: 720 }}>
+        <p className="station-lede" style={{ color: 'rgba(243,240,232,0.78)', maxWidth: 720 }}>
+          Market pressures don&rsquo;t stop. The question isn&rsquo;t whether you can get better. It&rsquo;s whether what you built stays built when demand spikes, leadership changes, a new site comes online, or a PE timeline compresses. Operations built with these five core disciplines as their foundation hold position, recover faster, and compound gains regardless.
+        </p>
+        <p className="station-lede wipe wipe-d3" style={{
+          marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)', maxWidth: 720,
+        }}>
+          Better margins. Stronger throughput. Higher returns. Quarter after quarter.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ── Beat V: Evidence (5-stat ledger) ──────────────────────────── */
+function EvidenceBeat() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      { threshold: 0.18 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const STATS = [
+    { num: '$1B+',  label: 'Annualized savings produced across engagements' },
+    { num: '98%',   label: 'Client retention across nearly thirty years' },
+    { num: '5 wks', label: 'Median time to first measurable impact' },
+    { num: '500+',  label: 'Operations strengthened — multi-site, multi-industry' },
+    { num: '30+',   label: 'Years of frontline operations leadership' },
+  ];
+  return (
+    <section ref={ref} className="brief-station" style={{
+      gridTemplateColumns: '1fr',
+      paddingTop: '14vh',
+      paddingBottom: '14vh',
+    }}>
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+      <div className="wipe" style={{ maxWidth: 720, marginBottom: 64 }}>
+        <div className="station-index" style={{ marginBottom: 14 }}>V  /  Evidence</div>
+        <h2 className="station-h2 wipe wipe-d1">
+          Thirty years on the floor. The ledger speaks for itself.
+        </h2>
+      </div>
+      <div className="wipe wipe-d2" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: '40px 48px',
+      }}>
+        {STATS.map((s, i) => (
+          <div key={i}>
+            <div style={{
+              fontFamily: TYPE.sans,
+              fontWeight: 800,
+              fontSize: 'clamp(40px, 4.4vw, 64px)',
+              lineHeight: 1.0,
+              letterSpacing: '-0.02em',
+              color: NAVY,
+              marginBottom: 12,
+            }}>{s.num}</div>
+            <div style={{
+              fontFamily: TYPE.sans,
+              fontSize: 14,
+              fontWeight: 400,
+              lineHeight: 1.5,
+              color: TEXT_BODY,
+              maxWidth: 240,
+            }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── Beat VII/VIII: Cards (case studies + insights) ────────────── */
+function CardsBeat({ index, headline, body, cards, cta }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      { threshold: 0.18 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <section ref={ref} className="brief-station" style={{
+      gridTemplateColumns: '1fr',
+      paddingTop: '14vh',
+      paddingBottom: '14vh',
+    }}>
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+      <div className="wipe" style={{ maxWidth: 760, marginBottom: 56 }}>
+        <div className="station-index" style={{ marginBottom: 14 }}>{index}</div>
+        <h2 className="station-h2 wipe wipe-d1">{headline}</h2>
+        <p className="station-lede wipe wipe-d2" style={{ marginTop: 22, maxWidth: 640 }}>{body}</p>
+      </div>
+      <div className="wipe wipe-d3" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: 1,
+        background: RULE_SOFT,
+        marginBottom: 36,
+      }}>
+        {cards.map((c, i) => (
+          <a key={i} href={cta.href} style={{
+            display: 'block',
+            background: PAPER,
+            padding: '28px 28px 32px',
+            textDecoration: 'none',
+            color: NAVY,
+            transition: 'background 200ms ease',
+          }}
+            onMouseEnter={(e) => e.currentTarget.style.background = PAPER_DEEP}
+            onMouseLeave={(e) => e.currentTarget.style.background = PAPER}
+          >
+            <div style={{
+              fontFamily: TYPE.mono, fontSize: 10, fontWeight: 500,
+              letterSpacing: '0.26em', textTransform: 'uppercase',
+              color: GOLD, marginBottom: 18,
+            }}>{c.kind}</div>
+            <div style={{
+              fontFamily: TYPE.sans, fontSize: 18, fontWeight: 600,
+              lineHeight: 1.32, color: NAVY, marginBottom: 18,
+              minHeight: '3.2em',
+            }}>{c.title}</div>
+            <div style={{
+              fontFamily: TYPE.mono, fontSize: 11, fontWeight: 500,
+              letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: TEXT_MUTED,
+            }}>{c.meta}</div>
+          </a>
+        ))}
+      </div>
+      <a href={cta.href} style={{
+        fontFamily: TYPE.sans, fontSize: 14, fontWeight: 600,
+        color: GOLD, textDecoration: 'none',
+        letterSpacing: '0.04em',
+        borderBottom: '1px solid ' + GOLD,
+        paddingBottom: 2,
+        display: 'inline-block',
+        alignSelf: 'flex-start',
+      }}>{cta.label} →</a>
+    </section>
+  );
+}
+
+/* ── Beat IX: Action (closing CTA) ────────────────────────────── */
+function ActionBeat() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      { threshold: 0.18 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <section ref={ref} className="brief-station" style={{
+      gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)',
+      paddingTop: '18vh',
+      paddingBottom: '18vh',
+      alignItems: 'end',
+    }}>
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" style={{ top: '18vh' }} aria-hidden="true" />
+      <div>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>IX  /  Action</div>
+        <h2 className="station-h2 wipe wipe-d1" style={{ maxWidth: 920 }}>
+          Let&rsquo;s build your operation to execute under any circumstances.
+        </h2>
+        <p className="station-lede wipe wipe-d2" style={{ marginTop: 24, maxWidth: 600 }}>
+          Tell us where the operation is feeling pressure. We&rsquo;ll come see it on the floor, find the gaps that are hiding inside it, and build the disciplines that close them.
+        </p>
+      </div>
+      <div className="wipe wipe-d3" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <a href="/contact" style={{
+          fontFamily: TYPE.sans, fontSize: 15, fontWeight: 600,
+          background: GOLD_BRIGHT, color: NAVY,
+          padding: '18px 32px',
+          textDecoration: 'none',
+          letterSpacing: '0.02em',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 12,
+          transition: 'background 180ms ease',
+        }}
+          onMouseEnter={(e) => e.currentTarget.style.background = GOLD}
+          onMouseLeave={(e) => e.currentTarget.style.background = GOLD_BRIGHT}
+        >Start a conversation <span>→</span></a>
+      </div>
+    </section>
   );
 }
 
