@@ -38,19 +38,19 @@ function App() {
       <Routes>
         {/* Homepage renders its own inline Header + Footer — no shared chrome */}
         <Route element={<HomeLayout />}>
-          {/* Primary homepage routing — 2026-06-18 deployment swap.
-              V4 ("locked editorial spine") is the PUBLISHED homepage
-              at `/` so the existing live site URL keeps showing the
-              approved version. V5 ("The Operating Brief", paradigm
-              experiment) lives at `/v5` as a side-by-side option
-              for client comparison — not the default landing.
+          {/* ⚠️ DEV-ONLY ROUTE CONFIG — V5 at `/` for preview convenience.
+              Emergent's preview pane has no URL bar, so iterating on
+              V5 requires it to be the default route. BEFORE NEXT PUSH
+              TO GITHUB, swap these two so V4 returns to `/` and V5
+              moves to `/v5`. The published Netlify site must keep
+              V4 at the root until V5 is approved for publication.
               Older iterations stay live for stakeholder reference:
                 /v1         → original copy port
                 /v2         → first copy rewrite
                 /v3         → LOCKED pre-pivot version (archive)
-                /v4-locked  → polished editorial spine (alias of /)
+                /v4-locked  → polished editorial spine (currently shipped at production /)
                 /v5         → paradigm experiment (Operating Brief). */}
-          <Route path="/" element={<HomeV4 />} />
+          <Route path="/" element={<HomeV5 />} />
           <Route path="/v1" element={<Home />} />
           <Route path="/v2" element={<HomeV2 />} />
           <Route path="/v3" element={<HomeV3 />} />
