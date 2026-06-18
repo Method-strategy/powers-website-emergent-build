@@ -931,8 +931,26 @@ function SiteFooter() {
 
 /* ── Beat III: Pressure (the dark dramatic spread) ───────────────
  * The single navy beat in the brief. Visually distinct so the
- * argument lands with weight — everything else is paper. No
- * exhibit canvas yet (foundation pass); the H2 carries the moment. */
+ * argument lands with weight — everything else is paper. Carries
+ * the ambient pressure/outcome swarm (red drifts up the left half,
+ * green drifts up the right) at low opacity so the audience self-
+ * identifies with their specific pressure or their specific
+ * outcome without diluting the H2's central claim. */
+const PRESSURE_WORDS = [
+  'Demand spike', 'Leadership change', 'PE timeline', 'New site online',
+  'Labor shortage', 'Supply disruption', 'Audit pressure', 'Margin compression',
+  'Changeover delay', 'Equipment failure', 'Regulatory shift', 'Working-capital crunch',
+  'Shift no-show', 'Talent attrition', 'Safety incident', 'Quality slip',
+  'Customer escalation', 'Raw-material spike', 'Integration deadline', 'Board review',
+];
+const OUTCOME_WORDS = [
+  '+18% margin', '+34% labor productivity', '+22% throughput', '96% OTD',
+  '−41% scrap', '5-week ROI', '9-mo payback', '+28% safety',
+  '+12% yield', '−17% changeover', '88% first-pass quality', '+23% retention',
+  '1.8× uptime', '2.4× inventory turn', '$3.2M WC freed', '$14M run-rate',
+  '60% audit pass', '6-wk stabilization', '+19% on-time launch', '−24% rework',
+];
+
 function PressureBeat() {
   const ref = useRef(null);
   useEffect(() => {
@@ -949,20 +967,23 @@ function PressureBeat() {
       background: NAVY_DEEP,
       color: '#f3f0e8',
       gridTemplateColumns: '1fr',
-      paddingTop: '18vh',
-      paddingBottom: '18vh',
+      paddingTop: '14vh',
+      paddingBottom: '14vh',
       borderTop: '1px solid rgba(232,147,70, 0.22)',
       borderBottom: '1px solid rgba(232,147,70, 0.22)',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)' }} aria-hidden="true" />
-      <div style={{ marginBottom: 36 }}>
+      <PressureSwarm />
+      <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)', zIndex: 2 }} aria-hidden="true" />
+      <div style={{ marginBottom: 36, position: 'relative', zIndex: 2 }}>
         <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>III  /  Pressure</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8' }}>
           <span>When execution is built on these disciplines,</span>
           <span className="pivot" style={{ color: GOLD_BRIGHT }}>performance is not at the mercy of conditions.</span>
         </h2>
       </div>
-      <div className="wipe wipe-d2" style={{ maxWidth: 720 }}>
+      <div className="wipe wipe-d2" style={{ maxWidth: 720, position: 'relative', zIndex: 2 }}>
         <p className="station-lede" style={{ color: 'rgba(243,240,232,0.78)', maxWidth: 720 }}>
           Market pressures don&rsquo;t stop. The question isn&rsquo;t whether you can get better. It&rsquo;s whether what you built stays built when demand spikes, leadership changes, a new site comes online, or a PE timeline compresses. Operations built with these five core disciplines as their foundation hold position, recover faster, and compound gains regardless.
         </p>
@@ -973,6 +994,129 @@ function PressureBeat() {
         </p>
       </div>
     </section>
+  );
+}
+
+/* ── Ambient pressure / outcome word swarm ────────────────────────
+ * Two independent fields drift words slowly upward and fade in/out.
+ *   Left half  → red pressures (the conditions that break operations)
+ *   Right half → green outcomes (the financial results execution
+ *                produces)
+ *
+ * Each word gets a stable random horizontal position, drift
+ * duration, and negative animation-delay (so on first paint the
+ * field is already mid-cycle — words are mid-drift, not all
+ * lined up at the bottom). Low opacity (max ~0.45) keeps them
+ * behind the H2 + lede visually. pointer-events:none so they
+ * never intercept cursor. The whole layer sits at z-index 0;
+ * H2 and lede sit at z-index 2 above it.
+ *
+ * Visual reasoning per direction: pressures and outcomes are
+ * individualized. Listing them generically loses readers who
+ * don't see their specific situation. Drifting twenty of each
+ * across the frame lets each reader latch onto their own. */
+function PressureSwarm() {
+  const swarm = React.useMemo(() => {
+    /* Deterministic pseudo-random per-word: stable across renders,
+     * but varied per index. Avoids hydration-mismatch issues and
+     * keeps the visual interesting across paints. */
+    const seeded = (i) => {
+      const x = Math.sin(i * 9301 + 49297) * 233280;
+      return x - Math.floor(x);
+    };
+    const build = (words, sideOffset) => words.map((w, i) => {
+      const r1 = seeded(i + sideOffset);
+      const r2 = seeded(i + sideOffset + 100);
+      const r3 = seeded(i + sideOffset + 200);
+      return {
+        word: w,
+        /* Horizontal: 5–80% within the hemisphere (avoid hugging
+         * the centerline where the H2 lives). */
+        x: 5 + r1 * 75,
+        /* Drift duration 22–38s — slow enough to feel ambient. */
+        duration: 22 + r2 * 16,
+        /* Negative delay 0 to -38s spreads first-paint positions
+         * across the full drift cycle. */
+        delay: -(r3 * 38),
+      };
+    });
+    return {
+      left:  build(PRESSURE_WORDS, 0),
+      right: build(OUTCOME_WORDS, 1000),
+    };
+  }, []);
+  return (
+    <div className="ps-swarm" aria-hidden="true">
+      <style>{`
+        .ps-swarm {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .ps-side {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 50%;
+        }
+        .ps-side.left  { left: 0; }
+        .ps-side.right { right: 0; }
+        .ps-word {
+          position: absolute;
+          bottom: -48px;
+          font-family: ${TYPE.mono};
+          font-size: 11.5px;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          opacity: 0;
+          animation-name: ps-drift;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          will-change: transform, opacity;
+        }
+        .ps-pressure { color: rgba(224, 101, 79, 0.55); }
+        .ps-outcome  { color: rgba(91, 191, 115, 0.55); }
+        @keyframes ps-drift {
+          0%   { transform: translateY(0);                opacity: 0; }
+          12%  { opacity: 0.50; }
+          85%  { opacity: 0.50; }
+          100% { transform: translateY(calc(-100vh - 80px)); opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .ps-word { animation: none; opacity: 0.30; bottom: auto; top: 30%; }
+        }
+      `}</style>
+      <div className="ps-side left">
+        {swarm.left.map((w, i) => (
+          <span
+            key={i}
+            className="ps-word ps-pressure"
+            style={{
+              left: w.x + '%',
+              animationDuration: w.duration.toFixed(2) + 's',
+              animationDelay: w.delay.toFixed(2) + 's',
+            }}
+          >{w.word}</span>
+        ))}
+      </div>
+      <div className="ps-side right">
+        {swarm.right.map((w, i) => (
+          <span
+            key={i}
+            className="ps-word ps-outcome"
+            style={{
+              left: w.x + '%',
+              animationDuration: w.duration.toFixed(2) + 's',
+              animationDelay: w.delay.toFixed(2) + 's',
+            }}
+          >{w.word}</span>
+        ))}
+      </div>
+    </div>
   );
 }
 
