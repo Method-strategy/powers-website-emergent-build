@@ -712,15 +712,12 @@ function HomeV5() {
         </div>
       </section>
 
-      {/* ── Beat II — Thesis ────────────────────────────────────── */}
-      <Station
-        index="II  /  Thesis"
-        headline="We build the disciplines to execute."
-        pivot="No matter what."
-        body="Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn’t break down when conditions do."
-        quote="If you’re working, we’re working."
-        attr="Floor practice · POWERS"
-      />
+      {/* ── Beat II — Thesis ─────────────────────────────────────
+          Headline + lede + earned italic quote, then the FIVE
+          DISCIPLINE CARDS as the jump-off points to their dedicated
+          pages. Locked content per direction — copy + URLs match
+          V4 exactly. */}
+      <ThesisBeat />
 
       {/* ── Beat III — Pressure (the dramatic dark spread) ───────
           The single navy beat. Reserved for the moment in the
@@ -1205,6 +1202,129 @@ function ActionBeat() {
           onMouseLeave={(e) => e.currentTarget.style.background = GOLD_BRIGHT}
         >Start a conversation <span>→</span></a>
       </div>
+    </section>
+  );
+}
+
+/* ── Beat II: Thesis — H2 + lede + earned italic quote + the
+ *    FIVE DISCIPLINE CARDS as jump-off points. Card content +
+ *    URLs are LOCKED (per direction) — match V4's DISCIPLINES
+ *    array verbatim. Each card links to its own page. */
+const DISCIPLINES = [
+  { num: '01', name: 'Operational Discipline', body: 'Standards, routines, and structured practices that make consistent execution the default.', href: '/operational-discipline' },
+  { num: '02', name: 'Frontline Leadership',   body: 'Supervisors who can plan a shift, run a problem to ground, and hold the standard with their team.', href: '/frontline-leadership' },
+  { num: '03', name: 'Equipment Reliability',  body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable.', href: '/equipment-reliability' },
+  { num: '04', name: 'Workforce Capability',   body: 'Skilled, engaged operators who know the work, own the outcome, and can train the next shift.', href: '/workforce-capability' },
+  { num: '05', name: 'Daily Accountability',   body: 'The cadence, metrics, and conversations that close the loop every shift, every day.', href: '/daily-accountability' },
+];
+
+function ThesisBeat() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) {
+          el.classList.add('is-in');
+          io.disconnect();
+        }
+      }),
+      { threshold: 0.14 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} className="brief-station" style={{
+      gridTemplateColumns: '1fr',
+      paddingTop: '12vh',
+      paddingBottom: '12vh',
+    }}>
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+
+      <div style={{ marginBottom: 32, maxWidth: 920 }}>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>II  /  Thesis</div>
+        <h2 className="station-h2 wipe wipe-d1">
+          <span>We build the disciplines to execute.</span>
+          <span className="pivot">No matter what.</span>
+        </h2>
+      </div>
+
+      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 14, maxWidth: 720 }}>
+        Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load&#8209;bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
+      </p>
+      <div className="wipe wipe-d2" style={{ marginBottom: 48 }}>
+        <p className="brief-quote" style={{ margin: '12px 0 6px' }}>&ldquo;If you&rsquo;re working, we&rsquo;re working.&rdquo;</p>
+        <div className="brief-quote-attr">Floor practice &middot; POWERS</div>
+      </div>
+
+      {/* ── Five discipline cards — locked content, locked URLs.
+         Each card is the jump-off to its dedicated discipline page.
+         5-up row at desktop; collapses cleanly to 2-up / 1-up. */}
+      <div className="wipe wipe-d3" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+        gap: 1,
+        background: RULE_SOFT,
+      }}>
+        {DISCIPLINES.map((d) => (
+          <a key={d.num} href={d.href} className="discipline-card" style={{
+            background: PAPER,
+            padding: '28px 24px 32px',
+            textDecoration: 'none',
+            color: NAVY,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            transition: 'background 200ms ease',
+            position: 'relative',
+          }}
+            onMouseEnter={(e) => e.currentTarget.style.background = PAPER_DEEP}
+            onMouseLeave={(e) => e.currentTarget.style.background = PAPER}
+          >
+            <div style={{
+              fontFamily: TYPE.mono, fontSize: 10, fontWeight: 500,
+              letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: GOLD_BRIGHT,
+            }}>{d.num} &nbsp;&middot;&nbsp; Discipline</div>
+            <div style={{
+              fontFamily: TYPE.sans, fontSize: 17, fontWeight: 700,
+              lineHeight: 1.25, color: NAVY,
+            }}>{d.name}</div>
+            <div style={{
+              fontFamily: TYPE.sans, fontSize: 13, fontWeight: 400,
+              lineHeight: 1.55, color: TEXT_BODY,
+              flex: 1,
+            }}>{d.body}</div>
+            <div style={{
+              fontFamily: TYPE.mono, fontSize: 10, fontWeight: 600,
+              letterSpacing: '0.22em', textTransform: 'uppercase',
+              color: GOLD_BRIGHT, marginTop: 8,
+            }}>Learn more &rarr;</div>
+          </a>
+        ))}
+      </div>
+      <style>{`
+        @media (max-width: 1100px) {
+          .brief-station .wipe-d3 > div[style*="grid-template-columns"],
+          .brief-station > .wipe.wipe-d3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          }
+        }
+        @media (max-width: 720px) {
+          .brief-station > .wipe.wipe-d3 {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .brief-station > .wipe.wipe-d3 {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
