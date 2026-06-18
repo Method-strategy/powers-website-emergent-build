@@ -26,6 +26,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toRoute } from '../lib/routes';
 import { typo } from '../lib/typo';
+import { COLOR, MEASURE, RHYTHM, TYPE } from '../lib/designSpec';
 import PowersMetrics from '../components/PowersMetrics';
 import { SectionDisciplinesFoundation, SectionPressureExhibit } from '../components/DisciplinesAndPressureExhibit'; // eslint-disable-line no-unused-vars
 import HeroNavyClaim from '../components/HeroNavyClaim';
@@ -281,49 +282,45 @@ function ReadingProgress() {
    No copper, no amber, no rust, no second gold, no cobalt/sapphire/ice/mist.
    Deprecated aliases below are kept ONLY as redirects to spec colors so
    ongoing call sites resolve correctly while we sweep the codebase. */
+/* ── COLOR LOCAL ALIAS ───────────────────────────────────────────────
+ * Reduced to a pass-through over the single design-spec source of
+ * truth (`/app/frontend/src/lib/designSpec.js`). The deprecated
+ * aliases below all resolve to one of the six spec colors, kept
+ * ONLY so the ~30 in-flight call sites continue rendering correctly
+ * while we sweep the file. NO HEX LITERALS should be added inline
+ * anywhere — use `COLOR.*` or `C.*` (which forward to COLOR).
+ *
+ * Sweep target: every inline `'#143257'`, `'#e89346'`, `'#0f2a47'`,
+ * `'#ffffff'` literal in this file → `COLOR.navy / .gold / .navyDeep
+ * / .paper`. */
 const C = {
-  // ── SPEC: navy & deep navy
-  navy:     '#143257',  // Navy primary — text on light, surface on dark
-  navyDeep: '#0f2a47',  // Navy deep — hero backgrounds, dark sections
+  navy:     COLOR.navy,
+  navyDeep: COLOR.navyDeep,
+  body:     COLOR.body,
+  bodyDark: 'rgba(230,237,246,0.78)',
+  gold:     COLOR.gold,
+  blue:     '#3e80c1',     // illustrative line work only (non-text)
+  hairline: COLOR.line,
+  paper:    COLOR.paper,
+  white:    COLOR.paper,
 
-  // ── SPEC: body text
-  body:     '#4a5568',  // Body text on light (LOCKED)
-  bodyDark: 'rgba(230,237,246,0.78)',  // Body text on dark (LOCKED)
-
-  // ── SPEC: single gold accent (precious — max 3 per row)
-  gold:     '#e89346',
-
-  // ── SPEC: structural blue (non-text only — dividers, borders, illustrative line work)
-  blue:     '#3e80c1',
-
-  // ── SPEC: hairline rules + paper
-  hairline: 'rgba(20, 50, 87, 0.14)',
-  paper:    '#ffffff',
-  white:    '#ffffff',
-
-  // ── Canvas-only signal colors (hero swarm + execution exhibit ONLY)
+  // Canvas-only signal colors (hero swarm + execution exhibit ONLY).
   signalRed:   '#e0654f',
   signalGreen: '#5bbf73',
 
-  // ── Deprecated aliases → spec-equivalent values.
-  // These exist solely so legacy `C.copper`, `C.gold600`, `C.body` etc.
-  // call sites continue to render correctly until they're all swept out.
-  // DO NOT use these names in new code.
-  ink:      '#0f2a47',
-  navy900:  '#0f2a47',
-  navy400:  '#4a5568',
-  copper:   '#e89346',
-  gold200:  '#e89346',
-  gold600:  '#e89346',
-  amber:    '#e89346',
-  rust:     '#e89346',
-
-  // Neutral surface tones (used sparingly; preserved for off-white section bands)
-  ivory:    '#ffffff',
-  bone:     '#ffffff',
+  // Deprecated aliases — all resolve to spec equivalents.
+  ink:      COLOR.navyDeep,
+  navy900:  COLOR.navyDeep,
+  navy400:  COLOR.body,
+  copper:   COLOR.gold,
+  gold200:  COLOR.gold,
+  gold600:  COLOR.gold,
+  amber:    COLOR.gold,
+  rust:     COLOR.gold,
+  ivory:    COLOR.paper,
+  bone:     COLOR.paper,
 
   // Gray ramp — only for dividers / captions where pure navy is too heavy.
-  // Spec prefers hairline rgba(20,50,87,0.14) for most divider work.
   gray50:   '#f7f8fa',
   gray100:  '#eceef2',
   gray200:  '#dcdfe4',
@@ -352,54 +349,43 @@ const C = {
  * what makes the site feel coherent.
  * ────────────────────────────────────────────────────────────────── */
 const S = {
-  // Surface tokens — pure white is the default for every content row.
-  // `bgGoldWash` is an opt-in low-opacity gold tint that any single
-  // section can use as a deliberate alternation between two white
-  // sections — a quiet warm break that doesn't jump to dark navy.
-  // Dark sections (Hero, Principle, Pressure In/Out, Metrics, CTA)
-  // use their own navy backgrounds inline.
-  bgWhite:     '#ffffff',
-  bgPaper:     '#ffffff',
-  bgIvory:     '#ffffff',
-  bgBone:      '#ffffff',
-  bgGoldWash:  'rgba(232,147,70,0.04)',
-  bgNavy:  '#143257',
-  bgDeep:  '#0f2a47',
-  bgInk:   '#0f2a47',
+  /* `S` is now a pass-through to the design-spec source of truth.
+   * Every value below resolves to a token from `designSpec.js`. The
+   * dead aliases that were declared but never used (`maxNarrow:640`,
+   * `maxRead:760`) were removed. The duplicate background surface
+   * tokens (`bgWhite/bgPaper/bgIvory/bgBone` all resolved to `#fff`)
+   * were collapsed to one.
+   *
+   * SPEC RULES (enforced when this file is swept):
+   *   • One measure width — `MEASURE.wide` (1240). The narrow/read
+   *     measures live on TYPE callers (`.hpe-lede` etc.) not S.
+   *   • One H2 ladder — `TYPE.h2.*`.
+   *   • One body ladder — `TYPE.lede.*`.
+   *   • Symmetric section padding — `RHYTHM.sectionPadY`.
+   *   • One alignment regimen — see `ALIGN` in designSpec. */
+  bgWhite:    COLOR.paper,
+  bgPaper:    COLOR.paper,
+  bgGoldWash: 'rgba(232,147,70,0.04)',
+  bgNavy:     COLOR.navy,
+  bgDeep:     COLOR.navyDeep,
+  bgInk:      COLOR.navyDeep,
 
-  // Vertical rhythm — every section uses these. Tuned so that a
-  // typical content section lands around 720px total at desktop,
-  // fitting comfortably on a single laptop viewport with a slim
-  // "next-section peek" at the bottom. Hero is exempt (uses its own
-  // padding) and is intentionally taller.
-  // sectionPadX is the INNER gutter applied inside the maxWidth
-  // container so content edges align with the header.
-  sectionPadY: 'clamp(56px, 5vw, 72px)',
-  sectionPadX: 'clamp(24px, 4vw, 48px)',
-  gapHeaderToBody: 36,
+  sectionPadY:     RHYTHM.sectionPadY,
+  sectionPadX:     RHYTHM.sectionPadX,
+  gapHeaderToBody: RHYTHM.headerToBody,
 
-  // Measure widths — three only
-  maxNarrow: 640,
-  maxRead: 760,
-  maxWide: 1280,
+  maxWide: MEASURE.wide,    // 1240 — matches Row 2/3 exhibits
 
-  // Display type
-  // H2 ladder — single size used by every content row + the CTA.
-  // Tuned as a balance between the previous section H2 (too small at
-  // 46px max) and the CTA H2 (too large at 84px max). At wide desktop
-  // this lands at 56px — emphatic but not shouting; at mobile 34px
-  // for clear readability without dominating the column.
-  h2Size: 'clamp(34px, 4.2vw, 56px)',
-  h2Weight: 800,
-  h2LH: 1.08,
-  h2Tracking: '-0.014em',
-  h3Size: 'clamp(20px, 2vw, 26px)',
-  h3Weight: 700,
+  h2Size:     TYPE.h2.size,
+  h2Weight:   TYPE.h2.weight,
+  h2LH:       TYPE.h2.lineHeight,
+  h2Tracking: TYPE.h2.tracking,
+  h3Size:     'clamp(20px, 2vw, 26px)',
+  h3Weight:   700,
 
-  // Body type
-  ledeSize: 17,
-  ledeLH: 1.65,
-  ledeWeight: 300,
+  ledeSize:   TYPE.lede.size,
+  ledeLH:     TYPE.lede.lineHeight,
+  ledeWeight: TYPE.lede.weight,
 };
 
 /* ── COMMON SECTION ATOMS ────────────────────────────────────────────
@@ -963,7 +949,7 @@ function Header() {
       overflow: 'visible',
     }}>
       <div style={{
-        maxWidth: 1280,
+        maxWidth: S.maxWide,
         margin: '0 auto',
         padding: '0 48px',
         height: 84,
@@ -1449,7 +1435,7 @@ function Hero() {
       {/* Content — asymmetric two-column at desktop */}
       <div style={{
         position: 'relative', zIndex: 2,
-        width: '100%', maxWidth: 1280, margin: '0 auto',
+        width: '100%', maxWidth: S.maxWide, margin: '0 auto',
         minHeight: '86vh',
         display: 'grid',
         gridTemplateColumns: '1.05fr 0.95fr',
@@ -1621,7 +1607,7 @@ function SectionThePrinciple() {
 
       <div style={{
         position: 'relative', zIndex: 1,
-        maxWidth: 1280, margin: '0 auto',
+        maxWidth: S.maxWide, margin: '0 auto',
         padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         display: 'grid',
         // Two-column: thesis on the left, attribution on the right.
@@ -1814,7 +1800,7 @@ function SectionHowWeWork() {
           industries / Row 8 insights all read on a centered measure).
           Eyebrow removed per direction. */}
       <div style={{
-        maxWidth: 920,
+        maxWidth: MEASURE.read,
         margin: '0 auto',
         padding: `0 ${S.sectionPadX}`,
         boxSizing: 'border-box',
@@ -1986,7 +1972,7 @@ function SectionWhereWeWork() {
             06-18 copy doc: subhead pivots to "Different industries."
             sans-navy + "The same execution discipline." serif-italic-gold.
             Eyebrow removed Feb 2026 per direction. */}
-        <div style={{ marginBottom: 36, maxWidth: 920 }}>
+        <div style={{ marginBottom: RHYTHM.headerToBody, maxWidth: MEASURE.read }}>
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '0 0 28px',
@@ -2001,7 +1987,7 @@ function SectionWhereWeWork() {
             "same financial result" payoff (margins, recovery, gains
             that compound). 18-tile grid still retained in module scope
             for the dedicated /industries-served page. */}
-        <div style={{ maxWidth: 920 }}>
+        <div style={{ maxWidth: MEASURE.read }}>
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
@@ -2108,9 +2094,12 @@ function SectionResultsEntryPoint() {
   return (
     <section style={{ background: S.bgNavy, padding: `${S.sectionPadY} 0` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
-        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
+        <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: MEASURE.read }}>
           <ChapterMark n="08" light />
-          {/* "Proven Results" eyebrow removed Feb 2026 per direction. */}
+          {/* "Proven Results" eyebrow removed Feb 2026 per direction.
+              Layout flipped from centered-header-over-left-lede (the
+              banned pattern) to fully left-anchored per the design
+              spec ALIGN.results = 'left'. */}
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '0 0 22px',
@@ -2123,7 +2112,7 @@ function SectionResultsEntryPoint() {
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
-            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            margin: 0,
             textWrap: 'pretty',
           }}>
             {typo("Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours. Multi-site operators. PE-backed platforms. Organizations under real-world pressure to perform.")}
@@ -2136,7 +2125,7 @@ function SectionResultsEntryPoint() {
         }}>
           {CASE_STUDIES.map((cs, i) => <CaseStudyCard key={i} {...cs} />)}
         </div>
-        <div style={{ textAlign: 'center' }}>
+        <div>
           <a href="case-studies.html"
             onMouseEnter={() => setH(true)}
             onMouseLeave={() => setH(false)}
@@ -2229,22 +2218,25 @@ function InsightCard({ category, headline, summary }) {
 function SectionInsightsEntryPoint() {
   const [h, setH] = useState(false);
   return (
-    <section style={{ background: S.bgIvory, padding: `${S.sectionPadY} 0` }}>
+    <section style={{ background: S.bgPaper, padding: `${S.sectionPadY} 0` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
-        <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
+        <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: MEASURE.read }}>
           <ChapterMark n="09" />
-          {/* "Insights" eyebrow removed Feb 2026 per direction. */}
+          {/* "Insights" eyebrow removed Feb 2026 per direction.
+              Layout flipped from centered-header-over-left-lede (the
+              banned pattern) to fully left-anchored per the design
+              spec ALIGN.insights = 'left'. */}
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: '0 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>Dig deeper into the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>discipline of execution.</span></h2>
           {/* Insights lede — matches the Proven Results lede treatment:
-              body color, left-aligned within a centered 720px column. */}
+              body color, left-anchored at MEASURE.read. */}
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit',
-            maxWidth: 720, margin: '0 auto', textAlign: 'left',
+            margin: 0,
             textWrap: 'pretty',
           }}>
             {typo("Nearly thirty years of helping build some of the top-performing operations on the planet. Read how we install the five disciplines and produce sustainable, scalable financial gains. Shift after shift. Year after year.")}
@@ -2257,7 +2249,7 @@ function SectionInsightsEntryPoint() {
         }}>
           {INSIGHTS.map((item, i) => <InsightCard key={i} {...item} />)}
         </div>
-        <div style={{ textAlign: 'center' }}>
+        <div>
           <a href="insights.html"
             onMouseEnter={() => setH(true)}
             onMouseLeave={() => setH(false)}
@@ -2296,7 +2288,7 @@ function FooterCTA() {
       }} />
 
       <div style={{
-        maxWidth: 1280, margin: '0 auto',
+        maxWidth: S.maxWide, margin: '0 auto',
         padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         position: 'relative', zIndex: 1,
       }}>
@@ -2306,19 +2298,21 @@ function FooterCTA() {
             invitation: "Let's build your operation to execute under
             any circumstances." Sans-navy lead clause + serif-italic-gold
             pivot on the verb phrase, mirroring the hero pairing. Sits
-            on the gold-wash surface so both colors hold full weight. */}
+            on the gold-wash surface so both colors hold full weight.
+            Width capped at MEASURE.read so the H2 breathes inside the
+            wide section frame without sprawling. */}
         <h2 data-subhead-reveal style={{
           fontSize: S.h2Size,
           fontWeight: S.h2Weight, lineHeight: S.h2LH,
           fontFamily: SANS,
-          margin: '0 0 36px', maxWidth: 1040,
+          margin: '0 0 36px', maxWidth: MEASURE.read,
           letterSpacing: S.h2Tracking, textWrap: 'balance',
         }}>
           <span style={{ display: 'block', color: C.navy }}>Let&rsquo;s build your operation</span>
           <span style={{
             display: 'block',
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
-            color: '#e89346', letterSpacing: '-0.014em',
+            color: C.gold, letterSpacing: '-0.014em',
             marginTop: '0.05em',
           }}>to execute under any circumstances.</span>
         </h2>
@@ -2327,7 +2321,7 @@ function FooterCTA() {
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: 17, fontWeight: 300, lineHeight: 1.65,
             color: C.body, fontFamily: SANS,
-            margin: 0, maxWidth: 600, textWrap: 'pretty',
+            margin: 0, maxWidth: MEASURE.read, textWrap: 'pretty',
           }}>{typo("Tell us where the operation is feeling pressure. We\u2019ll come see it on the floor, find the gaps that are hiding inside it, and build the disciplines that close them.")}</p>
 
           <div>
@@ -2336,8 +2330,8 @@ function FooterCTA() {
               onMouseLeave={() => setH(false)}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 14,
-                background: h ? '#143257' : '#e89346',
-                color: h ? '#ffffff' : '#143257',
+                background: h ? C.navy : C.gold,
+                color: h ? C.paper : C.navy,
                 fontSize: 15, fontWeight: 600,
                 padding: '18px 32px', textDecoration: 'none',
                 fontFamily: SANS, letterSpacing: 0,
@@ -2549,7 +2543,7 @@ function Footer() {
 
       {/* Legal bar */}
       <div style={{
-        maxWidth: 1280, margin: '0 auto',
+        maxWidth: S.maxWide, margin: '0 auto',
         padding: '0 48px 40px',
       }}>
         <div style={{
@@ -2643,7 +2637,7 @@ function SectionDifferentApproach() {
         }
       `}</style>
       <div style={{
-        maxWidth: 1280,
+        maxWidth: S.maxWide,
         margin: '0 auto',
         padding: `clamp(56px, 7vw, 104px) ${S.sectionPadX} clamp(68px, 7vw, 112px)`,
         boxSizing: 'border-box',

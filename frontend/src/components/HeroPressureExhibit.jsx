@@ -29,19 +29,21 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useScrollBuild } from '../lib/useScrollBuild';
+import { COLOR, MEASURE, RHYTHM, TYPE } from '../lib/designSpec';
 
-/* ── Locked design tokens (mirrors DisciplinesAndPressureExhibit) ── */
-const SANS  = '"proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
-const SERIF = '"Newsreader","Source Serif 4","Tiempos Headline",Georgia,"Times New Roman",serif';
-const MONO  = '"JetBrains Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace';
+/* ── Design tokens — all forward to the spec source of truth. */
+const SANS  = TYPE.sans;
+const SERIF = TYPE.serif;
+const MONO  = TYPE.mono;
 
 const C = {
-  navy:     '#143257',
-  navyDeep: '#0f2a47',
-  body:     '#4a5568',
-  gold:     '#e89346',
-  paper:    '#ffffff',
-  line:     'rgba(20,50,87,.14)',
+  navy:     COLOR.navy,
+  navyDeep: COLOR.navyDeep,
+  body:     COLOR.body,
+  gold:     COLOR.gold,
+  paper:    COLOR.paper,
+  line:     COLOR.line,
+  /* Signal red/green — canvas exhibit only. */
   red:      '#d8523c',
   green:    '#3fb364',
 };
@@ -972,13 +974,12 @@ export default function HeroPressureExhibit() {
         .hpe-exhibit {
           position: relative;
           width: 100%;
-          max-width: 1240px;
+          max-width: ${MEASURE.wide}px;
           margin: 0 auto;
-          /* Was 96px top — tightened Feb 2026 so Row 3 fits within
-             a single viewport at 1080px tall. The H2 was reduced to
-             clamp(30,3.2vw,48) so it no longer needs the extra
-             breathing room. */
-          padding: 56px 56px 64px;
+          /* Symmetric section rhythm — matches RHYTHM.sectionPadY
+             (clamp(56,5vw,72)). Hand-rolled asymmetric padding was
+             retired Feb 2026 as part of the design-spec pass. */
+          padding: ${RHYTHM.sectionPadY} ${RHYTHM.sectionPadX};
         }
         /* Ambient number swarm — absolutely positioned across the full
            exhibit, behind every other layer. pointer-events:none so it
@@ -992,7 +993,7 @@ export default function HeroPressureExhibit() {
           z-index: 0;
         }
         .hpe-copy {
-          max-width: 920px;
+          max-width: ${MEASURE.read}px;
           margin: 0 auto 24px;
           text-align: center;
           position: relative;
@@ -1005,21 +1006,16 @@ export default function HeroPressureExhibit() {
            handles the same job in a way that responds to the
            reader's scroll speed. */
 
-        /* H2 subhead — the diagnostic. Matches the Row 2 H2 size
-           (clamp 30→46) so the two beats read at the same display
-           level. Sans navy for the problem; italic-gold pivot inline
-           for the resolution clause. */
+        /* H2 subhead — the diagnostic. Uses the single page-wide H2
+           ladder from TYPE.h2 so Row 3 reads at the same display tier
+           as every other H2 on the page. Sans navy for the problem;
+           italic-gold pivot inline for the resolution clause. */
         .hpe-subhead {
           font-family: ${SANS};
-          font-weight: 800;
-          /* Sized to land on 1–2 lines at desktop. Was clamp(38,5.2vw,76)
-             which produced a 304px-tall, 3-line subhead at 1920w. New
-             clamp tops at 48px so Row 3 sits in the same display tier
-             as Row 2 and the whole row fits within viewport. */
-          font-size: clamp(30px, 3.2vw, 48px);
-          /* 1.05 line-height — Row 2/3 match. */
-          line-height: 1.05;
-          letter-spacing: -.014em;
+          font-weight: ${TYPE.h2.weight};
+          font-size: ${TYPE.h2.size};
+          line-height: ${TYPE.h2.lineHeight};
+          letter-spacing: ${TYPE.h2.tracking};
           color: ${C.navy};
           margin: 0;
           text-wrap: pretty;

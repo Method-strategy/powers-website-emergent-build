@@ -37,20 +37,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toRoute } from '../lib/routes';
 import { useScrollBuild } from '../lib/useScrollBuild';
+import { COLOR, MEASURE, RHYTHM, TYPE } from '../lib/designSpec';
 
-/* ── Locked design tokens (from the brief) ──────────────────────── */
-const SANS  = '"proxima-nova","Proxima Nova",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif';
-const SERIF = '"Newsreader","Source Serif 4","Tiempos Headline",Georgia,"Times New Roman",serif';
-const MONO  = '"JetBrains Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace';
+/* ── Design tokens — all forward to the spec source of truth.
+ *   `/app/frontend/src/lib/designSpec.js` is the SINGLE place where
+ *   hex literals, type ladders, measure widths, and rhythm values
+ *   live. The local `C` / SANS / SERIF / MONO aliases here exist only
+ *   to keep the existing CSS template literals readable. */
+const SANS  = TYPE.sans;
+const SERIF = TYPE.serif;
+const MONO  = TYPE.mono;
 
 const C = {
-  navy:     '#143257',
-  navyDeep: '#0f2a47',
-  ink:      '#1d2b3a',
-  body:     '#4a5568',
-  gold:     '#e89346',
-  paper:    '#ffffff',
-  line:     'rgba(20,50,87,.14)',
+  navy:     COLOR.navy,
+  navyDeep: COLOR.navyDeep,
+  ink:      COLOR.navyDeep,
+  body:     COLOR.body,
+  gold:     COLOR.gold,
+  paper:    COLOR.paper,
+  line:     COLOR.line,
+  /* Signal red/green — canvas exhibit only, NOT a UI color. Kept
+   * local because nothing else on the site is allowed to use them. */
   red:      '#d8523c',
   green:    '#3fb364',
 };
@@ -439,15 +446,15 @@ export function SectionDisciplinesFoundation() {
         .s3-section { position: relative; background: ${C.paper}; }
         .s3-row {
           position: relative;
-          max-width: 1240px;
+          max-width: ${MEASURE.wide}px;
           margin: 0 auto;
-          /* Tightened Feb 2026 — the eyebrows-per-card were removed,
-             so the section no longer needs as much vertical breathing
-             room. Keeps the disciplines diagram comfortable but stops
-             the row from feeling cavernous. */
-          padding: 64px 56px 24px;
+          /* Symmetric section rhythm — matches the page-wide spec
+             (RHYTHM.sectionPadY = clamp(56,5vw,72)). Asymmetric
+             hand-rolled padding was retired Feb 2026 as part of the
+             design-spec pass. */
+          padding: ${RHYTHM.sectionPadY} ${RHYTHM.sectionPadX};
         }
-        .s3-intro { max-width: 880px; margin: 0 auto 16px; text-align: center; }
+        .s3-intro { max-width: ${MEASURE.read}px; margin: 0 auto 16px; text-align: center; }
         .s3-eyebrow {
           font-family: ${MONO};
           font-size: 11.5px;
@@ -458,20 +465,19 @@ export function SectionDisciplinesFoundation() {
           margin-bottom: 28px;
         }
         .s3-h2 {
-          /* Tightened Feb 2026 to 1.05 for better wrap rhythm. */
-          line-height: 1.05;
-          letter-spacing: -0.014em;
+          /* Matches TYPE.h2.lineHeight (1.08). */
+          line-height: ${TYPE.h2.lineHeight};
+          letter-spacing: ${TYPE.h2.tracking};
           margin-bottom: 14px;
         }
         .s3-h2 .sans {
           display: inline-block;
           font-family: ${SANS};
-          font-weight: 800;
-          /* Sized to land on 1–2 lines at desktop. Was clamp(38,5.2vw,76)
-             which produced a 304px-tall, 4-line H2 at 1920w that pushed
-             the whole row past viewport height. New clamp tops at 48px
-             so the H2 sits in proper subhead proportion to the hero. */
-          font-size: clamp(30px, 3.2vw, 48px);
+          font-weight: ${TYPE.h2.weight};
+          /* Single H2 ladder from spec. Replaces the hand-rolled
+             clamp(30, 3.2vw, 48) that lived here Feb 2026 — Rows 2/3
+             now match every other H2 on the page. */
+          font-size: ${TYPE.h2.size};
           color: ${C.navy};
           will-change: opacity, transform;
         }
@@ -480,7 +486,7 @@ export function SectionDisciplinesFoundation() {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(30px, 3.2vw, 48px);
+          font-size: ${TYPE.h2.size};
           color: ${C.gold};
           margin-left: 0.2em;
           will-change: opacity, transform;

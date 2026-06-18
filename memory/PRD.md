@@ -304,3 +304,39 @@ Per direction. The fade-in pattern was reading as "weak/subtle", not as "buildin
 - `/app/frontend/src/components/HeroNavyClaim.jsx` (removed keyframe + initial opacity:0)
 - `/app/frontend/src/pages/HomeV4.jsx` (global reveal CSS → static; Row 4 single-column reformat + video drop; 4 eyebrow elements removed)
 
+
+## 2026-06-18 (later) — Design spec pass: single source of truth for every row
+
+User feedback: "your row content widths are all over the place. Left justify and centering are all over the place. There is a severe lack of a disciplined, thoughtful, design backbone." Audited and confirmed correct. Counted **11 distinct container widths, 3 competing H2 ladders, 5 mixed alignment patterns, 30+ hardcoded hex literals**, and a color token with five aliases for the same hex.
+
+**Created `/app/frontend/src/lib/designSpec.js`** — single source of truth. Six color tokens (`COLOR.navy / .navyDeep / .gold / .body / .paper / .line`), three measure widths (`MEASURE.narrow 640 / .read 760 / .wide 1240`), one rhythm scale (`RHYTHM.sectionPadY / .sectionPadX / .headerToBody`), one H2 ladder (`TYPE.h2.size = clamp(32, 3.6vw, 52)`), one body ladder, one per-row alignment regimen (`ALIGN.{row} = 'center' | 'left'`).
+
+**Refactored to obey the spec:**
+- `/app/frontend/src/pages/HomeV4.jsx` — `C` and `S` now forward to `COLOR/MEASURE/RHYTHM/TYPE`. Dead aliases (`maxNarrow:640` and `maxRead:760` declared but never used; `bgIvory/bgBone` resolving to the same `#fff`; five gold aliases) removed. Inline `maxWidth: 1280` swept to `S.maxWide` (which now resolves to spec's 1240, matching Row 2/3). Rows 7 and 8 flipped from the banned centered-H2-over-left-lede pattern to fully left-anchored per `ALIGN.results = 'left'` / `ALIGN.insights = 'left'`. Inline `'#143257'` / `'#e89346'` / `'#ffffff'` hex literals in Row 9 CTA + button swept to `C.navy / C.gold / C.paper`.
+- `/app/frontend/src/components/DisciplinesAndPressureExhibit.jsx` — imports from `designSpec`. Hand-rolled local `C` reduced to a pass-through. `.s3-row` outer dropped from `max-width: 1240px` + asymmetric `64px 56px 24px` padding to `MEASURE.wide` + symmetric `RHYTHM.sectionPadY/X` (clamp 56–72). `.s3-intro` dropped from `880px` to `MEASURE.read` (760). H2 ladder dropped from hand-rolled `clamp(30, 3.2vw, 48)` to `TYPE.h2.size` (`clamp(32, 3.6vw, 52)`).
+- `/app/frontend/src/components/HeroPressureExhibit.jsx` — same pattern. `.hpe-exhibit` dropped from `1240` + `56px 56px 64px` asymmetric padding to spec values. `.hpe-copy` dropped from `920px` to `MEASURE.read`. `.hpe-subhead` H2 ladder unified with the page.
+
+**Visual audit after pass (DOM scrape, 1920×1080 viewport):**
+- Every row's outer container = 1240px (`MEASURE.wide`). Row 4 inner = 760px (`MEASURE.read`).
+- Every H2 renders at 52px max desktop. Single ladder.
+- Alignment: hero/Row 2/Row 3 centered (centered-exhibit rows); Rows 4/6/7/8/9 left-anchored.
+- Zero console errors. Hot reload clean.
+
+**Files touched this pass:**
+- `/app/frontend/src/lib/designSpec.js` (NEW — single source of truth)
+- `/app/frontend/src/pages/HomeV4.jsx` (imports + C/S forwards + inline width sweeps + Rows 7/8 alignment fix + Row 9 hex sweep)
+- `/app/frontend/src/components/DisciplinesAndPressureExhibit.jsx` (spec imports, padding/H2/intro width unified)
+- `/app/frontend/src/components/HeroPressureExhibit.jsx` (spec imports, padding/H2/copy width unified)
+
+**Discipline now enforced going forward:**
+1. No hex literals outside designSpec.js — use `COLOR.*`.
+2. No invented measure widths — use `MEASURE.narrow / .read / .wide`.
+3. No hand-rolled H2 clamps — use `TYPE.h2`.
+4. No hand-rolled section padding — use `RHYTHM`.
+5. No mixed alignment within a row — use `ALIGN[rowKey]`.
+
+**Still open:**
+- 18 `gray*` / `fog` palette tokens kept in `C` for now (used in dividers). Lower priority.
+- The retired `SectionDifferentApproach` still uses `'44em'` measure in its paragraphs. Component isn't rendered, but if it ever returns it needs to be brought to spec.
+- `RowAbilityToExecute.jsx` import in HomeV4 is unused (eslint-disabled). Safe to delete.
+- `LoopingVideoWithCrossfade` import is unused after the Row 4 video drop. Safe to delete.
