@@ -273,5 +273,34 @@ None — site is fully public, no auth.
 - Larger motion paradigm upgrade — the user flagged fades-as-fades are too subtle; they want real-motion language (slide-ins from offscreen, character-by-character stagger, masked clip-path reveals, copper hairline draw-in, disciplines flying in from offscreen compass directions tied to scroll, parallax). Not started; awaiting user direction.
 - Three parallel design tracks at `/v5`, `/v6`, `/v7` (editorial-magazine / cinematic-dark / brutalist-typographic) for client presentation alternatives. Not started; awaiting user direction.
 - Rows 7 & 8 use existing hand-coded card prototypes for now per user direction. Programmer or future agent will wire to a CMS/data layer once case studies + blog posts are formatted into a DB.
-- Hero entry animation (one-time staggered fade-rise on mount) is still a fade — needs upgrade to a real slide-up from offscreen with character stagger if user signs off on the larger motion paradigm shift.
+
+## 2026-06-18 (later) — Text animations removed + 4 eyebrows + Row 4 video removed
+
+Per direction. The fade-in pattern was reading as "weak/subtle", not as "building". Until a proper motion language replaces it, all editorial copy renders statically.
+
+**Eyebrows removed (4 rows):**
+- Row 4 (`SectionHowWeWork`): `<Eyebrow label="How We Work" />` removed.
+- Row 6 (`SectionWhereWeWork`): `<Eyebrow label="Where We Work" />` removed.
+- Row 7 (`SectionResultsEntryPoint`): `<Eyebrow label="Proven Results" />` removed.
+- Row 8 (`SectionInsightsEntryPoint`): `<Eyebrow label="Insights" />` removed.
+
+**Row 4 reformat — single column, no video:**
+- The right-column `<LoopingVideoWithCrossfade />` (the manufacturing-floor video) was dropped from Row 4 because that asset is being used in the hero. Row 4's outer container was collapsed from a 2-column `auto-fit minmax(320px, 1fr)` grid to a single `flex-column` centered on a 920px measure — matching the rest of the editorial spine.
+
+**Text animations — fully retired:**
+- `useScrollBuild` hook reduced to a no-op that snaps all `[data-build]` descendants to `opacity: 1; transform: none`. No scroll listener, no rAF, no resize listener. Existing call sites (Row 2, Row 3) are left in place so the contract returns when a new motion pass is wired in.
+- HomeV4's global reveal CSS block (`[data-subhead-reveal]` / `[data-eyebrow-reveal]` / `[data-lede-reveal]` opacity-0 + translate3d states) was replaced with a single rule that sets them all to `opacity: 1; transform: none; transition: none`. The `useSubheadReveal` IO hook still runs (harmlessly) — it sets `data-subhead-in="true"` and `data-row-revealed="true"` attributes, but those attributes no longer drive any CSS.
+- `HeroNavyClaim`'s one-time `@keyframes hnc-rise` staggered entry was removed; the H1 lines now render statically at full opacity, no transform.
+
+**What's still animating (intentional):**
+- The five-discipline pentagon entry stagger + connector draw (Row 2's canvas/IO sequence, geometry not text).
+- The chip swarm, ambient ±% number swarm, jagged red/green trend lines, breathing core, pressure surge bursts (all Row 3 canvas).
+- The scroll-driven core handoff (Row 2 anchor falling + Row 3 ghost descending), both bound to scroll position.
+- The metrics count-up (Row 5).
+- Hover/cursor microinteractions on links/buttons.
+
+**Files touched this pass:**
+- `/app/frontend/src/lib/useScrollBuild.js` (full rewrite as no-op; preserves call-site contract)
+- `/app/frontend/src/components/HeroNavyClaim.jsx` (removed keyframe + initial opacity:0)
+- `/app/frontend/src/pages/HomeV4.jsx` (global reveal CSS → static; Row 4 single-column reformat + video drop; 4 eyebrow elements removed)
 

@@ -1807,21 +1807,22 @@ const LoopingVideoWithCrossfade = ({ poster, sources, ariaLabel }) => {
 function SectionHowWeWork() {
   return (
     <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
+      {/* Row 4 — single-column layout (Feb 2026 rev).
+          The right-column video moved to the hero (Row 1). The grid
+          collapsed to one centered column to match the rest of the
+          editorial spine (Row 2 disciplines / Row 3 pressure / Row 6
+          industries / Row 8 insights all read on a centered measure).
+          Eyebrow removed per direction. */}
       <div style={{
-        maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        minHeight: 520,
-        alignItems: 'stretch',
-        gap: 0,
+        maxWidth: 920,
+        margin: '0 auto',
+        padding: `0 ${S.sectionPadX}`,
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 22,
       }}>
-        {/* Left: copy */}
-        <div style={{
-          padding: `0 clamp(24px, 4vw, 56px) 0 0`,
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22,
-        }}>
           <ChapterMark n="05" />
-          <Eyebrow label="How We Work" reveal />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: 0,
@@ -1898,31 +1899,6 @@ function SectionHowWeWork() {
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Right: media — flush bleed to right edge of the container.
-            Auto-playing, looping, muted background video replaces the
-            static placeholder. The <LoopingVideoWithCrossfade /> component
-            crossfades to the first-frame poster image at each loop
-            boundary, hiding the hard cut and producing a seamless loop.
-            `playsInline` is required for iOS Safari to keep it inline
-            (not fullscreen) and `muted` is required for `autoPlay` to be
-            honored on every modern browser. */}
-        <div style={{
-          background: C.navyDeep,
-          minHeight: 400,
-          display: 'flex', alignItems: 'stretch',
-          position: 'relative', overflow: 'hidden',
-        }}>
-          <LoopingVideoWithCrossfade
-            poster="/uploads/powers-banner-2026-v2-poster.jpg"
-            sources={[
-              { src: '/uploads/powers-banner-2026-v2.webm', type: 'video/webm' },
-              { src: '/uploads/powers-banner-2026-v2.mp4',  type: 'video/mp4'  },
-            ]}
-            ariaLabel="POWERS consultants working on the manufacturing floor"
-          />
-        </div>
       </div>
     </section>
   );
@@ -2008,12 +1984,12 @@ function SectionWhereWeWork() {
             for header + body so the section reads as one continuous
             argument rather than a header / multi-block stack.
             06-18 copy doc: subhead pivots to "Different industries."
-            sans-navy + "The same execution discipline." serif-italic-gold. */}
+            sans-navy + "The same execution discipline." serif-italic-gold.
+            Eyebrow removed Feb 2026 per direction. */}
         <div style={{ marginBottom: 36, maxWidth: 920 }}>
-          <Eyebrow label="Where We Work" reveal />
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
+            color: C.navy, fontFamily: 'inherit', margin: '0 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
             Different industries.&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>The same execution discipline.</span>
@@ -2134,10 +2110,10 @@ function SectionResultsEntryPoint() {
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="08" light />
-          <Eyebrow label="Proven Results" reveal />
+          {/* "Proven Results" eyebrow removed Feb 2026 per direction. */}
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
+            color: C.white, fontFamily: 'inherit', margin: '0 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>Operations built on strong execution produce&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
@@ -2257,10 +2233,10 @@ function SectionInsightsEntryPoint() {
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: S.gapHeaderToBody }}>
           <ChapterMark n="09" />
-          <Eyebrow label="Insights" reveal />
+          {/* "Insights" eyebrow removed Feb 2026 per direction. */}
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '16px 0 22px',
+            color: C.navy, fontFamily: 'inherit', margin: '0 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>Dig deeper into the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>discipline of execution.</span></h2>
           {/* Insights lede — matches the Proven Results lede treatment:
@@ -2843,81 +2819,22 @@ function HomeV4() {
   return (
     <div style={{ fontFamily: SANS, minHeight: '100vh', background: '#ffffff' }}>
       <style>{`
-        /* ── COURSE-BY-COURSE LAY-IN ────────────────────────────────
-         * One reveal recipe for every row's eyebrow → H2 → accent →
-         * lede cascade. The H2's IntersectionObserver is the trigger
-         * anchor (see useSubheadReveal); on enter it marks the row
-         * with [data-row-revealed="true"], and the sibling eyebrow /
-         * lede cascade off the same signal via transition-delay.
-         *
-         * Timing (cubic-bezier(0.22, 0.61, 0.36, 1) throughout):
-         *   eyebrow   →   0ms      (8px rise, opacity)
-         *   H2        → 180ms      (12px rise + 6px brick-seat in)
-         *   accent    → 460ms      (italic span inside H2, opacity)
-         *   lede #1   → 360ms      (8px rise, opacity)
-         *   lede #2   → 480ms      (+120ms per additional paragraph)
-         *   lede #3   → 600ms
-         *
-         * Reads as a course of bricks being seated: chalk line first
-         * (eyebrow), then the header brick lays in from the left,
-         * accent pivot settles after, body courses follow.
-         * ──────────────────────────────────────────────────────── */
-        [data-subhead-reveal] {
-          opacity: 0;
-          transform: translate3d(-6px, 14px, 0);
-          transition: opacity 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) 0.18s,
-                      transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) 0.18s;
-        }
-        [data-subhead-reveal] > span {
-          opacity: 0;
-          transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
-        }
-        [data-subhead-reveal][data-subhead-in="true"] {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-        }
-        [data-subhead-reveal][data-subhead-in="true"] > span {
-          opacity: 1;
-          transition-delay: 0.46s;
-        }
-
-        [data-eyebrow-reveal] {
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
-                      transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
-        }
-        [data-row-revealed="true"] [data-eyebrow-reveal] {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
+        /* ── TEXT REVEAL ANIMATIONS — RETIRED (Feb 2026) ────────────
+         * Per direction, fade-in/rise reveals were removed across the
+         * homepage spine. They didn't read as "building" — they read
+         * as weak/subtle. Until a proper motion language is in (real
+         * slide-ins from offscreen, clip-path masked reveals,
+         * character stagger, etc.), all editorial text renders
+         * statically. The data-* attributes remain on the markup so
+         * the IO hook below stays harmless, and so any future motion
+         * pass can re-attach behavior without touching the JSX. */
+        [data-subhead-reveal],
+        [data-subhead-reveal] > span,
+        [data-eyebrow-reveal],
         [data-lede-reveal] {
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.36s,
-                      transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.36s;
-        }
-        [data-row-revealed="true"] [data-lede-reveal] {
           opacity: 1;
-          transform: translateY(0);
-        }
-        [data-lede-reveal][data-lede-step="2"] {
-          transition-delay: 0.48s;
-        }
-        [data-lede-reveal][data-lede-step="3"] {
-          transition-delay: 0.60s;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          [data-subhead-reveal],
-          [data-subhead-reveal] > span,
-          [data-eyebrow-reveal],
-          [data-lede-reveal] {
-            opacity: 1 !important;
-            transform: none !important;
-            transition: none !important;
-          }
+          transform: none;
+          transition: none;
         }
       `}</style>
       {/* <ReadingProgress /> — removed Feb 2026 per direction.

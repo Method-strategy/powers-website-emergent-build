@@ -109,28 +109,10 @@ export default function HeroNavyClaim() {
           margin: 0;
         }
         .hnc-h1 > span {
-          /* Initial state — scroll-build hook will overwrite each
-             frame once the user starts scrolling. Before that, the
-             one-time CSS entry animation below lays each line in
-             with a staggered fade + rise. */
-          opacity: 0;
-          transform: translateY(14px);
-          will-change: opacity, transform;
-          animation: hnc-rise 900ms cubic-bezier(.22,.61,.36,1) forwards;
-        }
-        .hnc-h1 > span:nth-child(1) { animation-delay: 120ms; }
-        .hnc-h1 > span:nth-child(2) { animation-delay: 340ms; }
-        .hnc-h1 > span:nth-child(3) { animation-delay: 620ms; }
-        @keyframes hnc-rise {
-          from { opacity: 0; transform: translateY(14px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .hnc-h1 > span {
-            animation: none;
-            opacity: 1;
-            transform: translateY(0);
-          }
+          /* Static — text animations retired Feb 2026 per direction
+             until a proper motion language replaces the fade-in. */
+          opacity: 1;
+          transform: none;
         }
         .hnc-h1 .sans {
           display: block;
