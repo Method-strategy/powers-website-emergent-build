@@ -993,7 +993,10 @@ export default function HeroPressureExhibit() {
           z-index: 0;
         }
         .hpe-copy {
-          max-width: ${MEASURE.read}px;
+          /* Narrowed Feb 2026 from MEASURE.read (760) to MEASURE.narrow
+             (640) so the centered prose reads at a comfortable measure
+             instead of sprawling. */
+          max-width: ${MEASURE.narrow}px;
           margin: 0 auto 24px;
           text-align: center;
           position: relative;
@@ -1017,12 +1020,21 @@ export default function HeroPressureExhibit() {
           line-height: ${TYPE.h2.lineHeight};
           letter-spacing: ${TYPE.h2.tracking};
           color: ${C.navy};
-          margin: 0;
-          text-wrap: pretty;
+          /* H2 now lives outside .hpe-copy in the full 1240 frame
+             (Feb 2026 rev) — centered horizontally, with a small
+             margin below before the lede column begins. */
+          margin: 0 auto 24px;
+          text-align: center;
+          max-width: 100%;
+          position: relative;
+          z-index: 1;
         }
         .hpe-subhead .hpe-h2-main,
         .hpe-subhead .pivot {
-          display: inline-block;
+          /* Force each clause onto its own line — eliminates the
+             "disciplines," orphan that browser-decided wrap kept
+             producing on a 1240 frame at 52px. */
+          display: block;
           will-change: opacity, transform;
         }
         .hpe-subhead .pivot {
@@ -1196,11 +1208,16 @@ export default function HeroPressureExhibit() {
             className="hpe-numbers"
             aria-hidden="true"
           />
+          {/* H2 lives outside .hpe-copy so it occupies the full 1240
+              frame at desktop — each block-span phrase fits on its own
+              line at 52px without secondary-wrapping inside a narrow
+              column. The .hpe-copy lede column stays at MEASURE.narrow
+              for a comfortable centered measure. */}
+          <h2 className="hpe-subhead">
+            <span className="hpe-h2-main" data-build>When execution is built on these disciplines,</span>
+            <span className="pivot" data-build>performance is not at the mercy of conditions.</span>
+          </h2>
           <div className="hpe-copy" ref={copyRef}>
-            <h2 className="hpe-subhead">
-              <span className="hpe-h2-main" data-build>When execution is built on these disciplines,</span>{' '}
-              <span className="pivot" data-build>performance is not at the mercy of conditions.</span>
-            </h2>
             <p className="hpe-lede">
               <span className="hpe-lede-sent" data-build>Market pressures don&rsquo;t stop.</span>{' '}
               <span className="hpe-lede-sent" data-build>The question isn&rsquo;t whether you can get better.</span>{' '}

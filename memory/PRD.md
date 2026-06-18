@@ -340,3 +340,36 @@ User feedback: "your row content widths are all over the place. Left justify and
 - The retired `SectionDifferentApproach` still uses `'44em'` measure in its paragraphs. Component isn't rendered, but if it ever returns it needs to be brought to spec.
 - `RowAbilityToExecute.jsx` import in HomeV4 is unused (eslint-disabled). Safe to delete.
 - `LoopingVideoWithCrossfade` import is unused after the Row 4 video drop. Safe to delete.
+
+## 2026-06-18 (later) — H2 phrasing + frame consistency pass
+
+User feedback after seeing the spec-pass result on a 30" monitor: Row 4 and Row 6 still read as "shrunken strips" (760px outer frame on a 2560px+ display), and several H2s wrapped into 3–4 lines with orphan words ("the", "disciplines,", "discipline" stranded alone). Receipts on a 2560px viewport:
+- Row 2 H2 height = 168px / 3 lines, "the" orphan.
+- Row 3 H2 height = 225px / 4 lines, "disciplines," orphan.
+- Row 6 H2 = 3 lines, "The same" orphan.
+- Row 8 H2 = 4 lines, two orphans ("the", "discipline").
+
+**Frame consistency fix:**
+- Row 4 (`SectionHowWeWork`) outer frame restored from MEASURE.read (760) → MEASURE.wide (1240). Prose column held to MEASURE.read inside the wide frame. Pattern is now: every section frame at 1240, prose column at 760 inside. Row 4 no longer reads as a narrow strip.
+- Row 6 (`SectionWhereWeWork`) H2 lifted out of the 760 inner column so it occupies the full 1240 frame at desktop. Prose column stays at 760.
+- Rows 7 + 8 (Results, Insights) — same restructure: H2 in the 1240 frame, lede in MEASURE.read column.
+
+**H2 phrasing — forced two-line beats via display:block spans:**
+- Replaced `&nbsp;` + `text-wrap: pretty` (browser-decided wrap) with explicit `display: block` spans per clause. Each H2 now reads as a clean two-line editorial beat regardless of viewport.
+- Row 2 (`.s3-h2`) — H2 moved out of `.s3-intro` into its own wide row container; gets a `.s3-h2-wide` class with max-width:100%, centered.
+- Row 3 (`.hpe-subhead`) — H2 moved out of `.hpe-copy`; `.hpe-h2-main` and `.pivot` spans switched from `display: inline-block` to `display: block`. Lede column held to MEASURE.narrow (640) for comfortable centered measure.
+- Rows 4 / 6 / 7 / 8 / 9 — H2s use explicit `<span style={{display:'block'}}>` per clause.
+
+**Centered exhibit row tightening (Rows 2 + 3):**
+- `.s3-intro` lede column narrowed MEASURE.read (760) → MEASURE.narrow (640) so centered prose reads at ~55 char measure instead of sprawling across the wide frame.
+- `.hpe-copy` lede column same narrowing (760 → 640).
+
+**Verification at 2560×1440:**
+- Every H2 now renders at 112–115px tall, two clean editorial lines, no orphans.
+- Row widths: outer frame uniformly 1240 across every row; prose columns uniformly 760; centered ledes 640.
+- Zero console errors.
+
+**Files touched this pass:**
+- `/app/frontend/src/pages/HomeV4.jsx` (Row 4 outer frame restore + H2 lift-out for Rows 6/7/8 + display:block spans)
+- `/app/frontend/src/components/DisciplinesAndPressureExhibit.jsx` (Row 2 H2 lift-out + `.s3-h2-wide` style + `.s3-intro` narrow measure)
+- `/app/frontend/src/components/HeroPressureExhibit.jsx` (Row 3 H2 lift-out + `.hpe-subhead` margin/text-align update + `.hpe-h2-main`/`.pivot` block display + `.hpe-copy` narrow measure)

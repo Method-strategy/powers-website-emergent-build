@@ -1792,29 +1792,37 @@ const LoopingVideoWithCrossfade = ({ poster, sources, ariaLabel }) => {
 
 function SectionHowWeWork() {
   return (
-    <section style={{ background: C.white, padding: `${S.sectionPadY} 0` }}>
-      {/* Row 4 — single-column layout (Feb 2026 rev).
-          The right-column video moved to the hero (Row 1). The grid
-          collapsed to one centered column to match the rest of the
-          editorial spine (Row 2 disciplines / Row 3 pressure / Row 6
-          industries / Row 8 insights all read on a centered measure).
-          Eyebrow removed per direction. */}
+    <section style={{ background: C.paper, padding: `${S.sectionPadY} 0` }}>
+      {/* Row 4 — wide frame, narrow prose (Feb 2026 rev).
+          Was 760px outer frame which read as a "shrunken strip" on
+          wide monitors. Now uses the page-wide 1240 frame (matches
+          every other row) with prose constrained to 760 inside.
+          Eyebrow + right-column video both retired earlier. */}
       <div style={{
-        maxWidth: MEASURE.read,
+        maxWidth: S.maxWide,
         margin: '0 auto',
         padding: `0 ${S.sectionPadX}`,
         boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 22,
       }}>
+        <div style={{
+          maxWidth: MEASURE.read,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 22,
+        }}>
           <ChapterMark n="05" />
+          {/* H2 — explicit phrase break via display:block spans.
+              Lets the headline ALWAYS read as a clean two-line beat
+              regardless of viewport, instead of relying on text-wrap
+              to pick a break point (which produced orphan words like
+              "won or lost." on a line alone). */}
           <h2 data-subhead-reveal style={{
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.navy, fontFamily: 'inherit', margin: 0,
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
+            letterSpacing: S.h2Tracking,
           }}>
-            We work where value gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>won or lost.</span>
+            <span style={{ display: 'block' }}>We work where value gets</span>
+            <span style={{ display: 'block', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>won or lost.</span>
           </h2>
 
           {/* Row 4 lede — 06-18 doc. Reads as a sustained, layered
@@ -1885,6 +1893,7 @@ function SectionHowWeWork() {
               </span>
             </div>
           </div>
+        </div>
       </div>
     </section>
   );
@@ -1966,27 +1975,26 @@ function SectionWhereWeWork() {
     <section style={{ background: S.bgGoldWash, padding: `${S.sectionPadY} 0` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
 
-        {/* Section header — left-anchored column. Single 920px measure
-            for header + body so the section reads as one continuous
-            argument rather than a header / multi-block stack.
-            06-18 copy doc: subhead pivots to "Different industries."
-            sans-navy + "The same execution discipline." serif-italic-gold.
+        {/* H2 — sits in the wider 1240 frame so the headline can
+            occupy its full natural width without inner-column wrap.
+            Forced phrase breaks via display:block spans ensure two
+            clean editorial lines regardless of viewport: sans-navy
+            statement on line 1, serif-italic-gold pivot on line 2.
             Eyebrow removed Feb 2026 per direction. */}
-        <div style={{ marginBottom: RHYTHM.headerToBody, maxWidth: MEASURE.read }}>
-          <h2 data-subhead-reveal style={{
-            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '0 0 28px',
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>
-            Different industries.&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>The same execution discipline.</span>
-          </h2>
-        </div>
+        <h2 data-subhead-reveal style={{
+          fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+          color: C.navy, fontFamily: 'inherit', margin: `0 0 ${RHYTHM.headerToBody}px`,
+          letterSpacing: S.h2Tracking,
+        }}>
+          <span style={{ display: 'block' }}>Different industries.</span>
+          <span style={{ display: 'block', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>The same execution discipline.</span>
+        </h2>
 
         {/* Body — single-paragraph industry framing per 06-18 copy doc.
             Names the industry breadth as a credential, ends on the
             "same financial result" payoff (margins, recovery, gains
-            that compound). 18-tile grid still retained in module scope
-            for the dedicated /industries-served page. */}
+            that compound). Prose held to MEASURE.read for legibility
+            inside the 1240 section frame. */}
         <div style={{ maxWidth: MEASURE.read }}>
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
@@ -2094,17 +2102,24 @@ function SectionResultsEntryPoint() {
   return (
     <section style={{ background: S.bgNavy, padding: `${S.sectionPadY} 0` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
+        {/* H2 sits in the full 1240 frame; body intro is constrained
+            to MEASURE.read below. Forced phrase breaks via display:block
+            spans give two clean editorial lines, no orphan words. */}
+        <h2 data-subhead-reveal style={{
+          fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+          color: C.paper, fontFamily: 'inherit', margin: '0 0 22px',
+          letterSpacing: S.h2Tracking,
+        }}>
+          <span style={{ display: 'block' }}>Operations built on strong execution produce</span>
+          <span style={{ display: 'block', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span>
+        </h2>
         <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: MEASURE.read }}>
           <ChapterMark n="08" light />
           {/* "Proven Results" eyebrow removed Feb 2026 per direction.
               Layout flipped from centered-header-over-left-lede (the
               banned pattern) to fully left-anchored per the design
-              spec ALIGN.results = 'left'. */}
-          <h2 data-subhead-reveal style={{
-            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.white, fontFamily: 'inherit', margin: '0 0 22px',
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>Operations built on strong execution produce&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span></h2>
+              spec ALIGN.results = 'left'. H2 moved up out of this
+              inner column so it occupies the full 1240 frame. */}
           {/* Peer-proof intro — frames the case studies as proof that the
               reader's peers have built on the same five disciplines.
               06-18 doc: lede expanded with multi-site operators / PE
@@ -2220,17 +2235,21 @@ function SectionInsightsEntryPoint() {
   return (
     <section style={{ background: S.bgPaper, padding: `${S.sectionPadY} 0` }}>
       <div style={{ maxWidth: S.maxWide, margin: '0 auto', padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box' }}>
+        {/* H2 sits in the full 1240 frame with forced phrase breaks
+            via display:block — gives a clean two-line editorial beat
+            instead of three lines with orphan words ("the" / "discipline"
+            were getting stranded alone when wrap was browser-decided). */}
+        <h2 data-subhead-reveal style={{
+          fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
+          color: C.navy, fontFamily: 'inherit', margin: '0 0 22px',
+          letterSpacing: S.h2Tracking,
+        }}>
+          <span style={{ display: 'block' }}>Dig deeper into the</span>
+          <span style={{ display: 'block', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>discipline of execution.</span>
+        </h2>
         <div style={{ marginBottom: S.gapHeaderToBody, maxWidth: MEASURE.read }}>
           <ChapterMark n="09" />
-          {/* "Insights" eyebrow removed Feb 2026 per direction.
-              Layout flipped from centered-header-over-left-lede (the
-              banned pattern) to fully left-anchored per the design
-              spec ALIGN.insights = 'left'. */}
-          <h2 data-subhead-reveal style={{
-            fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
-            color: C.navy, fontFamily: 'inherit', margin: '0 0 22px',
-            letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>Dig deeper into the&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>discipline of execution.</span></h2>
+          {/* "Insights" eyebrow removed Feb 2026 per direction. */}
           {/* Insights lede — matches the Proven Results lede treatment:
               body color, left-anchored at MEASURE.read. */}
           <p data-lede-reveal data-lede-step="1" style={{

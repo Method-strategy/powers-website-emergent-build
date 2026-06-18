@@ -454,7 +454,12 @@ export function SectionDisciplinesFoundation() {
              design-spec pass. */
           padding: ${RHYTHM.sectionPadY} ${RHYTHM.sectionPadX};
         }
-        .s3-intro { max-width: ${MEASURE.read}px; margin: 0 auto 16px; text-align: center; }
+        /* Centered exhibit row — lede column narrowed Feb 2026 from
+           MEASURE.read (760) to MEASURE.narrow (640) so the centered
+           prose reads at a comfortable ~55-char measure instead of
+           sprawling into a wide centered block (which was hard to
+           read on wide monitors per direction). */
+        .s3-intro { max-width: ${MEASURE.narrow}px; margin: 0 auto 16px; text-align: center; }
         .s3-eyebrow {
           font-family: ${MONO};
           font-size: 11.5px;
@@ -469,6 +474,14 @@ export function SectionDisciplinesFoundation() {
           line-height: ${TYPE.h2.lineHeight};
           letter-spacing: ${TYPE.h2.tracking};
           margin-bottom: 14px;
+        }
+        /* Wide H2 variant — sits in the full 1240 frame so each
+           block-span phrase fits on a single line at the 52px display
+           size. Centered to match the exhibit's symmetrical diagram. */
+        .s3-h2-wide {
+          max-width: 100%;
+          text-align: center;
+          margin-bottom: 20px;
         }
         .s3-h2 .sans {
           display: inline-block;
@@ -726,11 +739,15 @@ export function SectionDisciplinesFoundation() {
         aria-label="What we build — the ability to execute, no matter what"
       >
         <div className="s3-row">
+          {/* H2 in the wide section frame — gets the full 1240 column
+              so each block-span phrase fits on one line at the 52px
+              display size. The lede below holds at MEASURE.narrow so
+              the centered prose reads at a comfortable measure. */}
+          <h2 className="s3-h2 s3-h2-wide">
+            <span className="sans" data-build style={{ display: 'block' }}>We build the disciplines to execute.</span>
+            <span className="serif" data-build style={{ display: 'block' }}>No matter what.</span>
+          </h2>
           <div className="s3-intro">
-            <h2 className="s3-h2">
-              <span className="sans" data-build>We build the disciplines to execute.</span>{' '}
-              <span className="serif" data-build>No matter what.</span>
-            </h2>
             <p className="s3-lede">
               <span className="s3-lede-sent" data-build>Five disciplines built into how the operation executes every shift, every day, every quarter.</span>{' '}
               <span className="s3-lede-sent" data-build>Not five initiatives. Not five priorities.</span>{' '}
