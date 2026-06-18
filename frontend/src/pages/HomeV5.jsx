@@ -929,32 +929,23 @@ function SiteFooter() {
   );
 }
 
-/* ── Pressure → Outcome word pairs ─────────────────────────────
- * Each particle starts as a red pressure on the lower-left, drifts
- * diagonally up-and-right, transforms at midpoint into the matched
- * green outcome, and exits upper-right. Direct visual of Sean /
- * Randall's "we get paid to turn red numbers into green ones." */
-const PRESSURE_PAIRS = [
-  { pressure: 'Demand spike',         outcome: '+22% throughput' },
-  { pressure: 'Leadership change',    outcome: '+23% retention' },
-  { pressure: 'PE timeline',          outcome: '5-week ROI' },
-  { pressure: 'New site online',      outcome: '+19% on-time launch' },
-  { pressure: 'Labor shortage',       outcome: '+34% labor productivity' },
-  { pressure: 'Supply disruption',    outcome: '2.4× inventory turn' },
-  { pressure: 'Audit pressure',       outcome: '60% audit pass' },
-  { pressure: 'Margin compression',   outcome: '+18% margin' },
-  { pressure: 'Changeover delay',     outcome: '−17% changeover' },
-  { pressure: 'Equipment failure',    outcome: '1.8× uptime' },
-  { pressure: 'Regulatory shift',     outcome: '88% first-pass quality' },
-  { pressure: 'Working-capital crunch', outcome: '$3.2M WC freed' },
-  { pressure: 'Shift no-show',        outcome: '+12% yield' },
-  { pressure: 'Talent attrition',     outcome: '+6% engagement' },
-  { pressure: 'Safety incident',      outcome: '+28% safety' },
-  { pressure: 'Quality slip',         outcome: '−24% rework' },
-  { pressure: 'Customer escalation',  outcome: '96% OTD' },
-  { pressure: 'Raw-material spike',   outcome: '−41% scrap' },
-  { pressure: 'Integration deadline', outcome: '6-wk stabilization' },
-  { pressure: 'Board review',         outcome: '$14M run-rate' },
+/* ── Pressures (fall down-right) + Outcomes (rise up-right) ──────
+ * Two independent particle fields share an X-shaped motion. Reds
+ * descend left-to-right (representing pressure dragging down).
+ * Greens rise left-to-right (representing performance lifting).
+ * They cross at the centerline — the visual of "we get paid to turn
+ * red numbers into green ones" without literal one-to-one pairing.
+ * Spread thinner than before so each word is readable, not bunched. */
+const FALLING_PRESSURES = [
+  'Demand spike', 'Leadership change', 'PE timeline', 'New site online',
+  'Labor shortage', 'Supply disruption', 'Margin compression',
+  'Equipment failure', 'Working-capital crunch', 'Customer escalation',
+  'Raw-material spike', 'Integration deadline',
+];
+const RISING_OUTCOMES = [
+  '+22% throughput', '+34% labor productivity', '+18% margin', '96% OTD',
+  '−41% scrap', '5-week ROI', '+28% safety', '1.8× uptime',
+  '2.4× inventory turn', '$3.2M WC freed', '$14M run-rate', '+12% yield',
 ];
 
 function PressureSwarm() {
@@ -963,26 +954,28 @@ function PressureSwarm() {
       const x = Math.sin(i * 9301 + 49297) * 233280;
       return x - Math.floor(x);
     };
-    return PRESSURE_PAIRS.map((p, i) => {
-      const r1 = seeded(i);
-      const r2 = seeded(i + 100);
-      const r3 = seeded(i + 200);
-      const r4 = seeded(i + 300);
-      /* Start in the lower-left band (3–22% of viewport width),
-       * end in the upper-right band (74–95%). Diagonal travel
-       * across the centerline IS the transformation moment. */
-      const startX = 3 + r1 * 19;
-      const endX   = 74 + r2 * 21;
-      const travel = endX - startX;
-      /* Drift cycle 28–44s — slower than the prior straight-up
-       * version because the diagonal arc covers more visual
-       * distance per particle. */
-      const duration = 28 + r3 * 16;
-      /* Negative delay 0 to -44s puts each particle at a different
-       * point in its cycle on first paint. */
-      const delay = -(r4 * 44);
-      return { ...p, startX, travel, duration, delay };
+    const build = (words, offset) => words.map((w, i) => {
+      const r1 = seeded(i + offset);
+      const r2 = seeded(i + offset + 100);
+      const r3 = seeded(i + offset + 200);
+      const r4 = seeded(i + offset + 300);
+      /* Start X spread across left 35% of viewport (0–35vw),
+       * travel 60–95 vw to the right. Wider spread + fewer
+       * particles = no bunching. */
+      const startX = r1 * 35;
+      const travelX = 60 + r2 * 35;
+      /* Vertical start: random within a top-band (pressures) or
+       * bottom-band (outcomes) — adds Y variation so particles
+       * don't all start on a single horizontal line. */
+      const startYOffset = r3 * 18;
+      const duration = 26 + r4 * 14;
+      const delay = -(seeded(i + offset + 400) * 40);
+      return { word: w, startX, travelX, startYOffset, duration, delay };
     });
+    return {
+      falling: build(FALLING_PRESSURES, 0),
+      rising:  build(RISING_OUTCOMES, 1000),
+    };
   }, []);
   return (
     <div className="ps-swarm" aria-hidden="true">
@@ -994,96 +987,76 @@ function PressureSwarm() {
           pointer-events: none;
           z-index: 0;
         }
-        .ps-particle {
+        .ps-p {
           position: absolute;
-          bottom: -48px;
-          left: 0;
           font-family: ${TYPE.mono};
           font-size: 11.5px;
           font-weight: 500;
           letter-spacing: 0.18em;
           text-transform: uppercase;
           white-space: nowrap;
-          will-change: transform;
-          animation-name: ps-cross;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-        }
-        .ps-particle .word {
-          position: absolute;
-          left: 0;
-          top: 0;
-          white-space: nowrap;
+          will-change: transform, opacity;
           opacity: 0;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
         }
-        .ps-particle .word.press {
-          color: rgba(224, 101, 79, 0.65);
-          animation-name: ps-press-fade;
+        /* Pressure — starts above the section top, falls down-right.
+           Color: muted clay red. */
+        .ps-p.fall {
+          top: -32px;
+          color: rgba(224, 101, 79, 0.62);
+          animation-name: ps-fall;
         }
-        .ps-particle .word.out {
-          color: rgba(91, 191, 115, 0.70);
-          animation-name: ps-out-fade;
+        /* Outcome — starts below the section bottom, rises up-right.
+           Color: muted forest green. */
+        .ps-p.rise {
+          bottom: -32px;
+          color: rgba(91, 191, 115, 0.68);
+          animation-name: ps-rise;
         }
-        /* Diagonal travel: particle starts at its inline --start-x
-         * percent of viewport, translates by --travel-x vw to the
-         * right and -100vh-80px upward over its cycle. */
-        @keyframes ps-cross {
-          0%   { transform: translate(0, 0); }
-          100% { transform: translate(var(--travel-x), calc(-100vh - 80px)); }
+        @keyframes ps-fall {
+          0%   { transform: translate(0, 0);                opacity: 0; }
+          12%  { opacity: 0.62; }
+          85%  { opacity: 0.62; }
+          100% { transform: translate(var(--travel-x), calc(100vh + 80px)); opacity: 0; }
         }
-        /* Pressure word visible 0–42% of cycle, fades to 0 by 55%.
-         * The fade-out is the "collision" — the red disintegrates
-         * exactly as the green resolves. */
-        @keyframes ps-press-fade {
-          0%   { opacity: 0; }
-          10%  { opacity: 0.55; }
-          42%  { opacity: 0.55; }
-          55%  { opacity: 0; }
-          100% { opacity: 0; }
-        }
-        /* Outcome word fades in starting at 48%, holds, exits at 92%.
-         * Brief overlap with the pressure fade (48–55%) is the
-         * transformation moment. */
-        @keyframes ps-out-fade {
-          0%, 48% { opacity: 0; }
-          62%     { opacity: 0.65; }
-          88%     { opacity: 0.65; }
-          100%    { opacity: 0; }
+        @keyframes ps-rise {
+          0%   { transform: translate(0, 0);                opacity: 0; }
+          12%  { opacity: 0.68; }
+          85%  { opacity: 0.68; }
+          100% { transform: translate(var(--travel-x), calc(-100vh - 80px)); opacity: 0; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .ps-particle { animation: none; bottom: auto; top: 30%; }
-          .ps-particle .word.press { animation: none; opacity: 0.35; }
-          .ps-particle .word.out { animation: none; opacity: 0; }
+          .ps-p { animation: none; opacity: 0.30; }
+          .ps-p.fall { top: 18%; }
+          .ps-p.rise { bottom: 18%; }
         }
       `}</style>
-      {swarm.map((p, i) => (
-        <div
-          key={i}
-          className="ps-particle"
+      {swarm.falling.map((p, i) => (
+        <span
+          key={'f' + i}
+          className="ps-p fall"
           style={{
             left: p.startX + 'vw',
-            '--travel-x': p.travel + 'vw',
+            marginTop: p.startYOffset + 'vh',
+            '--travel-x': p.travelX + 'vw',
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
-        >
-          <span
-            className="word press"
-            style={{
-              animationDuration: p.duration.toFixed(2) + 's',
-              animationDelay: p.delay.toFixed(2) + 's',
-            }}
-          >{p.pressure}</span>
-          <span
-            className="word out"
-            style={{
-              animationDuration: p.duration.toFixed(2) + 's',
-              animationDelay: p.delay.toFixed(2) + 's',
-            }}
-          >{p.outcome}</span>
-        </div>
+        >{p.word}</span>
+      ))}
+      {swarm.rising.map((p, i) => (
+        <span
+          key={'r' + i}
+          className="ps-p rise"
+          style={{
+            left: p.startX + 'vw',
+            marginBottom: p.startYOffset + 'vh',
+            '--travel-x': p.travelX + 'vw',
+            animationDuration: p.duration.toFixed(2) + 's',
+            animationDelay: p.delay.toFixed(2) + 's',
+          }}
+        >{p.word}</span>
       ))}
     </div>
   );
@@ -1114,7 +1087,7 @@ function PressureBeat() {
     }}>
       <PressureSwarm />
       <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)', zIndex: 2 }} aria-hidden="true" />
-      <div style={{ marginBottom: 36, position: 'relative', zIndex: 2 }}>
+      <div style={{ marginBottom: 18, position: 'relative', zIndex: 2 }}>
         <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>III  /  Pressure</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8' }}>
           <span>When execution is built on these disciplines,</span>
@@ -1128,7 +1101,7 @@ function PressureBeat() {
         <p className="station-lede wipe wipe-d3" style={{
           marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)', maxWidth: 720,
         }}>
-          Better margins. Stronger throughput. Higher returns. Quarter after quarter.
+          Greater margins. Stronger performance. Better results. Quarter after quarter.
         </p>
       </div>
     </section>
