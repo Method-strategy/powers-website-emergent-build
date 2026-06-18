@@ -114,6 +114,12 @@ function HomeV5() {
         :root { --brief-progress: 0; }
 
         .brief-page {
+          /* Single-frame presentation — each beat occupies one full
+             viewport. Scroll-snap engages on the page container so
+             one scroll = one beat advance. Removes the "you can see
+             two rows at once" artifact that broke the illusion the
+             user is paging through a document. */
+          scroll-snap-type: y mandatory;
           /* Paper texture — extremely subtle warm vignette on the
              right edge to anchor the rail. NOT a gradient that
              dominates; a faint warm wash that disappears as you
@@ -123,6 +129,22 @@ function HomeV5() {
               rgba(232,147,70, calc(0.06 - var(--brief-progress) * 0.06)) 0%,
               transparent 60%),
             ${PAPER};
+        }
+        /* Every top-level section snaps to the top of the viewport
+           on scroll and is at minimum a full viewport tall. Hero +
+           stations + pressure + evidence + cards beats + action all
+           inherit this. Display/layout is NOT forced here — each
+           section keeps its own (.brief-hero is flex, .brief-station
+           is grid). Stations vertically center their content via
+           align-content:center on the grid. */
+        .brief-page > section {
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+          min-height: 100vh;
+          box-sizing: border-box;
+        }
+        .brief-station {
+          align-content: center;
         }
 
         /* ── Right rail (the spine of the brief) ──────────────────
@@ -229,15 +251,25 @@ function HomeV5() {
         .brief-h1 .ch {
           display: inline-block;
           white-space: pre;
+          /* Hammer-strike entrance (Feb 2026 rev) — replaces the
+             soft curl+fade. Each character starts 22px above its
+             resting position with zero opacity, then SNAPS down
+             with a tight recoil ease (cubic-bezier(.34,1.3,.5,1)
+             — the 1.3 second value gives a sub-pixel overshoot at
+             landing, reading as a hammer striking and bouncing
+             back into place, not a graceful settle). Opacity flips
+             on at the start of motion (40ms linear) so the
+             character appears WITH the strike, not before it.
+             Total per-character motion: 110ms. Per-character delay
+             is set inline as 28ms × index, giving a fast typewriter-
+             strike cadence rather than the previous wave. */
           opacity: 0;
-          transform: translate(var(--cx, 16px), var(--cy, 28px)) rotate(var(--cr, 0deg));
-          transition:
-            opacity 700ms cubic-bezier(.2,.7,.2,1),
-            transform 900ms cubic-bezier(.2,.85,.2,1);
+          transform: translateY(-22px);
+          transition: opacity 40ms linear, transform 110ms cubic-bezier(.34, 1.3, .5, 1);
         }
         .brief-page.is-mounted .brief-h1 .ch {
           opacity: 1;
-          transform: translate(0,0) rotate(0);
+          transform: translateY(0);
         }
         .brief-h1 .accent { color: ${GOLD}; }
 
@@ -645,21 +677,16 @@ function HomeV5() {
           {HERO_LINES.map((line, li) => (
             <span className="line" key={li}>
               {Array.from(line.text).map((c, ci) => {
-                const seed = (li * 31 + ci * 17) % 100;
-                const dx = ((seed * 7) % 60) - 30;
-                const dy = 20 + (seed % 14);
-                const dr = ((seed % 12) - 6);
-                const delay = (li * 280) + (ci * 28);
+                /* Tight typewriter-strike cadence — 28ms per
+                 * character within a line, 320ms gap between lines.
+                 * No randomness, no per-character offset variation.
+                 * Reads as a deliberate, forceful build. */
+                const delay = (li * 320) + (ci * 28);
                 return (
                   <span
                     key={ci}
                     className={`ch${line.accent ? ' accent' : ''}`}
-                    style={{
-                      '--cx': dx + 'px',
-                      '--cy': dy + 'px',
-                      '--cr': dr + 'deg',
-                      transitionDelay: delay + 'ms',
-                    }}
+                    style={{ transitionDelay: delay + 'ms' }}
                   >{c}</span>
                 );
               })}
