@@ -44,9 +44,18 @@ export function useScrollBuild(sectionRef, options = {}) {
        scroll-distance after line 1. Tighten for snappier, loosen for
        more leisurely. */
     stagger      = 0.03,
-    buildAt      = 0.10,
-    buildSpread  = 0.10,
-    unbuildAt    = 0.80,
+    /* Build window — when (within the section's scroll progress 0→1)
+       the elements lay in. Pushed later + widened Feb 2026 so the
+       animation actually plays as the reader scrolls INTO the section.
+       Previously buildAt=0.10/spread=0.10 fired before the section
+       was even on screen (the section's progress hits 0.10 while it
+       is still half a viewport below the fold), so users never saw
+       the build — text was already settled by the time they reached
+       it. New window 0.28–0.52 puts the lay-in squarely in the
+       reading zone. */
+    buildAt      = 0.32,
+    buildSpread  = 0.22,
+    unbuildAt    = 0.86,
     unbuildSpread = 0.10,
     travel       = 14,
     /* `skipInitialUpdate` — when true, the hook does NOT write inline

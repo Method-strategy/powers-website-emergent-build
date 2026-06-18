@@ -936,7 +936,11 @@ export default function HeroPressureExhibit() {
           width: 100%;
           max-width: 1240px;
           margin: 0 auto;
-          padding: 96px 56px 80px;
+          /* Was 96px top — tightened Feb 2026 so Row 3 fits within
+             a single viewport at 1080px tall. The H2 was reduced to
+             clamp(30,3.2vw,48) so it no longer needs the extra
+             breathing room. */
+          padding: 56px 56px 64px;
         }
         /* Ambient number swarm — absolutely positioned across the full
            exhibit, behind every other layer. pointer-events:none so it
@@ -970,12 +974,13 @@ export default function HeroPressureExhibit() {
         .hpe-subhead {
           font-family: ${SANS};
           font-weight: 800;
-          /* Matches the prior hero scale so Row 3 subhead sits at
-             the same display tier as Row 2 — one tier below the
-             new larger hero. */
-          font-size: clamp(38px, 5.2vw, 76px);
-          /* Tightened Feb 2026 to 1.0 to match Row 2 + hero. */
-          line-height: 1.0;
+          /* Sized to land on 1–2 lines at desktop. Was clamp(38,5.2vw,76)
+             which produced a 304px-tall, 3-line subhead at 1920w. New
+             clamp tops at 48px so Row 3 sits in the same display tier
+             as Row 2 and the whole row fits within viewport. */
+          font-size: clamp(30px, 3.2vw, 48px);
+          /* 1.05 line-height — Row 2/3 match. */
+          line-height: 1.05;
           letter-spacing: -.014em;
           color: ${C.navy};
           margin: 0;

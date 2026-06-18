@@ -408,8 +408,8 @@ export function SectionDisciplinesFoundation() {
           margin-bottom: 28px;
         }
         .s3-h2 {
-          /* Tightened Feb 2026 to 1.0 to match Row 3 + hero. */
-          line-height: 1.0;
+          /* Tightened Feb 2026 to 1.05 for better wrap rhythm. */
+          line-height: 1.05;
           letter-spacing: -0.014em;
           margin-bottom: 14px;
         }
@@ -417,10 +417,11 @@ export function SectionDisciplinesFoundation() {
           display: inline-block;
           font-family: ${SANS};
           font-weight: 800;
-          /* Matches the prior hero scale (Feb 2026) so Row 2 H2 sits
-             one display tier below the new larger hero — same family,
-             smaller scale. */
-          font-size: clamp(38px, 5.2vw, 76px);
+          /* Sized to land on 1–2 lines at desktop. Was clamp(38,5.2vw,76)
+             which produced a 304px-tall, 4-line H2 at 1920w that pushed
+             the whole row past viewport height. New clamp tops at 48px
+             so the H2 sits in proper subhead proportion to the hero. */
+          font-size: clamp(30px, 3.2vw, 48px);
           color: ${C.navy};
           will-change: opacity, transform;
         }
@@ -429,7 +430,7 @@ export function SectionDisciplinesFoundation() {
           font-family: ${SERIF};
           font-style: italic;
           font-weight: 500;
-          font-size: clamp(38px, 5.2vw, 76px);
+          font-size: clamp(30px, 3.2vw, 48px);
           color: ${C.gold};
           margin-left: 0.2em;
           will-change: opacity, transform;
