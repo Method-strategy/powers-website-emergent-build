@@ -1830,25 +1830,53 @@ function SectionHowWeWork() {
             We work where value gets&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>won or lost.</span>
           </h2>
 
+          {/* Row 4 lede — 06-18 doc. Reads as a sustained, layered
+              argument: how most firms work (slide decks, 3pm), how
+              we work (on the floor, third shift, 5am), what we build
+              (execution into supervisors / standards / routines), the
+              operational layers under each discipline, and skin in
+              the game (paid on results). Broken into paragraph chunks
+              so the reading rhythm carries. */}
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
-            {typo("Most consulting firms diagnose, recommend, and leave. They\u2019re out the door at 3pm and don\u2019t work Fridays. The slide decks are sharp. The results never last.")}
+            {typo("Most consulting firms diagnose, recommend, and leave. They\u2019re out the door at 3pm and don\u2019t work Fridays. The slide decks are sharp. The results don\u2019t last.")}
           </p>
 
           <p data-lede-reveal data-lede-step="2" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
-            {typo("POWERS works differently. We\u2019re on the floor, in the shifts, inside the systems and understanding the behaviors where performance actually breaks down. We build discipline directly into your supervisors, your standards, and your daily operating routines. If the problem is on third-shift maintenance, we\u2019re there on third shift. If the decision gets made at 5\u00a0a.m. before the line starts, we\u2019re there at 5\u00a0a.m.")}
+            {typo("Our approach is very different. We build the disciplines where the work actually happens and value is created. On the floor. In the shifts. Inside the standards, the supplier relationships, the AP/AR process. Wherever performance holds up or breaks down under pressure.")}
           </p>
 
           <p data-lede-reveal data-lede-step="3" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
           }}>
-            {typo("That\u2019s how the ability to execute under any circumstances gets built. Not described, not recommended, built from the roots up. And it\u2019s why the gains keep running long after we\u2019re gone.")}
+            {typo("If the problem is on third-shift maintenance, we\u2019re there on third shift. If the decision gets made at 5\u00a0a.m. before the line starts, we\u2019re there at 5\u00a0a.m. We build execution directly into your supervisors, your standards, and your daily operating routines. And what we build sustains performance long after we\u2019re gone.")}
+          </p>
+
+          <p data-lede-reveal data-lede-step="4" style={{
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+          }}>
+            {typo("When the disciplines are built in, the operation changes. The line runs. The team works problems before they cascade. The radios get quiet.")}
+          </p>
+
+          <p data-lede-reveal data-lede-step="5" style={{
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+          }}>
+            {typo("We work the operational layers that make execution real. The processes that standardize the work. The systems that hold it accountable. The tools that make it visible. The behaviors that sustain it. Each one lives inside every discipline we build.")}
+          </p>
+
+          <p data-lede-reveal data-lede-step="6" style={{
+            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
+            color: C.body, fontFamily: 'inherit', margin: 0, textWrap: 'pretty',
+          }}>
+            {typo("And we put skin in the game. We only get paid when we deliver the results we promised. That\u2019s a true partnership. It makes us accountable for the return, not just the recommendation.")}
           </p>
 
           {/* Pull quote — navy panel mirrors the engine treatment in the
@@ -1978,7 +2006,9 @@ function SectionWhereWeWork() {
 
         {/* Section header — left-anchored column. Single 920px measure
             for header + body so the section reads as one continuous
-            argument rather than a header / multi-block stack. */}
+            argument rather than a header / multi-block stack.
+            06-18 copy doc: subhead pivots to "Different industries."
+            sans-navy + "The same execution discipline." serif-italic-gold. */}
         <div style={{ marginBottom: 36, maxWidth: 920 }}>
           <Eyebrow label="Where We Work" reveal />
           <h2 data-subhead-reveal style={{
@@ -1986,30 +2016,22 @@ function SectionWhereWeWork() {
             color: C.navy, fontFamily: 'inherit', margin: '16px 0 28px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
           }}>
-            Wherever the work is&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>physical, repeatable, and measured.</span>
+            Different industries.&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>The same execution discipline.</span>
           </h2>
         </div>
 
-        {/* Body — single two-paragraph block that makes the
-            functional-scope argument and then names the industry range
-            as a credential. The 18-tile grid that used to live here was
-            removed per the v2 copy draft; the breadth-of-industries
-            argument is now made in prose, and the link below routes
-            curious visitors to the dedicated Industries page. */}
+        {/* Body — single-paragraph industry framing per 06-18 copy doc.
+            Names the industry breadth as a credential, ends on the
+            "same financial result" payoff (margins, recovery, gains
+            that compound). 18-tile grid still retained in module scope
+            for the dedicated /industries-served page. */}
         <div style={{ maxWidth: 920 }}>
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
             textWrap: 'pretty',
           }}>
-            {typo("Execution capacity doesn\u2019t belong to one corner of the operation. We build it across production and maintenance, supply chain and procurement, warehousing and logistics, quality and safety, and the working capital and financial flow the operation produces. Whenever the gap between intent and output shows up, that\u2019s where the work happens.")}
-          </p>
-          <p data-lede-reveal data-lede-step="2" style={{
-            fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
-            color: C.body, fontFamily: 'inherit', margin: '0 0 22px',
-            textWrap: 'pretty',
-          }}>
-            {typo("That work spans the industries where execution is measured every shift, from food and beverage and protein processing to automotive, aerospace and defense, industrial manufacturing, pharmaceuticals, and the private equity firms that own them. Different products. Different scales. Same problem. Turning intent into output, shift after shift, under whatever the quarter brings.")}
+            {typo("We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound.")}
           </p>
 
           {/* Single explore link out to the dedicated Industries page. */}
@@ -2117,16 +2139,18 @@ function SectionResultsEntryPoint() {
             fontSize: S.h2Size, fontWeight: S.h2Weight, lineHeight: S.h2LH,
             color: C.white, fontFamily: 'inherit', margin: '16px 0 22px',
             letterSpacing: S.h2Tracking, textWrap: 'pretty',
-          }}>Operations built on rock-solid execution produce&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span></h2>
+          }}>Operations built on strong execution produce&nbsp;<span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, color: C.gold }}>results that speak for themselves.</span></h2>
           {/* Peer-proof intro — frames the case studies as proof that the
-              reader's peers have built on the same five disciplines. */}
+              reader's peers have built on the same five disciplines.
+              06-18 doc: lede expanded with multi-site operators / PE
+              platforms / "under real-world pressure" framing. */}
           <p data-lede-reveal data-lede-step="1" style={{
             fontSize: S.ledeSize, fontWeight: S.ledeWeight, lineHeight: S.ledeLH,
             color: 'rgba(255,255,255,0.78)', fontFamily: 'inherit',
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
-            {typo("Different industries, different pressures, same five disciplines underneath. The successes below are what that execution looks like in operations like yours.")}
+            {typo("Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours. Multi-site operators. PE-backed platforms. Organizations under real-world pressure to perform.")}
           </p>
         </div>
         <div style={{
@@ -2247,7 +2271,7 @@ function SectionInsightsEntryPoint() {
             maxWidth: 720, margin: '0 auto', textAlign: 'left',
             textWrap: 'pretty',
           }}>
-            {typo("Nearly thirty years of helping build some of the top-performing operations on the planet. Read how the five disciplines produce sustainable, scalable gains \u2014 shift after shift, year after year.")}
+            {typo("Nearly thirty years of helping build some of the top-performing operations on the planet. Read how we install the five disciplines and produce sustainable, scalable financial gains. Shift after shift. Year after year.")}
           </p>
         </div>
         <div style={{
@@ -2300,25 +2324,27 @@ function FooterCTA() {
         padding: `0 ${S.sectionPadX}`, boxSizing: 'border-box',
         position: 'relative', zIndex: 1,
       }}>
-        {/* H2 — editorial echo of the hero. Hero pairing was sans-navy
-            statement + serif-italic gold pivot ("Stop Chasing" /
-            "Numbers."). The CTA mirrors that exact pairing as the
-            page-closing resolve. Sits on the gold-wash surface so
-            both colors hold their full weight. */}
+        {/* H2 — page-closing resolve. 06-18 copy doc reframes the
+            closing pivot from the old "Stop chasing numbers / Start
+            building execution capacity" pair to a single forward-leaning
+            invitation: "Let's build your operation to execute under
+            any circumstances." Sans-navy lead clause + serif-italic-gold
+            pivot on the verb phrase, mirroring the hero pairing. Sits
+            on the gold-wash surface so both colors hold full weight. */}
         <h2 data-subhead-reveal style={{
           fontSize: S.h2Size,
           fontWeight: S.h2Weight, lineHeight: S.h2LH,
           fontFamily: SANS,
-          margin: '0 0 36px', maxWidth: 900,
+          margin: '0 0 36px', maxWidth: 1040,
           letterSpacing: S.h2Tracking, textWrap: 'balance',
         }}>
-          <span style={{ display: 'block', color: C.navy }}>Stop chasing numbers.</span>
+          <span style={{ display: 'block', color: C.navy }}>Let&rsquo;s build your operation</span>
           <span style={{
             display: 'block',
             fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500,
             color: '#e89346', letterSpacing: '-0.014em',
             marginTop: '0.05em',
-          }}>Start building execution capacity.</span>
+          }}>to execute under any circumstances.</span>
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'end' }}>
@@ -2326,7 +2352,7 @@ function FooterCTA() {
             fontSize: 17, fontWeight: 300, lineHeight: 1.65,
             color: C.body, fontFamily: SANS,
             margin: 0, maxWidth: 600, textWrap: 'pretty',
-          }}>{typo("Tell us where the operation is underperforming. We\u2019ll come see it, on the floor, and show you what\u2019s missing.")}</p>
+          }}>{typo("Tell us where the operation is feeling pressure. We\u2019ll come see it on the floor, find the gaps that are hiding inside it, and build the disciplines that close them.")}</p>
 
           <div>
             <a href="contact.html"
@@ -2926,13 +2952,13 @@ function HomeV4() {
       <HeroNavyClaim />
       <SectionDisciplinesFoundation />
       <HeroPressureExhibit />
-      {/* <Hero /> — retired Feb 2026 per direction. The component
-          function is still defined further down in this file; if you
-          need to reintroduce it, just re-add this render line. */}
-      <SectionDifferentApproach />
-      {/* <SectionPressureExhibit /> — retired Feb 2026. The new Row 3
-          (HeroPressureExhibit) is the better, captioned version of
-          this exhibit. */}
+      {/* SectionDifferentApproach — retired Feb 2026 (v0.5).
+          Per the 06-18 copy doc, Row 4 collapses into a SINGLE row
+          ("We work where value gets won or lost.") which lives in
+          SectionHowWeWork below. The "we don't work on the numbers"
+          framing it carried has been absorbed into the new Row 4
+          lede. Component fn remains defined further down in this
+          file for archival reference. */}
       <SectionHowWeWork />
       <PowersMetrics />
       <SectionWhereWeWork />

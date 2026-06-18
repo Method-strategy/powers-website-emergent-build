@@ -373,9 +373,59 @@ export function SectionDisciplinesFoundation() {
     // disable both. The section now just sits in its built state.
     // (Sentinel still rendered for backwards compat; nothing observes it.)
 
+    /* ── SCROLL-DRIVEN CORE HANDOFF (Row 2 → Row 3) ────────────────
+     * The core anchor's downward translate is bound to how far the
+     * section's bottom edge has scrolled past the viewport's midline.
+     * Replaces the older time-based 1.2s `.s3-exiting` transition
+     * (which fired on IO leave and never synced with the reader's
+     * scroll velocity).
+     *
+     * Mechanic: as the section's bottom passes upward through the
+     * viewport from ~55% height down through 0%, the anchor translates
+     * downward up to MAX_DROP pixels and fades to 0. The Row-3 ghost
+     * (HeroPressureExhibit) starts its own scroll-driven descent
+     * concurrently, so the user reads the two motions as a single
+     * core falling through the section boundary. We don't need
+     * pixel-perfect coordinate alignment between the two — what reads
+     * as a "handoff" is the matched motion language (both bound to
+     * scroll, both falling downward at scroll velocity). */
+    const MAX_DROP = 320;
+    let handoffRAF = 0;
+    let handoffLast = -1;
+    function updateHandoff() {
+      handoffRAF = 0;
+      if (!section || !anchor) return;
+      // Until the build sequence has fired (i.e. the user hasn't
+      // yet scrolled the section into view at all), don't touch
+      // the anchor — let the entry sequence paint it in place.
+      if (!entryFired) return;
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const enterY = vh * 0.55;
+      const leaveY = vh * -0.10;
+      const raw = (enterY - rect.bottom) / (enterY - leaveY);
+      const p = Math.max(0, Math.min(1, raw));
+      if (Math.abs(p - handoffLast) < 0.002) return;
+      handoffLast = p;
+      const eased = 1 - Math.pow(1 - p, 3); // ease-out-cubic
+      anchor.style.transform = `translate(-50%, calc(-50% + ${(eased * MAX_DROP).toFixed(1)}px))`;
+      anchor.style.opacity = String((1 - eased).toFixed(3));
+    }
+    const onHandoffScroll = () => {
+      if (handoffRAF) return;
+      handoffRAF = requestAnimationFrame(updateHandoff);
+    };
+    window.addEventListener('scroll', onHandoffScroll, { passive: true });
+    window.addEventListener('resize', onHandoffScroll, { passive: true });
+    // Prime once after mount.
+    requestAnimationFrame(updateHandoff);
+
     return () => {
       stageIO.disconnect();
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onHandoffScroll);
+      window.removeEventListener('resize', onHandoffScroll);
+      if (handoffRAF) cancelAnimationFrame(handoffRAF);
       entryTimers.forEach(clearTimeout);
       if (exitRAF) cancelAnimationFrame(exitRAF);
       if (connectorRAF) cancelAnimationFrame(connectorRAF);
@@ -672,7 +722,7 @@ export function SectionDisciplinesFoundation() {
         <div className="s3-row">
           <div className="s3-intro">
             <h2 className="s3-h2">
-              <span className="sans" data-build>We build the disciplines to execute at a consistently high level.</span>
+              <span className="sans" data-build>We build the disciplines to execute.</span>{' '}
               <span className="serif" data-build>No matter what.</span>
             </h2>
             <p className="s3-lede">

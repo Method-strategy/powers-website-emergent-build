@@ -239,3 +239,39 @@ After the client kick-off home run, the user requested a responsive audit + code
 
 ## Test Credentials
 None — site is fully public, no auth.
+
+## 2026-06-18 — Full homepage copy sync to v2 doc + scroll-driven core handoff
+
+**Source:** `POWERS_Homepage_Full_Draft_06-18-2026_v2.docx` (9 rows + tagline).
+
+**Copy synced across all 9 rows:**
+- Row 1 (HeroNavyClaim) — H1 unchanged (already matched doc).
+- Row 2 (`DisciplinesAndPressureExhibit.jsx` → `SectionDisciplinesFoundation`) — H2 tightened from "We build the disciplines to execute at a consistently high level. No matter what." to "We build the disciplines to execute. No matter what." Added missing word-space between inline-block H2 spans.
+- Row 3 (`HeroPressureExhibit.jsx`) — Lede expanded from 3 sentences to 5 fragments matching doc: adds "The question isn't whether you can get better", "demand spikes / leadership changes / new site / PE timeline", and the new closing payoff "Better margins. Stronger throughput. Higher returns. Quarter after quarter." rendered as a block-level `.hpe-lede-payoff` with heavier weight so the cadence beats land.
+- Row 4 — **Structural collapse**: previously two sections (`SectionDifferentApproach` + `SectionHowWeWork`) ran the "approach" beat across two stops. Per the doc, Row 4 is a single section. Removed `<SectionDifferentApproach />` from HomeV4 spine; rewrote `SectionHowWeWork` with the full 6-paragraph doc lede covering: 3pm exits → on-the-floor work → third shift / 5am → "radios get quiet" → operational layers (processes/systems/tools/behaviors) → skin-in-the-game / paid on results. Pull-quote `"If you're working, we're working."` retained.
+- Row 5 (`PowersMetrics.jsx`) — three "capacity" → "capability" word changes in the stat descriptions (Client Savings / Operations Strengthened / Years of Expertise).
+- Row 6 (`SectionWhereWeWork`) — H2 changed from "Wherever the work is physical, repeatable, and measured." to "Different industries. The same execution discipline." Lede rewritten to the doc's industry-credentialing prose ending on "the same financial result: stronger margins, faster recovery, gains that compound."
+- Row 7 (`SectionResultsEntryPoint`) — H2 "rock-solid execution" → "strong execution". Lede rewritten to match doc.
+- Row 8 (`SectionInsightsEntryPoint`) — lede rewritten to match doc.
+- Row 9 (`FooterCTA`) — H2 swapped from "Stop chasing numbers. / Start building execution capacity." to single forward-leaning invitation "Let's build your operation / to execute under any circumstances." Lede updated.
+
+**Scroll-driven core handoff (Row 2 → Row 3) — `s3-core-anchor` + `hpe-ghost-wrap`:**
+- Replaced both halves of the handoff (previously IO-fired time-based easings) with scroll-position-driven transforms tied to each section's `getBoundingClientRect().top/.bottom` vs. viewport.
+- Row 2 anchor (`DisciplinesAndPressureExhibit.jsx`): introduces `updateHandoff()` rAF listener that maps section bottom from `vh*0.55 → vh*-0.10` onto a 0→1 progress, easing the anchor downward up to `MAX_DROP=320px` with synchronized opacity fade. Replaces the disabled `.s3-exiting` CSS class.
+- Row 3 ghost (`HeroPressureExhibit.jsx`): `updateEntry()` now derives its descent progress `p` from section.top vs viewport (`vh*0.65 → vh*-0.15`) instead of `elapsed/ENTRY_DUR`. Added `entryCompleteAt` timestamp so the post-completion canvas-core fade-in stays decoupled from scroll velocity (canvas core fades in over a steady 600ms once ghost lands, independent of how fast the user scrolled).
+- Verified across 5 scroll positions: as user scrolls 600px through the boundary, Row 2 anchor traverses 0→317px down with opacity 1→0.01 while Row 3 ghost simultaneously traverses 0→538px down with opacity 0→1. The two motions read as one continuous core falling through the section boundary at the reader's scroll velocity.
+
+**Files touched this pass:**
+- `/app/frontend/src/components/DisciplinesAndPressureExhibit.jsx` (Row 2 H2 copy + scroll-driven exit)
+- `/app/frontend/src/components/HeroPressureExhibit.jsx` (Row 3 lede copy + scroll-driven ghost descent + payoff styling)
+- `/app/frontend/src/components/PowersMetrics.jsx` (capacity → capability in 3 descriptions)
+- `/app/frontend/src/pages/HomeV4.jsx` (spine: removed SectionDifferentApproach render; rewrote SectionHowWeWork lede; rewrote SectionWhereWeWork copy; rewrote SectionResultsEntryPoint lede; rewrote SectionInsightsEntryPoint lede; rewrote FooterCTA H2 + lede)
+- `/app/frontend/src/lib/useScrollBuild.js` (carried-over: respect `skipInitialUpdate` option for hero entry animation)
+- `/app/frontend/src/components/HeroNavyClaim.jsx` (carried-over: one-time CSS entry animation for the hero on mount)
+
+**Not in this pass (open):**
+- Larger motion paradigm upgrade — the user flagged fades-as-fades are too subtle; they want real-motion language (slide-ins from offscreen, character-by-character stagger, masked clip-path reveals, copper hairline draw-in, disciplines flying in from offscreen compass directions tied to scroll, parallax). Not started; awaiting user direction.
+- Three parallel design tracks at `/v5`, `/v6`, `/v7` (editorial-magazine / cinematic-dark / brutalist-typographic) for client presentation alternatives. Not started; awaiting user direction.
+- Rows 7 & 8 use existing hand-coded card prototypes for now per user direction. Programmer or future agent will wire to a CMS/data layer once case studies + blog posts are formatted into a DB.
+- Hero entry animation (one-time staggered fade-rise on mount) is still a fade — needs upgrade to a real slide-up from offscreen with character stagger if user signs off on the larger motion paradigm shift.
+

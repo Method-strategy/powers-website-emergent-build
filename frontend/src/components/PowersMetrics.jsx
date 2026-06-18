@@ -39,7 +39,7 @@ const STATS = [
     value: 1000,
     suffix: '',
     label: 'Client Savings',
-    description: 'Annualized cost savings produced across engagements, when execution capacity replaces firefighting.',
+    description: 'Annualized cost savings produced across engagements, when execution capability replaces firefighting.',
     // Count climbs through millions ($XYZM) and lands on $1B+ at the
     // end. Math.round(eased * 1000) hits 1000 exactly at progress=1,
     // so the snap to "$1B+" is the natural final frame.
@@ -61,13 +61,13 @@ const STATS = [
     value: 500,
     suffix: '+',
     label: 'Operations Strengthened',
-    description: 'Manufacturing, processing, and distribution operations with built-in execution capacity.',
+    description: 'Manufacturing, processing, and distribution operations with built-in execution capability.',
   },
   {
     value: 30,
     suffix: '+',
     label: 'Years of Expertise',
-    description: 'Frontline operations leadership, building execution capacity where the work happens.',
+    description: 'Frontline operations leadership, building execution capability where the work happens.',
   },
 ];
 

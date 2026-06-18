@@ -432,6 +432,7 @@ export default function HeroPressureExhibit() {
     let surgeEase = 0;
 
     let entryStart = 0;
+    let entryCompleteAt = 0;
     let entryProgress = 0;
     let entryTriggered = false;
     let entryComplete = false;
@@ -455,14 +456,43 @@ export default function HeroPressureExhibit() {
       if (entryStart === 0) return;
       const elapsed = t - entryStart;
       if (!entryComplete) {
-        const p = Math.max(0, Math.min(1, elapsed / ENTRY_DUR));
+        /* Scroll-driven ghost descent (Feb 2026 rev).
+         *
+         * The descent progress `p` is no longer derived from elapsed
+         * time vs. ENTRY_DUR. It now reads the section's scroll
+         * position so the ghost falls at the reader's scroll velocity
+         * — matching the Row-2 core's scroll-driven exit on the
+         * opposite side of the section boundary. The two halves
+         * become a continuous handoff: one scroll wheel = one
+         * falling motion that crosses both rows.
+         *
+         * Window: section.top sweeps from vh*0.65 down to a target
+         * Y that brings the ghost to its landing position (which is
+         * still computed by positionGhostStart). At p=0 the ghost is
+         * at its top start position with opacity 0; at p=1 it has
+         * landed on the canvas core center.
+         *
+         * The 400ms post-trigger grace window before scroll picks up
+         * (handled in triggerEntry) is retained so the H2/lede
+         * scroll-build can complete its lay-in before the ghost
+         * starts moving.
+         */
+        const sectionRect = sectionRef.current
+          ? sectionRef.current.getBoundingClientRect()
+          : { top: 0, height: 0 };
+        const vh = window.innerHeight || 1;
+        const enterY = vh * 0.65;
+        const leaveY = vh * -0.15;
+        const raw = (enterY - sectionRect.top) / (enterY - leaveY);
+        const p = Math.max(0, Math.min(1, raw));
         const eased = easeOutCubic(p);
-        const opacity = p < 0.15 ? (p / 0.15) : 1;
+        const opacity = p < 0.10 ? (p / 0.10) : 1;
         const y = ghostPositions.startY + (ghostPositions.endY - ghostPositions.startY) * eased;
         ghostWrap.style.transform = 'translateX(-50%) translateY(' + y + 'px)';
         ghostWrap.style.opacity = opacity;
-        if (p >= 1) {
+        if (p >= 0.995) {
           entryComplete = true;
+          entryCompleteAt = t;
           ghostWrap.style.opacity = 0;
           ghostWrap.style.transition = 'opacity .3s ease-out';
           controlsEl.classList.add('hpe-in');
@@ -476,8 +506,15 @@ export default function HeroPressureExhibit() {
           setTimeout(() => { lineStart = performance.now(); }, LINE_DELAY_AFTER_ENTRY_MS);
         }
       } else {
-        const fadeElapsed = elapsed - ENTRY_DUR;
-        const fadeP = Math.max(0, Math.min(1, fadeElapsed / 300));
+        /* Post-completion canvas-core fade-in.
+         * `entryProgress` is the canvas core's alpha (read by drawCore).
+         * Starts ramping the moment entryComplete fires and reaches 1
+         * over 600ms — independent of any scroll position. Was previously
+         * keyed off (elapsed - ENTRY_DUR), which broke under fast scroll
+         * because `elapsed` no longer correlates to entry progress in
+         * the scroll-driven world. */
+        const sinceComplete = t - entryCompleteAt;
+        const fadeP = Math.max(0, Math.min(1, sinceComplete / 600));
         entryProgress = fadeP;
       }
     }
@@ -496,6 +533,7 @@ export default function HeroPressureExhibit() {
       entryTriggered = false;
       entryComplete = false;
       entryStart = 0;
+      entryCompleteAt = 0;
       entryProgress = 0;
       copyEl.classList.remove('hpe-in');
       controlsEl.classList.remove('hpe-in');
@@ -1001,6 +1039,22 @@ export default function HeroPressureExhibit() {
         .hpe-lede-sent {
           will-change: opacity, transform;
         }
+        /* The four-fragment payoff that closes Row 3's lede — sized up
+           a touch from body text and weighted heavier so it reads as
+           a final cadence beat, not a continuation of the paragraph.
+           Sits on its own visual line (block) so the period rhythm of
+           "Better margins. Stronger throughput. Higher returns.
+           Quarter after quarter." lands with weight. */
+        .hpe-lede-payoff {
+          display: block;
+          margin-top: 14px;
+          font-family: ${SANS};
+          font-weight: 600;
+          font-size: clamp(17px, 1.4vw, 21px);
+          letter-spacing: -0.005em;
+          color: ${C.navy};
+          will-change: opacity, transform;
+        }
 
         /* Lede — the payoff paragraph that sits below the subhead.
            Body-weight prose, navy body color, narrow column for
@@ -1153,8 +1207,10 @@ export default function HeroPressureExhibit() {
             </h2>
             <p className="hpe-lede">
               <span className="hpe-lede-sent" data-build>Market pressures don&rsquo;t stop.</span>{' '}
-              <span className="hpe-lede-sent" data-build>Operations built with these core disciplines as their foundation don&rsquo;t lose ground when conditions shift.</span>{' '}
-              <span className="hpe-lede-sent" data-build>They hold position, recover faster, and compound gains regardless.</span>
+              <span className="hpe-lede-sent" data-build>The question isn&rsquo;t whether you can get better.</span>{' '}
+              <span className="hpe-lede-sent" data-build>It&rsquo;s whether what you built stays built when demand spikes, leadership changes, a new site comes online, or a PE timeline compresses.</span>{' '}
+              <span className="hpe-lede-sent" data-build>Operations built with these five core disciplines as their foundation hold position, recover faster, and compound gains regardless.</span>{' '}
+              <span className="hpe-lede-payoff" data-build>Better margins. Stronger throughput. Higher returns. Quarter after quarter.</span>
             </p>
           </div>
 
