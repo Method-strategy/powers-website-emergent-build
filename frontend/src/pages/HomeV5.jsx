@@ -51,6 +51,13 @@ function HomeV5() {
   const pageRef  = useRef(null);
   const railFill = useRef(null);
   const [mounted, setMounted] = useState(false);
+  /* Mega-menu state — mirrors V4's hover-with-timer pattern so the
+   * pre-planned menu and submenu structure ports over intact. */
+  const [openMega, setOpenMega] = useState(null);
+  const closeTimer = useRef(null);
+  const openMenu  = (name) => { clearTimeout(closeTimer.current); setOpenMega(name); };
+  const schedClose = ()     => { closeTimer.current = setTimeout(() => setOpenMega(null), 140); };
+  const cancelClose = ()    => clearTimeout(closeTimer.current);
 
   /* Scroll-bound ambient progress 0→1 across the full page.
    * Single rAF loop. Drives the right-rail fill height and exposes
@@ -330,10 +337,9 @@ function HomeV5() {
         }
 
         /* ── Header (navy chrome) ─────────────────────────────────
-           Background sits on navy with the dark-bg POWERS logo on
-           the left and the same V4 menu structure on the right.
-           Sticky. Same height (84) as V4 so layout doesn't jump if
-           the client compares side-by-side. */
+           Navy background with the dark-bg POWERS logo. Menu items +
+           submenu structure are LOCKED — match V4 exactly because
+           those map to pre-planned pages. */
         .brief-header {
           position: sticky;
           top: 0;
@@ -361,27 +367,102 @@ function HomeV5() {
           align-items: center;
           gap: 36px;
         }
-        .brief-nav a {
+        .brief-nav-link {
           font-family: ${TYPE.sans};
           font-size: 14px;
           font-weight: 500;
           color: #f3f0e8;
+          background: transparent;
+          border: none;
           text-decoration: none;
           letter-spacing: 0.01em;
           opacity: 0.92;
+          padding: 6px 0;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
           transition: color 160ms ease, opacity 160ms ease;
         }
-        .brief-nav a:hover { color: ${GOLD_BRIGHT}; opacity: 1; }
-        .brief-nav a.cta {
+        .brief-nav-link:hover,
+        .brief-nav-link[data-open="true"] {
+          color: ${GOLD_BRIGHT};
+          opacity: 1;
+        }
+        .brief-nav-link .caret {
+          display: inline-block;
+          width: 0; height: 0;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          border-top: 4px solid currentColor;
+          opacity: 0.7;
+          transition: transform 180ms ease;
+        }
+        .brief-nav-link[data-open="true"] .caret { transform: rotate(180deg); }
+        .brief-nav-link.cta {
           border: 1px solid ${GOLD_BRIGHT};
           padding: 10px 18px;
           color: ${GOLD_BRIGHT};
           font-weight: 600;
           letter-spacing: 0.02em;
         }
-        .brief-nav a.cta:hover {
+        .brief-nav-link.cta:hover {
           background: ${GOLD_BRIGHT};
           color: ${NAVY};
+        }
+
+        /* Mega menu panel container — flush below the header.
+           Uses opacity + transform for the open/close transition so
+           the panel sits at z-index above the page body. */
+        .brief-mega-wrap {
+          position: relative;
+          margin-top: -1px;
+        }
+        .brief-mega {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          z-index: 200;
+        }
+        .brief-mega-panel {
+          background: ${NAVY};
+          border: 1px solid rgba(232,147,70, 0.14);
+          border-top: 1px solid ${GOLD_BRIGHT};
+          box-shadow: 0 12px 40px rgba(8, 22, 42, 0.55);
+          opacity: 0;
+          transform: translateY(-4px);
+          transition: opacity 180ms ease, transform 180ms ease;
+          pointer-events: none;
+        }
+        .brief-mega-panel[data-open="true"] {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+        .brief-mega-link {
+          display: block;
+          font-family: ${TYPE.sans};
+          font-size: 14px;
+          font-weight: 500;
+          color: #f3f0e8;
+          text-decoration: none;
+          padding: 9px 0;
+          letter-spacing: 0.005em;
+          opacity: 0.88;
+          transition: color 140ms ease, opacity 140ms ease;
+        }
+        .brief-mega-link:hover { color: ${GOLD_BRIGHT}; opacity: 1; }
+        .brief-mega-section-label {
+          font-family: ${TYPE.mono};
+          font-size: 10px;
+          font-weight: 500;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: ${GOLD_BRIGHT};
+          margin-bottom: 8px;
         }
 
         /* ── Footer ───────────────────────────────────────────── */
@@ -422,18 +503,104 @@ function HomeV5() {
         }
       `}</style>
 
-      {/* ── Navy header (V4 menu structure + dark-bg logo) ─────── */}
+      {/* ── Navy header (V4 menu + submenu structure, locked) ────
+          Mega menus mirror V4's hover-with-timer behavior so users
+          who landed on /v4-locked vs / see identical menu pages and
+          identical menu interaction. Only the palette differs (navy
+          vs white). */}
       <header className="brief-header">
         <div className="brief-header-inner">
           <a href="/" className="brief-logo" aria-label="POWERS">
             <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
           </a>
-          <nav className="brief-nav" data-testid="brief-nav">
-            <a href="/case-studies">Results</a>
-            <a href="/approach">About</a>
-            <a href="/insights">Insights</a>
-            <a href="/contact" className="cta">Let&rsquo;s Talk</a>
+          <nav
+            className="brief-nav"
+            data-testid="brief-nav"
+            onMouseLeave={schedClose}
+            onMouseEnter={cancelClose}
+          >
+            <button
+              type="button"
+              className="brief-nav-link"
+              data-open={openMega === 'results'}
+              data-testid="brief-nav-results"
+              onMouseEnter={() => openMenu('results')}
+              onClick={() => openMenu(openMega === 'results' ? null : 'results')}
+              aria-haspopup="true"
+              aria-expanded={openMega === 'results'}
+            >Results <span className="caret" aria-hidden="true" /></button>
+            <button
+              type="button"
+              className="brief-nav-link"
+              data-open={openMega === 'about'}
+              data-testid="brief-nav-about"
+              onMouseEnter={() => openMenu('about')}
+              onClick={() => openMenu(openMega === 'about' ? null : 'about')}
+              aria-haspopup="true"
+              aria-expanded={openMega === 'about'}
+            >About <span className="caret" aria-hidden="true" /></button>
+            <a
+              href="/insights"
+              className="brief-nav-link"
+              data-testid="brief-nav-insights"
+              onMouseEnter={() => setOpenMega(null)}
+            >Insights</a>
+            <a
+              href="/contact"
+              className="brief-nav-link cta"
+              data-testid="brief-nav-cta"
+              onMouseEnter={() => setOpenMega(null)}
+            >Let&rsquo;s Talk</a>
           </nav>
+        </div>
+
+        {/* Mega menu panels — flush below the header bar. */}
+        <div
+          className="brief-mega-wrap"
+          onMouseEnter={cancelClose}
+          onMouseLeave={schedClose}
+        >
+          {/* Results — 2-column mega (matches V4 exactly) */}
+          <div className="brief-mega" aria-hidden={openMega !== 'results'}>
+            <div
+              className="brief-mega-panel"
+              data-open={openMega === 'results'}
+              data-testid="brief-mega-results"
+              style={{ width: 640, display: 'grid', gridTemplateColumns: '1fr 1fr' }}
+            >
+              <div style={{ padding: '24px 28px 28px', borderRight: '1px solid rgba(232,147,70,0.14)' }}>
+                <a href="/approach"          className="brief-mega-link">Approach</a>
+                <a href="/discovery-process" className="brief-mega-link">Discovery Process</a>
+                <a href="/industries-served" className="brief-mega-link">Industries Served</a>
+                <a href="/case-studies"      className="brief-mega-link">Case Studies</a>
+              </div>
+              <div style={{ padding: '24px 28px 28px' }}>
+                <div className="brief-mega-section-label">Expertise Areas</div>
+                <a href="/operational-discipline" className="brief-mega-link">Operational Discipline</a>
+                <a href="/frontline-leadership"   className="brief-mega-link">Frontline Leadership</a>
+                <a href="/equipment-reliability"  className="brief-mega-link">Equipment Reliability</a>
+                <a href="/workforce-capability"   className="brief-mega-link">Workforce Capability</a>
+                <a href="/daily-accountability"   className="brief-mega-link">Daily Accountability</a>
+              </div>
+            </div>
+          </div>
+
+          {/* About — single column (matches V4 exactly) */}
+          <div className="brief-mega" aria-hidden={openMega !== 'about'}>
+            <div
+              className="brief-mega-panel"
+              data-open={openMega === 'about'}
+              data-testid="brief-mega-about"
+              style={{ width: 260 }}
+            >
+              <div style={{ padding: '20px 24px 24px' }}>
+                <a href="/history"      className="brief-mega-link">History</a>
+                <a href="/leadership"   className="brief-mega-link">Leadership</a>
+                <a href="/company-news" className="brief-mega-link">Company News</a>
+                <a href="/careers"      className="brief-mega-link">Careers</a>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -481,7 +648,13 @@ function HomeV5() {
           ))}
         </h1>
         <div className="brief-hero-footer">
-          <span>For the operator and the board</span>
+          {/* The audience line. Was "For the operator and the board" —
+              missed high (board doesn't buy) and low (floor operator
+              can't). The actual buyer is the C-suite operator with
+              P&L authority: COO / CEO / PE operating partner. The
+              line below names accountability for the result, which
+              is what this reader's seat carries. */}
+          <span>For the operator accountable for the number</span>
           <span className="rule" />
           <span>Scroll to read</span>
         </div>
