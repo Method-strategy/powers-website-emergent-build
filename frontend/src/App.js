@@ -38,18 +38,19 @@ function App() {
       <Routes>
         {/* Homepage renders its own inline Header + Footer — no shared chrome */}
         <Route element={<HomeLayout />}>
-          {/* Primary homepage — HomeV5 ("The Shift") is the active
-              working surface as of 2026-06-18. A paradigm experiment:
-              continuous dark canvas, right-rail copper line, scroll-bound
-              cinematic. V4 lives on at /v4-locked as a credible alternative
-              for client side-by-side.
-              Older iterations stay live for stakeholder comparison:
+          {/* Primary homepage routing — 2026-06-18 deployment swap.
+              V4 ("locked editorial spine") is the PUBLISHED homepage
+              at `/` so the existing live site URL keeps showing the
+              approved version. V5 ("The Operating Brief", paradigm
+              experiment) lives at `/v5` as a side-by-side option
+              for client comparison — not the default landing.
+              Older iterations stay live for stakeholder reference:
                 /v1         → original copy port
                 /v2         → first copy rewrite
                 /v3         → LOCKED pre-pivot version (archive)
-                /v4-locked  → polished editorial spine (V4 at lock time)
-                /v5         → current working surface (same as /). */}
-          <Route path="/" element={<HomeV5 />} />
+                /v4-locked  → polished editorial spine (alias of /)
+                /v5         → paradigm experiment (Operating Brief). */}
+          <Route path="/" element={<HomeV4 />} />
           <Route path="/v1" element={<Home />} />
           <Route path="/v2" element={<HomeV2 />} />
           <Route path="/v3" element={<HomeV3 />} />
