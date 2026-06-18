@@ -326,7 +326,13 @@ function HomeV5() {
         .station-h2 {
           font-family: ${TYPE.sans};
           font-weight: 800;
-          font-size: clamp(32px, 3.8vw, 54px);
+          /* Tightened cap Feb 2026 (54 → 48) so the longest sans
+             clause on the page ("Operations built on strong
+             execution produce" = 44 chars) fits on one line within
+             the 1240 station frame at every viewport from 900px up.
+             Previously the 54px cap force-wrapped "produce" onto
+             its own line above ~1700px viewport. */
+          font-size: clamp(30px, 3.4vw, 48px);
           line-height: 1.06;
           letter-spacing: -0.014em;
           color: ${NAVY};
@@ -947,9 +953,9 @@ function PressureBeat() {
       borderBottom: '1px solid rgba(232,147,70, 0.22)',
     }}>
       <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)' }} aria-hidden="true" />
-      <div style={{ maxWidth: 1040 }}>
+      <div style={{ marginBottom: 36 }}>
         <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>III  /  Pressure</div>
-        <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8', maxWidth: 1040 }}>
+        <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8' }}>
           <span>When execution is built on these disciplines,</span>
           <span className="pivot" style={{ color: GOLD_BRIGHT }}>performance is not at the mercy of conditions.</span>
         </h2>
@@ -1002,8 +1008,11 @@ function EvidenceBeat() {
     }}>
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
-      <div className="wipe" style={{ maxWidth: 720, marginBottom: 64 }}>
-        <div className="station-index" style={{ marginBottom: 14 }}>V  /  Evidence</div>
+      {/* Header takes full station width so neither H2 clause wraps
+          internally; lede below is body-width-constrained (none here
+          — Evidence has no lede paragraph). */}
+      <div style={{ marginBottom: 64 }}>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>V  /  Evidence</div>
         <h2 className="station-h2 wipe wipe-d1">
           <span>Thirty years on the floor.</span>
           <span className="pivot">The ledger speaks for itself.</span>
@@ -1086,14 +1095,19 @@ function CardsBeat({ index, headline, pivot, body, cards, cta }) {
     }}>
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
-      <div className="wipe" style={{ maxWidth: 760, marginBottom: 56 }}>
-        <div className="station-index" style={{ marginBottom: 14 }}>{index}</div>
+      {/* Header: index + H2 occupy the full station frame width so
+          the sans clause ("Operations built on strong execution
+          produce") doesn't get force-wrapped by a narrow column.
+          The lede that follows stays in a MEASURE.read-ish column
+          for prose legibility. */}
+      <div style={{ marginBottom: 36 }}>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>{index}</div>
         <h2 className="station-h2 wipe wipe-d1">
           <span>{headline}</span>
           {pivot && <span className="pivot">{pivot}</span>}
         </h2>
-        <p className="station-lede wipe wipe-d2" style={{ marginTop: 22, maxWidth: 640 }}>{body}</p>
       </div>
+      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 56, maxWidth: 640 }}>{body}</p>
       <div className="wipe wipe-d3" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
