@@ -208,7 +208,7 @@ function HomeV5() {
            Reads on cream paper with navy text — confident, restrained. */
         .brief-hero {
           position: relative;
-          min-height: calc(100vh - 84px - 50px);
+          min-height: calc(100vh - 112px - 50px);
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -408,7 +408,12 @@ function HomeV5() {
           max-width: 1240px;
           margin: 0 auto;
           padding: 0 40px;
-          height: 84px;
+          /* Bumped Feb 2026 (84 → 112) — the prior shallow header
+             felt squeezed against the hero's full-viewport breathing
+             room. The deeper bar gives the logo + nav room to sit
+             without compression and matches the document-grade
+             generosity of the rest of the brief. */
+          height: 112px;
           display: flex;
           align-items: center;
           justify-content: space-between;
