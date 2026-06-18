@@ -1253,12 +1253,19 @@ function ThesisBeat() {
         </h2>
       </div>
 
-      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 14, maxWidth: 720 }}>
-        Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load&#8209;bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
-      </p>
-      <div className="wipe wipe-d2" style={{ marginBottom: 48 }}>
-        <p className="brief-quote" style={{ margin: '12px 0 6px' }}>&ldquo;If you&rsquo;re working, we&rsquo;re working.&rdquo;</p>
-        <div className="brief-quote-attr">Floor practice &middot; POWERS</div>
+      {/* Two-column body row: lede on the left, quote sidebar on
+          the right (vertically centered against the lede block).
+          Cards row below spans the full frame so they don't get
+          cramped by the sidebar column. Mobile collapses to a
+          single column — quote drops between lede and cards. */}
+      <div className="thesis-body wipe wipe-d2" style={{ marginBottom: 48 }}>
+        <p className="station-lede" style={{ margin: 0, maxWidth: 720 }}>
+          Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load&#8209;bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
+        </p>
+        <aside className="thesis-quote-sidebar">
+          <p className="brief-quote" style={{ margin: '0 0 8px', maxWidth: 320 }}>&ldquo;If you&rsquo;re working, we&rsquo;re working.&rdquo;</p>
+          <div className="brief-quote-attr">Floor practice &middot; POWERS</div>
+        </aside>
       </div>
 
       {/* ── Five discipline cards — locked content, locked URLs.
@@ -1308,6 +1315,33 @@ function ThesisBeat() {
         ))}
       </div>
       <style>{`
+        /* Thesis-body two-column: lede left, quote sidebar right.
+           Quote vertically centered against the lede block.
+           Collapses to single column under 900px (quote drops
+           between lede and cards). */
+        .thesis-body {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+          gap: clamp(32px, 5vw, 80px);
+          align-items: center;
+        }
+        .thesis-quote-sidebar {
+          border-left: 1px solid ${RULE};
+          padding-left: clamp(20px, 2.5vw, 32px);
+        }
+        @media (max-width: 900px) {
+          .thesis-body {
+            grid-template-columns: 1fr;
+            gap: 32px;
+            align-items: start;
+          }
+          .thesis-quote-sidebar {
+            border-left: none;
+            border-top: 1px solid ${RULE};
+            padding-left: 0;
+            padding-top: 24px;
+          }
+        }
         @media (max-width: 1100px) {
           .brief-station .wipe-d3 > div[style*="grid-template-columns"],
           .brief-station > .wipe.wipe-d3 {
