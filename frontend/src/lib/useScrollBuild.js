@@ -44,22 +44,18 @@ export function useScrollBuild(sectionRef, options = {}) {
        scroll-distance after line 1. Tighten for snappier, loosen for
        more leisurely. */
     stagger      = 0.03,
-    /* `buildAt` is the section-progress at which the FIRST line is
-       mid-build (i.e., at opacity 0.5). Lines stagger forward from
-       here. Keep low so the build happens as the section enters the
-       viewport, not when it's already fully in view. */
     buildAt      = 0.10,
-    /* `buildSpread` is how wide (in section-progress) each line's
-       build phase is. Narrow = snappy; wide = lazy. */
     buildSpread  = 0.10,
-    /* `unbuildAt` is the section-progress at which the FIRST line is
-       mid-unbuild. Lines stagger forward from here in the same order
-       (top line out first). */
     unbuildAt    = 0.80,
     unbuildSpread = 0.10,
-    /* `travel` is how far (px) each line moves vertically. Small
-       enough to feel deliberate, not theatrical. */
     travel       = 14,
+    /* `skipInitialUpdate` — when true, the hook does NOT write inline
+       styles on mount. This is needed for sections that sit at the
+       top of the page (the hero), so a one-time CSS entry animation
+       can play without being overwritten by scroll-build's primed
+       state. The hook still binds scroll/resize listeners; the first
+       scroll event takes over from the entry animation. */
+    skipInitialUpdate = false,
   } = options;
 
   useEffect(() => {
@@ -136,8 +132,11 @@ export function useScrollBuild(sectionRef, options = {}) {
     }
 
     /* Prime the initial state immediately so the page doesn't flash
-       with everything fully visible before the first scroll event. */
-    update();
+       with everything fully visible before the first scroll event.
+       Sections that sit at the top of the page (hero) opt out via
+       `skipInitialUpdate: true` so a one-time CSS entry animation can
+       play without being clobbered by scroll-build's primed state. */
+    if (!skipInitialUpdate) update();
     window.addEventListener('scroll',  onScroll, { passive: true });
     window.addEventListener('resize',  onScroll, { passive: true });
 
@@ -145,5 +144,5 @@ export function useScrollBuild(sectionRef, options = {}) {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
-  }, [sectionRef, stagger, buildAt, buildSpread, unbuildAt, unbuildSpread, travel]);
+  }, [sectionRef, stagger, buildAt, buildSpread, unbuildAt, unbuildSpread, travel, skipInitialUpdate]);
 }

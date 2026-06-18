@@ -32,7 +32,13 @@ const C = {
 
 export default function HeroNavyClaim() {
   const sectionRef = useRef(null);
-  useScrollBuild(sectionRef);
+  /* Hero sits at scrollY=0, so at mount the section's progress through
+     the viewport is ~0.5 — well inside scroll-build's "fully built"
+     zone, which would snap the H1 in with zero motion. We skip the
+     initial update() call and let the CSS entry animation below do
+     the one-time staggered lay-in. The first scroll event hands
+     control back to scroll-build for the lift-out. */
+  useScrollBuild(sectionRef, { skipInitialUpdate: true });
   return (
     <>
       <style>{`
@@ -104,12 +110,27 @@ export default function HeroNavyClaim() {
         }
         .hnc-h1 > span {
           /* Initial state — scroll-build hook will overwrite each
-             frame. CSS values here are the fallback shown before the
-             first useScrollBuild update fires (essentially never
-             visible to the user, but defensive). */
+             frame once the user starts scrolling. Before that, the
+             one-time CSS entry animation below lays each line in
+             with a staggered fade + rise. */
           opacity: 0;
           transform: translateY(14px);
           will-change: opacity, transform;
+          animation: hnc-rise 900ms cubic-bezier(.22,.61,.36,1) forwards;
+        }
+        .hnc-h1 > span:nth-child(1) { animation-delay: 120ms; }
+        .hnc-h1 > span:nth-child(2) { animation-delay: 340ms; }
+        .hnc-h1 > span:nth-child(3) { animation-delay: 620ms; }
+        @keyframes hnc-rise {
+          from { opacity: 0; transform: translateY(14px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hnc-h1 > span {
+            animation: none;
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .hnc-h1 .sans {
           display: block;
