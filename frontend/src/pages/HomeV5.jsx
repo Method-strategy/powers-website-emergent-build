@@ -929,27 +929,165 @@ function SiteFooter() {
   );
 }
 
-/* ── Beat III: Pressure (the dark dramatic spread) ───────────────
- * The single navy beat in the brief. Visually distinct so the
- * argument lands with weight — everything else is paper. Carries
- * the ambient pressure/outcome swarm (red drifts up the left half,
- * green drifts up the right) at low opacity so the audience self-
- * identifies with their specific pressure or their specific
- * outcome without diluting the H2's central claim. */
-const PRESSURE_WORDS = [
-  'Demand spike', 'Leadership change', 'PE timeline', 'New site online',
-  'Labor shortage', 'Supply disruption', 'Audit pressure', 'Margin compression',
-  'Changeover delay', 'Equipment failure', 'Regulatory shift', 'Working-capital crunch',
-  'Shift no-show', 'Talent attrition', 'Safety incident', 'Quality slip',
-  'Customer escalation', 'Raw-material spike', 'Integration deadline', 'Board review',
+/* ── Pressure → Outcome word pairs ─────────────────────────────
+ * Each particle starts as a red pressure on the lower-left, drifts
+ * diagonally up-and-right, transforms at midpoint into the matched
+ * green outcome, and exits upper-right. Direct visual of Sean /
+ * Randall's "we get paid to turn red numbers into green ones." */
+const PRESSURE_PAIRS = [
+  { pressure: 'Demand spike',         outcome: '+22% throughput' },
+  { pressure: 'Leadership change',    outcome: '+23% retention' },
+  { pressure: 'PE timeline',          outcome: '5-week ROI' },
+  { pressure: 'New site online',      outcome: '+19% on-time launch' },
+  { pressure: 'Labor shortage',       outcome: '+34% labor productivity' },
+  { pressure: 'Supply disruption',    outcome: '2.4× inventory turn' },
+  { pressure: 'Audit pressure',       outcome: '60% audit pass' },
+  { pressure: 'Margin compression',   outcome: '+18% margin' },
+  { pressure: 'Changeover delay',     outcome: '−17% changeover' },
+  { pressure: 'Equipment failure',    outcome: '1.8× uptime' },
+  { pressure: 'Regulatory shift',     outcome: '88% first-pass quality' },
+  { pressure: 'Working-capital crunch', outcome: '$3.2M WC freed' },
+  { pressure: 'Shift no-show',        outcome: '+12% yield' },
+  { pressure: 'Talent attrition',     outcome: '+6% engagement' },
+  { pressure: 'Safety incident',      outcome: '+28% safety' },
+  { pressure: 'Quality slip',         outcome: '−24% rework' },
+  { pressure: 'Customer escalation',  outcome: '96% OTD' },
+  { pressure: 'Raw-material spike',   outcome: '−41% scrap' },
+  { pressure: 'Integration deadline', outcome: '6-wk stabilization' },
+  { pressure: 'Board review',         outcome: '$14M run-rate' },
 ];
-const OUTCOME_WORDS = [
-  '+18% margin', '+34% labor productivity', '+22% throughput', '96% OTD',
-  '−41% scrap', '5-week ROI', '9-mo payback', '+28% safety',
-  '+12% yield', '−17% changeover', '88% first-pass quality', '+23% retention',
-  '1.8× uptime', '2.4× inventory turn', '$3.2M WC freed', '$14M run-rate',
-  '60% audit pass', '6-wk stabilization', '+19% on-time launch', '−24% rework',
-];
+
+function PressureSwarm() {
+  const swarm = React.useMemo(() => {
+    const seeded = (i) => {
+      const x = Math.sin(i * 9301 + 49297) * 233280;
+      return x - Math.floor(x);
+    };
+    return PRESSURE_PAIRS.map((p, i) => {
+      const r1 = seeded(i);
+      const r2 = seeded(i + 100);
+      const r3 = seeded(i + 200);
+      const r4 = seeded(i + 300);
+      /* Start in the lower-left band (3–22% of viewport width),
+       * end in the upper-right band (74–95%). Diagonal travel
+       * across the centerline IS the transformation moment. */
+      const startX = 3 + r1 * 19;
+      const endX   = 74 + r2 * 21;
+      const travel = endX - startX;
+      /* Drift cycle 28–44s — slower than the prior straight-up
+       * version because the diagonal arc covers more visual
+       * distance per particle. */
+      const duration = 28 + r3 * 16;
+      /* Negative delay 0 to -44s puts each particle at a different
+       * point in its cycle on first paint. */
+      const delay = -(r4 * 44);
+      return { ...p, startX, travel, duration, delay };
+    });
+  }, []);
+  return (
+    <div className="ps-swarm" aria-hidden="true">
+      <style>{`
+        .ps-swarm {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .ps-particle {
+          position: absolute;
+          bottom: -48px;
+          left: 0;
+          font-family: ${TYPE.mono};
+          font-size: 11.5px;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          will-change: transform;
+          animation-name: ps-cross;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+        }
+        .ps-particle .word {
+          position: absolute;
+          left: 0;
+          top: 0;
+          white-space: nowrap;
+          opacity: 0;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+        }
+        .ps-particle .word.press {
+          color: rgba(224, 101, 79, 0.65);
+          animation-name: ps-press-fade;
+        }
+        .ps-particle .word.out {
+          color: rgba(91, 191, 115, 0.70);
+          animation-name: ps-out-fade;
+        }
+        /* Diagonal travel: particle starts at its inline --start-x
+         * percent of viewport, translates by --travel-x vw to the
+         * right and -100vh-80px upward over its cycle. */
+        @keyframes ps-cross {
+          0%   { transform: translate(0, 0); }
+          100% { transform: translate(var(--travel-x), calc(-100vh - 80px)); }
+        }
+        /* Pressure word visible 0–42% of cycle, fades to 0 by 55%.
+         * The fade-out is the "collision" — the red disintegrates
+         * exactly as the green resolves. */
+        @keyframes ps-press-fade {
+          0%   { opacity: 0; }
+          10%  { opacity: 0.55; }
+          42%  { opacity: 0.55; }
+          55%  { opacity: 0; }
+          100% { opacity: 0; }
+        }
+        /* Outcome word fades in starting at 48%, holds, exits at 92%.
+         * Brief overlap with the pressure fade (48–55%) is the
+         * transformation moment. */
+        @keyframes ps-out-fade {
+          0%, 48% { opacity: 0; }
+          62%     { opacity: 0.65; }
+          88%     { opacity: 0.65; }
+          100%    { opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .ps-particle { animation: none; bottom: auto; top: 30%; }
+          .ps-particle .word.press { animation: none; opacity: 0.35; }
+          .ps-particle .word.out { animation: none; opacity: 0; }
+        }
+      `}</style>
+      {swarm.map((p, i) => (
+        <div
+          key={i}
+          className="ps-particle"
+          style={{
+            left: p.startX + 'vw',
+            '--travel-x': p.travel + 'vw',
+            animationDuration: p.duration.toFixed(2) + 's',
+            animationDelay: p.delay.toFixed(2) + 's',
+          }}
+        >
+          <span
+            className="word press"
+            style={{
+              animationDuration: p.duration.toFixed(2) + 's',
+              animationDelay: p.delay.toFixed(2) + 's',
+            }}
+          >{p.pressure}</span>
+          <span
+            className="word out"
+            style={{
+              animationDuration: p.duration.toFixed(2) + 's',
+              animationDelay: p.delay.toFixed(2) + 's',
+            }}
+          >{p.outcome}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function PressureBeat() {
   const ref = useRef(null);
@@ -994,129 +1132,6 @@ function PressureBeat() {
         </p>
       </div>
     </section>
-  );
-}
-
-/* ── Ambient pressure / outcome word swarm ────────────────────────
- * Two independent fields drift words slowly upward and fade in/out.
- *   Left half  → red pressures (the conditions that break operations)
- *   Right half → green outcomes (the financial results execution
- *                produces)
- *
- * Each word gets a stable random horizontal position, drift
- * duration, and negative animation-delay (so on first paint the
- * field is already mid-cycle — words are mid-drift, not all
- * lined up at the bottom). Low opacity (max ~0.45) keeps them
- * behind the H2 + lede visually. pointer-events:none so they
- * never intercept cursor. The whole layer sits at z-index 0;
- * H2 and lede sit at z-index 2 above it.
- *
- * Visual reasoning per direction: pressures and outcomes are
- * individualized. Listing them generically loses readers who
- * don't see their specific situation. Drifting twenty of each
- * across the frame lets each reader latch onto their own. */
-function PressureSwarm() {
-  const swarm = React.useMemo(() => {
-    /* Deterministic pseudo-random per-word: stable across renders,
-     * but varied per index. Avoids hydration-mismatch issues and
-     * keeps the visual interesting across paints. */
-    const seeded = (i) => {
-      const x = Math.sin(i * 9301 + 49297) * 233280;
-      return x - Math.floor(x);
-    };
-    const build = (words, sideOffset) => words.map((w, i) => {
-      const r1 = seeded(i + sideOffset);
-      const r2 = seeded(i + sideOffset + 100);
-      const r3 = seeded(i + sideOffset + 200);
-      return {
-        word: w,
-        /* Horizontal: 5–80% within the hemisphere (avoid hugging
-         * the centerline where the H2 lives). */
-        x: 5 + r1 * 75,
-        /* Drift duration 22–38s — slow enough to feel ambient. */
-        duration: 22 + r2 * 16,
-        /* Negative delay 0 to -38s spreads first-paint positions
-         * across the full drift cycle. */
-        delay: -(r3 * 38),
-      };
-    });
-    return {
-      left:  build(PRESSURE_WORDS, 0),
-      right: build(OUTCOME_WORDS, 1000),
-    };
-  }, []);
-  return (
-    <div className="ps-swarm" aria-hidden="true">
-      <style>{`
-        .ps-swarm {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          pointer-events: none;
-          z-index: 0;
-        }
-        .ps-side {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 50%;
-        }
-        .ps-side.left  { left: 0; }
-        .ps-side.right { right: 0; }
-        .ps-word {
-          position: absolute;
-          bottom: -48px;
-          font-family: ${TYPE.mono};
-          font-size: 11.5px;
-          font-weight: 500;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          white-space: nowrap;
-          opacity: 0;
-          animation-name: ps-drift;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-          will-change: transform, opacity;
-        }
-        .ps-pressure { color: rgba(224, 101, 79, 0.55); }
-        .ps-outcome  { color: rgba(91, 191, 115, 0.55); }
-        @keyframes ps-drift {
-          0%   { transform: translateY(0);                opacity: 0; }
-          12%  { opacity: 0.50; }
-          85%  { opacity: 0.50; }
-          100% { transform: translateY(calc(-100vh - 80px)); opacity: 0; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .ps-word { animation: none; opacity: 0.30; bottom: auto; top: 30%; }
-        }
-      `}</style>
-      <div className="ps-side left">
-        {swarm.left.map((w, i) => (
-          <span
-            key={i}
-            className="ps-word ps-pressure"
-            style={{
-              left: w.x + '%',
-              animationDuration: w.duration.toFixed(2) + 's',
-              animationDelay: w.delay.toFixed(2) + 's',
-            }}
-          >{w.word}</span>
-        ))}
-      </div>
-      <div className="ps-side right">
-        {swarm.right.map((w, i) => (
-          <span
-            key={i}
-            className="ps-word ps-outcome"
-            style={{
-              left: w.x + '%',
-              animationDuration: w.duration.toFixed(2) + 's',
-              animationDelay: w.delay.toFixed(2) + 's',
-            }}
-          >{w.word}</span>
-        ))}
-      </div>
-    </div>
   );
 }
 
