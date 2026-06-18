@@ -438,6 +438,17 @@ export default function HeroPressureExhibit() {
     let entryProgress = 0;
     let entryTriggered = false;
     let entryComplete = false;
+    /* `entryEffectsFired` — separate one-shot flag for the side effects
+     * (chip-swarm spawn + trend-line draw start + canvas-core fade-in
+     * kickoff) that should only fire ONCE the first time scroll reaches
+     * the descent endpoint. Decoupled from the ghost's visible motion
+     * so the ghost itself can be bidirectional — when the user scrolls
+     * back UP through the Row 2 → Row 3 boundary, the ghost rises back
+     * to its start position to meet the Row 2 anchor restoring upward.
+     * Without this decoupling, the ghost was stuck at the landed
+     * position with opacity 0 on every subsequent scroll-up, breaking
+     * the visual handoff. */
+    let entryEffectsFired = false;
     const ENTRY_DUR = 1600;
 
     function easeOutCubic(p) { return 1 - Math.pow(1 - p, 3); }
@@ -456,65 +467,68 @@ export default function HeroPressureExhibit() {
     function updateEntry(t) {
       if (!entryTriggered) return;
       if (entryStart === 0) return;
-      const elapsed = t - entryStart;
-      if (!entryComplete) {
-        /* Scroll-driven ghost descent (Feb 2026 rev).
-         *
-         * The descent progress `p` is no longer derived from elapsed
-         * time vs. ENTRY_DUR. It now reads the section's scroll
-         * position so the ghost falls at the reader's scroll velocity
-         * — matching the Row-2 core's scroll-driven exit on the
-         * opposite side of the section boundary. The two halves
-         * become a continuous handoff: one scroll wheel = one
-         * falling motion that crosses both rows.
-         *
-         * Window: section.top sweeps from vh*0.65 down to a target
-         * Y that brings the ghost to its landing position (which is
-         * still computed by positionGhostStart). At p=0 the ghost is
-         * at its top start position with opacity 0; at p=1 it has
-         * landed on the canvas core center.
-         *
-         * The 400ms post-trigger grace window before scroll picks up
-         * (handled in triggerEntry) is retained so the H2/lede
-         * scroll-build can complete its lay-in before the ghost
-         * starts moving.
-         */
-        const sectionRect = sectionRef.current
-          ? sectionRef.current.getBoundingClientRect()
-          : { top: 0, height: 0 };
-        const vh = window.innerHeight || 1;
-        const enterY = vh * 0.65;
-        const leaveY = vh * -0.15;
-        const raw = (enterY - sectionRect.top) / (enterY - leaveY);
-        const p = Math.max(0, Math.min(1, raw));
-        const eased = easeOutCubic(p);
-        const opacity = p < 0.10 ? (p / 0.10) : 1;
-        const y = ghostPositions.startY + (ghostPositions.endY - ghostPositions.startY) * eased;
-        ghostWrap.style.transform = 'translateX(-50%) translateY(' + y + 'px)';
-        ghostWrap.style.opacity = opacity;
-        if (p >= 0.995) {
-          entryComplete = true;
-          entryCompleteAt = t;
-          ghostWrap.style.opacity = 0;
-          ghostWrap.style.transition = 'opacity .3s ease-out';
-          controlsEl.classList.add('hpe-in');
-          spawnPressure();
-          const gap = computeSpawnGap();
-          lastSpawn = t - gap * 0.55;
-          lastEmit = t;
-          // Schedule the trend lines to begin drawing — independently
-          // of chip speed. Once lineStart is non-zero, frame() starts
-          // ticking the chart progress on its own clock.
-          setTimeout(() => { lineStart = performance.now(); }, LINE_DELAY_AFTER_ENTRY_MS);
-        }
-      } else {
-        /* Post-completion canvas-core fade-in.
-         * `entryProgress` is the canvas core's alpha (read by drawCore).
-         * Starts ramping the moment entryComplete fires and reaches 1
-         * over 600ms — independent of any scroll position. Was previously
-         * keyed off (elapsed - ENTRY_DUR), which broke under fast scroll
-         * because `elapsed` no longer correlates to entry progress in
-         * the scroll-driven world. */
+
+      /* Ghost descent (bidirectional, scroll-bound).
+       *
+       * The ghost's transform + opacity are derived from the section's
+       * current scroll position on EVERY frame, regardless of whether
+       * the side effects (chip swarm, line draw, canvas-core fade-in)
+       * have already fired. This makes the ghost responsive in both
+       * directions — on scroll-down it falls into the canvas core; on
+       * scroll-up it rises back to the top of Row 3 to meet the Row-2
+       * anchor that is simultaneously restoring upward.
+       *
+       * Previously this block was gated behind `if (!entryComplete)`,
+       * which meant after the first time the user scrolled all the
+       * way through Row 3 the ghost stayed pinned at the landed
+       * position with opacity 0, making the Row 2 → Row 3 handoff
+       * look "frozen" on the way back up. */
+      const sectionRect = sectionRef.current
+        ? sectionRef.current.getBoundingClientRect()
+        : { top: 0, height: 0 };
+      const vh = window.innerHeight || 1;
+      const enterY = vh * 0.65;
+      const leaveY = vh * -0.15;
+      const raw = (enterY - sectionRect.top) / (enterY - leaveY);
+      const p = Math.max(0, Math.min(1, raw));
+      const eased = easeOutCubic(p);
+      /* Opacity envelope:
+       *   p < 0.10  → ramp 0→1 (fade in as ghost begins descending)
+       *   0.10–0.92 → 1 (fully visible during descent)
+       *   p > 0.92  → ramp 1→0 (fade out as canvas core takes over) */
+      let opacity;
+      if (p < 0.10)      opacity = p / 0.10;
+      else if (p < 0.92) opacity = 1;
+      else               opacity = Math.max(0, (1 - p) / 0.08);
+      const y = ghostPositions.startY + (ghostPositions.endY - ghostPositions.startY) * eased;
+      ghostWrap.style.transform = 'translateX(-50%) translateY(' + y + 'px)';
+      ghostWrap.style.opacity = opacity;
+
+      /* One-shot side effects — fire EXACTLY ONCE when scroll first
+       * reaches the descent endpoint. The chip swarm, trend-line
+       * draw, and canvas-core fade-in are not meant to reverse —
+       * once Row 3 is "alive", it stays alive even if the user
+       * scrolls back up out of view and returns. Tracked by
+       * `entryEffectsFired`, not by `entryComplete` (which used to
+       * gate both the ghost AND the side effects together). */
+      if (p >= 0.995 && !entryEffectsFired) {
+        entryEffectsFired = true;
+        entryComplete = true;
+        entryCompleteAt = t;
+        controlsEl.classList.add('hpe-in');
+        spawnPressure();
+        const gap = computeSpawnGap();
+        lastSpawn = t - gap * 0.55;
+        lastEmit = t;
+        setTimeout(() => { lineStart = performance.now(); }, LINE_DELAY_AFTER_ENTRY_MS);
+      }
+
+      /* Canvas-core fade-in (one-way).
+       * Once entryComplete is set by the side-effect block above,
+       * entryProgress ramps from 0 to 1 over 600ms — independent of
+       * scroll. The canvas core stays visible thereafter even if the
+       * user scrolls Row 3 out of view and back. */
+      if (entryComplete) {
         const sinceComplete = t - entryCompleteAt;
         const fadeP = Math.max(0, Math.min(1, sinceComplete / 600));
         entryProgress = fadeP;
@@ -534,6 +548,7 @@ export default function HeroPressureExhibit() {
       if (entryTriggered && !entryComplete) return;
       entryTriggered = false;
       entryComplete = false;
+      entryEffectsFired = false;
       entryStart = 0;
       entryCompleteAt = 0;
       entryProgress = 0;
@@ -912,6 +927,7 @@ export default function HeroPressureExhibit() {
       entryProgress = 1;
       entryTriggered = true;
       entryComplete = true;
+      entryEffectsFired = true;
       copyEl.classList.add('hpe-in');
       controlsEl.classList.add('hpe-in');
       ghostWrap.style.display = 'none';
