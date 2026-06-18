@@ -31,16 +31,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TYPE } from '../lib/designSpec';
 
 /* ── Palette (this paradigm) ──────────────────────────────────────
- *  PAPER  — slight warm cream, NOT pure white. Reads as documents
- *           print onto stock, not as a marketing site.
+ *  PAPER  — bright, near-white with a faint warmth. Lightened
+ *           Feb 2026 from #f6f4ee (read as too yellow/beige) so the
+ *           paper feel comes from texture, not color.
  *  NAVY   — primary text + the dark beat surface
- *  GOLD   — earned-signal accent. Sparingly used.
+ *  GOLD   — bright copper accent (unified with V4's gold). Was
+ *           split into a muddy #c8821f for indices + a bright
+ *           #e89346 for hovers; collapsed to one bright value so
+ *           accents in indices, italic pivots, and CTAs all carry
+ *           the same temperature.
  *  RULE   — hairline rule color (navy at low alpha) */
-const PAPER       = '#f6f4ee';
-const PAPER_DEEP  = '#efece4';
+const PAPER       = '#fbfaf6';
+const PAPER_DEEP  = '#f3f0e8';
 const NAVY        = '#0d2442';
 const NAVY_DEEP   = '#0a1e36';
-const GOLD        = '#c8821f';
+const GOLD        = '#e89346';
 const GOLD_BRIGHT = '#e89346';
 const RULE        = 'rgba(13, 36, 66, 0.16)';
 const RULE_SOFT   = 'rgba(13, 36, 66, 0.08)';
@@ -295,6 +300,20 @@ function HomeV5() {
           color: ${NAVY};
           margin: 18px 0 0;
           text-wrap: pretty;
+        }
+        /* Serif-italic-gold pivot — the "earned" clause inside each
+           H2. Reintroduced Feb 2026 from V4 (this concept's voice
+           wants the same sans→italic-gold tonal lift on the
+           resolution phrase). Sized to match the sans clause so
+           cap height aligns. */
+        .station-h2 .pivot {
+          display: block;
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-weight: 500;
+          color: ${GOLD_BRIGHT};
+          letter-spacing: -0.012em;
+          margin-top: 0.06em;
         }
         .station-lede {
           font-family: ${TYPE.sans};
@@ -663,7 +682,8 @@ function HomeV5() {
       {/* ── Beat II — Thesis ────────────────────────────────────── */}
       <Station
         index="II  /  Thesis"
-        headline="We build the disciplines to execute. No matter what."
+        headline="We build the disciplines to execute."
+        pivot="No matter what."
         body="Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load-bearing, deep enough that performance doesn’t break down when conditions do."
         quote="If you’re working, we’re working."
         attr="Floor practice · POWERS"
@@ -680,7 +700,8 @@ function HomeV5() {
       {/* ── Beat IV — Mechanism ─────────────────────────────────── */}
       <Station
         index="IV  /  Mechanism"
-        headline="We work where value gets won or lost."
+        headline="We work where value gets"
+        pivot="won or lost."
         body="Most consulting firms diagnose, recommend, and leave. They’re out the door at 3pm and don’t work Fridays. The slide decks are sharp. The results don’t last. Our approach is very different. We build the disciplines where the work actually happens and value is created. On the floor. In the shifts. Inside the standards, the supplier relationships, the AP/AR process. We put skin in the game — paid on results, not recommendations."
       />
 
@@ -690,14 +711,16 @@ function HomeV5() {
       {/* ── Beat VI — Industries ────────────────────────────────── */}
       <Station
         index="VI  /  Industries"
-        headline="Different industries. The same execution discipline."
+        headline="Different industries."
+        pivot="The same execution discipline."
         body="We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound."
       />
 
       {/* ── Beat VII — Results (case study entry point) ─────────── */}
       <CardsBeat
         index="VII  /  Results"
-        headline="Operations built on strong execution produce results that speak for themselves."
+        headline="Operations built on strong execution produce"
+        pivot="results that speak for themselves."
         body="Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours."
         cards={[
           { kind: 'Case study', title: 'Defense & aerospace OTD lift', meta: '$2.4B platform · 18 mo' },
@@ -710,7 +733,8 @@ function HomeV5() {
       {/* ── Beat VIII — Insights (blog entry point) ─────────────── */}
       <CardsBeat
         index="VIII  /  Insights"
-        headline="Dig deeper into the discipline of execution."
+        headline="Dig deeper into the"
+        pivot="discipline of execution."
         body="Nearly thirty years of helping build some of the top-performing operations on the planet. Read how we install the five disciplines and produce sustainable, scalable financial gains."
         cards={[
           { kind: 'Field note',  title: 'Why standards drift the moment the consultant leaves', meta: '6 min read' },
@@ -899,7 +923,8 @@ function PressureBeat() {
       <div style={{ maxWidth: 1040 }}>
         <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>III  /  Pressure</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8', maxWidth: 1040 }}>
-          When execution is built on these disciplines, performance is not at the mercy of conditions.
+          <span>When execution is built on these disciplines,</span>
+          <span className="pivot" style={{ color: GOLD_BRIGHT }}>performance is not at the mercy of conditions.</span>
         </h2>
       </div>
       <div className="wipe wipe-d2" style={{ maxWidth: 720 }}>
@@ -916,24 +941,31 @@ function PressureBeat() {
   );
 }
 
-/* ── Beat V: Evidence (5-stat ledger) ──────────────────────────── */
+/* ── Beat V: Evidence (5-stat ledger with count-up) ────────────── */
 function EvidenceBeat() {
   const ref = useRef(null);
+  const [animating, setAnimating] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
-      { threshold: 0.18 }
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) {
+          el.classList.add('is-in');
+          setAnimating(true);
+          io.disconnect();
+        }
+      }),
+      { threshold: 0.32 }
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
   const STATS = [
-    { num: '$1B+',  label: 'Annualized savings produced across engagements' },
-    { num: '98%',   label: 'Client retention across nearly thirty years' },
-    { num: '5 wks', label: 'Median time to first measurable impact' },
-    { num: '500+',  label: 'Operations strengthened — multi-site, multi-industry' },
-    { num: '30+',   label: 'Years of frontline operations leadership' },
+    { target: 1,   prefix: '$', suffix: 'B+',  decimals: 0, duration: 1600, label: 'Annualized savings produced across engagements' },
+    { target: 98,  prefix: '',  suffix: '%',   decimals: 0, duration: 1400, label: 'Client retention across nearly thirty years' },
+    { target: 5,   prefix: '',  suffix: ' wks', decimals: 0, duration: 1200, label: 'Median time to first measurable impact' },
+    { target: 500, prefix: '',  suffix: '+',   decimals: 0, duration: 1800, label: 'Operations strengthened — multi-site, multi-industry' },
+    { target: 30,  prefix: '',  suffix: '+',   decimals: 0, duration: 1400, label: 'Years of frontline operations leadership' },
   ];
   return (
     <section ref={ref} className="brief-station" style={{
@@ -946,7 +978,8 @@ function EvidenceBeat() {
       <div className="wipe" style={{ maxWidth: 720, marginBottom: 64 }}>
         <div className="station-index" style={{ marginBottom: 14 }}>V  /  Evidence</div>
         <h2 className="station-h2 wipe wipe-d1">
-          Thirty years on the floor. The ledger speaks for itself.
+          <span>Thirty years on the floor.</span>
+          <span className="pivot">The ledger speaks for itself.</span>
         </h2>
       </div>
       <div className="wipe wipe-d2" style={{
@@ -964,7 +997,9 @@ function EvidenceBeat() {
               letterSpacing: '-0.02em',
               color: NAVY,
               marginBottom: 12,
-            }}>{s.num}</div>
+            }}>
+              <CountUp run={animating} {...s} delay={120 + i * 110} />
+            </div>
             <div style={{
               fontFamily: TYPE.sans,
               fontSize: 14,
@@ -980,8 +1015,32 @@ function EvidenceBeat() {
   );
 }
 
+/* ── CountUp — single-shot count-up tied to scroll entry.
+ *   Runs only when `run` becomes true. Eases out cubic so the
+ *   ramp lands cleanly on the target. Prefix/suffix stick. */
+function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration = 1400, delay = 0 }) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!run) return;
+    let raf = 0;
+    let start = 0;
+    const tick = (t) => {
+      if (!start) start = t + delay;
+      const elapsed = Math.max(0, t - start);
+      const p = Math.max(0, Math.min(1, elapsed / duration));
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(target * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [run, target, duration, delay]);
+  const display = decimals > 0 ? val.toFixed(decimals) : Math.round(val).toString();
+  return <span>{prefix}{display}{suffix}</span>;
+}
+
 /* ── Beat VII/VIII: Cards (case studies + insights) ────────────── */
-function CardsBeat({ index, headline, body, cards, cta }) {
+function CardsBeat({ index, headline, pivot, body, cards, cta }) {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current; if (!el) return;
@@ -1002,7 +1061,10 @@ function CardsBeat({ index, headline, body, cards, cta }) {
       <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
       <div className="wipe" style={{ maxWidth: 760, marginBottom: 56 }}>
         <div className="station-index" style={{ marginBottom: 14 }}>{index}</div>
-        <h2 className="station-h2 wipe wipe-d1">{headline}</h2>
+        <h2 className="station-h2 wipe wipe-d1">
+          <span>{headline}</span>
+          {pivot && <span className="pivot">{pivot}</span>}
+        </h2>
         <p className="station-lede wipe wipe-d2" style={{ marginTop: 22, maxWidth: 640 }}>{body}</p>
       </div>
       <div className="wipe wipe-d3" style={{
@@ -1079,7 +1141,8 @@ function ActionBeat() {
       <div>
         <div className="station-index wipe" style={{ marginBottom: 14 }}>IX  /  Action</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ maxWidth: 920 }}>
-          Let&rsquo;s build your operation to execute under any circumstances.
+          <span>Let&rsquo;s build your operation</span>
+          <span className="pivot">to execute under any circumstances.</span>
         </h2>
         <p className="station-lede wipe wipe-d2" style={{ marginTop: 24, maxWidth: 600 }}>
           Tell us where the operation is feeling pressure. We&rsquo;ll come see it on the floor, find the gaps that are hiding inside it, and build the disciplines that close them.
@@ -1105,8 +1168,10 @@ function ActionBeat() {
   );
 }
 
-/* ── Station component — every beat below the hero uses this. */
-function Station({ index, headline, body, quote, attr }) {
+/* ── Station component — every beat below the hero uses this.
+ *   `headline` is the sans-navy lead clause. `pivot` is the
+ *   serif-italic-gold resolution clause that lands on its own line. */
+function Station({ index, headline, pivot, body, quote, attr }) {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
@@ -1130,7 +1195,10 @@ function Station({ index, headline, body, quote, attr }) {
       <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
       <div>
         <div className="station-index wipe">{index}</div>
-        <h2 className="station-h2 wipe wipe-d1">{headline}</h2>
+        <h2 className="station-h2 wipe wipe-d1">
+          <span>{headline}</span>
+          {pivot && <span className="pivot">{pivot}</span>}
+        </h2>
       </div>
       <div className="wipe wipe-d2">
         <p className="station-lede">{body}</p>
