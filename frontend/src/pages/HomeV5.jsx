@@ -84,6 +84,7 @@ function HomeV5() {
    * at once. Body scroll is locked while the drawer is open. */
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(null);
+  const [mobileExpertiseOpen, setMobileExpertiseOpen] = useState(false);
   useEffect(() => {
     if (mobileNavOpen) {
       const prev = document.body.style.overflow;
@@ -678,6 +679,53 @@ function HomeV5() {
           letter-spacing: 0.005em;
         }
         .brief-drawer-sublink:hover { color: ${GOLD_BRIGHT}; }
+        /* Sub-parent button — "Areas of Expertise" inside Results.
+           Same font as the sibling sublinks but rendered as a button
+           with a caret (no destination of its own). Tapping expands
+           the nested .brief-drawer-subsub group below. */
+        .brief-drawer-sublink.brief-drawer-subparent {
+          background: transparent;
+          border: none;
+          width: 100%;
+          text-align: left;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font: inherit;
+          font-family: ${TYPE.sans};
+          font-size: 15px;
+          font-weight: 400;
+          color: rgba(243, 240, 232, 0.78);
+        }
+        .brief-drawer-sublink.brief-drawer-subparent[aria-expanded="true"] .brief-drawer-caret {
+          transform: rotate(180deg);
+        }
+        /* Nested sub-sub level: indented one further step + thin
+           gold leader to mark the discipline-list relationship. */
+        .brief-drawer-subsub {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 280ms cubic-bezier(.6,.2,.2,1);
+        }
+        .brief-drawer-subsub[data-open="true"] {
+          max-height: 520px;
+        }
+        .brief-drawer-sublink.nested {
+          padding-left: 36px;
+          position: relative;
+          font-size: 14px;
+          color: rgba(243, 240, 232, 0.66);
+        }
+        .brief-drawer-sublink.nested::before {
+          content: '';
+          position: absolute;
+          left: 20px;
+          top: 50%;
+          width: 8px;
+          height: 1px;
+          background: rgba(232,147,70, 0.5);
+        }
         .brief-drawer-sublabel {
           font-family: ${TYPE.mono};
           font-size: 10px;
@@ -749,6 +797,31 @@ function HomeV5() {
           transition: color 140ms ease, opacity 140ms ease;
         }
         .brief-mega-link:hover { color: ${GOLD_BRIGHT}; opacity: 1; }
+        /* Parent label inside a mega-menu column. Same font as the
+           sibling links but no hover, no cursor — it's a category
+           heading, not a destination. The 5 nested discipline links
+           below it are indented to communicate the parent/child
+           relationship visually without using a small-caps label. */
+        .brief-mega-link.brief-mega-parent {
+          color: rgba(243, 240, 232, 0.55);
+          opacity: 1;
+          cursor: default;
+          margin-bottom: 4px;
+        }
+        .brief-mega-link.brief-mega-parent:hover { color: rgba(243, 240, 232, 0.55); }
+        .brief-mega-link.brief-mega-nested {
+          padding-left: 18px;
+          position: relative;
+        }
+        .brief-mega-link.brief-mega-nested::before {
+          content: '';
+          position: absolute;
+          left: 4px;
+          top: 50%;
+          width: 6px;
+          height: 1px;
+          background: rgba(232,147,70, 0.5);
+        }
         .brief-mega-section-label {
           font-family: ${TYPE.mono};
           font-size: 10px;
@@ -887,12 +960,18 @@ function HomeV5() {
                 <a href="/case-studies"      className="brief-mega-link">Case Studies</a>
               </div>
               <div style={{ padding: '24px 28px 28px' }}>
-                <div className="brief-mega-section-label">Expertise Areas</div>
-                <a href="/operational-discipline" className="brief-mega-link">Operational Discipline</a>
-                <a href="/frontline-leadership"   className="brief-mega-link">Frontline Leadership</a>
-                <a href="/equipment-reliability"  className="brief-mega-link">Equipment Reliability</a>
-                <a href="/workforce-capability"   className="brief-mega-link">Workforce Capability</a>
-                <a href="/daily-accountability"   className="brief-mega-link">Daily Accountability</a>
+                {/* Non-clickable parent label, standard menu font.
+                    Was uppercase tracked .brief-mega-section-label —
+                    that read as a "category" but didn't make the
+                    parent/child relationship clear. The 5 discipline
+                    links sit indented underneath it as the visual
+                    submenu. */}
+                <div className="brief-mega-link brief-mega-parent" aria-hidden="true">Areas of Expertise</div>
+                <a href="/operational-discipline" className="brief-mega-link brief-mega-nested">Operational Discipline</a>
+                <a href="/frontline-leadership"   className="brief-mega-link brief-mega-nested">Frontline Leadership</a>
+                <a href="/equipment-reliability"  className="brief-mega-link brief-mega-nested">Equipment Reliability</a>
+                <a href="/workforce-capability"   className="brief-mega-link brief-mega-nested">Workforce Capability</a>
+                <a href="/daily-accountability"   className="brief-mega-link brief-mega-nested">Daily Accountability</a>
               </div>
             </div>
           </div>
@@ -951,12 +1030,28 @@ function HomeV5() {
             <a href="/discovery-process"      className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Discovery Process</a>
             <a href="/industries-served"      className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Industries Served</a>
             <a href="/case-studies"           className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Case Studies</a>
-            <div className="brief-drawer-sublabel">Expertise Areas</div>
-            <a href="/operational-discipline" className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Operational Discipline</a>
-            <a href="/frontline-leadership"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Frontline Leadership</a>
-            <a href="/equipment-reliability"  className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Equipment Reliability</a>
-            <a href="/workforce-capability"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Workforce Capability</a>
-            <a href="/daily-accountability"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Daily Accountability</a>
+            {/* Areas of Expertise — nested sub-expansion. Tapping
+                toggles the 5 discipline links beneath it. Styled
+                like the other Results items (standard menu font)
+                with its own caret. */}
+            <button
+              type="button"
+              className="brief-drawer-sublink brief-drawer-subparent"
+              data-open={mobileExpertiseOpen}
+              data-testid="brief-drawer-expertise"
+              onClick={() => setMobileExpertiseOpen(v => !v)}
+              aria-expanded={mobileExpertiseOpen}
+            >
+              Areas of Expertise
+              <span className="brief-drawer-caret" aria-hidden="true" />
+            </button>
+            <div className="brief-drawer-subsub" data-open={mobileExpertiseOpen}>
+              <a href="/operational-discipline" className="brief-drawer-sublink nested" onClick={() => setMobileNavOpen(false)}>Operational Discipline</a>
+              <a href="/frontline-leadership"   className="brief-drawer-sublink nested" onClick={() => setMobileNavOpen(false)}>Frontline Leadership</a>
+              <a href="/equipment-reliability"  className="brief-drawer-sublink nested" onClick={() => setMobileNavOpen(false)}>Equipment Reliability</a>
+              <a href="/workforce-capability"   className="brief-drawer-sublink nested" onClick={() => setMobileNavOpen(false)}>Workforce Capability</a>
+              <a href="/daily-accountability"   className="brief-drawer-sublink nested" onClick={() => setMobileNavOpen(false)}>Daily Accountability</a>
+            </div>
           </div>
 
           <button
