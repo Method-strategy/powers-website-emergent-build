@@ -731,7 +731,7 @@ function HomeV5() {
 
       {/* ── Beat IV — Mechanism ─────────────────────────────────── */}
       <Station
-        index="Work Ethic"
+        index="Our Work Ethic"
         headline="We work where value gets"
         pivot="won or lost."
         body="Most consulting firms diagnose, recommend, and leave. They’re out the door at 3pm and don’t work Fridays. The slide decks are sharp. The results don’t last. Our approach is very different. We build the disciplines where the work actually happens and value is created. On the floor. In the shifts. Inside the standards, the supplier relationships, the AP/AR process. We put skin in the game — paid on results, not recommendations."
@@ -752,7 +752,7 @@ function HomeV5() {
 
       {/* ── Beat VII — Results (case study entry point) ─────────── */}
       <CardsBeat
-        index="Case Studies"
+        index="Client Success Stories"
         headline="Operations built on strong execution produce"
         pivot="results that speak for themselves."
         body="Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours."
