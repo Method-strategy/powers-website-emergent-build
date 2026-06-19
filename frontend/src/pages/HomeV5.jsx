@@ -77,6 +77,19 @@ function HomeV5() {
   const schedClose = ()     => { closeTimer.current = setTimeout(() => setOpenMega(null), 140); };
   const cancelClose = ()    => clearTimeout(closeTimer.current);
 
+  /* Activate scroll-snap on the document scroller (<html>) only
+   * while this page is mounted. Previous version set
+   * `scroll-snap-type` on `.brief-page` — but `.brief-page` is a
+   * <div> with no `overflow:auto`, so it isn't a scroll container
+   * and the property had no effect. The actual scroller is <html>,
+   * which is why the page felt like free scroll/swipe. The class is
+   * scoped here (added on mount, removed on unmount) so V4 and the
+   * rest of the app keep their normal free-scroll behavior. */
+  useEffect(() => {
+    document.documentElement.classList.add('v5-snap');
+    return () => document.documentElement.classList.remove('v5-snap');
+  }, []);
+
   /* Scroll-bound ambient progress 0→1 across the full page.
    * Single rAF loop. Drives the right-rail fill height and exposes
    * --brief-progress as a CSS variable for any element that wants
@@ -122,13 +135,20 @@ function HomeV5() {
       <style>{`
         :root { --brief-progress: 0; }
 
-        .brief-page {
-          /* Single-frame presentation — each beat occupies one full
-             viewport. Scroll-snap engages on the page container so
-             one scroll = one beat advance. Removes the "you can see
-             two rows at once" artifact that broke the illusion the
-             user is paging through a document. */
+        /* Scroll-snap engages on the document scroller (<html>),
+         * activated by the "v5-snap" class that the page adds while
+         * mounted. One scroll-wheel notch OR one swipe = one beat
+         * advance, with the next section locked to the viewport top.
+         * Scoped to the html class so V4 and the rest of the app are
+         * unaffected. Uses dvh (dynamic viewport height) so iOS
+         * Safari's collapsing address bar doesn't break section
+         * heights mid-scroll. */
+        html.v5-snap {
           scroll-snap-type: y mandatory;
+          scroll-behavior: smooth;
+        }
+
+        .brief-page {
           /* Paper texture — extremely subtle warm vignette on the
              right edge to anchor the rail. NOT a gradient that
              dominates; a faint warm wash that disappears as you
@@ -149,7 +169,7 @@ function HomeV5() {
         .brief-page > section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
-          min-height: 100vh;
+          min-height: 100dvh;
           box-sizing: border-box;
         }
         .brief-station {
@@ -173,11 +193,11 @@ function HomeV5() {
         .brief-rail-fill {
           position: absolute;
           top: 0;
-          left: -0.5px;
-          width: 2px;
+          left: 0;
+          width: 1px;
           height: 0%;
           background: ${GOLD};
-          box-shadow: 0 0 10px rgba(200, 130, 31, 0.32);
+          box-shadow: 0 0 8px rgba(200, 130, 31, 0.32);
           transition: height 60ms linear;
         }
         .brief-tick {
@@ -202,11 +222,11 @@ function HomeV5() {
            Reads on cream paper with navy text — confident, restrained. */
         .brief-hero {
           position: relative;
-          min-height: calc(100vh - 112px - 50px);
+          min-height: calc(100dvh - 112px - 50px);
           display: flex;
           flex-direction: column;
           justify-content: center;
-          padding: 40px max(40px, calc((100% - 1240px) / 2 + 40px)) 40px max(40px, calc((100% - 1240px) / 2));
+          padding: 40px max(40px, calc((100% - 1240px) / 2 + 40px));
           box-sizing: border-box;
         }
         .brief-section-num {
@@ -249,6 +269,17 @@ function HomeV5() {
              so clip the TOP at 0 and extend the BOTTOM 0.5em past
              the box so descenders render fully. */
           clip-path: inset(0 0 -0.5em 0);
+        }
+        /* Word group — keeps each word's per-character spans on the
+           same line. Without this, individual .ch spans (display:
+           inline-block) are valid line-break candidates between
+           every character, which is why iOS Safari was breaking
+           "execution" mid-word at narrow portrait widths. The word
+           wrapper is inline-block + nowrap so breaks only happen
+           between words at real spaces. */
+        .brief-h1 .word {
+          display: inline-block;
+          white-space: nowrap;
         }
         .brief-h1 .ch {
           display: inline-block;
@@ -299,7 +330,13 @@ function HomeV5() {
            cascade as it enters the viewport. */
         .brief-station {
           position: relative;
-          padding: 8vh max(40px, calc((100% - 1240px) / 2 + 40px)) 8vh max(40px, calc((100% - 1240px) / 2));
+          /* Symmetric horizontal padding — matches header & footer
+             content alignment. At wide viewports (>1240px), content
+             area = 1240 - 80 = 1160px, centered. The previous version
+             added +40px ONLY to the right side, which made the
+             station content area extend 40px wider than the header,
+             producing visible misalignment at desktop. */
+          padding: 8vh max(40px, calc((100% - 1240px) / 2 + 40px));
           box-sizing: border-box;
           display: grid;
           grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
@@ -316,11 +353,13 @@ function HomeV5() {
         .station-divider {
           /* A hairline rule above each station — marks the page
              "section break" in the brief without using a thick line
-             or color band. */
+             or color band. Edges aligned to the symmetric station
+             padding so the rule spans the content frame, not the
+             whole viewport. */
           position: absolute;
           top: 0;
-          left: max(40px, calc((100% - 1240px) / 2));
-          right: max(40px, calc((100% - 1240px) / 2));
+          left: max(40px, calc((100% - 1240px) / 2 + 40px));
+          right: max(40px, calc((100% - 1240px) / 2 + 40px));
           height: 1px;
           background: ${RULE_SOFT};
         }
@@ -695,24 +734,43 @@ function HomeV5() {
       <section className="brief-hero">
         <span className="brief-tick" style={{ top: '52%' }} aria-hidden="true" />
         <h1 className="brief-h1" data-testid="hero-h1">
-          {HERO_LINES.map((line, li) => (
-            <span className="line" key={li}>
-              {Array.from(line.text).map((c, ci) => {
-                /* Tight typewriter-strike cadence — 28ms per
-                 * character within a line, 320ms gap between lines.
-                 * No randomness, no per-character offset variation.
-                 * Reads as a deliberate, forceful build. */
-                const delay = (li * 320) + (ci * 28);
-                return (
-                  <span
-                    key={ci}
-                    className={`ch${line.accent ? ' accent' : ''}`}
-                    style={{ transitionDelay: delay + 'ms' }}
-                  >{c}</span>
-                );
-              })}
-            </span>
-          ))}
+          {HERO_LINES.map((line, li) => {
+            /* Render chars grouped by word. Each word is its own
+             * inline-block + nowrap wrapper so chars inside a word
+             * can never line-break. Real space characters sit
+             * BETWEEN word wrappers as direct children of the line —
+             * they remain valid line-break opportunities for the
+             * browser. The running `ci` counter still ticks through
+             * spaces (without rendering them as .ch spans) so the
+             * 28ms-per-char typewriter cadence stays identical to
+             * the original. */
+            const words = line.text.split(' ');
+            let ci = 0;
+            return (
+              <span className="line" key={li}>
+                {words.map((word, wi) => {
+                  if (wi > 0) ci += 1;
+                  const wordSpans = Array.from(word).map((c) => {
+                    const delay = (li * 320) + (ci * 28);
+                    ci += 1;
+                    return (
+                      <span
+                        key={ci}
+                        className={`ch${line.accent ? ' accent' : ''}`}
+                        style={{ transitionDelay: delay + 'ms' }}
+                      >{c}</span>
+                    );
+                  });
+                  return (
+                    <React.Fragment key={wi}>
+                      {wi > 0 && ' '}
+                      <span className="word">{wordSpans}</span>
+                    </React.Fragment>
+                  );
+                })}
+              </span>
+            );
+          })}
         </h1>
         <div className="brief-hero-footer">
           {/* The audience line. Was "For the operator accountable for
