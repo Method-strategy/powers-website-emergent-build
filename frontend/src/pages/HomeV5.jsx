@@ -66,17 +66,39 @@ const HERO_LINES = [
 ];
 
 /* Client logo crawl for Beat VI (Where We Work). First-draft brand
- * list provided by the client. Rendered as styled text wordmarks
- * (not real SVG marks) for the prototype — placeholders at this
- * stage so the client can see the concept land. For production,
- * swap each string for a real `<img src="...svg" alt="..." />` with
- * licensed brand assets. */
+ * list provided by the client. Each entry pairs a display name with
+ * the domain we hand to logo.dev's free CDN — logos are pulled at
+ * runtime, then knocked down to a flat dark-navy silhouette via a
+ * CSS grayscale + brightness(0) + opacity filter so all 18 marks
+ * read as a single cohesive set rather than a brand-color carnival.
+ * Hover restores the original brand color + full opacity. */
 const CLIENT_LOGOS = [
-  'Kraft Heinz', 'ADM', 'Alcoa', 'BAE Systems', 'BMW', 'Volkswagen',
-  'Corning', 'Simplot', 'RJ Reynolds', 'Cargill', 'Mitsubishi',
-  'Bain Capital', 'Medline', 'Blackstone', 'Givaudan', 'KKR',
-  'Costco', 'Agropur',
+  { name: 'Kraft Heinz',  domain: 'kraftheinzcompany.com' },
+  { name: 'ADM',          domain: 'adm.com' },
+  { name: 'Alcoa',        domain: 'alcoa.com' },
+  { name: 'BAE Systems',  domain: 'baesystems.com' },
+  { name: 'BMW',          domain: 'bmw.com' },
+  { name: 'Volkswagen',   domain: 'volkswagengroup.com' },
+  { name: 'Corning',      domain: 'corning.com' },
+  { name: 'Simplot',      domain: 'simplot.com' },
+  { name: 'RJ Reynolds',  domain: 'reynoldsamerican.com' },
+  { name: 'Cargill',      domain: 'cargill.com' },
+  { name: 'Mitsubishi',   domain: 'mitsubishicorp.com' },
+  { name: 'Bain Capital', domain: 'baincapital.com' },
+  { name: 'Medline',      domain: 'medline.com' },
+  { name: 'Blackstone',   domain: 'blackstone.com' },
+  { name: 'Givaudan',     domain: 'givaudan.com' },
+  { name: 'KKR',          domain: 'kkr.com' },
+  { name: 'Costco',       domain: 'costco.com' },
+  { name: 'Agropur',      domain: 'agropur.com' },
 ];
+/* logo.dev free public token — fine for prototype + client review.
+ * For production, swap the src to locally-hosted SVGs in
+ * /public/uploads/client-logos/ so we own the CDN + no rate-limit
+ * risk. */
+const LOGO_DEV_TOKEN = 'pk_X-1ZO13GSgeOoUrIuJ6GMQ';
+const logoSrc = (domain) =>
+  `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=200&format=png&retina=true`;
 
 function HomeV5() {
   const pageRef  = useRef(null);
@@ -605,18 +627,38 @@ function HomeV5() {
           to   { transform: translateX(-100%); }
         }
         .logo-crawl-item {
-          font-family: ${TYPE.sans};
-          font-size: 17px;
-          font-weight: 700;
-          color: rgba(8, 22, 42, 0.42);
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          white-space: nowrap;
-          line-height: 1;
-          transition: color 220ms ease, transform 220ms ease;
+          display: inline-flex;
+          align-items: center;
+          height: 44px;
+          flex-shrink: 0;
         }
-        .logo-crawl-item:hover {
-          color: rgba(8, 22, 42, 0.92);
+        /* Real logos pulled from logo.dev's CDN at runtime, knocked
+           down to a flat dark silhouette so all 18 marks read as a
+           single cohesive set. Treatment:
+             - mix-blend-mode: multiply — logo.dev returns PNGs with
+               white backgrounds; multiply blends those white pixels
+               into the cream paper (effectively transparent), while
+               colored logo pixels darken.
+             - grayscale(1) + contrast(1.2) — strips brand color and
+               sharpens the silhouette.
+             - opacity: 0.55 — knocks the whole set back so the H2
+               and lede stay the dominant reads.
+           Hover restores the original brand color + full opacity. */
+        .logo-crawl-item img {
+          height: 32px;
+          max-width: 140px;
+          width: auto;
+          object-fit: contain;
+          mix-blend-mode: multiply;
+          filter: grayscale(1) contrast(1.2);
+          opacity: 0.55;
+          transition: opacity 220ms ease, filter 220ms ease, transform 220ms ease, mix-blend-mode 220ms ease;
+          background: transparent;
+        }
+        .logo-crawl-item:hover img {
+          mix-blend-mode: normal;
+          filter: grayscale(0) contrast(1);
+          opacity: 1;
           transform: translateY(-1px);
         }
         .logo-crawl-fade {
@@ -2194,22 +2236,26 @@ function IndustriesBeat() {
       </div>
       {/* Full-width logo crawl spans both grid columns. */}
       <div className="industries-logos-row wipe wipe-d3" style={{ gridColumn: '1 / -1' }}>
-        <div className="industries-logos-label">A selection of organizations we&rsquo;ve worked with</div>
+        <div className="industries-logos-label">Shoulder to shoulder with</div>
         <div className="logo-crawl" data-testid="logo-crawl">
           <div className="logo-crawl-fade logo-crawl-fade-l" aria-hidden="true" />
           <div className="logo-crawl-fade logo-crawl-fade-r" aria-hidden="true" />
-          <div className="logo-crawl-track" aria-hidden="true">
+          <div className="logo-crawl-track">
             <div className="logo-crawl-row">
-              {CLIENT_LOGOS.map((n, i) => (
-                <span key={i} className="logo-crawl-item">{n}</span>
+              {CLIENT_LOGOS.map((l, i) => (
+                <span key={i} className="logo-crawl-item" title={l.name}>
+                  <img src={logoSrc(l.domain)} alt={l.name} loading="lazy" />
+                </span>
               ))}
             </div>
             {/* Duplicate set for seamless infinite loop — when the
                 first set finishes at translateX(-100%), the duplicate
                 lands at translateX(0), so the cycle has no visible seam. */}
-            <div className="logo-crawl-row">
-              {CLIENT_LOGOS.map((n, i) => (
-                <span key={'b' + i} className="logo-crawl-item">{n}</span>
+            <div className="logo-crawl-row" aria-hidden="true">
+              {CLIENT_LOGOS.map((l, i) => (
+                <span key={'b' + i} className="logo-crawl-item">
+                  <img src={logoSrc(l.domain)} alt="" loading="lazy" />
+                </span>
               ))}
             </div>
           </div>
