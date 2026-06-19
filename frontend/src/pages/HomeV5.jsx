@@ -77,6 +77,21 @@ function HomeV5() {
   const schedClose = ()     => { closeTimer.current = setTimeout(() => setOpenMega(null), 140); };
   const cancelClose = ()    => clearTimeout(closeTimer.current);
 
+  /* Mobile drawer state (≤ 900px) — hamburger button toggles a
+   * full-height slide-in panel. `mobileExpanded` tracks which of
+   * the two nested sections (Results / About) is expanded inside
+   * the drawer so the menu doesn't open as a wall of every link
+   * at once. Body scroll is locked while the drawer is open. */
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState(null);
+  useEffect(() => {
+    if (mobileNavOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [mobileNavOpen]);
+
   /* Activate scroll-snap on the document scroller (<html>) only
    * while this page is mounted. Previous version set
    * `scroll-snap-type` on `.brief-page` — but `.brief-page` is a
@@ -533,6 +548,163 @@ function HomeV5() {
           color: ${NAVY};
         }
 
+        /* ── Hamburger button (≤ 900px only) ──────────────────────
+           Standard 3-line button with morph-to-X on open. Sits where
+           the desktop nav lives, swapped via display: none on each
+           per the breakpoint below. */
+        .brief-burger {
+          display: none;
+          width: 44px;
+          height: 44px;
+          background: transparent;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          position: relative;
+        }
+        .brief-burger-bar {
+          position: absolute;
+          left: 8px;
+          right: 8px;
+          height: 2px;
+          background: #f3f0e8;
+          border-radius: 1px;
+          transition: transform 220ms cubic-bezier(.6,.2,.2,1),
+                      opacity 180ms ease,
+                      top 220ms cubic-bezier(.6,.2,.2,1);
+        }
+        .brief-burger-bar:nth-child(1) { top: 14px; }
+        .brief-burger-bar:nth-child(2) { top: 21px; }
+        .brief-burger-bar:nth-child(3) { top: 28px; }
+        .brief-burger[data-open="true"] .brief-burger-bar:nth-child(1) {
+          top: 21px;
+          transform: rotate(45deg);
+        }
+        .brief-burger[data-open="true"] .brief-burger-bar:nth-child(2) {
+          opacity: 0;
+        }
+        .brief-burger[data-open="true"] .brief-burger-bar:nth-child(3) {
+          top: 21px;
+          transform: rotate(-45deg);
+        }
+
+        /* ── Mobile drawer ────────────────────────────────────────
+           Full-height slide-in panel from the right. Sits ABOVE
+           every section in z-index. Backdrop blurs the page behind.
+           Drawer interior scrolls independently if its content
+           exceeds the viewport. */
+        .brief-drawer-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(8, 22, 42, 0.55);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 220ms ease;
+          z-index: 300;
+        }
+        .brief-drawer-backdrop[data-open="true"] {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .brief-drawer {
+          position: fixed;
+          top: 0;
+          right: 0;
+          width: min(360px, 84vw);
+          height: 100dvh;
+          background: ${NAVY};
+          border-left: 1px solid rgba(232,147,70, 0.22);
+          box-shadow: -16px 0 48px rgba(8, 22, 42, 0.55);
+          transform: translateX(100%);
+          transition: transform 280ms cubic-bezier(.6,.2,.2,1);
+          z-index: 301;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .brief-drawer[data-open="true"] { transform: translateX(0); }
+        .brief-drawer-inner {
+          padding: 96px 24px 32px;
+          display: flex;
+          flex-direction: column;
+        }
+        .brief-drawer-section {
+          font-family: ${TYPE.sans};
+          font-size: 18px;
+          font-weight: 600;
+          color: #f3f0e8;
+          background: transparent;
+          border: none;
+          border-bottom: 1px solid rgba(232,147,70, 0.16);
+          text-align: left;
+          text-decoration: none;
+          padding: 18px 4px;
+          letter-spacing: 0.01em;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+        }
+        .brief-drawer-section:hover { color: ${GOLD_BRIGHT}; }
+        .brief-drawer-caret {
+          width: 0; height: 0;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 5px solid currentColor;
+          opacity: 0.7;
+          transition: transform 200ms ease;
+        }
+        .brief-drawer-section[aria-expanded="true"] .brief-drawer-caret {
+          transform: rotate(180deg);
+        }
+        .brief-drawer-sub {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 280ms cubic-bezier(.6,.2,.2,1);
+        }
+        .brief-drawer-sub[data-open="true"] {
+          max-height: 720px;
+        }
+        .brief-drawer-sublink {
+          display: block;
+          font-family: ${TYPE.sans};
+          font-size: 15px;
+          font-weight: 400;
+          color: rgba(243, 240, 232, 0.78);
+          text-decoration: none;
+          padding: 11px 4px 11px 20px;
+          letter-spacing: 0.005em;
+        }
+        .brief-drawer-sublink:hover { color: ${GOLD_BRIGHT}; }
+        .brief-drawer-sublabel {
+          font-family: ${TYPE.mono};
+          font-size: 10px;
+          font-weight: 500;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: ${GOLD_BRIGHT};
+          padding: 16px 4px 6px 20px;
+        }
+        .brief-drawer-cta {
+          margin-top: 32px;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          padding: 16px 24px;
+          font-family: ${TYPE.sans};
+          font-size: 15px;
+          font-weight: 600;
+          color: ${NAVY};
+          background: ${GOLD_BRIGHT};
+          text-decoration: none;
+          letter-spacing: 0.02em;
+          border: 1px solid ${GOLD_BRIGHT};
+          transition: background 180ms ease;
+        }
+        .brief-drawer-cta:hover { background: ${GOLD}; }
+
         /* Mega menu panel container — flush below the header.
            Uses opacity + transform for the open/close transition so
            the panel sits at z-index above the page body. */
@@ -615,8 +787,12 @@ function HomeV5() {
         @media (max-width: 900px) {
           .brief-station { grid-template-columns: 1fr; column-gap: 24px; }
           .brief-rail { right: 24px; }
-          .brief-nav { gap: 18px; }
-          .brief-nav a:not(.cta) { display: none; }
+          /* Swap desktop nav for hamburger. The mega-menu panels are
+             hover/click triggered only from the desktop nav buttons —
+             with the nav hidden, the panels become unreachable and
+             the drawer becomes the sole navigation surface. */
+          .brief-nav { display: none; }
+          .brief-burger { display: block; }
         }
         @media (prefers-reduced-motion: reduce) {
           .brief-h1 .ch { opacity: 1; transform: none; transition: none; }
@@ -673,6 +849,21 @@ function HomeV5() {
               onMouseEnter={() => setOpenMega(null)}
             >Let&rsquo;s Talk</a>
           </nav>
+
+          {/* Hamburger toggle — visible only at ≤900px via CSS. */}
+          <button
+            type="button"
+            className="brief-burger"
+            data-testid="brief-burger"
+            data-open={mobileNavOpen}
+            aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen(v => !v)}
+          >
+            <span className="brief-burger-bar" />
+            <span className="brief-burger-bar" />
+            <span className="brief-burger-bar" />
+          </button>
         </div>
 
         {/* Mega menu panels — flush below the header bar. */}
@@ -724,6 +915,83 @@ function HomeV5() {
           </div>
         </div>
       </header>
+
+      {/* ── Mobile drawer (≤900px) ───────────────────────────────
+          Slides in from the right. Two collapsible sections mirror
+          the desktop mega-menus (Results / About), then the standalone
+          Insights link, then the Let's Talk CTA pinned at the bottom.
+          Closes on any link click + on backdrop click + on Escape
+          (handled by the close button). */}
+      <div
+        className="brief-drawer-backdrop"
+        data-open={mobileNavOpen}
+        aria-hidden={!mobileNavOpen}
+        onClick={() => setMobileNavOpen(false)}
+      />
+      <aside
+        className="brief-drawer"
+        data-open={mobileNavOpen}
+        data-testid="brief-drawer"
+        aria-hidden={!mobileNavOpen}
+      >
+        <div className="brief-drawer-inner">
+          <button
+            type="button"
+            className="brief-drawer-section"
+            data-open={mobileExpanded === 'results'}
+            data-testid="brief-drawer-results"
+            onClick={() => setMobileExpanded(v => v === 'results' ? null : 'results')}
+            aria-expanded={mobileExpanded === 'results'}
+          >
+            Results
+            <span className="brief-drawer-caret" aria-hidden="true" />
+          </button>
+          <div className="brief-drawer-sub" data-open={mobileExpanded === 'results'}>
+            <a href="/approach"               className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Approach</a>
+            <a href="/discovery-process"      className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Discovery Process</a>
+            <a href="/industries-served"      className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Industries Served</a>
+            <a href="/case-studies"           className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Case Studies</a>
+            <div className="brief-drawer-sublabel">Expertise Areas</div>
+            <a href="/operational-discipline" className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Operational Discipline</a>
+            <a href="/frontline-leadership"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Frontline Leadership</a>
+            <a href="/equipment-reliability"  className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Equipment Reliability</a>
+            <a href="/workforce-capability"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Workforce Capability</a>
+            <a href="/daily-accountability"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Daily Accountability</a>
+          </div>
+
+          <button
+            type="button"
+            className="brief-drawer-section"
+            data-open={mobileExpanded === 'about'}
+            data-testid="brief-drawer-about"
+            onClick={() => setMobileExpanded(v => v === 'about' ? null : 'about')}
+            aria-expanded={mobileExpanded === 'about'}
+          >
+            About
+            <span className="brief-drawer-caret" aria-hidden="true" />
+          </button>
+          <div className="brief-drawer-sub" data-open={mobileExpanded === 'about'}>
+            <a href="/history"      className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>History</a>
+            <a href="/leadership"   className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Leadership</a>
+            <a href="/company-news" className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Company News</a>
+            <a href="/careers"      className="brief-drawer-sublink" onClick={() => setMobileNavOpen(false)}>Careers</a>
+          </div>
+
+          <a
+            href="/insights"
+            className="brief-drawer-section"
+            data-testid="brief-drawer-insights"
+            onClick={() => setMobileNavOpen(false)}
+          >Insights</a>
+
+          <a
+            href="/contact"
+            className="brief-drawer-cta"
+            data-testid="brief-drawer-cta"
+            onClick={() => setMobileNavOpen(false)}
+          >Let&rsquo;s Talk</a>
+        </div>
+      </aside>
 
       {/* ── Right-rail spine ───────────────────────────────────── */}
       <div className="brief-rail" aria-hidden="true">
