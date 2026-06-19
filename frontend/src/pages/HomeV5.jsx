@@ -764,7 +764,11 @@ function HomeV5() {
           top: 0;
           z-index: 100;
           background: ${NAVY};
-          border-bottom: 1px solid rgba(232,147,70, 0.22);
+          /* Border-bottom removed Feb 2026 — the faint gold hairline
+             read as a stray grey line above the hero H1. The strong
+             navy-chrome → cream-paper contrast at the header/hero
+             boundary already gives more than enough visual edge; no
+             rule needed. */
         }
         .brief-header-inner {
           max-width: 1240px;
