@@ -380,9 +380,19 @@ function HomeV5() {
               rgba(251, 250, 246, 0.00) 100%);
         }
         .brief-hero > .brief-h1,
-        .brief-hero > .brief-hero-footer,
-        .brief-hero > .brief-tick {
+        .brief-hero > .brief-hero-footer {
           position: relative;
+          z-index: 2;
+        }
+        /* Tick keeps its absolute positioning from the base .brief-tick
+           rule (top: 8vh, right: 0). Folding it into the position:
+           relative block above accidentally downgraded it to a relative
+           inline element, which then flowed in at the H1's top-left
+           edge as a stray 28px hairline 1px above the H1 — visible as
+           the "rogue gray line above Strong execution." Splitting the
+           selectors lets us keep z-index lift on the tick without
+           clobbering its absolute coords. */
+        .brief-hero > .brief-tick {
           z-index: 2;
         }
         @media (prefers-reduced-motion: reduce) {
