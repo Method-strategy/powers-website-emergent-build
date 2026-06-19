@@ -228,6 +228,14 @@ function HomeV5() {
           overflow-y: auto;
           overflow-x: hidden;
           scroll-snap-type: y mandatory;
+          /* Stop Chrome's trackpad rubber-band bounce at the
+             top/bottom edges of the scroll container — combined
+             with mandatory snap, the bounce produced a visible
+             "fight" against the snap pulling content back. Contain
+             also prevents the scroll from chaining out to any
+             parent scroller (irrelevant here since the body doesn't
+             scroll, but cheap insurance). */
+          overscroll-behavior: contain;
           -webkit-overflow-scrolling: touch;
           /* Paper texture — extremely subtle warm vignette on the
              right edge to anchor the rail. NOT a gradient that
@@ -445,7 +453,12 @@ function HomeV5() {
           transform: translateY(-22px);
           transition: opacity 40ms linear, transform 110ms cubic-bezier(.34, 1.3, .5, 1);
         }
-        .brief-page.is-mounted .brief-h1 .ch,
+        /* Hero H1 strike state — controlled exclusively by the
+           .is-in class on .brief-hero (toggled by an IntersectionObserver
+           in HomeV5). Previously the .brief-page.is-mounted class was
+           also forcing chars to their settled state — but that class
+           is permanent once added on first render, so the strike
+           could never replay when scrolling back up to the hero. */
         .brief-hero.is-in .brief-h1 .ch {
           opacity: 1;
           transform: translateY(0);
