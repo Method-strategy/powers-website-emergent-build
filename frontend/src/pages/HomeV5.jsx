@@ -289,7 +289,7 @@ function HomeV5() {
            cascade as it enters the viewport. */
         .brief-station {
           position: relative;
-          padding: 14vh max(40px, calc((100% - 1240px) / 2 + 40px)) 14vh max(40px, calc((100% - 1240px) / 2));
+          padding: 8vh max(40px, calc((100% - 1240px) / 2 + 40px)) 8vh max(40px, calc((100% - 1240px) / 2));
           box-sizing: border-box;
           display: grid;
           grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
@@ -684,9 +684,6 @@ function HomeV5() {
       {/* ── Beat 01 — Position ─────────────────────────────────── */}
       <section className="brief-hero">
         <span className="brief-tick" style={{ top: '52%' }} aria-hidden="true" />
-        <div className="brief-section-num" data-testid="hero-section-num">
-          Operating Brief &nbsp;&middot;&nbsp; POWERS
-        </div>
         <h1 className="brief-h1" data-testid="hero-h1">
           {HERO_LINES.map((line, li) => (
             <span className="line" key={li}>
@@ -708,15 +705,12 @@ function HomeV5() {
           ))}
         </h1>
         <div className="brief-hero-footer">
-          {/* The audience line. Was "For the operator and the board" —
-              missed high (board doesn't buy) and low (floor operator
-              can't). The actual buyer is the C-suite operator with
-              P&L authority: COO / CEO / PE operating partner. The
-              line below names accountability for the result, which
-              is what this reader's seat carries. */}
-          <span>For the operator accountable for the number</span>
+          {/* The audience line. Was "For the operator accountable for
+              the number" → updated to a forward-leaning CTA-style
+              hook. "Scroll to read" was removed; the document
+              builds itself as the reader advances. */}
+          <span>Find out how</span>
           <span className="rule" />
-          <span>Scroll to read</span>
         </div>
       </section>
 
@@ -985,15 +979,15 @@ function PressureSwarm() {
      *   - Reds: 9–14s. Loud, urgent, plural.
      *   - Greens: 22–32s. Patient, steady, compounding.
      */
-    const STRAT = (i, n, lo, hi) => {
+    const STRAT = (slot, n, lo, hi, jitterSeed) => {
       const slotW = (hi - lo) / n;
-      const jitter = (seeded(i + 9100) - 0.5) * slotW * 0.55;
-      return lo + slotW * (i + 0.5) + jitter;
+      const jitter = (seeded(jitterSeed) - 0.5) * slotW * 0.55;
+      return lo + slotW * (slot + 0.5) + jitter;
     };
     const buildFall = (words) => words.map((w, i) => {
       const r2 = seeded(i + 117);
       const r3 = seeded(i + 217);
-      const x = STRAT(i, words.length, 4, 38);   // left hemisphere
+      const x = STRAT(i, words.length, 4, 38, i + 9100);   // left hemisphere
       const duration = 9 + r2 * 5;
       const delay = -(r3 * 18);
       return { word: w, x, duration, delay };
@@ -1004,7 +998,7 @@ function PressureSwarm() {
       // For RIGHT-anchored greens, x is the offset from the RIGHT
       // viewport edge. Distributing 4–38 here puts word right-edges
       // between 62vw and 96vw measured from the left.
-      const x = STRAT(i + 73, words.length, 4, 38);
+      const x = STRAT(i, words.length, 4, 38, i + 9200);
       const duration = 22 + r2 * 10;
       const delay = -(r3 * 36);
       return { word: w, x, duration, delay };
@@ -1040,17 +1034,28 @@ function PressureSwarm() {
         }
         /* Trailing triangle: red ▾ on falling pressures, green ▴ on
            rising outcomes. Reinforces the directionality of each
-           hemisphere at a glance — the left is downward force, the
-           right is upward lift. Inherits color from .ps-p.fall /
-           .ps-p.rise; sized slightly larger than the mono text so
-           it reads as a glyph, not a footnote. */
+           hemisphere at a glance — left is downward force, right is
+           upward lift. Implemented as a CSS border triangle (not a
+           unicode glyph) — the mono font we use was substituting the
+           ▾/▴ codepoints with the missing-glyph asterisk. Border
+           triangles render identically across every font and OS. */
         .ps-arrow {
           display: inline-block;
-          margin-left: 0.4em;
-          font-size: 13px;
-          line-height: 1;
-          letter-spacing: 0;
-          transform: translateY(-1px);
+          width: 0;
+          height: 0;
+          margin-left: 0.55em;
+          vertical-align: 1px;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+        }
+        .ps-p.fall .ps-arrow {
+          /* Downward red triangle — points toward the baseline. */
+          border-top: 5px solid rgba(224, 101, 79, 0.62);
+        }
+        .ps-p.rise .ps-arrow {
+          /* Upward green triangle — points away from the baseline,
+             toward the top (the compounding direction). */
+          border-bottom: 5px solid rgba(91, 191, 115, 0.62);
         }
         /* Red pressure: rains straight down, shatters at baseline. */
         .ps-p.fall {
@@ -1103,7 +1108,7 @@ function PressureSwarm() {
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
-        >{p.word}<span className="ps-arrow">&#x25BE;</span></span>
+        >{p.word}<span className="ps-arrow" aria-hidden="true" /></span>
       ))}
       {swarm.rising.map((p, i) => (
         <span
@@ -1114,7 +1119,7 @@ function PressureSwarm() {
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
-        >{p.word}<span className="ps-arrow">&#x25B4;</span></span>
+        >{p.word}<span className="ps-arrow" aria-hidden="true" /></span>
       ))}
     </div>
   );
