@@ -65,6 +65,19 @@ const HERO_LINES = [
   { text: 'Regardless of conditions.', accent: true },
 ];
 
+/* Client logo crawl for Beat VI (Where We Work). First-draft brand
+ * list provided by the client. Rendered as styled text wordmarks
+ * (not real SVG marks) for the prototype — placeholders at this
+ * stage so the client can see the concept land. For production,
+ * swap each string for a real `<img src="...svg" alt="..." />` with
+ * licensed brand assets. */
+const CLIENT_LOGOS = [
+  'Kraft Heinz', 'ADM', 'Alcoa', 'BAE Systems', 'BMW', 'Volkswagen',
+  'Corning', 'Simplot', 'RJ Reynolds', 'Cargill', 'Mitsubishi',
+  'Bain Capital', 'Medline', 'Blackstone', 'Givaudan', 'KKR',
+  'Costco', 'Agropur',
+];
+
 function HomeV5() {
   const pageRef  = useRef(null);
   const railFill = useRef(null);
@@ -516,6 +529,12 @@ function HomeV5() {
           transition: clip-path 1000ms cubic-bezier(.2,.7,.2,1);
         }
         .brief-station.is-in .wipe { clip-path: inset(-0.4em 0 -0.5em 0); }
+        /* When the section leaves the viewport, INSTANTLY reset the
+           wipe (no reverse animation). When it re-enters, the wipe
+           plays forward cleanly again. Without this, scrolling up
+           through a section produces a backwards "wipe out to the
+           left" — readable but odd. */
+        .brief-station:not(.is-in) .wipe { transition: none; }
         .brief-station.is-in .wipe-d1 { transition-delay: 120ms; }
         .brief-station.is-in .wipe-d2 { transition-delay: 280ms; }
         .brief-station.is-in .wipe-d3 { transition-delay: 460ms; }
@@ -538,6 +557,88 @@ function HomeV5() {
           text-transform: uppercase;
           color: ${TEXT_MUTED};
         }
+
+        /* ── Logo crawl (Beat VI — Where We Work) ─────────────────
+           Horizontal infinite-marquee of client wordmarks. Two
+           identical rows track left at the same speed; when the
+           first reaches translateX(-100%) the second is at 0%, so
+           the loop has no visible seam. Hover pauses. Soft fades on
+           each edge keep the crawl from "popping" at the viewport
+           boundaries. Logos are text wordmarks (not real SVGs) for
+           the prototype — the client will provide brand-asset SVGs
+           for production; swap each .logo-crawl-item span for an
+           <img> at that point. */
+        .industries-logos-row {
+          margin-top: clamp(40px, 6vh, 80px);
+        }
+        .industries-logos-label {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: 0.26em;
+          text-transform: uppercase;
+          color: ${GOLD_BRIGHT};
+          margin-bottom: 22px;
+        }
+        .logo-crawl {
+          position: relative;
+          overflow: hidden;
+          padding: 4px 0;
+        }
+        .logo-crawl-track {
+          display: flex;
+          width: max-content;
+        }
+        .logo-crawl-row {
+          display: flex;
+          flex-shrink: 0;
+          gap: clamp(48px, 6vw, 96px);
+          padding-right: clamp(48px, 6vw, 96px);
+          animation: logo-crawl-marquee 72s linear infinite;
+          will-change: transform;
+        }
+        .logo-crawl:hover .logo-crawl-row {
+          animation-play-state: paused;
+        }
+        @keyframes logo-crawl-marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-100%); }
+        }
+        .logo-crawl-item {
+          font-family: ${TYPE.sans};
+          font-size: 17px;
+          font-weight: 700;
+          color: rgba(8, 22, 42, 0.42);
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          line-height: 1;
+          transition: color 220ms ease, transform 220ms ease;
+        }
+        .logo-crawl-item:hover {
+          color: rgba(8, 22, 42, 0.92);
+          transform: translateY(-1px);
+        }
+        .logo-crawl-fade {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 80px;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .logo-crawl-fade-l {
+          left: 0;
+          background: linear-gradient(to right, ${PAPER} 0%, rgba(251,250,246,0) 100%);
+        }
+        .logo-crawl-fade-r {
+          right: 0;
+          background: linear-gradient(to left, ${PAPER} 0%, rgba(251,250,246,0) 100%);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .logo-crawl-row { animation: none; }
+        }
+
 
         /* ── Header (navy chrome) ─────────────────────────────────
            Navy background with the dark-bg POWERS logo. Menu items +
@@ -1272,12 +1373,7 @@ function HomeV5() {
       <EvidenceBeat />
 
       {/* ── Beat VI — Industries ────────────────────────────────── */}
-      <Station
-        index="Where We Work"
-        headline="Different industries."
-        pivot="The same execution discipline."
-        body="We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound."
-      />
+      <IndustriesBeat />
 
       {/* ── Beat VII — Results (case study entry point) ─────────── */}
       <CardsBeat
@@ -1677,7 +1773,7 @@ function PressureBeat() {
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
@@ -1725,11 +1821,10 @@ function EvidenceBeat() {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => {
-        if (e.isIntersecting) {
-          el.classList.add('is-in');
-          setAnimating(true);
-          io.disconnect();
-        }
+        el.classList.toggle('is-in', e.isIntersecting);
+        /* Reset on leave so the stat-number count-up replays each
+         * time the section is scrolled back into view. */
+        setAnimating(e.isIntersecting);
       }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
@@ -1822,7 +1917,7 @@ function CardsBeat({ index, headline, pivot, body, cards, cta }) {
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
@@ -1903,7 +1998,7 @@ function ActionBeat() {
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
@@ -1961,12 +2056,7 @@ function ThesisBeat() {
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => {
-        if (e.isIntersecting) {
-          el.classList.add('is-in');
-          io.disconnect();
-        }
-      }),
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
@@ -2068,6 +2158,67 @@ function ThesisBeat() {
   );
 }
 
+
+/* ── Industries beat (Beat VI) — Where We Work
+ *   Extends the Station layout with a full-width client logo crawl
+ *   row beneath the headline + body. The crawl spans both grid
+ *   columns and uses CLIENT_LOGOS (module-level) for the brand list. */
+function IndustriesBeat() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} className="brief-station">
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
+      <div>
+        <div className="station-index wipe">Where We Work</div>
+        <h2 className="station-h2 wipe wipe-d1">
+          <span>Different industries.</span>
+          <span className="pivot">The same execution discipline.</span>
+        </h2>
+      </div>
+      <div className="wipe wipe-d2">
+        <p className="station-lede">
+          We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound.
+        </p>
+      </div>
+      {/* Full-width logo crawl spans both grid columns. */}
+      <div className="industries-logos-row wipe wipe-d3" style={{ gridColumn: '1 / -1' }}>
+        <div className="industries-logos-label">A selection of organizations we&rsquo;ve worked with</div>
+        <div className="logo-crawl" data-testid="logo-crawl">
+          <div className="logo-crawl-fade logo-crawl-fade-l" aria-hidden="true" />
+          <div className="logo-crawl-fade logo-crawl-fade-r" aria-hidden="true" />
+          <div className="logo-crawl-track" aria-hidden="true">
+            <div className="logo-crawl-row">
+              {CLIENT_LOGOS.map((n, i) => (
+                <span key={i} className="logo-crawl-item">{n}</span>
+              ))}
+            </div>
+            {/* Duplicate set for seamless infinite loop — when the
+                first set finishes at translateX(-100%), the duplicate
+                lands at translateX(0), so the cycle has no visible seam. */}
+            <div className="logo-crawl-row">
+              {CLIENT_LOGOS.map((n, i) => (
+                <span key={'b' + i} className="logo-crawl-item">{n}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Station component — every beat below the hero uses this.
  *   `headline` is the sans-navy lead clause. `pivot` is the
  *   serif-italic-gold resolution clause that lands on its own line. */
@@ -2077,12 +2228,7 @@ function Station({ index, headline, pivot, body, quote, attr }) {
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => {
-        if (e.isIntersecting) {
-          el.classList.add('is-in');
-          io.disconnect();
-        }
-      }),
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
