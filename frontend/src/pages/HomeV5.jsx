@@ -74,14 +74,14 @@ const HERO_LINES = [
  * Hover restores the original brand color + full opacity. */
 const CLIENT_LOGOS = [
   { name: 'Kraft Heinz',  domain: 'kraftheinzcompany.com' },
-  { name: 'ADM',          domain: 'adm.com' },
+  { name: 'ADM',          local: '/uploads/client-logos/adm.png' },
   { name: 'Alcoa',        domain: 'alcoa.com' },
   { name: 'BAE Systems',  domain: 'baesystems.com' },
   { name: 'BMW',          domain: 'bmw.com' },
   { name: 'Volkswagen',   domain: 'volkswagengroup.com' },
   { name: 'Corning',      domain: 'corning.com' },
   { name: 'Simplot',      domain: 'simplot.com' },
-  { name: 'RJ Reynolds',  domain: 'reynoldsamerican.com' },
+  { name: 'RJ Reynolds',  local: '/uploads/client-logos/rjreynolds.png' },
   { name: 'Cargill',      domain: 'cargill.com' },
   { name: 'Mitsubishi',   domain: 'mitsubishicorp.com' },
   { name: 'Bain Capital', domain: 'baincapital.com' },
@@ -90,15 +90,17 @@ const CLIENT_LOGOS = [
   { name: 'Givaudan',     domain: 'givaudan.com' },
   { name: 'KKR',          domain: 'kkr.com' },
   { name: 'Costco',       domain: 'costco.com' },
-  { name: 'Agropur',      domain: 'agropur.com' },
+  { name: 'Agropur',      local: '/uploads/client-logos/agropur.svg' },
 ];
 /* logo.dev free public token — fine for prototype + client review.
- * For production, swap the src to locally-hosted SVGs in
- * /public/uploads/client-logos/ so we own the CDN + no rate-limit
- * risk. */
+ * For production, swap each remaining `domain` entry above for a
+ * locally-hosted SVG path (like the three `local` entries above) so
+ * we own the CDN with no rate-limit risk. */
 const LOGO_DEV_TOKEN = 'pk_X-1ZO13GSgeOoUrIuJ6GMQ';
-const logoSrc = (domain) =>
-  `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=200&format=png&retina=true`;
+const logoSrc = (l) =>
+  l.local
+    ? l.local
+    : `https://img.logo.dev/${l.domain}?token=${LOGO_DEV_TOKEN}&size=400&format=png&retina=true`;
 
 function HomeV5() {
   const pageRef  = useRef(null);
@@ -629,24 +631,28 @@ function HomeV5() {
         .logo-crawl-item {
           display: inline-flex;
           align-items: center;
-          height: 44px;
+          height: 72px;
           flex-shrink: 0;
         }
-        /* Real logos pulled from logo.dev's CDN at runtime, knocked
-           down to a flat dark silhouette so all 18 marks read as a
-           single cohesive set. Treatment:
+        /* Real logos pulled from logo.dev's CDN at runtime (or local
+           SVG/PNG for the 3 user-provided assets), knocked down to a
+           flat dark silhouette so all 18 marks read as a single
+           cohesive set. Treatment:
              - mix-blend-mode: multiply — logo.dev returns PNGs with
                white backgrounds; multiply blends those white pixels
                into the cream paper (effectively transparent), while
-               colored logo pixels darken.
+               colored logo pixels darken. The user-provided ADM and
+               RJ Reynolds logos had black backgrounds — those were
+               pre-processed to transparent so multiply leaves them
+               clean too.
              - grayscale(1) + contrast(1.2) — strips brand color and
                sharpens the silhouette.
              - opacity: 0.55 — knocks the whole set back so the H2
                and lede stay the dominant reads.
            Hover restores the original brand color + full opacity. */
         .logo-crawl-item img {
-          height: 32px;
-          max-width: 140px;
+          height: 56px;
+          max-width: 200px;
           width: auto;
           object-fit: contain;
           mix-blend-mode: multiply;
@@ -2244,7 +2250,7 @@ function IndustriesBeat() {
             <div className="logo-crawl-row">
               {CLIENT_LOGOS.map((l, i) => (
                 <span key={i} className="logo-crawl-item" title={l.name}>
-                  <img src={logoSrc(l.domain)} alt={l.name} loading="lazy" />
+                  <img src={logoSrc(l)} alt={l.name} loading="lazy" />
                 </span>
               ))}
             </div>
@@ -2254,7 +2260,7 @@ function IndustriesBeat() {
             <div className="logo-crawl-row" aria-hidden="true">
               {CLIENT_LOGOS.map((l, i) => (
                 <span key={'b' + i} className="logo-crawl-item">
-                  <img src={logoSrc(l.domain)} alt="" loading="lazy" />
+                  <img src={logoSrc(l)} alt="" loading="lazy" />
                 </span>
               ))}
             </div>
