@@ -73,17 +73,17 @@ const HERO_LINES = [
  * read as a single cohesive set rather than a brand-color carnival.
  * Hover restores the original brand color + full opacity. */
 const CLIENT_LOGOS = [
-  { name: 'Kraft Heinz',  domain: 'kraftheinzcompany.com' },
+  { name: 'Kraft Heinz',  local: '/uploads/client-logos/kraft-heinz.png' },
   { name: 'ADM',          local: '/uploads/client-logos/adm.png' },
-  { name: 'Alcoa',        domain: 'alcoa.com' },
-  { name: 'BAE Systems',  domain: 'baesystems.com' },
+  { name: 'Alcoa',        local: '/uploads/client-logos/alcoa.png' },
+  { name: 'BAE Systems',  local: '/uploads/client-logos/bae-systems.svg' },
   { name: 'BMW',          domain: 'bmw.com' },
-  { name: 'Volkswagen',   domain: 'volkswagengroup.com' },
-  { name: 'Corning',      domain: 'corning.com' },
+  { name: 'Volkswagen',   local: '/uploads/client-logos/volkswagen.png' },
+  { name: 'Corning',      local: '/uploads/client-logos/corning.png' },
   { name: 'Simplot',      local: '/uploads/client-logos/simplot.svg' },
   { name: 'RJ Reynolds',  local: '/uploads/client-logos/rjreynolds.png' },
   { name: 'Cargill',      local: '/uploads/client-logos/cargill.png' },
-  { name: 'Mitsubishi',   local: '/uploads/client-logos/mitsubishi.svg' },
+  { name: 'Mitsubishi',   domain: 'mitsubishicorp.com' },
   { name: 'Bain Capital', domain: 'baincapital.com' },
   { name: 'Medline',      domain: 'medline.com' },
   { name: 'Blackstone',   domain: 'blackstone.com' },
