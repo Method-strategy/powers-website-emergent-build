@@ -8,8 +8,11 @@
  *     paper background with one navy beat reserved for the pressure
  *     exhibit.
  *   • Voice shifts from shift/operator vocabulary to board-room
- *     vocabulary ("I / Position", "II / Thesis", "III / Mechanism",
- *     etc.) — what a PE operating partner or CEO actually thinks in.
+ *     vocabulary. Eyebrows were rewritten Feb 2026 from filing-
+ *     cabinet section labels ("I/Position", "II/Thesis") to
+ *     plainspoken concept titles ("The Foundation", "Performance
+ *     Under Pressure", "Our Work Ethic", "The Ledger", "Where We
+ *     Work", "Client Success Stories", "Field Notes", "Next Move").
  *   • Header uses NAVY background with the dark-bg POWERS logo. Menu
  *     items match the V4 spec exactly (Results / About / Insights /
  *     Let's Talk) — those are pre-planned pages.
@@ -24,8 +27,8 @@
  *      the whole document.
  *   6. Gold is a signal color, used sparingly.
  *
- *  V4 lives on at /v4-locked for client side-by-side comparison.
- * ════════════════════════════════════════════════════════════════════ */
+ *  V4 lives on at / for the client side-by-side comparison; V5 is
+ *  served at /v5 for client review. Routing not changed in this file. */
 
 import React, { useEffect, useRef, useState } from 'react';
 import { TYPE } from '../lib/designSpec';
@@ -51,6 +54,16 @@ const RULE        = 'rgba(13, 36, 66, 0.16)';
 const RULE_SOFT   = 'rgba(13, 36, 66, 0.08)';
 const TEXT_BODY   = 'rgba(13, 36, 66, 0.72)';
 const TEXT_MUTED  = 'rgba(13, 36, 66, 0.54)';
+
+/* Hero H1 lines — module-level so the array isn't reallocated on
+ * every HomeV5 render. The `accent` flag flips that line to the
+ * gold .accent class (used for the third "Regardless of conditions."
+ * payoff). */
+const HERO_LINES = [
+  { text: 'Strong execution.',         accent: false },
+  { text: 'Strong performance.',       accent: false },
+  { text: 'Regardless of conditions.', accent: true },
+];
 
 function HomeV5() {
   const pageRef  = useRef(null);
@@ -91,11 +104,7 @@ function HomeV5() {
     };
   }, []);
 
-  const HERO_LINES = [
-    { text: 'Strong execution.',         accent: false },
-    { text: 'Strong performance.',       accent: false },
-    { text: 'Regardless of conditions.', accent: true },
-  ];
+  // HERO_LINES is module-level (above) so the array doesn't reallocate per render.
 
   return (
     <div
@@ -173,6 +182,7 @@ function HomeV5() {
         }
         .brief-tick {
           position: absolute;
+          top: 8vh;
           right: 0;
           width: 28px;
           height: 1px;
@@ -928,13 +938,31 @@ function SiteFooter() {
   );
 }
 
-/* ── Pressures (fall down-right) + Outcomes (rise up-right) ──────
- * Two independent particle fields share an X-shaped motion. Reds
- * descend left-to-right (representing pressure dragging down).
- * Greens rise left-to-right (representing performance lifting).
- * They cross at the centerline — the visual of "we get paid to turn
- * red numbers into green ones" without literal one-to-one pairing.
- * Spread thinner than before so each word is readable, not bunched. */
+/* ── Pressures + Outcomes (Beat III ambient swarm) ───────────────
+ * Two independent particle fields split into LEFT and RIGHT
+ * hemispheres of the navy "Performance Under Pressure" beat.
+ *
+ *   LEFT  — red pressures rain straight down, then SHATTER at a
+ *           shared baseline ~56vh from section top (opacity collapse
+ *           + scaleY crush + letter-spacing widen-out). Reads as the
+ *           operating pressures hitting the disciplines and breaking.
+ *   RIGHT — green outcomes EMERGE from the exact same baseline and
+ *           rise straight up, untouched, fading near the top. Reads
+ *           as outcomes compounding above the same horizon.
+ *
+ * Implementation notes:
+ *   - Positions are STRATIFIED across each hemisphere (one slot per
+ *     phrase + small intra-slot jitter) so coverage is uniform, not
+ *     clustered.
+ *   - Greens are anchored by the RIGHT edge (`right: Xvw` instead of
+ *     `left:`) so long phrases like "+34% labor productivity" extend
+ *     leftward into their band without overflowing the viewport.
+ *   - Speed contrast carries the narrative: reds 9–14s (urgent),
+ *     greens 22–32s (patient/compounding).
+ *   - Each phrase trails a directional border-triangle (red ▾ left,
+ *     green ▴ right) — drawn via CSS borders so the rendering is
+ *     identical across fonts (the mono face was substituting the
+ *     unicode glyphs with missing-glyph asterisks). */
 const FALLING_PRESSURES = [
   'Demand spike', 'Leadership change', 'PE timeline', 'New site online',
   'Labor shortage', 'Supply disruption', 'Margin compression',
@@ -1141,15 +1169,13 @@ function PressureBeat() {
       background: NAVY_DEEP,
       color: '#f3f0e8',
       gridTemplateColumns: '1fr',
-      paddingTop: '14vh',
-      paddingBottom: '14vh',
       borderTop: '1px solid rgba(232,147,70, 0.22)',
       borderBottom: '1px solid rgba(232,147,70, 0.22)',
       position: 'relative',
       overflow: 'hidden',
     }}>
       <PressureSwarm />
-      <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)', zIndex: 2 }} aria-hidden="true" />
+      <span className="brief-tick" style={{ background: 'rgba(232,147,70,0.32)', zIndex: 2 }} aria-hidden="true" />
       <div style={{ marginBottom: 18, position: 'relative', zIndex: 2 }}>
         <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Performance Under Pressure</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8' }}>
@@ -1200,11 +1226,9 @@ function EvidenceBeat() {
   return (
     <section ref={ref} className="brief-station" style={{
       gridTemplateColumns: '1fr',
-      paddingTop: '14vh',
-      paddingBottom: '14vh',
     }}>
       <span className="station-divider" aria-hidden="true" />
-      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
       {/* Header takes full station width so neither H2 clause wraps
           internally; lede below is body-width-constrained (none here
           — Evidence has no lede paragraph). */}
@@ -1287,11 +1311,9 @@ function CardsBeat({ index, headline, pivot, body, cards, cta }) {
   return (
     <section ref={ref} className="brief-station" style={{
       gridTemplateColumns: '1fr',
-      paddingTop: '14vh',
-      paddingBottom: '14vh',
     }}>
       <span className="station-divider" aria-hidden="true" />
-      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
       {/* Header: index + H2 occupy the full station frame width so
           the sans clause ("Operations built on strong execution
           produce") doesn't get force-wrapped by a narrow column.
@@ -1368,39 +1390,34 @@ function ActionBeat() {
     return () => io.disconnect();
   }, []);
   return (
-    <section ref={ref} className="brief-station" style={{
-      gridTemplateColumns: 'minmax(0,1.4fr) minmax(280px,1fr)',
-      paddingTop: '18vh',
-      paddingBottom: '18vh',
-      alignItems: 'end',
-    }}>
+    <section ref={ref} className="brief-station" style={{ gridTemplateColumns: '1fr' }}>
       <span className="station-divider" aria-hidden="true" />
-      <span className="brief-tick" style={{ top: '18vh' }} aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
       <div>
         <div className="station-index wipe" style={{ marginBottom: 14 }}>Next Move</div>
-        <h2 className="station-h2 wipe wipe-d1" style={{ maxWidth: 920 }}>
+        <h2 className="station-h2 wipe wipe-d1">
           <span>Let&rsquo;s build your operation</span>
           <span className="pivot">to execute under any circumstances.</span>
         </h2>
         <p className="station-lede wipe wipe-d2" style={{ marginTop: 24, maxWidth: 600 }}>
           Tell us where the operation is feeling pressure. We&rsquo;ll come see it on the floor, find the gaps that are hiding inside it, and build the disciplines that close them.
         </p>
-      </div>
-      <div className="wipe wipe-d3" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <a href="/contact" style={{
-          fontFamily: TYPE.sans, fontSize: 15, fontWeight: 600,
-          background: GOLD_BRIGHT, color: NAVY,
-          padding: '18px 32px',
-          textDecoration: 'none',
-          letterSpacing: '0.02em',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 12,
-          transition: 'background 180ms ease',
-        }}
-          onMouseEnter={(e) => e.currentTarget.style.background = GOLD}
-          onMouseLeave={(e) => e.currentTarget.style.background = GOLD_BRIGHT}
-        >Start a conversation <span>→</span></a>
+        <div className="wipe wipe-d3" style={{ marginTop: 40 }}>
+          <a href="/contact" style={{
+            fontFamily: TYPE.sans, fontSize: 15, fontWeight: 600,
+            background: GOLD_BRIGHT, color: NAVY,
+            padding: '18px 32px',
+            textDecoration: 'none',
+            letterSpacing: '0.02em',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 12,
+            transition: 'background 180ms ease',
+          }}
+            onMouseEnter={(e) => e.currentTarget.style.background = GOLD}
+            onMouseLeave={(e) => e.currentTarget.style.background = GOLD_BRIGHT}
+          >Start a conversation <span>→</span></a>
+        </div>
       </div>
     </section>
   );
@@ -1439,11 +1456,9 @@ function ThesisBeat() {
   return (
     <section ref={ref} className="brief-station" style={{
       gridTemplateColumns: '1fr',
-      paddingTop: '12vh',
-      paddingBottom: '12vh',
     }}>
       <span className="station-divider" aria-hidden="true" />
-      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
 
       <div style={{ marginBottom: 32, maxWidth: 920 }}>
         <div className="station-index wipe" style={{ marginBottom: 14 }}>The Foundation</div>
@@ -1557,7 +1572,7 @@ function Station({ index, headline, pivot, body, quote, attr }) {
   return (
     <section ref={ref} className="brief-station">
       <span className="station-divider" aria-hidden="true" />
-      <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
       <div>
         <div className="station-index wipe">{index}</div>
         <h2 className="station-h2 wipe wipe-d1">
