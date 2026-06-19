@@ -616,8 +616,11 @@ function HomeV5() {
         .logo-crawl-row {
           display: flex;
           flex-shrink: 0;
-          gap: clamp(48px, 6vw, 96px);
-          padding-right: clamp(48px, 6vw, 96px);
+          /* Tightened from clamp(48, 6vw, 96px) — at the new 56px
+             logo height + 130px min-width per item, 96px between
+             items felt over-spaced. 60px reads as cohesive rhythm. */
+          gap: clamp(36px, 4vw, 60px);
+          padding-right: clamp(36px, 4vw, 60px);
           animation: logo-crawl-marquee 72s linear infinite;
           will-change: transform;
         }
@@ -631,7 +634,18 @@ function HomeV5() {
         .logo-crawl-item {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           height: 72px;
+          /* Reserve a minimum horizontal slot per item so the
+             square-aspect logos (Medline, BMW, VW, Corning,
+             Mitsubishi) — which would otherwise render at only
+             ~56px wide — don't create whitespace "islands" between
+             their wider neighbors. The user saw this as a "big gap
+             between Bain and Blackstone" when Medline sat between
+             them at native square width. Now every item occupies
+             at least 130px of layout, centered, producing a more
+             uniform marquee rhythm. */
+          min-width: 130px;
           flex-shrink: 0;
         }
         /* Real logos pulled from logo.dev's CDN at runtime (or local
