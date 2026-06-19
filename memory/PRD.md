@@ -424,3 +424,53 @@ THE FOUNDATION · PERFORMANCE UNDER PRESSURE · WORK ETHIC · THE LEDGER · WHER
 - Contact form submission handler (UI only today).
 - Search modal functionality.
 - Delete unused `RowAbilityToExecute.jsx` import + retired `SectionDifferentApproach`.
+
+## 2026-06-19 (later) — Pre-launch polish + audience-anchor pass
+
+User pushing V5 live with V4 staying at `/v4` for client side-by-side review.
+
+**Reported issues found + fixed this pass:**
+
+1. **Beat IX H2 wrap** — "to execute under any circumstances." was wrapping in the 1.4fr column at desktop. Collapsed ActionBeat to single-column grid; H2 now has the full 1240px frame to breathe.
+2. **Unified section padding** — every beat was re-overriding `paddingTop/Bottom` (12vh / 14vh / 18vh) and fighting the global 8vh + `align-content: center` centering. Stripped all inline padding overrides; one source of truth.
+3. **brief-tick top values** — 4 different values across 7 instances. Default moved to CSS (`top: 8vh`); all inline overrides removed. Hero keeps its intentional `top: 52%` override.
+4. **HERO_LINES hoisted** to module scope (was reallocated on every render).
+5. **Stale file-header + PressureSwarm comments** — referenced removed labels and the old X-pattern animation. Rewritten to reflect the actual current implementation.
+6. **Content widths misaligned with chrome** — stations had asymmetric padding (+40px on the right only). Now symmetric `max(40px, calc((100% - 1240px) / 2 + 40px))` on both sides. Station content frame = 1160px wide, matching `.brief-header-inner` exactly.
+7. **Header NOT actually sticky** — header was declared `position: sticky` but couldn't function because scroll-snap was set on `.brief-page` (a `<div>` with no `overflow:auto` — i.e., NOT a scroll container). Sticky positioning is relative to the scroller; with the wrong scroller targeted, sticky was inert. Root cause fixed in #8 below; sticky now works for free.
+8. **Scroll-snap actually engaged** — moved `scroll-snap-type: y mandatory` from `.brief-page` to `html.v5-snap` (scoped via a `useEffect` that toggles the class on mount/unmount, so V4 and the rest of the app keep their free-scroll behavior). The document scroller is `<html>`; that's where snap needs to live. Now one scroll-wheel notch or one swipe = one beat advance, with the next section locked to the viewport top. Verified: `html.v5-snap class: True, computed scroll-snap-type: y mandatory`. Switched section `100vh` → `100dvh` so iOS Safari's collapsing address bar doesn't break section heights mid-scroll.
+9. **Rail fill thinner** — `.brief-rail-fill` 2px → 1px (matches the underlying hairline width); glow softened 10px → 8px.
+10. **iPhone H1 intra-word break** — chars rendered as `display: inline-block` were valid line-break candidates between every character, so "execution" was wrapping as "e/xecution" on 430px portrait. Each word now wrapped in `<span className="word">` with `display: inline-block; white-space: nowrap`. Real spaces sit between word wrappers as the only valid break opportunities. Typewriter cadence preserved by ticking the `ci` counter through space slots without rendering them as `.ch` spans. Verified programmatically at 430px viewport: `intra_word_breaks: 'NONE — fix works'`.
+11. **No hamburger at tablet/mobile** — basic SOP miss. Built a proper hamburger button (3-bar with morph-to-X animation), visible only at ≤900px via media query, swapping out the desktop nav. Drawer slides in from the right (max 360px wide), full-height (100dvh), with backdrop-blur backdrop, body scroll lock while open. Drawer contains: Results + About as collapsible sections (matching the desktop mega panels), Insights as a standalone link, "Let's Talk" pinned as a CTA button at the bottom. All links close the drawer on tap.
+12. **Menu hierarchy clarity (V5 was less clear than V4)** — under Results, "Expertise Areas" was styled as a small-caps tracked uppercase label, which read as a separate category rather than the parent of the 5 disciplines beneath it. Replaced with a non-clickable "Areas of Expertise" in standard menu font, with the 5 disciplines indented one step using thin gold leader marks. Same treatment in the drawer: tap Results → 4 main items + "Areas of Expertise" as a nested expandable button → tap it again → 5 disciplines unfold further indented.
+
+**Hero video — the audience anchor (new):**
+
+User removed the explicit audience eyebrow ("For the operator accountable for the number") earlier in the pass and asked whether we could use V4's hero video as a "very translucent goldish/sepia overlay" to do the audience-naming job visually. Answer: yes — the manufacturing/shop-floor montage with dissolves tells the reader who this brief is for at a glance.
+
+Implementation:
+- `<video autoplay muted loop playsinline preload="auto">` inside `.brief-hero` only (not on the rest of the page — keeps the brief feel intact below the hero).
+- `opacity: 0.22`, `filter: sepia(0.95) saturate(1.55) hue-rotate(-10deg) brightness(1.06) contrast(0.92)`, `mix-blend-mode: multiply` — warm goldish-sepia wash that stains the cream paper without obscuring the navy H1.
+- `.brief-hero-wash` — radial cream gradient most opaque at 20% from the left (where the H1 sits), transparent at the right (where the video reads more freely). Keeps the navy text fully legible.
+- **Source video compressed 21MB → 2.1MB** via ffmpeg (1280×720 H.264 ~800kbps, `-movflags +faststart` for progressive streaming). At 22% opacity behind a multiply wash, source resolution is invisible — the wins are entirely on payload size + cellular friendliness.
+- **95KB poster JPG** (first frame, sepia-baked) renders instantly so the hero never shows blank while the 2.1MB video buffers.
+- Paused under `prefers-reduced-motion: reduce`.
+
+**Files touched this pass:**
+- `/app/frontend/src/pages/HomeV5.jsx` (everything above)
+- `/app/frontend/public/uploads/powers-hero-bg.mp4` (new — 2.1MB compressed)
+- `/app/frontend/public/uploads/powers-hero-bg-poster.jpg` (new — 95KB)
+
+**Status:** V5 ready to push live alongside V4 at `/v4`. Client will receive both URLs as iteration links.
+
+**Open for next session (P0 → P1):**
+- Convert plain `<a href>` menu links to react-router `<Link>` so V5 → inner-page navigation is SPA-smooth (no full document reload).
+- Wire Beats VII (Case Studies) + VIII (Field Notes) to real `caseStudies.js` data instead of placeholder cards.
+- Build native React Industries page at `/industries-served` (currently `LegacyPage.jsx` HTML injection).
+- Roll out the remaining 66 case study entries + matching routes.
+- Mobile pass on the inner section beats (hero is solid on iPhone Pro Max; the rest deserve the same scrutiny).
+- Contact form submission handler (UI only today).
+- Search modal functionality.
+- Find a home for "gains that sustain" — possibly Beat V eyebrow or a Beat III payoff variant.
+- Delete unused `RowAbilityToExecute.jsx` + retired `SectionDifferentApproach`.
+
