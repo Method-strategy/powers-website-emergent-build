@@ -1931,13 +1931,18 @@ function PressureBeat() {
         <p className="station-lede" style={{ color: 'rgba(243,240,232,0.78)', maxWidth: 720 }}>
           Market pressures don&rsquo;t stop. The question isn&rsquo;t whether you can get better. It&rsquo;s whether what you built stays built when demand spikes, leadership changes, a new site comes online, or a PE timeline compresses. Operations built with these five core disciplines as their foundation hold position, recover faster, and compound gains regardless.
         </p>
-        <p className="station-lede wipe wipe-d3" style={{
-          marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)',
-          maxWidth: 1040, textWrap: 'pretty',
-        }}>
-          Greater margins. Stronger performance. Better results. Quarter after quarter.
-        </p>
       </div>
+      {/* Closing kicker lives OUTSIDE the 720px lede wrapper so it can
+          breathe to its own wider 1040px measure. Was previously nested
+          inside .wipe.wipe-d2 (maxWidth: 720), which clipped the line
+          and forced "Quarter after quarter." to wrap on desktop even
+          though the subhead above it is much wider. */}
+      <p className="station-lede wipe wipe-d3" style={{
+        marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)',
+        maxWidth: 1040, textWrap: 'pretty', position: 'relative', zIndex: 2,
+      }}>
+        Greater margins. Stronger performance. Better results. Quarter after quarter.
+      </p>
     </section>
   );
 }
