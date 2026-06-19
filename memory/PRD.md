@@ -373,3 +373,54 @@ User feedback after seeing the spec-pass result on a 30" monitor: Row 4 and Row 
 - `/app/frontend/src/pages/HomeV4.jsx` (Row 4 outer frame restore + H2 lift-out for Rows 6/7/8 + display:block spans)
 - `/app/frontend/src/components/DisciplinesAndPressureExhibit.jsx` (Row 2 H2 lift-out + `.s3-h2-wide` style + `.s3-intro` narrow measure)
 - `/app/frontend/src/components/HeroPressureExhibit.jsx` (Row 3 H2 lift-out + `.hpe-subhead` margin/text-align update + `.hpe-h2-main`/`.pivot` block display + `.hpe-copy` narrow measure)
+
+
+## 2026-06-19 — HomeV5 Operating Brief refinement pass (Beat III, eyebrows, layout root-causes)
+
+V5 at `/v5` continues as the client-review iteration. V4 remains at `/` per user direction; both URLs will be shared with the client as separate links.
+
+**Masthead + hero copy reset (per client direction):**
+- Removed the `.brief-cover` cover-meta strip ("Operating Brief 2026 / POWERS / Confidential to the reader") — was reading as theater.
+- Removed the hero eyebrow entirely (formerly "I / Position", briefly "OPERATING BRIEF · POWERS").
+- Hero footer reduced from "For the operator accountable for the number · Scroll to read" to a single line: **"Find out how"**. Forward-leaning CTA tone; the scroll affordance is the scroll-snap itself, no instruction needed.
+
+**Beat-eyebrow rewrite — plainspoken labels (no Roman numerals, no copy-concept conceit):**
+THE FOUNDATION · PERFORMANCE UNDER PRESSURE · WORK ETHIC · THE LEDGER · WHERE WE WORK · CASE STUDIES · FIELD NOTES · NEXT MOVE.
+
+**Credo relocated to Beat IV (Work Ethic):**
+- Removed the right-column quote sidebar from Beat II (Thesis) entirely.
+- Moved "If you're working, we're working." into Beat IV via the existing `Station` component's `quote` + `attr` props, attributed as "The POWERS guiding principle". Reads now as the blue-collar work-ethic credo, not a piece of floor practice trivia.
+
+**Beat III (Pressure) animation rebuild — narrative-led:**
+- Eyebrow renamed UNDER PRESSURE → "Performance Under Pressure".
+- Swarm split into clean L/R hemispheres at the H2 baseline. Red pressures fall straight down the LEFT hemisphere (x ∈ [4, 38]vw, anchored by left edge); green outcomes EMERGE from the same baseline (top: 56vh) and rise straight up the RIGHT hemisphere (right offset ∈ [4, 38]vw, anchored by right edge so long phrases like "+34% labor productivity" extend leftward into their band without overflowing). One shared horizon = the disciplines.
+- Speed contrast carries the narrative: reds 9–14s (urgent), greens 22–32s (patient/compounding).
+- Reds shatter at the baseline via opacity + scaleY collapse + letter-spacing widen-out.
+- **STRAT (stratified sampling)** replaced pure-random seeding so coverage is guaranteed even across each band (no clusters).
+- Directional **CSS border triangles** (red ▾ on each falling phrase, green ▴ on each rising phrase) reinforce the hemisphere metaphor at a glance. Border triangles chosen over unicode glyphs because the mono font was substituting ▾/▴ with the missing-glyph asterisk.
+
+**Self-inflicted bug found + fixed during this pass:**
+- First swarm rewrite passed `i + 73` to the STRAT helper as the slot index, which made STRAT compute `right: 212vw` for every green — pushing them all off-screen. STRAT now takes separate `slot` and `jitterSeed` args so the slot index always stays 0…n-1.
+
+**ROOT-CAUSE FIXES (the real wins of this pass):**
+1. **`.brief-station { gap: clamp(40px, 6vw, 96px) }` → `column-gap:`.** The `gap` shorthand was applying to row-gap too, injecting a 96px ghost row between every grid item in single-column beats. That ghost stacked on top of each item's own marginBottom, producing the "blown-out" vertical gaps the user marked with red X's in their feedback screenshot. With `column-gap` only, vertical rhythm comes from explicit item margins as intended. Same fix in the 900px responsive override.
+2. **`.brief-station { align-items: start } → align-items: center` + `align-content: center` on the section.** Combined with `min-height: 100vh` and reduced padding (14vh → 8vh), content now vertically centers within each snapped viewport instead of anchoring to the top.
+3. **`clip-path: inset(0 0 0 0)` on `.wipe` was clipping serif descenders** off every H2 italic (.pivot clauses). Layout was still allocating that descender region, which produced an invisible "ghost space" below the visible text — the user's perceived "big gap between subhead and lede" was actually the clipped-but-still-allocated descender band. Changed to `inset(-0.4em 0 -0.5em 0)` (negative top/bottom for glyph breathing room, horizontal still drives the wipe sweep). Reduced-motion override fixed too.
+4. **`.brief-h1 .line { overflow: hidden }`** was clipping the "g" descender in "Regardless of conditions." at line-height 1.03. Replaced with `clip-path: inset(0 0 -0.5em 0)` so the pre-strike position is still hidden (top clip) but descenders render past the box bottom.
+
+**Confirmed working (no code changes needed):**
+- CSS `scroll-snap-type: y mandatory` on `.brief-page` + `scroll-snap-align: start` + `min-height: 100vh` on every section → one full-viewport beat at a time, on scroll OR swipe, across desktop/laptop/tablet/mobile + landscape/portrait. IntersectionObserver triggers the wipe + hammer-strike build animations as each beat reaches the viewport — the "build before your eyes on scroll" paradigm is already live.
+
+**Status:** V5 at `/v5` ready for the client review link. V4 at `/` untouched.
+
+**Files touched this pass:**
+- `/app/frontend/src/pages/HomeV5.jsx` (entire pass — root-cause CSS fixes, swarm rebuild, eyebrow rewrites, masthead removal, hero footer rewrite, credo relocation)
+
+**Still open (P0 → P1):**
+- Mobile responsive pass on `HomeV5` at 375px / 768px portrait + landscape (the scroll-snap math is right, but spot-checks at small viewports still owed).
+- Wire Beats VII (Case Studies) + VIII (Insights) to real `caseStudies.js` data instead of placeholder cards.
+- Native React Industries page (`/industries-served`) — currently `LegacyPage.jsx` raw HTML injection.
+- Roll out remaining 66 case study entries + matching routes.
+- Contact form submission handler (UI only today).
+- Search modal functionality.
+- Delete unused `RowAbilityToExecute.jsx` import + retired `SectionDifferentApproach`.
