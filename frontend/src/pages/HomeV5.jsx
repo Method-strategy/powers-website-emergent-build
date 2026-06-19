@@ -230,7 +230,15 @@ function HomeV5() {
         }
         .brief-h1 .line {
           display: block;
-          overflow: hidden;
+          /* Was overflow: hidden, which clipped both top AND bottom
+             of each line box. At line-height 1.03 + 800-weight sans
+             at clamp(48–96px), the line box has no descender room —
+             the "g" in "Regardless" was getting sliced at the box
+             bottom. We only need to hide the pre-strike position
+             (chars are translateY(-22px) above their resting spot),
+             so clip the TOP at 0 and extend the BOTTOM 0.5em past
+             the box so descenders render fully. */
+          clip-path: inset(0 0 -0.5em 0);
         }
         .brief-h1 .ch {
           display: inline-block;
@@ -285,7 +293,14 @@ function HomeV5() {
           box-sizing: border-box;
           display: grid;
           grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-          gap: clamp(40px, 6vw, 96px);
+          /* COLUMN-gap only — the previous "gap" shorthand applied
+             to row-gap too, injecting a 96px ghost row between every
+             stacked item in single-column beats (Thesis, Pressure,
+             Evidence, Cards, Action). That ghost stacked on top of
+             each item's own marginBottom, producing the blown-out
+             "X" gaps. Vertical rhythm now comes from explicit item
+             margins only. */
+          column-gap: clamp(40px, 6vw, 96px);
           align-items: center;
         }
         .station-divider {
@@ -549,7 +564,7 @@ function HomeV5() {
         }
 
         @media (max-width: 900px) {
-          .brief-station { grid-template-columns: 1fr; gap: 24px; }
+          .brief-station { grid-template-columns: 1fr; column-gap: 24px; }
           .brief-rail { right: 24px; }
           .brief-nav { gap: 18px; }
           .brief-nav a:not(.cta) { display: none; }
@@ -944,40 +959,52 @@ function PressureSwarm() {
       const x = Math.sin(i * 9301 + 49297) * 233280;
       return x - Math.floor(x);
     };
-    /* HEMISPHERE SPLIT (Feb 2026 narrative pass):
-     *   - Red pressures fall down the LEFT hemisphere only (4–46vw).
-     *   - Green outcomes rise up the RIGHT hemisphere only (54–96vw).
-     *   This reads as a literal split-screen of the metaphor: the
-     *   left side is what hits the operation; the right side is
-     *   what it produces. They don't intermingle.
+    /* HEMISPHERE SPLIT + STRATIFIED POSITIONS (Feb 2026 rev):
+     *   - Red pressures: LEFT hemisphere only, anchored by LEFT
+     *     edge of the word. X range 4–38vw — kept under 38 so the
+     *     longest phrase ("Working-capital crunch") doesn't bleed
+     *     across the centerline.
+     *   - Green outcomes: RIGHT hemisphere only, anchored by RIGHT
+     *     edge of the word (CSS `right:` instead of `left:`). X
+     *     range 62–96vw measured from the LEFT viewport edge — kept
+     *     above 62 so long phrases extend leftward without crossing
+     *     center.
+     *
+     *   Previously: pure-random seeded X distribution produced
+     *   visible clustering on the green side. Switched to
+     *   STRATIFIED sampling — each phrase gets its own slot in the
+     *   band, with a small intra-slot jitter — so coverage is
+     *   guaranteed even across both hemispheres.
      *
      * COMMON BASELINE:
      *   - Reds fall and SHATTER at ~56vh from section top.
      *   - Greens EMERGE from exactly the same line and rise to the
      *     top — same scar in the page, two opposite directions.
-     *   That single shared horizon is the disciplines: pressure
-     *   breaks against it; outcomes are born from it.
      *
      * SPEED CONTRAST:
      *   - Reds: 9–14s. Loud, urgent, plural.
      *   - Greens: 22–32s. Patient, steady, compounding.
      */
+    const STRAT = (i, n, lo, hi) => {
+      const slotW = (hi - lo) / n;
+      const jitter = (seeded(i + 9100) - 0.5) * slotW * 0.55;
+      return lo + slotW * (i + 0.5) + jitter;
+    };
     const buildFall = (words) => words.map((w, i) => {
-      const r1 = seeded(i + 17);
       const r2 = seeded(i + 117);
       const r3 = seeded(i + 217);
-      // LEFT hemisphere only: 4–46vw.
-      const x = 4 + r1 * 42;
+      const x = STRAT(i, words.length, 4, 38);   // left hemisphere
       const duration = 9 + r2 * 5;
       const delay = -(r3 * 18);
       return { word: w, x, duration, delay };
     });
     const buildRise = (words) => words.map((w, i) => {
-      const r1 = seeded(i + 5003);
       const r2 = seeded(i + 5103);
       const r3 = seeded(i + 5203);
-      // RIGHT hemisphere only: 54–96vw.
-      const x = 54 + r1 * 42;
+      // For RIGHT-anchored greens, x is the offset from the RIGHT
+      // viewport edge. Distributing 4–38 here puts word right-edges
+      // between 62vw and 96vw measured from the left.
+      const x = STRAT(i + 73, words.length, 4, 38);
       const duration = 22 + r2 * 10;
       const delay = -(r3 * 36);
       return { word: w, x, duration, delay };
@@ -1010,6 +1037,20 @@ function PressureSwarm() {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           transform-origin: center center;
+        }
+        /* Trailing triangle: red ▾ on falling pressures, green ▴ on
+           rising outcomes. Reinforces the directionality of each
+           hemisphere at a glance — the left is downward force, the
+           right is upward lift. Inherits color from .ps-p.fall /
+           .ps-p.rise; sized slightly larger than the mono text so
+           it reads as a glyph, not a footnote. */
+        .ps-arrow {
+          display: inline-block;
+          margin-left: 0.4em;
+          font-size: 13px;
+          line-height: 1;
+          letter-spacing: 0;
+          transform: translateY(-1px);
         }
         /* Red pressure: rains straight down, shatters at baseline. */
         .ps-p.fall {
@@ -1062,18 +1103,18 @@ function PressureSwarm() {
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
-        >{p.word}</span>
+        >{p.word}<span className="ps-arrow">&#x25BE;</span></span>
       ))}
       {swarm.rising.map((p, i) => (
         <span
           key={'r' + i}
           className="ps-p rise"
           style={{
-            left: p.x + 'vw',
+            right: p.x + 'vw',
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
-        >{p.word}</span>
+        >{p.word}<span className="ps-arrow">&#x25B4;</span></span>
       ))}
     </div>
   );
