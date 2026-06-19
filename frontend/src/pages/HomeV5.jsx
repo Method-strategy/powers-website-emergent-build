@@ -287,7 +287,13 @@ function HomeV5() {
              UP with the content; fixed keeps it pinned. */
           position: fixed;
           top: 0;
-          right: max(40px, calc((100% - 1240px) / 2 + 40px));
+          /* Moved 24px closer to viewport edge so there's a real
+             gutter between the section content (which ends at the
+             station's right-padding line) and the rail itself. The
+             previous formula aligned the rail flush with the content
+             edge, making lede text feel crowded against the gold
+             line. */
+          right: max(16px, calc((100% - 1240px) / 2 + 16px));
           width: 1px;
           height: 100dvh;
           background: ${RULE};
@@ -574,6 +580,11 @@ function HomeV5() {
           color: ${TEXT_BODY};
           margin: 0;
           max-width: 580px;
+          /* Lets the browser optimize line breaks across the
+             paragraph to avoid orphan words at the end of a line
+             (e.g. "Not" hanging alone after the previous sentence
+             ends mid-line). Falls back gracefully on older browsers. */
+          text-wrap: pretty;
         }
 
         /* Clip-path wipe reveal — left-to-right "print onto a
@@ -1908,7 +1919,7 @@ function PressureBeat() {
         </p>
         <p className="station-lede wipe wipe-d3" style={{
           marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)',
-          maxWidth: 980, textWrap: 'balance',
+          maxWidth: 1040, textWrap: 'pretty',
         }}>
           Greater margins. Stronger performance. Better results. Quarter after quarter.
         </p>
