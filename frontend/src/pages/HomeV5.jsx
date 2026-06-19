@@ -348,12 +348,24 @@ function HomeV5() {
         }
 
         /* Clip-path wipe reveal — left-to-right "print onto a
-           standard" pattern. Replaces fade-ins. */
+           standard" pattern. Replaces fade-ins.
+
+           NOTE (Feb 2026, root-cause fix): the previous values were
+           inset(0 100% 0 0) → inset(0 0 0 0). The zero top/bottom
+           insets clipped **exactly** at the element's content-box
+           edges, which sliced descenders off any serif italic (the
+           gold .pivot clauses) and any ascenders on tall caps.
+           Layout still allocated that descender region, producing a
+           ghost gap below the visible text — which is the "big
+           vertical space between subhead and lede" the page kept
+           showing. Negative top/bottom insets let glyphs render past
+           the box edges; horizontal insets continue to drive the
+           wipe sweep. */
         .wipe {
-          clip-path: inset(0 100% 0 0);
+          clip-path: inset(-0.4em 100% -0.5em 0);
           transition: clip-path 1000ms cubic-bezier(.2,.7,.2,1);
         }
-        .brief-station.is-in .wipe { clip-path: inset(0 0 0 0); }
+        .brief-station.is-in .wipe { clip-path: inset(-0.4em 0 -0.5em 0); }
         .brief-station.is-in .wipe-d1 { transition-delay: 120ms; }
         .brief-station.is-in .wipe-d2 { transition-delay: 280ms; }
         .brief-station.is-in .wipe-d3 { transition-delay: 460ms; }
@@ -544,7 +556,7 @@ function HomeV5() {
         }
         @media (prefers-reduced-motion: reduce) {
           .brief-h1 .ch { opacity: 1; transform: none; transition: none; }
-          .wipe { clip-path: inset(0 0 0 0); transition: none; }
+          .wipe { clip-path: inset(-0.4em 0 -0.5em 0); transition: none; }
         }
       `}</style>
 
@@ -932,29 +944,30 @@ function PressureSwarm() {
       const x = Math.sin(i * 9301 + 49297) * 233280;
       return x - Math.floor(x);
     };
-    /* Reds RAIN straight down. They hit the baseline (~58vh from
-     * section top, roughly where the H2 lower edge sits) and
-     * SHATTER — opacity collapses, letter-spacing explodes outward,
-     * vertical scale crushes. Reads as: pressure hits the discipline
-     * and breaks.
+    /* HEMISPHERE SPLIT (Feb 2026 narrative pass):
+     *   - Red pressures fall down the LEFT hemisphere only (4–46vw).
+     *   - Green outcomes rise up the RIGHT hemisphere only (54–96vw).
+     *   This reads as a literal split-screen of the metaphor: the
+     *   left side is what hits the operation; the right side is
+     *   what it produces. They don't intermingle.
      *
-     * Greens RISE straight up from below the baseline, slow and
-     * steady, passing through to the top untouched. Reads as: what
-     * you built keeps producing — outcomes compound regardless.
+     * COMMON BASELINE:
+     *   - Reds fall and SHATTER at ~56vh from section top.
+     *   - Greens EMERGE from exactly the same line and rise to the
+     *     top — same scar in the page, two opposite directions.
+     *   That single shared horizon is the disciplines: pressure
+     *   breaks against it; outcomes are born from it.
      *
-     * Counts kept modest so the swarm reads as ambient texture, not
-     * confetti. Reds slightly outnumber greens (pressure is loud;
-     * compounding is patient).
-     *
-     * Speed contrast is the narrative: reds fall fast (9–14s), greens
-     * rise slow (22–32s). Pressure is urgent. Outcomes take time.
+     * SPEED CONTRAST:
+     *   - Reds: 9–14s. Loud, urgent, plural.
+     *   - Greens: 22–32s. Patient, steady, compounding.
      */
     const buildFall = (words) => words.map((w, i) => {
       const r1 = seeded(i + 17);
       const r2 = seeded(i + 117);
       const r3 = seeded(i + 217);
-      // X across full width (6–94vw), avoiding extreme edges.
-      const x = 6 + r1 * 88;
+      // LEFT hemisphere only: 4–46vw.
+      const x = 4 + r1 * 42;
       const duration = 9 + r2 * 5;
       const delay = -(r3 * 18);
       return { word: w, x, duration, delay };
@@ -963,7 +976,8 @@ function PressureSwarm() {
       const r1 = seeded(i + 5003);
       const r2 = seeded(i + 5103);
       const r3 = seeded(i + 5203);
-      const x = 6 + r1 * 88;
+      // RIGHT hemisphere only: 54–96vw.
+      const x = 54 + r1 * 42;
       const duration = 22 + r2 * 10;
       const delay = -(r3 * 36);
       return { word: w, x, duration, delay };
@@ -1003,9 +1017,11 @@ function PressureSwarm() {
           color: rgba(224, 101, 79, 0.62);
           animation-name: ps-fall;
         }
-        /* Green outcome: rises straight up, full traverse, no shatter. */
+        /* Green outcome: EMERGES at the baseline (~56vh — the same
+           line where reds shatter), rises straight up, fades out
+           near the top. The shared horizon is the disciplines. */
         .ps-p.rise {
-          bottom: -32px;
+          top: 56vh;
           color: rgba(91, 191, 115, 0.62);
           animation-name: ps-rise;
           animation-timing-function: cubic-bezier(.5,.0,.5,1);
@@ -1024,15 +1040,17 @@ function PressureSwarm() {
           100% { transform: translateY(58vh) scaleY(0.30);   opacity: 0;    letter-spacing: 0.95em; }
         }
         @keyframes ps-rise {
+          /* Emerges AT the baseline (translateY 0 from top: 56vh),
+             rises upward, fades near the top of the section. */
           0%   { transform: translateY(0);          opacity: 0; }
-          10%  { opacity: 0.62; }
-          90%  { opacity: 0.62; }
-          100% { transform: translateY(-110vh);     opacity: 0; }
+          14%  { opacity: 0.62; }
+          88%  { transform: translateY(-52vh);      opacity: 0.62; }
+          100% { transform: translateY(-58vh);      opacity: 0; }
         }
         @media (prefers-reduced-motion: reduce) {
           .ps-p { animation: none; opacity: 0.30; }
-          .ps-p.fall { top: 22%; }
-          .ps-p.rise { bottom: 22%; }
+          .ps-p.fall { top: 18%; }
+          .ps-p.rise { top: 56vh; }
         }
       `}</style>
       {swarm.falling.map((p, i) => (
@@ -1087,7 +1105,7 @@ function PressureBeat() {
       <PressureSwarm />
       <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)', zIndex: 2 }} aria-hidden="true" />
       <div style={{ marginBottom: 18, position: 'relative', zIndex: 2 }}>
-        <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Under Pressure</div>
+        <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Performance Under Pressure</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8' }}>
           <span>When execution is built on these disciplines,</span>
           <span className="pivot" style={{ color: GOLD_BRIGHT }}>performance is not at the mercy of conditions.</span>
