@@ -188,6 +188,19 @@ function HomeV5() {
           min-height: 100dvh;
           box-sizing: border-box;
         }
+        /* Footer is shorter than 100dvh and lives outside the beat
+           rhythm — but it still needs to be a snap target, otherwise
+           mandatory snap drags the user back to ActionBeat the
+           moment they try to scroll past it ("locks so hard you
+           can't scroll to the footer"). Aligning to "end" snaps
+           footer-bottom to viewport-bottom, which composites the
+           tail of the CTA section with the full footer in one frame
+           — a clean closing beat without forcing the footer into
+           its own 100dvh slot. */
+        .brief-page > footer {
+          scroll-snap-align: end;
+          scroll-snap-stop: always;
+        }
         .brief-station {
           align-content: center;
         }
