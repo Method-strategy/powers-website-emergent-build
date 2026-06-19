@@ -105,6 +105,7 @@ const logoSrc = (l) =>
 function HomeV5() {
   const pageRef  = useRef(null);
   const railFill = useRef(null);
+  const heroRef  = useRef(null);
   const [mounted, setMounted] = useState(false);
   /* Mega-menu state — mirrors V4's hover-with-timer pattern so the
    * pre-planned menu and submenu structure ports over intact. */
@@ -145,6 +146,27 @@ function HomeV5() {
      * can still detect we're on V5 if they care. */
     document.documentElement.classList.add('v5-snap');
     return () => document.documentElement.classList.remove('v5-snap');
+  }, []);
+
+  /* Hero H1 hammer-strike replay on scroll-up. The .is-mounted
+   * class on .brief-page kicks the strike off on first load, but
+   * once added it never comes back off — so scrolling away and
+   * back to the hero left the chars frozen in their settled state.
+   * This IO toggles .is-in on the hero section so the strike
+   * replays every time the hero re-enters the viewport. CSS rule
+   * (.brief-hero:not(.is-in) .brief-h1 .ch) instantly resets the
+   * pre-strike position (no reverse animation) on leave. */
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        el.classList.toggle('is-in', e.isIntersecting);
+      }),
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   /* Scroll-bound ambient progress 0→1. Listens to the .brief-page
@@ -423,9 +445,16 @@ function HomeV5() {
           transform: translateY(-22px);
           transition: opacity 40ms linear, transform 110ms cubic-bezier(.34, 1.3, .5, 1);
         }
-        .brief-page.is-mounted .brief-h1 .ch {
+        .brief-page.is-mounted .brief-h1 .ch,
+        .brief-hero.is-in .brief-h1 .ch {
           opacity: 1;
           transform: translateY(0);
+        }
+        /* When the hero leaves the viewport, instantly reset the
+           chars to their pre-strike position (no reverse animation).
+           When the hero re-enters, the typewriter strike replays. */
+        .brief-hero:not(.is-in) .brief-h1 .ch {
+          transition: none;
         }
         .brief-h1 .accent { color: ${GOLD}; }
 
@@ -1327,7 +1356,7 @@ function HomeV5() {
       </div>
 
       {/* ── Beat 01 — Position ─────────────────────────────────── */}
-      <section className="brief-hero">
+      <section className="brief-hero" ref={heroRef}>
         {/* Hero-only background video. Acts as the visual "audience
             line" now that the explicit text eyebrow ("For the
             operator accountable for the number") was removed — the
