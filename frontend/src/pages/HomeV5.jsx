@@ -197,11 +197,19 @@ function HomeV5() {
            grows as the reader advances — the metaphor is that
            reading the brief IS earning the gold. */
         .brief-rail {
-          position: absolute;
+          /* Fixed to the viewport so the rail stays anchored to the
+             right edge regardless of the .brief-page scroll position.
+             Before .brief-page became its own scroll container, the
+             rail was position:absolute inside the page body and
+             effectively viewport-anchored because the page scrolled
+             at the document level. Now that the page scrolls
+             internally, absolute positioning would scroll the rail
+             UP with the content; fixed keeps it pinned. */
+          position: fixed;
           top: 0;
           right: max(40px, calc((100% - 1240px) / 2 + 40px));
           width: 1px;
-          height: 100%;
+          height: 100dvh;
           background: ${RULE};
           pointer-events: none;
           z-index: 2;
