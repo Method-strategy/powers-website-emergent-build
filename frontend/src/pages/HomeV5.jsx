@@ -93,23 +93,28 @@ function HomeV5() {
     }
   }, [mobileNavOpen]);
 
-  /* Activate scroll-snap on the document scroller (<html>) only
-   * while this page is mounted. Previous version set
-   * `scroll-snap-type` on `.brief-page` — but `.brief-page` is a
-   * <div> with no `overflow:auto`, so it isn't a scroll container
-   * and the property had no effect. The actual scroller is <html>,
-   * which is why the page felt like free scroll/swipe. The class is
-   * scoped here (added on mount, removed on unmount) so V4 and the
-   * rest of the app keep their normal free-scroll behavior. */
+  /* Activate scroll-snap by making `.brief-page` itself the scroll
+   * container. Previous attempts set scroll-snap-type on <html>,
+   * which is spec-compliant but inconsistently honored in real
+   * browsers when the page is naturally-scrolling (no explicit
+   * overflow). Making .brief-page a fixed-height + overflow:auto
+   * container removes all ambiguity — the scroller is unambiguous
+   * and scroll-snap engages reliably across Chrome / Safari /
+   * Firefox / iOS Safari. */
   useEffect(() => {
+    /* The class lives on the page itself; pageRef hasn't mounted
+     * yet at the time of this effect's first render, so we add the
+     * marker class to <html> as well so the legacy V4/etc routes
+     * can still detect we're on V5 if they care. */
     document.documentElement.classList.add('v5-snap');
     return () => document.documentElement.classList.remove('v5-snap');
   }, []);
 
-  /* Scroll-bound ambient progress 0→1 across the full page.
-   * Single rAF loop. Drives the right-rail fill height and exposes
-   * --brief-progress as a CSS variable for any element that wants
-   * to bind itself to the document position. */
+  /* Scroll-bound ambient progress 0→1. Listens to the .brief-page
+   * scroll container (not window) — .brief-page is the scroll
+   * container now, so window.scrollY never moves. Single rAF loop
+   * drives the right-rail fill height + exposes --brief-progress
+   * as a CSS variable for any element bound to document position. */
   useEffect(() => {
     setMounted(true);
     const root = pageRef.current;
@@ -117,17 +122,17 @@ function HomeV5() {
     let raf = 0;
     const update = () => {
       raf = 0;
-      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const p = Math.max(0, Math.min(1, window.scrollY / max));
+      const max = Math.max(1, root.scrollHeight - root.clientHeight);
+      const p = Math.max(0, Math.min(1, root.scrollTop / max));
       root.style.setProperty('--brief-progress', p.toFixed(4));
       if (railFill.current) railFill.current.style.height = (p * 100).toFixed(2) + '%';
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     update();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    root.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      root.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
@@ -151,20 +156,20 @@ function HomeV5() {
       <style>{`
         :root { --brief-progress: 0; }
 
-        /* Scroll-snap engages on the document scroller (<html>),
-         * activated by the "v5-snap" class that the page adds while
-         * mounted. One scroll-wheel notch OR one swipe = one beat
-         * advance, with the next section locked to the viewport top.
-         * Scoped to the html class so V4 and the rest of the app are
-         * unaffected. Uses dvh (dynamic viewport height) so iOS
-         * Safari's collapsing address bar doesn't break section
-         * heights mid-scroll. */
-        html.v5-snap {
-          scroll-snap-type: y mandatory;
-          scroll-behavior: smooth;
-        }
-
+        /* .brief-page IS the scroll container. Fixed height +
+         * overflow-y:auto + scroll-snap-type all live here so the
+         * browser has zero ambiguity about which element scrolls
+         * and where snap applies. Removes the inconsistent
+         * real-browser behavior we saw when snap was set on <html>.
+         * Header (sticky), drawer (fixed), and rail (absolute) all
+         * remain effective inside this container. dvh keeps the
+         * height accurate when iOS Safari's address bar collapses. */
         .brief-page {
+          height: 100dvh;
+          overflow-y: auto;
+          overflow-x: hidden;
+          scroll-snap-type: y mandatory;
+          -webkit-overflow-scrolling: touch;
           /* Paper texture — extremely subtle warm vignette on the
              right edge to anchor the rail. NOT a gradient that
              dominates; a faint warm wash that disappears as you
@@ -175,13 +180,8 @@ function HomeV5() {
               transparent 60%),
             ${PAPER};
         }
-        /* Every top-level section snaps to the top of the viewport
-           on scroll and is at minimum a full viewport tall. Hero +
-           stations + pressure + evidence + cards beats + action all
-           inherit this. Display/layout is NOT forced here — each
-           section keeps its own (.brief-hero is flex, .brief-station
-           is grid). Stations vertically center their content via
-           align-content:center on the grid. */
+        /* Every top-level section snaps to the top of the scroll
+           container and is at minimum its full visible height. */
         .brief-page > section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
@@ -1657,7 +1657,7 @@ function PressureBeat() {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
-      { threshold: 0.18 }
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1686,7 +1686,8 @@ function PressureBeat() {
           Market pressures don&rsquo;t stop. The question isn&rsquo;t whether you can get better. It&rsquo;s whether what you built stays built when demand spikes, leadership changes, a new site comes online, or a PE timeline compresses. Operations built with these five core disciplines as their foundation hold position, recover faster, and compound gains regardless.
         </p>
         <p className="station-lede wipe wipe-d3" style={{
-          marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)', maxWidth: 720,
+          marginTop: 18, color: '#f3f0e8', fontWeight: 600, fontSize: 'clamp(18px, 1.4vw, 22px)',
+          maxWidth: 980, textWrap: 'balance',
         }}>
           Greater margins. Stronger performance. Better results. Quarter after quarter.
         </p>
@@ -1709,7 +1710,7 @@ function EvidenceBeat() {
           io.disconnect();
         }
       }),
-      { threshold: 0.32 }
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1801,7 +1802,7 @@ function CardsBeat({ index, headline, pivot, body, cards, cta }) {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
-      { threshold: 0.18 }
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1882,7 +1883,7 @@ function ActionBeat() {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }),
-      { threshold: 0.18 }
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1945,7 +1946,7 @@ function ThesisBeat() {
           io.disconnect();
         }
       }),
-      { threshold: 0.14 }
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -2061,7 +2062,7 @@ function Station({ index, headline, pivot, body, quote, attr }) {
           io.disconnect();
         }
       }),
-      { threshold: 0.18 }
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
     );
     io.observe(el);
     return () => io.disconnect();
