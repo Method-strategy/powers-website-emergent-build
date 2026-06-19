@@ -180,27 +180,11 @@ function HomeV5() {
         }
 
         /* ── Page header strip ────────────────────────────────────
-           Mono row above the hero that names the document. Reads
-           like the cover page of an internal operating brief, not
-           a website. */
-        .brief-cover {
-          font-family: ${TYPE.mono};
-          font-size: 11px;
-          font-weight: 500;
-          letter-spacing: 0.30em;
-          text-transform: uppercase;
-          color: ${TEXT_MUTED};
-          padding: 28px max(40px, calc((100% - 1240px) / 2)) 0;
-          display: flex;
-          justify-content: space-between;
-          gap: 24px;
-        }
-        .brief-cover .meta-rule {
-          flex: 1 1 auto;
-          height: 1px;
-          background: ${RULE_SOFT};
-          align-self: center;
-        }
+           The cover-meta strip ("Operating Brief 2026 / POWERS /
+           Confidential…") was removed Feb 2026 — the publication
+           identity moved into the hero section-num as a single
+           cleaner mark. Styles deleted here; the responsive override
+           below was scoped to that element and is also gone. */
 
         /* ── Beat: Hero ───────────────────────────────────────────
            Same character-assembly motion as the paradigm prototype.
@@ -302,7 +286,7 @@ function HomeV5() {
           display: grid;
           grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
           gap: clamp(40px, 6vw, 96px);
-          align-items: start;
+          align-items: center;
         }
         .station-divider {
           /* A hairline rule above each station — marks the page
@@ -555,7 +539,6 @@ function HomeV5() {
         @media (max-width: 900px) {
           .brief-station { grid-template-columns: 1fr; gap: 24px; }
           .brief-rail { right: 24px; }
-          .brief-cover { padding: 18px 24px 0; flex-wrap: wrap; }
           .brief-nav { gap: 18px; }
           .brief-nav a:not(.cta) { display: none; }
         }
@@ -666,13 +649,6 @@ function HomeV5() {
         </div>
       </header>
 
-      {/* ── Cover meta strip ───────────────────────────────────── */}
-      <div className="brief-cover" aria-hidden="true">
-        <span>Operating Brief &middot; 2026</span>
-        <span className="meta-rule" />
-        <span>POWERS &middot; Confidential to the reader</span>
-      </div>
-
       {/* ── Right-rail spine ───────────────────────────────────── */}
       <div className="brief-rail" aria-hidden="true">
         <div className="brief-rail-fill" ref={railFill} />
@@ -682,7 +658,7 @@ function HomeV5() {
       <section className="brief-hero">
         <span className="brief-tick" style={{ top: '52%' }} aria-hidden="true" />
         <div className="brief-section-num" data-testid="hero-section-num">
-          I &nbsp;/&nbsp; Position
+          Operating Brief &nbsp;&middot;&nbsp; POWERS
         </div>
         <h1 className="brief-h1" data-testid="hero-h1">
           {HERO_LINES.map((line, li) => (
@@ -734,10 +710,12 @@ function HomeV5() {
 
       {/* ── Beat IV — Mechanism ─────────────────────────────────── */}
       <Station
-        index="IV  /  Mechanism"
+        index="Work Ethic"
         headline="We work where value gets"
         pivot="won or lost."
         body="Most consulting firms diagnose, recommend, and leave. They’re out the door at 3pm and don’t work Fridays. The slide decks are sharp. The results don’t last. Our approach is very different. We build the disciplines where the work actually happens and value is created. On the floor. In the shifts. Inside the standards, the supplier relationships, the AP/AR process. We put skin in the game — paid on results, not recommendations."
+        quote="If you’re working, we’re working."
+        attr="The POWERS guiding principle"
       />
 
       {/* ── Beat V — Evidence (metrics) ─────────────────────────── */}
@@ -745,7 +723,7 @@ function HomeV5() {
 
       {/* ── Beat VI — Industries ────────────────────────────────── */}
       <Station
-        index="VI  /  Industries"
+        index="Where We Work"
         headline="Different industries."
         pivot="The same execution discipline."
         body="We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound."
@@ -753,7 +731,7 @@ function HomeV5() {
 
       {/* ── Beat VII — Results (case study entry point) ─────────── */}
       <CardsBeat
-        index="VII  /  Results"
+        index="Case Studies"
         headline="Operations built on strong execution produce"
         pivot="results that speak for themselves."
         body="Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours."
@@ -767,7 +745,7 @@ function HomeV5() {
 
       {/* ── Beat VIII — Insights (blog entry point) ─────────────── */}
       <CardsBeat
-        index="VIII  /  Insights"
+        index="Field Notes"
         headline="Dig deeper into the"
         pivot="discipline of execution."
         body="Nearly thirty years of helping build some of the top-performing operations on the planet. Read how we install the five disciplines and produce sustainable, scalable financial gains."
@@ -954,27 +932,45 @@ function PressureSwarm() {
       const x = Math.sin(i * 9301 + 49297) * 233280;
       return x - Math.floor(x);
     };
-    const build = (words, offset) => words.map((w, i) => {
-      const r1 = seeded(i + offset);
-      const r2 = seeded(i + offset + 100);
-      const r3 = seeded(i + offset + 200);
-      const r4 = seeded(i + offset + 300);
-      /* Start X spread across left 35% of viewport (0–35vw),
-       * travel 60–95 vw to the right. Wider spread + fewer
-       * particles = no bunching. */
-      const startX = r1 * 35;
-      const travelX = 60 + r2 * 35;
-      /* Vertical start: random within a top-band (pressures) or
-       * bottom-band (outcomes) — adds Y variation so particles
-       * don't all start on a single horizontal line. */
-      const startYOffset = r3 * 18;
-      const duration = 26 + r4 * 14;
-      const delay = -(seeded(i + offset + 400) * 40);
-      return { word: w, startX, travelX, startYOffset, duration, delay };
+    /* Reds RAIN straight down. They hit the baseline (~58vh from
+     * section top, roughly where the H2 lower edge sits) and
+     * SHATTER — opacity collapses, letter-spacing explodes outward,
+     * vertical scale crushes. Reads as: pressure hits the discipline
+     * and breaks.
+     *
+     * Greens RISE straight up from below the baseline, slow and
+     * steady, passing through to the top untouched. Reads as: what
+     * you built keeps producing — outcomes compound regardless.
+     *
+     * Counts kept modest so the swarm reads as ambient texture, not
+     * confetti. Reds slightly outnumber greens (pressure is loud;
+     * compounding is patient).
+     *
+     * Speed contrast is the narrative: reds fall fast (9–14s), greens
+     * rise slow (22–32s). Pressure is urgent. Outcomes take time.
+     */
+    const buildFall = (words) => words.map((w, i) => {
+      const r1 = seeded(i + 17);
+      const r2 = seeded(i + 117);
+      const r3 = seeded(i + 217);
+      // X across full width (6–94vw), avoiding extreme edges.
+      const x = 6 + r1 * 88;
+      const duration = 9 + r2 * 5;
+      const delay = -(r3 * 18);
+      return { word: w, x, duration, delay };
+    });
+    const buildRise = (words) => words.map((w, i) => {
+      const r1 = seeded(i + 5003);
+      const r2 = seeded(i + 5103);
+      const r3 = seeded(i + 5203);
+      const x = 6 + r1 * 88;
+      const duration = 22 + r2 * 10;
+      const delay = -(r3 * 36);
+      return { word: w, x, duration, delay };
     });
     return {
-      falling: build(FALLING_PRESSURES, 0),
-      rising:  build(RISING_OUTCOMES, 1000),
+      falling: buildFall(FALLING_PRESSURES),
+      rising:  buildRise(RISING_OUTCOMES),
     };
   }, []);
   return (
@@ -995,41 +991,48 @@ function PressureSwarm() {
           letter-spacing: 0.18em;
           text-transform: uppercase;
           white-space: nowrap;
-          will-change: transform, opacity;
+          will-change: transform, opacity, letter-spacing;
           opacity: 0;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
+          transform-origin: center center;
         }
-        /* Pressure — starts above the section top, falls down-right.
-           Color: muted clay red. */
+        /* Red pressure: rains straight down, shatters at baseline. */
         .ps-p.fall {
           top: -32px;
           color: rgba(224, 101, 79, 0.62);
           animation-name: ps-fall;
         }
-        /* Outcome — starts below the section bottom, rises up-right.
-           Color: muted forest green. */
+        /* Green outcome: rises straight up, full traverse, no shatter. */
         .ps-p.rise {
           bottom: -32px;
-          color: rgba(91, 191, 115, 0.68);
+          color: rgba(91, 191, 115, 0.62);
           animation-name: ps-rise;
+          animation-timing-function: cubic-bezier(.5,.0,.5,1);
         }
         @keyframes ps-fall {
-          0%   { transform: translate(0, 0);                opacity: 0; }
-          12%  { opacity: 0.62; }
-          85%  { opacity: 0.62; }
-          100% { transform: translate(var(--travel-x), calc(100vh + 80px)); opacity: 0; }
+          0%   { transform: translateY(0) scaleY(1);         opacity: 0;    letter-spacing: 0.18em; }
+          8%   { opacity: 0.62; }
+          /* Travel down to baseline, intact. */
+          76%  { transform: translateY(54vh) scaleY(1);      opacity: 0.62; letter-spacing: 0.18em; }
+          /* First shatter beat — letter-spacing starts to spread,
+             opacity dips, the word stretches just enough to register
+             as 'breaking'. */
+          86%  { transform: translateY(56vh) scaleY(0.85);   opacity: 0.45; letter-spacing: 0.46em; }
+          /* Full disintegration: letters fly apart laterally,
+             vertical scale crushes to nothing, opacity to zero. */
+          100% { transform: translateY(58vh) scaleY(0.30);   opacity: 0;    letter-spacing: 0.95em; }
         }
         @keyframes ps-rise {
-          0%   { transform: translate(0, 0);                opacity: 0; }
-          12%  { opacity: 0.68; }
-          85%  { opacity: 0.68; }
-          100% { transform: translate(var(--travel-x), calc(-100vh - 80px)); opacity: 0; }
+          0%   { transform: translateY(0);          opacity: 0; }
+          10%  { opacity: 0.62; }
+          90%  { opacity: 0.62; }
+          100% { transform: translateY(-110vh);     opacity: 0; }
         }
         @media (prefers-reduced-motion: reduce) {
           .ps-p { animation: none; opacity: 0.30; }
-          .ps-p.fall { top: 18%; }
-          .ps-p.rise { bottom: 18%; }
+          .ps-p.fall { top: 22%; }
+          .ps-p.rise { bottom: 22%; }
         }
       `}</style>
       {swarm.falling.map((p, i) => (
@@ -1037,9 +1040,7 @@ function PressureSwarm() {
           key={'f' + i}
           className="ps-p fall"
           style={{
-            left: p.startX + 'vw',
-            marginTop: p.startYOffset + 'vh',
-            '--travel-x': p.travelX + 'vw',
+            left: p.x + 'vw',
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
@@ -1050,9 +1051,7 @@ function PressureSwarm() {
           key={'r' + i}
           className="ps-p rise"
           style={{
-            left: p.startX + 'vw',
-            marginBottom: p.startYOffset + 'vh',
-            '--travel-x': p.travelX + 'vw',
+            left: p.x + 'vw',
             animationDuration: p.duration.toFixed(2) + 's',
             animationDelay: p.delay.toFixed(2) + 's',
           }}
@@ -1088,7 +1087,7 @@ function PressureBeat() {
       <PressureSwarm />
       <span className="brief-tick" style={{ top: '14vh', background: 'rgba(232,147,70,0.32)', zIndex: 2 }} aria-hidden="true" />
       <div style={{ marginBottom: 18, position: 'relative', zIndex: 2 }}>
-        <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>III  /  Pressure</div>
+        <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Under Pressure</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ color: '#f3f0e8' }}>
           <span>When execution is built on these disciplines,</span>
           <span className="pivot" style={{ color: GOLD_BRIGHT }}>performance is not at the mercy of conditions.</span>
@@ -1146,7 +1145,7 @@ function EvidenceBeat() {
           internally; lede below is body-width-constrained (none here
           — Evidence has no lede paragraph). */}
       <div style={{ marginBottom: 64 }}>
-        <div className="station-index wipe" style={{ marginBottom: 14 }}>V  /  Evidence</div>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>The Ledger</div>
         <h2 className="station-h2 wipe wipe-d1">
           <span>Thirty years on the floor.</span>
           <span className="pivot">The ledger speaks for itself.</span>
@@ -1314,7 +1313,7 @@ function ActionBeat() {
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" style={{ top: '18vh' }} aria-hidden="true" />
       <div>
-        <div className="station-index wipe" style={{ marginBottom: 14 }}>IX  /  Action</div>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>Next Move</div>
         <h2 className="station-h2 wipe wipe-d1" style={{ maxWidth: 920 }}>
           <span>Let&rsquo;s build your operation</span>
           <span className="pivot">to execute under any circumstances.</span>
@@ -1383,27 +1382,19 @@ function ThesisBeat() {
       <span className="brief-tick" style={{ top: '14vh' }} aria-hidden="true" />
 
       <div style={{ marginBottom: 32, maxWidth: 920 }}>
-        <div className="station-index wipe" style={{ marginBottom: 14 }}>II  /  Thesis</div>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>The Foundation</div>
         <h2 className="station-h2 wipe wipe-d1">
           <span>We build the disciplines to execute.</span>
           <span className="pivot">No matter what.</span>
         </h2>
       </div>
 
-      {/* Two-column body row: lede on the left, quote sidebar on
-          the right (vertically centered against the lede block).
-          Cards row below spans the full frame so they don't get
-          cramped by the sidebar column. Mobile collapses to a
-          single column — quote drops between lede and cards. */}
-      <div className="thesis-body wipe wipe-d2" style={{ marginBottom: 48 }}>
-        <p className="station-lede" style={{ margin: 0, maxWidth: 720 }}>
-          Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load&#8209;bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
-        </p>
-        <aside className="thesis-quote-sidebar">
-          <p className="brief-quote" style={{ margin: '0 0 8px', maxWidth: 320 }}>&ldquo;If you&rsquo;re working, we&rsquo;re working.&rdquo;</p>
-          <div className="brief-quote-attr">Floor practice &middot; POWERS</div>
-        </aside>
-      </div>
+      {/* Lede sits on its own measure column — quote that used to
+          live here has been moved to Beat IV (Work Ethic), where it
+          functions as POWERS' guiding principle, not floor practice. */}
+      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 48, maxWidth: 720 }}>
+        Five disciplines built into how the operation executes every shift, every day, every quarter. Not five initiatives. Not five priorities. Weaken one and the others drift. Build them together and they interlock into something load&#8209;bearing, deep enough that performance doesn&rsquo;t break down when conditions do.
+      </p>
 
       {/* ── Five discipline cards — locked content, locked URLs.
          Each card is the jump-off to its dedicated discipline page.
@@ -1452,33 +1443,11 @@ function ThesisBeat() {
         ))}
       </div>
       <style>{`
-        /* Thesis-body two-column: lede left, quote sidebar right.
-           Quote vertically centered against the lede block.
-           Collapses to single column under 900px (quote drops
-           between lede and cards). */
-        .thesis-body {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
-          gap: clamp(32px, 5vw, 80px);
-          align-items: center;
-        }
-        .thesis-quote-sidebar {
-          border-left: 1px solid ${RULE};
-          padding-left: clamp(20px, 2.5vw, 32px);
-        }
-        @media (max-width: 900px) {
-          .thesis-body {
-            grid-template-columns: 1fr;
-            gap: 32px;
-            align-items: start;
-          }
-          .thesis-quote-sidebar {
-            border-left: none;
-            border-top: 1px solid ${RULE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
-        }
+        /* Note: the former .thesis-body two-column with quote sidebar
+           was removed Feb 2026 — the "If you're working, we're
+           working" credo moved to Beat IV (Work Ethic) where it now
+           functions as POWERS' guiding principle. The Thesis lede
+           now sits on a single measure column above the cards. */
         @media (max-width: 1100px) {
           .brief-station .wipe-d3 > div[style*="grid-template-columns"],
           .brief-station > .wipe.wipe-d3 {
