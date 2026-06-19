@@ -244,6 +244,55 @@ function HomeV5() {
           justify-content: center;
           padding: 40px max(40px, calc((100% - 1240px) / 2 + 40px));
           box-sizing: border-box;
+          overflow: hidden;
+        }
+        /* Background video — manufacturing / shop-floor montage.
+           Pulled from V4's hero. Heavy sepia + saturation + a
+           hue-rotate toward gold give it a warm work-ethic tint;
+           multiply blend mode stains the cream paper without
+           darkening it into mud; low opacity keeps the navy H1
+           legible on top. Object-cover so the clip fills any aspect
+           ratio without letterboxing. */
+        .brief-hero-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center 35%;
+          z-index: 0;
+          opacity: 0.22;
+          filter: sepia(0.95) saturate(1.55) hue-rotate(-10deg) brightness(1.06) contrast(0.92);
+          mix-blend-mode: multiply;
+          pointer-events: none;
+        }
+        /* Cream wash sitting between the video and the H1. Knocks
+           the video back another stop and re-anchors the "paper"
+           feel — without this, the video can crowd the navy text
+           contrast at certain frames. The wash is a subtle radial
+           that's most opaque on the left (where the H1 sits) and
+           transparent on the right (where the video can read more
+           freely). */
+        .brief-hero-wash {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background:
+            radial-gradient(1100px 700px at 20% 50%,
+              rgba(251, 250, 246, 0.78) 0%,
+              rgba(251, 250, 246, 0.45) 45%,
+              rgba(251, 250, 246, 0.18) 80%,
+              rgba(251, 250, 246, 0.00) 100%);
+        }
+        .brief-hero > .brief-h1,
+        .brief-hero > .brief-hero-footer,
+        .brief-hero > .brief-tick {
+          position: relative;
+          z-index: 2;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .brief-hero-video { animation-play-state: paused; }
         }
         .brief-section-num {
           font-family: ${TYPE.mono};
@@ -1095,6 +1144,34 @@ function HomeV5() {
 
       {/* ── Beat 01 — Position ─────────────────────────────────── */}
       <section className="brief-hero">
+        {/* Hero-only background video. Acts as the visual "audience
+            line" now that the explicit text eyebrow ("For the
+            operator accountable for the number") was removed — the
+            manufacturing/shop-floor montage tells the reader, at a
+            glance, who this brief is for. Heavily sepia-toned and
+            multiplied into the cream paper at low opacity so it
+            reads as a warm work-ethic wash, not a marketing reel.
+            Paused under prefers-reduced-motion. */}
+        <video
+          className="brief-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/uploads/powers-hero-bg-poster.jpg"
+          aria-hidden="true"
+          data-testid="brief-hero-video"
+        >
+          {/* 2.1MB H.264 1280×720 encode of the V4 hero (was 21MB
+              1920×1080@10Mbps — overkill behind a 22%-opacity sepia
+              multiply wash). Source clip is a manufacturing/shop-
+              floor montage with dissolves. The poster JPG (95KB)
+              renders instantly so the hero never shows as blank
+              while the video buffers. */}
+          <source src="/uploads/powers-hero-bg.mp4" type="video/mp4" />
+        </video>
+        <span className="brief-hero-wash" aria-hidden="true" />
         <span className="brief-tick" style={{ top: '52%' }} aria-hidden="true" />
         <h1 className="brief-h1" data-testid="hero-h1">
           {HERO_LINES.map((line, li) => {
