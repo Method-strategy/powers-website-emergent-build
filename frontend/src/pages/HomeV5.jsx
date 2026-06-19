@@ -80,16 +80,16 @@ const CLIENT_LOGOS = [
   { name: 'BMW',          domain: 'bmw.com' },
   { name: 'Volkswagen',   domain: 'volkswagengroup.com' },
   { name: 'Corning',      domain: 'corning.com' },
-  { name: 'Simplot',      domain: 'simplot.com' },
+  { name: 'Simplot',      local: '/uploads/client-logos/simplot.svg' },
   { name: 'RJ Reynolds',  local: '/uploads/client-logos/rjreynolds.png' },
-  { name: 'Cargill',      domain: 'cargill.com' },
-  { name: 'Mitsubishi',   domain: 'mitsubishicorp.com' },
+  { name: 'Cargill',      local: '/uploads/client-logos/cargill.png' },
+  { name: 'Mitsubishi',   local: '/uploads/client-logos/mitsubishi.svg' },
   { name: 'Bain Capital', domain: 'baincapital.com' },
   { name: 'Medline',      domain: 'medline.com' },
   { name: 'Blackstone',   domain: 'blackstone.com' },
   { name: 'Givaudan',     domain: 'givaudan.com' },
-  { name: 'KKR',          domain: 'kkr.com' },
-  { name: 'Costco',       domain: 'costco.com' },
+  { name: 'KKR',          local: '/uploads/client-logos/kkr.svg' },
+  { name: 'Costco',       local: '/uploads/client-logos/costco.png' },
   { name: 'Agropur',      local: '/uploads/client-logos/agropur.svg' },
 ];
 /* logo.dev free public token — fine for prototype + client review.
@@ -652,7 +652,7 @@ function HomeV5() {
            Hover restores the original brand color + full opacity. */
         .logo-crawl-item img {
           height: 56px;
-          max-width: 200px;
+          max-width: 220px;
           width: auto;
           object-fit: contain;
           mix-blend-mode: multiply;
