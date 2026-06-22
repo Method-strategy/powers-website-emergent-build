@@ -2188,7 +2188,15 @@ function EvidenceBeat() {
     return () => io.disconnect();
   }, []);
   const STATS = [
-    { target: 1,   prefix: '$', suffix: 'B+',  decimals: 0, duration: 1600, label: 'Annualized savings produced across all engagements' },
+    /* $1B+ counts up through real millions ($600M → $700M → $800M
+       → $900M → $1B+) and only swaps the M-denominated string for
+       the brand "$1B+" string at the final frame. Target is 1000
+       (millions), so the rAF tick has 1000 integer steps of
+       visible resolution instead of the previous 0→1 (which only
+       ever rendered two frames). Duration bumped to 1800ms to let
+       the eye actually catch the count happening. */
+    { target: 1000, duration: 1800, label: 'Annualized savings produced across all engagements',
+      format: (v, t) => (v >= t ? '$1B+' : '$' + Math.round(v) + 'M') },
     { target: 98,  prefix: '',  suffix: '%',   decimals: 0, duration: 1400, label: 'Client retention across nearly thirty years' },
     { target: 5,   prefix: '',  suffix: ' wks', decimals: 0, duration: 1200, label: 'Median time to first measurable impact' },
     { target: 500, prefix: '',  suffix: '+',   decimals: 0, duration: 1800, label: 'Operations strengthened across industries, sites, and holdings' },
@@ -2245,8 +2253,15 @@ function EvidenceBeat() {
 
 /* ── CountUp — single-shot count-up tied to scroll entry.
  *   Runs only when `run` becomes true. Eases out cubic so the
- *   ramp lands cleanly on the target. Prefix/suffix stick. */
-function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration = 1400, delay = 0 }) {
+ *   ramp lands cleanly on the target. Prefix/suffix stick.
+ *
+ *   `format` (optional) lets a stat override default rendering
+ *   (prefix + value + suffix). Used by the $1B+ stat which counts
+ *   from 0 to 1000 (in millions) and renders "$XXXM" along the
+ *   way, only switching to "$1B+" at the finish — otherwise an
+ *   integer target of 1 with no decimals only ever displayed two
+ *   frames (0, then 1) and the count-up was effectively invisible. */
+function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration = 1400, delay = 0, format }) {
   const [val, setVal] = useState(0);
   useEffect(() => {
     if (!run) return;
@@ -2263,6 +2278,9 @@ function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [run, target, duration, delay]);
+  if (typeof format === 'function') {
+    return <span>{format(val, target)}</span>;
+  }
   const display = decimals > 0 ? val.toFixed(decimals) : Math.round(val).toString();
   return <span>{prefix}{display}{suffix}</span>;
 }
