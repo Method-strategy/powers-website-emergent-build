@@ -194,22 +194,40 @@ function HomeV5() {
       const max = Math.max(1, root.scrollHeight - root.clientHeight);
       const p = Math.max(0, Math.min(1, root.scrollTop / max));
       root.style.setProperty('--brief-progress', p.toFixed(4));
-      // Rail progress: 0 until past the hero, then 0→1 across the
-      // remainder of the document. heroBottom = hero.offsetTop +
-      // hero.offsetHeight (within the scroll container). offsetTop
-      // already accounts for .brief-page's padding-top (since
-      // padding shifts the section's natural position downward).
+      // Rail progress: the rail is the "spine of the brief." Each
+      // beat after the hero is one earned page; advancing into the
+      // next beat earns the next chunk of gold. Mapping is discrete-
+      // looking at snap points but smooth between them:
+      //
+      //   • At Beat 2's snap → fill = 1/N   (you're on page 1 of N)
+      //   • At Beat 3's snap → fill = 2/N
+      //   • At final beat   → fill = N/N = 100%
+      //
+      // Where N = total beats after the hero (8 today). Computing N
+      // dynamically from the live section count so adding a beat
+      // doesn't require touching this math.
+      //
+      // Implementation: get the continuous post-hero progress
+      // baseP ∈ [0, 1] (was the prior formula), then remap to
+      // [1/N, 1] so Beat 2 already shows a tick of gold instead of
+      // sitting at empty. Earlier "0 at Beat 2" formula made Row 2
+      // look indistinguishable from "still in hero" — a regression
+      // from the rail's narrative purpose. Senior dev caught it.
+      const pcs = window.getComputedStyle(root);
+      const headerH = parseFloat(pcs.scrollPaddingTop) || 0;
       const hero = heroRef.current;
-      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
-      const railMax = Math.max(1, max - heroBottom);
-      const railP = Math.max(0, Math.min(1, (root.scrollTop - heroBottom) / railMax));
+      const heroDocBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
+      const railZero = Math.max(0, heroDocBottom - headerH);
+      const allSections = root.querySelectorAll(':scope > section');
+      const N = Math.max(1, allSections.length - 1); // beats after hero
+      const baseP = Math.max(0, Math.min(1, (root.scrollTop - railZero) / Math.max(1, max - railZero)));
+      const railP = (1 + baseP * (N - 1)) / N;
       if (railFill.current) railFill.current.style.height = (railP * 100).toFixed(2) + '%';
-      // Toggle `past-hero` once the user has scrolled at least 60%
-      // through the hero — that's the moment Beat 2's headline is
-      // about to enter from below and the rail's appearance reads
-      // as "now we're inside the brief." Using offsetHeight rather
-      // than 100dvh keeps this correct on any viewport.
-      const past = hero ? root.scrollTop > hero.offsetTop + hero.offsetHeight * 0.6 : false;
+      // Toggle `past-hero` once the user is essentially on Beat 2.
+      // Trigger slightly before the exact snap point (railZero − 1px
+      // buffer) so the rail fades up just as Beat 2 enters, not a
+      // beat later.
+      const past = root.scrollTop >= Math.max(1, railZero - 1);
       root.classList.toggle('past-hero', past);
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
@@ -240,6 +258,24 @@ function HomeV5() {
     >
       <style>{`
         :root { --brief-progress: 0; }
+
+        /* Disable the browser's native pull-to-refresh and the
+           horizontal back-swipe gesture on the *root* document. On
+           Android Chrome, pull-to-refresh is wired to the root
+           scrolling element — and because our actual scroll container
+           is .brief-page (an inner element), the browser still treats
+           the root as "at top" all the time. Result: every time the
+           user scrolled .brief-page back up to its top edge (e.g.
+           snapping from Beat 2 back to the Hero), the next downward
+           touch gesture would be intercepted by Chrome as a refresh
+           pull. Field report from a colleague on a Galaxy S26 Ultra
+           (Android 16) confirmed: snap-back triggers reload. Setting
+           overscroll-behavior: none on html + body removes the
+           gesture entirely. iOS Safari ignores this property for
+           rubber-band (which we've already neutralized via fixed
+           header + overscroll-behavior: contain on .brief-page), so
+           no iOS regression. */
+        html, body { overscroll-behavior: none; }
 
         /* .brief-page IS the scroll container. Fixed height +
          * overflow-y:auto + scroll-snap-type all live here so the
@@ -2353,12 +2389,13 @@ function ThesisBeat() {
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
-            transition: 'background 200ms ease',
             position: 'relative',
-          }}
-            onMouseEnter={(e) => e.currentTarget.style.background = PAPER_DEEP}
-            onMouseLeave={(e) => e.currentTarget.style.background = PAPER}
-          >
+            /* Inline transform/transition removed in favor of the
+               CSS rule below so hover state can compose with the
+               eventual scroll-build state cleanly (and so the grow
+               affects the card's *box* — including z-index lift and
+               shadow — not just its background). */
+          }}>
             <div style={{
               fontFamily: TYPE.mono, fontSize: 10, fontWeight: 500,
               letterSpacing: '0.28em', textTransform: 'uppercase',
@@ -2382,6 +2419,41 @@ function ThesisBeat() {
         ))}
       </div>
       <style>{`
+        /* ── Discipline card hover ─────────────────────────────────
+           Cards lift slightly (3px) + scale (1.025) on hover, with a
+           soft elevated shadow + warm paper-deep background. The
+           scale value is intentionally subtle — at 1.025 the card
+           appears to "step forward" without obviously overlapping
+           its neighbors at the 1px gutter, and the elevation cue
+           does the rest of the heavy lifting. Transform-origin
+           defaults to center, which keeps the lift symmetric across
+           the 5-up row so no card disturbs the row's optical
+           baseline. z-index lift ensures the growing card stencils
+           cleanly over its neighbors during the transition.
+           Transitions are property-specific (not transition: all)
+           so they don't fight the entry animation's transforms.
+           background-color uses a slightly snappier 160ms so the
+           color "lands" with the lift instead of trailing it. */
+        .discipline-card {
+          transition:
+            transform 220ms cubic-bezier(.2, .8, .2, 1),
+            box-shadow 220ms cubic-bezier(.2, .8, .2, 1),
+            background-color 160ms ease;
+          will-change: transform;
+        }
+        .discipline-card:hover {
+          background-color: ${PAPER_DEEP};
+          transform: translateY(-3px) scale(1.025);
+          box-shadow:
+            0 18px 36px -18px rgba(13, 36, 66, 0.28),
+            0 4px 12px -6px rgba(13, 36, 66, 0.18);
+          z-index: 3;
+        }
+        .discipline-card:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 4px;
+        }
+
         /* Note: the former .thesis-body two-column with quote sidebar
            was removed Feb 2026 — the "If you're working, we're
            working" credo moved to Beat IV (Work Ethic) where it now
