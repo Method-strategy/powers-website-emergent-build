@@ -1623,8 +1623,8 @@ function HomeV5() {
       {/* ── Beat VII — Results (case study entry point) ─────────── */}
       <CardsBeat
         index="Client Success Stories"
-        headline="Operations built on strong execution produce"
-        pivot="results that speak for themselves."
+        headline="Building a strong execution capability"
+        pivot="produces results that speak for themselves."
         body="Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours."
         cards={[
           { kind: 'Case study', title: 'Defense & aerospace OTD lift', meta: '$2.4B platform · 18 mo' },
@@ -2082,10 +2082,10 @@ function EvidenceBeat() {
     return () => io.disconnect();
   }, []);
   const STATS = [
-    { target: 1,   prefix: '$', suffix: 'B+',  decimals: 0, duration: 1600, label: 'Annualized savings produced across engagements' },
+    { target: 1,   prefix: '$', suffix: 'B+',  decimals: 0, duration: 1600, label: 'Annualized savings produced across all engagements' },
     { target: 98,  prefix: '',  suffix: '%',   decimals: 0, duration: 1400, label: 'Client retention across nearly thirty years' },
     { target: 5,   prefix: '',  suffix: ' wks', decimals: 0, duration: 1200, label: 'Median time to first measurable impact' },
-    { target: 500, prefix: '',  suffix: '+',   decimals: 0, duration: 1800, label: 'Operations strengthened — multi-site, multi-industry' },
+    { target: 500, prefix: '',  suffix: '+',   decimals: 0, duration: 1800, label: 'Operations strengthened across industries, sites, and holdings' },
     { target: 30,  prefix: '',  suffix: '+',   decimals: 0, duration: 1400, label: 'Years of frontline operations leadership' },
   ];
   return (
@@ -2100,8 +2100,8 @@ function EvidenceBeat() {
       <div style={{ marginBottom: 64 }}>
         <div className="station-index wipe" style={{ marginBottom: 14 }}>The Ledger</div>
         <h2 className="station-h2 wipe wipe-d1">
-          <span>Thirty years on the floor.</span>
-          <span className="pivot">The ledger speaks for itself.</span>
+          <span>Decades of partnership.</span>
+          <span className="pivot">Outcomes that last.</span>
         </h2>
       </div>
       <div className="wipe wipe-d2" style={{
