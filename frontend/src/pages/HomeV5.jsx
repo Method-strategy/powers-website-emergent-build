@@ -2373,50 +2373,62 @@ function ThesisBeat() {
 
       {/* ── Five discipline cards — locked content, locked URLs.
          Each card is the jump-off to its dedicated discipline page.
-         5-up row at desktop; collapses cleanly to 2-up / 1-up. */}
-      <div className="wipe wipe-d3" style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-        gap: 1,
-        background: RULE_SOFT,
-      }}>
-        {DISCIPLINES.map((d) => (
-          <a key={d.num} href={d.href} className="discipline-card" style={{
-            background: PAPER,
-            padding: '28px 24px 32px',
-            textDecoration: 'none',
-            color: NAVY,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-            position: 'relative',
-            /* Inline transform/transition removed in favor of the
-               CSS rule below so hover state can compose with the
-               eventual scroll-build state cleanly (and so the grow
-               affects the card's *box* — including z-index lift and
-               shadow — not just its background). */
-          }}>
-            <div style={{
-              fontFamily: TYPE.mono, fontSize: 10, fontWeight: 500,
-              letterSpacing: '0.28em', textTransform: 'uppercase',
-              color: GOLD_BRIGHT,
-            }}>{d.num} &nbsp;&middot;&nbsp; Discipline</div>
-            <div style={{
-              fontFamily: TYPE.sans, fontSize: 17, fontWeight: 700,
-              lineHeight: 1.25, color: NAVY,
-            }}>{d.name}</div>
-            <div style={{
-              fontFamily: TYPE.sans, fontSize: 13, fontWeight: 400,
-              lineHeight: 1.55, color: TEXT_BODY,
-              flex: 1,
-            }}>{d.body}</div>
-            <div style={{
-              fontFamily: TYPE.mono, fontSize: 10, fontWeight: 600,
-              letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: GOLD_BRIGHT, marginTop: 8,
-            }}>Learn more &rarr;</div>
-          </a>
-        ))}
+         5-up row at desktop; collapses cleanly to 2-up / 1-up.
+         Custom entry (Option B, Feb 2026): gold rule strikes
+         across the row first, then cards drop in from 12px above
+         with a 70ms left → right stagger. Uniquely choreographed
+         vs. the rest of the page because these 5 things are the
+         load-bearing claim of the brief. */}
+      <div className="discipline-row">
+        <div className="discipline-rule" aria-hidden="true" />
+        <div className="discipline-grid" style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+          gap: 1,
+          background: RULE_SOFT,
+        }}>
+          {DISCIPLINES.map((d, i) => (
+            <a
+              key={d.num}
+              href={d.href}
+              className="discipline-card"
+              style={{
+                background: PAPER,
+                padding: '28px 24px 32px',
+                textDecoration: 'none',
+                color: NAVY,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+                position: 'relative',
+                /* --i is the card's column index (0..4). The CSS
+                   entry animation uses it to stagger delay 70ms
+                   per card across the row. */
+                ['--i']: i,
+              }}
+            >
+              <div style={{
+                fontFamily: TYPE.mono, fontSize: 10, fontWeight: 500,
+                letterSpacing: '0.28em', textTransform: 'uppercase',
+                color: GOLD_BRIGHT,
+              }}>{d.num} &nbsp;&middot;&nbsp; Discipline</div>
+              <div style={{
+                fontFamily: TYPE.sans, fontSize: 17, fontWeight: 700,
+                lineHeight: 1.25, color: NAVY,
+              }}>{d.name}</div>
+              <div style={{
+                fontFamily: TYPE.sans, fontSize: 13, fontWeight: 400,
+                lineHeight: 1.55, color: TEXT_BODY,
+                flex: 1,
+              }}>{d.body}</div>
+              <div style={{
+                fontFamily: TYPE.mono, fontSize: 10, fontWeight: 600,
+                letterSpacing: '0.22em', textTransform: 'uppercase',
+                color: GOLD_BRIGHT, marginTop: 8,
+              }}>Learn more &rarr;</div>
+            </a>
+          ))}
+        </div>
       </div>
       <style>{`
         /* ── Discipline card hover ─────────────────────────────────
@@ -2454,24 +2466,96 @@ function ThesisBeat() {
           outline-offset: 4px;
         }
 
+        /* ── Discipline row entry choreography (Option B) ──────────
+           Two-stage build, uniquely choreographed for the brief's
+           load-bearing claim (the five disciplines):
+
+             1) Gold rule strikes across the row left → right
+                (320ms delay, 360ms duration). This appears at
+                the same beat in the section's timeline that the
+                lede's wipe is completing — the eye is now
+                "at the bottom of the paragraph and ready to
+                receive the artifact below it."
+             2) Cards drop in from 12px above with opacity,
+                staggered 70ms left → right (delay = 680ms +
+                i*70ms, duration 380ms each). Five distinct
+                landings instead of one continuous sweep — feels
+                like type slugs being set into the chase rather
+                than a curtain being pulled.
+
+           Animation uses fill-mode: backwards so the FROM state
+           (opacity 0, transform translateY(-12px)) holds during
+           the delay window without flashing the natural style
+           first. After the animation ends, we DO NOT use forwards
+           — the element returns to its natural .discipline-card
+           style (opacity 1, transform: none), which then lets
+           the :hover transform compose cleanly. With "forwards"
+           the keyframe's "to" would persist forever and override
+           hover transforms; backwards-only is the trick that
+           reconciles entry animation with hover transform on the
+           same element.
+
+           Rule uses forwards because the rule must stay drawn
+           after the animation ends. When .is-in is removed (user
+           scrolls out), the rule rule reverts to scaleX(0) via
+           the natural .discipline-rule style. Replay-on-return:
+           the animation re-triggers each time .is-in lands.
+        */
+        .discipline-row {
+          position: relative;
+        }
+        .discipline-rule {
+          height: 1px;
+          background: ${GOLD_BRIGHT};
+          width: 100%;
+          margin-bottom: 28px;
+          transform-origin: left center;
+          transform: scaleX(0);
+        }
+        .brief-station.is-in .discipline-rule {
+          animation: discipline-rule-draw 360ms cubic-bezier(.4, 0, .2, 1) 320ms forwards;
+        }
+        @keyframes discipline-rule-draw {
+          from { transform: scaleX(0); }
+          to   { transform: scaleX(1); }
+        }
+        .brief-station.is-in .discipline-card {
+          animation: discipline-card-drop 380ms cubic-bezier(.2, .85, .25, 1) backwards;
+          animation-delay: calc(680ms + var(--i, 0) * 70ms);
+        }
+        @keyframes discipline-card-drop {
+          from { opacity: 0; transform: translateY(-12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        /* Respect prefers-reduced-motion: shrink the build to a
+           plain opacity crossfade, no transforms or rule sweep. */
+        @media (prefers-reduced-motion: reduce) {
+          .discipline-rule {
+            transform: scaleX(1) !important;
+          }
+          .brief-station.is-in .discipline-rule,
+          .brief-station.is-in .discipline-card {
+            animation: none !important;
+          }
+        }
+
         /* Note: the former .thesis-body two-column with quote sidebar
            was removed Feb 2026 — the "If you're working, we're
            working" credo moved to Beat IV (Work Ethic) where it now
            functions as POWERS' guiding principle. The Thesis lede
            now sits on a single measure column above the cards. */
         @media (max-width: 1100px) {
-          .brief-station .wipe-d3 > div[style*="grid-template-columns"],
-          .brief-station > .wipe.wipe-d3 {
+          .discipline-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
           }
         }
         @media (max-width: 720px) {
-          .brief-station > .wipe.wipe-d3 {
+          .discipline-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
           }
         }
         @media (max-width: 480px) {
-          .brief-station > .wipe.wipe-d3 {
+          .discipline-grid {
             grid-template-columns: 1fr !important;
           }
         }
