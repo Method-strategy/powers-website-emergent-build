@@ -918,11 +918,19 @@ function HomeV5() {
           width: 100%;
           z-index: 100;
           background: ${NAVY};
-          /* Border-bottom removed Feb 2026 — the faint gold hairline
-             read as a stray grey line above the hero H1. The strong
-             navy-chrome → cream-paper contrast at the header/hero
-             boundary already gives more than enough visual edge; no
-             rule needed. */
+          /* Gold hairline restored Feb 2026 (V5 carryover from V3).
+             A single 1px gold rule along the bottom edge of the
+             header — same value as the right rail, so the rule
+             reads as the *top edge of the brief itself*. The
+             earlier removal was a misdiagnosis: the "stray grey
+             line above the hero H1" the user reported turned out
+             to be the .brief-tick element being demoted from
+             position:absolute to position:relative by an over-
+             eager selector rollup, not the header rule. With the
+             tick fixed at the source, the header rule is back
+             in its rightful place and adds the document-grade
+             "page break" finish the navy strip needs. */
+          border-bottom: 1px solid ${GOLD_BRIGHT};
         }
         .brief-header-inner {
           max-width: 1240px;
