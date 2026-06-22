@@ -173,7 +173,17 @@ function HomeV5() {
    * scroll container (not window) — .brief-page is the scroll
    * container now, so window.scrollY never moves. Single rAF loop
    * drives the right-rail fill height + exposes --brief-progress
-   * as a CSS variable for any element bound to document position. */
+   * as a CSS variable for any element bound to document position.
+   *
+   * Per senior dev (Feb 2026): the right rail should NOT begin
+   * filling during the hero (Beat 1) — reading the hero is the
+   * "cover" of the brief; the spine only earns ink once the
+   * argument actually starts at Beat 2 (Thesis). We compute a
+   * second progress value (railProgress) that ignores hero scroll
+   * entirely and treats Beat 2's top as 0% / document bottom as
+   * 100%. The rail element itself is hidden via a body-level class
+   * (`past-hero`) so it fades in on Beat 2's entrance and isn't
+   * just sitting empty on the hero. */
   useEffect(() => {
     setMounted(true);
     const root = pageRef.current;
@@ -184,7 +194,23 @@ function HomeV5() {
       const max = Math.max(1, root.scrollHeight - root.clientHeight);
       const p = Math.max(0, Math.min(1, root.scrollTop / max));
       root.style.setProperty('--brief-progress', p.toFixed(4));
-      if (railFill.current) railFill.current.style.height = (p * 100).toFixed(2) + '%';
+      // Rail progress: 0 until past the hero, then 0→1 across the
+      // remainder of the document. heroBottom = hero.offsetTop +
+      // hero.offsetHeight (within the scroll container). offsetTop
+      // already accounts for .brief-page's padding-top (since
+      // padding shifts the section's natural position downward).
+      const hero = heroRef.current;
+      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
+      const railMax = Math.max(1, max - heroBottom);
+      const railP = Math.max(0, Math.min(1, (root.scrollTop - heroBottom) / railMax));
+      if (railFill.current) railFill.current.style.height = (railP * 100).toFixed(2) + '%';
+      // Toggle `past-hero` once the user has scrolled at least 60%
+      // through the hero — that's the moment Beat 2's headline is
+      // about to enter from below and the rail's appearance reads
+      // as "now we're inside the brief." Using offsetHeight rather
+      // than 100dvh keeps this correct on any viewport.
+      const past = hero ? root.scrollTop > hero.offsetTop + hero.offsetHeight * 0.6 : false;
+      root.classList.toggle('past-hero', past);
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     update();
@@ -220,14 +246,37 @@ function HomeV5() {
          * browser has zero ambiguity about which element scrolls
          * and where snap applies. Removes the inconsistent
          * real-browser behavior we saw when snap was set on <html>.
-         * Header (sticky), drawer (fixed), and rail (absolute) all
-         * remain effective inside this container. dvh keeps the
-         * height accurate when iOS Safari's address bar collapses. */
+         * Header (FIXED to viewport, not inside this container),
+         * drawer (fixed), and rail (fixed) all live outside the
+         * scroll flow so iOS rubber-band on the scroll container
+         * can't drag them. dvh keeps the height accurate when iOS
+         * Safari's address bar collapses.
+         *
+         * --header-h is the single source of truth for the navy
+         * header strip. Sections use it to size their min-height
+         * to fit cleanly below the fixed header, and scroll-padding-
+         * top uses it so scroll-snap aligns sections' tops
+         * *visually* below the header (not tucked behind it). On
+         * mobile we collapse the header to 72px to recover vertical
+         * real estate — 112px ate 13% of an iPhone viewport. */
         .brief-page {
+          --header-h: 112px;
           height: 100dvh;
           overflow-y: auto;
           overflow-x: hidden;
+          /* Push the start of scrollable content below the fixed
+             header. Without this, the hero (first child) would sit
+             under the header at scrollTop=0 because position:fixed
+             takes the header out of normal flow. */
+          padding-top: var(--header-h);
           scroll-snap-type: y mandatory;
+          /* scroll-padding-top tells snap "treat this slice of the
+             scrollport as obscured by the fixed header" — snap
+             alignment for "start" now lands sections at y = header-h,
+             not y = 0. Combined with padding-top above, the first
+             section snaps cleanly to scrollTop=0 with its content
+             starting just under the header. */
+          scroll-padding-top: var(--header-h);
           /* Stop Chrome's trackpad rubber-band bounce at the
              top/bottom edges of the scroll container — combined
              with mandatory snap, the bounce produced a visible
@@ -248,11 +297,18 @@ function HomeV5() {
             ${PAPER};
         }
         /* Every top-level section snaps to the top of the scroll
-           container and is at minimum its full visible height. */
+           container and is sized to fill the visible area BELOW the
+           fixed header. Was min-height: 100dvh (full viewport
+           height) — that ignored the header strip, so on sections
+           taller than 100dvh the top of the section's content fell
+           behind the header on every snap. Subtracting header-h
+           keeps tight 1-screen beats centered cleanly within the
+           reading area and gives over-tall beats a header-clear
+           top edge to snap to. */
         .brief-page > section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
-          min-height: 100dvh;
+          min-height: calc(100dvh - var(--header-h));
           box-sizing: border-box;
         }
         /* Footer is shorter than 100dvh and lives outside the beat
@@ -275,7 +331,15 @@ function HomeV5() {
         /* ── Right rail (the spine of the brief) ──────────────────
            Navy hairline with a gold "earned progress" fill. The gold
            grows as the reader advances — the metaphor is that
-           reading the brief IS earning the gold. */
+           reading the brief IS earning the gold.
+           Per senior dev (Feb 2026): the rail must NOT show during
+           the hero. The hero is the brief's "cover" — the rail's
+           visible appearance is the moment the document begins,
+           which is Beat 2 (Thesis). We render the rail conditionally
+           visible: opacity 0 while .brief-page is in the hero,
+           opacity 1 once .brief-page gains the "past-hero" class
+           (toggled by the scroll handler when scrollTop > 60% of
+           the hero's height). */
         .brief-rail {
           /* Fixed to the viewport so the rail stays anchored to the
              right edge regardless of the .brief-page scroll position.
@@ -284,9 +348,11 @@ function HomeV5() {
              effectively viewport-anchored because the page scrolled
              at the document level. Now that the page scrolls
              internally, absolute positioning would scroll the rail
-             UP with the content; fixed keeps it pinned. */
+             UP with the content; fixed keeps it pinned. Top is
+             offset by header-h so the rail starts under the fixed
+             header bar, not behind it. */
           position: fixed;
-          top: 0;
+          top: var(--header-h, 112px);
           /* Moved 24px closer to viewport edge so there's a real
              gutter between the section content (which ends at the
              station's right-padding line) and the rail itself. The
@@ -295,11 +361,14 @@ function HomeV5() {
              line. */
           right: max(16px, calc((100% - 1240px) / 2 + 16px));
           width: 1px;
-          height: 100dvh;
+          height: calc(100dvh - var(--header-h, 112px));
           background: ${RULE};
           pointer-events: none;
           z-index: 2;
+          opacity: 0;
+          transition: opacity 320ms ease;
         }
+        .brief-page.past-hero .brief-rail { opacity: 1; }
         .brief-rail-fill {
           position: absolute;
           top: 0;
@@ -332,7 +401,13 @@ function HomeV5() {
            Reads on cream paper with navy text — confident, restrained. */
         .brief-hero {
           position: relative;
-          min-height: calc(100dvh - 112px - 50px);
+          /* min-height now reads from --header-h. Previously was
+             hardcoded to 100dvh - 112px - 50px; with the .brief-page
+             > section rule now setting min-height to 100dvh -
+             header-h, the only thing the hero needs to subtract on
+             top of that is the 50px breathing-room nudge that
+             keeps "Find out how" off the viewport bottom edge. */
+          min-height: calc(100dvh - var(--header-h) - 50px);
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -657,6 +732,18 @@ function HomeV5() {
            <img> at that point. */
         .industries-logos-row {
           margin-top: clamp(40px, 6vh, 80px);
+          /* CRITICAL on mobile: this row is a CSS Grid item whose
+             child .logo-crawl-track sets width: max-content (the
+             full marquee = ~7000px wide). By default a grid item's
+             min-width is "auto", which resolves to the min-content
+             size of its descendants — that lets the track's massive
+             width blow the grid column out past the viewport, and
+             since .brief-station's padding is symmetric, the row
+             bleeds off the right edge. Setting min-width: 0
+             unblocks the grid column from intrinsic sizing so the
+             column respects its actual track width, and .logo-crawl's
+             overflow:hidden can clip the marquee cleanly. */
+          min-width: 0;
         }
         .industries-logos-label {
           font-family: ${TYPE.mono};
@@ -671,6 +758,13 @@ function HomeV5() {
           position: relative;
           overflow: hidden;
           padding: 4px 0;
+          /* Belt-and-suspenders companion to the min-width:0 fix on
+             the parent .industries-logos-row — if anything ever
+             reparents the crawl into another grid/flex container,
+             this keeps the marquee constrained to its parent's
+             actual width instead of expanding to fit the max-content
+             track inside. */
+          min-width: 0;
         }
         .logo-crawl-track {
           display: flex;
@@ -770,8 +864,22 @@ function HomeV5() {
            submenu structure are LOCKED — match V4 exactly because
            those map to pre-planned pages. */
         .brief-header {
-          position: sticky;
+          /* Was position:sticky inside the .brief-page scroll
+             container. On iOS Safari, sticky inside an overflow:auto
+             container interacts badly with momentum scrolling — the
+             header would visibly "rubber band" downward when the
+             user flicked at the top of the scrollport because the
+             sticky element is still technically inside the scroll
+             flow. position:fixed pins the header to the viewport,
+             outside the scrollable area entirely, so no amount of
+             overscroll on .brief-page can drag it. .brief-page
+             padding-top: var(--header-h) ensures content doesn't
+             start tucked behind the fixed header. */
+          position: fixed;
           top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
           z-index: 100;
           background: ${NAVY};
           /* Border-bottom removed Feb 2026 — the faint gold hairline
@@ -784,12 +892,11 @@ function HomeV5() {
           max-width: 1240px;
           margin: 0 auto;
           padding: 0 40px;
-          /* Bumped Feb 2026 (84 → 112) — the prior shallow header
-             felt squeezed against the hero's full-viewport breathing
-             room. The deeper bar gives the logo + nav room to sit
-             without compression and matches the document-grade
-             generosity of the rest of the brief. */
-          height: 112px;
+          /* Header chrome height bound to --header-h so changing
+             one variable updates the strip, the page padding-top,
+             the scroll-padding, the rail offset, and every section's
+             min-height in one place. */
+          height: var(--header-h);
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -1158,6 +1265,15 @@ function HomeV5() {
         }
 
         @media (max-width: 900px) {
+          /* Shrink the navy header strip on mobile. 112px ate 13%
+             of an iPhone-sized viewport; 72px gives back ~5vh of
+             content room and keeps the POWERS mark + hamburger
+             centered without compression. --header-h cascades to
+             .brief-page padding-top, scroll-padding-top, every
+             section's min-height, the rail offset, and rail height
+             — single source of truth. */
+          .brief-page { --header-h: 72px; }
+          .brief-logo img { height: 40px; }
           .brief-station { grid-template-columns: 1fr; column-gap: 24px; }
           .brief-rail { right: 24px; }
           /* Swap desktop nav for hamburger. The mega-menu panels are
