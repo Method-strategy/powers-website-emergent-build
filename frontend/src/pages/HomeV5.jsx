@@ -1265,6 +1265,26 @@ function HomeV5() {
           display: flex;
           justify-content: center;
           z-index: 200;
+          /* CRITICAL: the wrapper itself must be invisible to the
+             pointer. The mega panel inside already handles its own
+             pointer-events (none when closed, auto when open), but
+             this wrapper — which stretches edge-to-edge under the
+             header and takes on the height of its (opacity 0)
+             child — was capturing the cursor across roughly the
+             top third of the hero. Result: when the user's cursor
+             sat over that band, wheel events fired on a
+             position:absolute element nested inside the
+             position:fixed header, and Chrome's wheel-to-scroll
+             routing failed to walk back out to .brief-page (the
+             actual scroll container). Scroll would "freeze" until
+             the cursor moved low enough to be over the hero proper.
+             pointer-events: none here lets the cursor fall through
+             to the hero, where wheel events bubble correctly.
+             Child .brief-mega-panel re-enables pointer-events: auto
+             when [data-open="true"] — CSS allows a child to opt
+             back in even when its parent is none, so menu
+             interactions are unaffected. */
+          pointer-events: none;
         }
         .brief-mega-panel {
           background: ${NAVY};
