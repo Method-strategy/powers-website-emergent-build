@@ -110,8 +110,8 @@ export default function SiteFooter() {
                 width that fits both sentences, the tagline reads on one
                 line; at any narrower width, the break always lands
                 between the sentences and never inside one. */}
-            <span style={{ whiteSpace: 'nowrap' }}>Strong Execution.</span>{' '}
-            <span style={{ whiteSpace: 'nowrap' }}>Strong Performance.</span>
+            <span style={{ whiteSpace: 'nowrap' }}>Stronger Execution.</span>{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Stronger Performance.</span>
           </div>
           <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.65, color: 'rgba(255,255,255,0.60)', fontFamily: FONT, margin: 0 }}>
             Management consulting for manufacturers who need performance that holds across teams, shifts, sites, and holdings.

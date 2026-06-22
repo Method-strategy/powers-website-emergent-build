@@ -60,8 +60,8 @@ const TEXT_MUTED  = 'rgba(13, 36, 66, 0.54)';
  * gold .accent class (used for the third "Regardless of conditions."
  * payoff). */
 const HERO_LINES = [
-  { text: 'Strong execution.',         accent: false },
-  { text: 'Strong performance.',       accent: false },
+  { text: 'Stronger execution.',         accent: false },
+  { text: 'Stronger performance.',       accent: false },
   { text: 'Regardless of conditions.', accent: true },
 ];
 
@@ -1430,7 +1430,7 @@ function HomeV5() {
                 hamburger on a 390px viewport). aria-hidden so screen
                 readers don't repeat the H1 in the chrome. */}
             <span className="brief-header-tagline" aria-hidden="true">
-              Strong Execution. Strong Performance.
+              Stronger Execution. Stronger Performance.
             </span>
           </div>
           <nav
@@ -1858,8 +1858,8 @@ function SiteFooter() {
             fontSize: 13, fontWeight: 500, letterSpacing: '0.10em',
             color: GOLD_BRIGHT, marginBottom: 14,
           }}>
-            <span style={{ whiteSpace: 'nowrap' }}>Strong Execution.</span>{' '}
-            <span style={{ whiteSpace: 'nowrap' }}>Strong Performance.</span>
+            <span style={{ whiteSpace: 'nowrap' }}>Stronger Execution.</span>{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Stronger Performance.</span>
           </div>
           <p style={{
             fontSize: 13, fontWeight: 300, lineHeight: 1.65,

@@ -292,7 +292,7 @@ export default function SiteHeader({ fixed = true }) {
             <img src="/uploads/powers-logo-refined-2026.png" alt="POWERS" style={{ height: 57, width: 'auto', display: 'block' }} />
           </Anchor>
           <span style={{ fontSize: 12, fontWeight: 400, fontStyle: 'italic', letterSpacing: '0.01em', color: NC.navy400, lineHeight: 1, whiteSpace: 'nowrap', fontFamily: FONT }} className="nav-tagline">
-            Strong Execution. Strong Performance.
+            Stronger Execution. Stronger Performance.
           </span>
         </div>
 
