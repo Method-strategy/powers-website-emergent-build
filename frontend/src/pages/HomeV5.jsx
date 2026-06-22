@@ -943,6 +943,52 @@ function HomeV5() {
           width: auto;
           display: block;
         }
+        /* Logo + tagline group — flex row that keeps the tagline
+           parked tight against the logo no matter how the parent
+           .brief-header-inner distributes space. Without this
+           wrapper, the inner's justify-content: space-between
+           would scatter logo, tagline, and nav into thirds. */
+        .brief-header-mark {
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+        }
+        /* ── Header tagline — homepage / desktop / past-hero only ──
+           The .brief-header-inner is a flex row: [logo] [nav] [CTA].
+           We inject the tagline as a sibling of the logo so it sits
+           immediately to its right, baseline-aligned, with a 14px
+           gutter — matching the legacy V4 header treatment used on
+           every interior page (where the tagline is always-on).
+           Here the appearance is *earned*: hidden during the hero
+           (4px below resting + opacity 0), gently rises into place
+           with a 480ms ease-out when .brief-page gains .past-hero.
+           Italic for "voice," small caps tracking turned off — this
+           reads as the SITE talking, not a label. Pointer-events
+           none so it never intercepts clicks intended for the logo
+           or the nav button to its right. */
+        .brief-header-tagline {
+          font-family: ${TYPE.sans};
+          font-size: 13px;
+          font-weight: 400;
+          font-style: italic;
+          letter-spacing: 0.01em;
+          line-height: 1;
+          color: rgba(243, 240, 232, 0.66);
+          white-space: nowrap;
+          margin-left: 14px;
+          /* Hidden until past-hero. translateY gives the rise-into-
+             place feel; opacity does the actual disclosure. */
+          opacity: 0;
+          transform: translateY(4px);
+          transition:
+            opacity 480ms ease-out,
+            transform 480ms ease-out;
+          pointer-events: none;
+        }
+        .brief-page.past-hero .brief-header-tagline {
+          opacity: 1;
+          transform: translateY(0);
+        }
         .brief-nav {
           display: flex;
           align-items: center;
@@ -1310,6 +1356,12 @@ function HomeV5() {
              — single source of truth. */
           .brief-page { --header-h: 72px; }
           .brief-logo img { height: 40px; }
+          /* Tagline is desktop-only. No room next to the hamburger
+             on a 390px viewport, and the homepage hero already
+             delivers the line at full size — mobile readers get
+             the message in the hero and don't need the running
+             chrome equivalent. */
+          .brief-header-tagline { display: none; }
           .brief-station { grid-template-columns: 1fr; column-gap: 24px; }
           .brief-rail { right: 24px; }
           /* Swap desktop nav for hamburger. The mega-menu panels are
@@ -1332,9 +1384,27 @@ function HomeV5() {
           vs white). */}
       <header className="brief-header">
         <div className="brief-header-inner">
-          <a href="/" className="brief-logo" aria-label="POWERS">
-            <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
-          </a>
+          <div className="brief-header-mark">
+            <a href="/" className="brief-logo" aria-label="POWERS">
+              <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
+            </a>
+            {/* Tagline — appears only on the homepage, only on
+                desktop, and only after the reader has scrolled past
+                the hero. Narrative continuity device: the hero H1
+                ("Strong execution. Strong performance.") delivers the
+                promise at full size; as the reader moves into the
+                brief, that same promise rises into the header as the
+                standing site tagline. Doesn't interrupt the hero, but
+                becomes the running header for the rest of the read.
+                Visibility is gated entirely by the .past-hero class
+                that the scroll handler toggles on .brief-page; mobile
+                hides the tagline outright (no room next to the
+                hamburger on a 390px viewport). aria-hidden so screen
+                readers don't repeat the H1 in the chrome. */}
+            <span className="brief-header-tagline" aria-hidden="true">
+              Strong Execution. Strong Performance.
+            </span>
+          </div>
           <nav
             className="brief-nav"
             data-testid="brief-nav"
