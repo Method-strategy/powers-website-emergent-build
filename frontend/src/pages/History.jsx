@@ -1,163 +1,531 @@
-import React from 'react';
-import LegacyPage from '../components/LegacyPage';
+import React, { useEffect, useRef } from 'react';
+import BriefHeader from '../components/BriefHeader';
+import BriefFooter from '../components/BriefFooter';
+import {
+  NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT,
+  RULE, TEXT_BODY, TYPE,
+} from '../lib/briefTokens';
 
-const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      font-family: 'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
-      background: #ffffff;
-      min-height: 100vh;
-    }
-    body { padding-top: 84px; }
-    .nav-desktop { display: flex !important; }
-    .nav-mobile  { display: none !important; }
-    .nav-tagline { display: inline !important; }
-    @media (max-width: 767px) {
-      .nav-desktop { display: none !important; }
-      .nav-mobile  { display: flex !important; }
-      .nav-tagline { display: none !important; }
-    }`;
+/**
+ * History — POWERS' origin story, rebuilt Feb 2026 in the
+ * "Operating Brief" design language introduced on HomeV5.
+ *
+ * Structure mirrors the original content (Hero, Where It Started,
+ * How We Evolved, A New Chapter, The Constants, CTA) — copy is
+ * preserved verbatim per the client review note that this pass is
+ * design/aesthetic only. Visual treatment now matches the brief:
+ *
+ *   - BriefHeader (fixed navy strip, italic running tagline,
+ *     gold rule, mega-menu nav) replaces the legacy SiteHeader
+ *   - BriefFooter replaces the legacy SiteFooter
+ *   - Each section follows the brief's beat grammar:
+ *         eyebrow (mono small caps, gold)
+ *         h2 (sans bold navy, italic gold "pivot" tail)
+ *         lede (long-form serious body in TEXT_BODY)
+ *   - Alternating paper / navy surfaces give the "page-break"
+ *     rhythm the brief uses on the homepage
+ *   - Wipe-in entries triggered by IntersectionObserver match the
+ *     homepage's `.wipe` left-to-right clip-path sweep
+ *   - The "Constants" section uses a 5-up disciplined list of the
+ *     founding principles, styled like the homepage's discipline
+ *     cards — same gold rule + drop-in choreography
+ *
+ * No scroll-snap: interior pages are normal scroll documents, per
+ * the locked design decision. Snap is a homepage-only signature.
+ */
 
-const HTML = `<style>
-  /* Typography QC — global balancing per CLAUDE.md standing instruction */
-  h1, h2, h3, .pw-eyebrow { text-wrap: balance; }
-  @media (max-width: 767px) { .hero-headline br { display: none; } }
-  .pw-eyebrow { font-size:12px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:#eabb71; font-family:inherit; margin-bottom:24px; }
-  .pw-section-outer { width:100%; }
-  .pw-section-inner { max-width:1280px; margin:0 auto; padding:96px 48px; }
-  .pw-col-narrow { max-width:780px; margin:0 auto; }
-  .pw-h1 { font-size:clamp(36px,4.2vw,56px); font-weight:800; line-height:1.08; color:#ffffff; font-family:inherit; letter-spacing:-0.01em; }
-  .pw-subhead-hero { font-size:clamp(17px,1.5vw,22px); font-weight:300; line-height:1.5; color:rgba(255,255,255,0.90); font-family:inherit; max-width:60ch; margin-top:28px; text-wrap:pretty; }
-  .pw-rule-gold-hero { width:80px; height:1px; background:#eabb71; border:0; margin-top:64px; }
-  .pw-h2 { font-size:clamp(28px,3.4vw,36px); font-weight:800; line-height:1.15; color:#183a61; font-family:inherit; letter-spacing:-0.005em; max-width:680px; }
-  .pw-h2-light { color:#ffffff; }
-  .pw-body { font-size:18px; font-weight:300; line-height:1.7; color:#3a3a38; font-family:inherit; margin-top:24px; }
-  .pw-body p + p { margin-top:1.1em; }
-  .pw-body-light { color:rgba(255,255,255,0.80); max-width:640px; }
-  .pw-rule-gold { width:64px; height:1px; background:#eabb71; margin:0 0 32px 0; border:0; }
-  .pw-cta-link { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:500; letter-spacing:0.06em; color:#eabb71; text-decoration:none; font-family:inherit; transition:color 150ms ease; }
-  .pw-cta-link:hover { color:#ffffff; }
-  .pw-cta-link .pw-arrow { transition:transform 200ms ease; }
-  .pw-cta-link:hover .pw-arrow { transform:translateX(4px); }
-  .pw-split { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
-  .pw-img-ph { width:100%; aspect-ratio:4/3; background:#0d2442 repeating-linear-gradient(135deg, rgba(234,187,113,0.06) 0 12px, transparent 12px 24px); display:flex; align-items:center; justify-content:center; }
-  .pw-img-ph-label { font-family:'SF Mono','Menlo',Consolas,monospace; font-size:11px; letter-spacing:0.12em; color:rgba(234,187,113,0.55); text-transform:uppercase; padding:0 24px; text-align:center; }
-  .pw-quote-list { list-style:none; margin:48px 0 0 0; padding:0; }
-  .pw-quote-item { padding:22px 0; border-top:1px solid rgba(234,187,113,0.30); display:flex; gap:18px; align-items:flex-start; }
-  .pw-quote-item:last-child { border-bottom:1px solid rgba(234,187,113,0.30); }
-  .pw-quote-mark { font-size:34px; line-height:0.8; color:#eabb71; font-family:Georgia,serif; flex-shrink:0; margin-top:6px; }
-  .pw-quote-text { font-size:17px; font-weight:300; line-height:1.55; color:#ffffff; font-family:inherit; }
-  @media (max-width:1023px) {
-    .pw-split { grid-template-columns:1fr; gap:48px; }
-  }
-  @media (max-width:767px) {
-    .pw-section-inner { padding:64px 24px; }
-    .pw-body { font-size:16px; }
-    .pw-quote-text { font-size:15px; }
-  }
-</style>
+/* Helper: trigger a one-shot `.is-in` class when the section
+   enters the viewport so the .wipe clip-path animation plays. */
+function useInViewClass(ref, threshold = 0.18) {
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => el.classList.toggle('is-in', e.isIntersecting)),
+      { threshold }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, threshold]);
+}
 
-<!-- HERO -->
-<section class="pw-section-outer" style="background:#183a61;">
-  <div class="pw-section-inner" style="min-height:600px;display:flex;flex-direction:column;justify-content:center;padding-top:120px;padding-bottom:120px;">
-    <div class="pw-eyebrow">Our Story</div>
-    <h1 class="pw-h1 hero-headline">Built From the Floor Up.<br/>Since 2004.</h1>
-    <p class="pw-subhead-hero">POWERS was not founded by academics or career consultants. It was founded by executives who had run manufacturing operations, managed P&amp;Ls, and understood firsthand where performance breaks down and why it stays broken.</p>
-    <hr class="pw-rule-gold-hero" />
-  </div>
-</section>
-
-<!-- SECTION 1 — WHERE IT STARTED -->
-<section class="pw-section-outer" style="background:#ffffff;">
-  <div class="pw-section-inner">
-    <div class="pw-col-narrow">
-      <div class="pw-eyebrow">Where It Started</div>
-      <h2 class="pw-h2">Gainesville, Georgia. 2004.</h2>
-      <hr class="pw-rule-gold" style="margin-top:24px;" />
-      <div class="pw-body">
-        <p>Randall Powers founded POWERS in Gainesville, Georgia, with a team of C-level executives who shared a common conviction: that the gap between executive intent and shop floor performance was not a strategy problem. It was a systems, leadership, and discipline problem. And it could be solved, permanently, by working inside the operation rather than advising from outside it.</p>
-        <p>That founding conviction has never changed. Every engagement POWERS takes on today is built on the same principle that drove the first one in 2004. Get on the floor. Work with the people. Build what holds.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 2 — HOW WE EVOLVED -->
-<section class="pw-section-outer" style="background:#f5f5f3;">
-  <div class="pw-section-inner">
-    <div class="pw-col-narrow">
-      <div class="pw-eyebrow">How We Evolved</div>
-      <h2 class="pw-h2">Two Decades of Floor-Level Experience Built Something No Competitor Has.</h2>
-      <hr class="pw-rule-gold" style="margin-top:24px;" />
-      <div class="pw-body">
-        <p>Over twenty years of engagements across food and beverage, aerospace and defense, automotive, pharmaceutical, metals and mining, medical devices, and private equity portfolio operations, POWERS developed something that can only come from that kind of accumulated experience: a proprietary methodology that integrates management operating systems, frontline leadership development, and real-time operational visibility into a single coherent approach.</p>
-        <p>That approach is not a framework borrowed from Lean or Six Sigma. It is the direct result of watching what breaks, understanding why it breaks, and building the systems that prevent it from breaking again. The Management Operating System POWERS installs is not a product. It is an outcome built from the inside, tailored to how each specific organization operates.</p>
-        <p>The Digital Production System, POWERS' proprietary execution layer, came from the same place. Not from a software team working from a distance, but from consultants on the floor who saw the same gap repeated across hundreds of engagements: organizations had data, but the data was not driving decisions at the speed and level required to maintain execution consistency. DPS closes that gap.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 3 — A NEW CHAPTER -->
-<section class="pw-section-outer" style="background:#ffffff;">
-  <div class="pw-section-inner">
-    <div class="pw-split">
-      <div>
-        <div class="pw-eyebrow">A New Chapter</div>
-        <h2 class="pw-h2">Atlanta. 2021.</h2>
-        <hr class="pw-rule-gold" style="margin-top:24px;" />
-        <div class="pw-body">
-          <p>In 2021, POWERS relocated its corporate headquarters from Gainesville to Atlanta, Georgia, establishing its offices at 1801 Peachtree Street NE. The move reflected what had been true for years: POWERS had grown into a firm operating at national and global scale, serving manufacturing leaders across industries and geographies, and its home base needed to reflect that ambition.</p>
-          <p>The work still happens on the floor. That has never changed. But Atlanta positions POWERS to attract the caliber of talent the firm's next chapter requires and keeps it connected to the broader business and investment community it increasingly serves.</p>
-        </div>
-      </div>
-      <div class="pw-img-ph" aria-hidden="true">
-        <span class="pw-img-ph-label">Atlanta skyline / 1801 Peachtree St NE<br/>placeholder</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 4 — THE CONSTANTS -->
-<section class="pw-section-outer" style="background:#183a61;">
-  <div class="pw-section-inner">
-    <div class="pw-col-narrow">
-      <div class="pw-eyebrow">The Constants</div>
-      <h2 class="pw-h2 pw-h2-light">Twenty Years In. The Founding Principles Still Run the Firm.</h2>
-      <hr class="pw-rule-gold" style="margin-top:24px;" />
-      <div class="pw-body pw-body-light">
-        <p>The industries have expanded. The methodology has deepened. The team has grown. But the operating principles Randall Powers built the firm on in 2004 are the same ones that govern every engagement today.</p>
-      </div>
-      <ul class="pw-quote-list">
-        <li class="pw-quote-item"><span class="pw-quote-mark">&ldquo;</span><span class="pw-quote-text">We earn the right to return to a client every week by delivering on our commitments.</span></li>
-        <li class="pw-quote-item"><span class="pw-quote-mark">&ldquo;</span><span class="pw-quote-text">Clients first, company second, self third.</span></li>
-        <li class="pw-quote-item"><span class="pw-quote-mark">&ldquo;</span><span class="pw-quote-text">Frontline leadership is the most critical and most underinvested role in manufacturing.</span></li>
-        <li class="pw-quote-item"><span class="pw-quote-mark">&ldquo;</span><span class="pw-quote-text">Behavioral change is a skill and an art that must be handled with discipline.</span></li>
-        <li class="pw-quote-item"><span class="pw-quote-mark">&ldquo;</span><span class="pw-quote-text">We deliver on schedule, always.</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 5 — CTA -->
-<section class="pw-section-outer" style="background:#0d2442;">
-  <div class="pw-section-inner" style="padding-top:96px; padding-bottom:96px; text-align:center;">
-    <h2 class="pw-h2 pw-h2-light" style="margin:0 auto;">See What Twenty Years of This Approach Produces.</h2>
-    <div style="margin-top:32px;">
-      <a href="case-studies.html" class="pw-cta-link">Read the Case Studies <span class="pw-arrow">&rarr;</span></a>
-    </div>
-  </div>
-</section>`;
-
-const SCRIPT = ``;
+const FOUNDING_PRINCIPLES = [
+  'We earn the right to return to a client every week by delivering on our commitments.',
+  'Clients first, company second, self third.',
+  'Frontline leadership is the most critical and most underinvested role in manufacturing.',
+  'Behavioral change is a skill and an art that must be handled with discipline.',
+  'We deliver on schedule, always.',
+];
 
 export default function History() {
+  useEffect(() => {
+    document.title = 'History | POWERS Manufacturing Consulting';
+  }, []);
+
   return (
-    <LegacyPage
-      css={CSS}
-      html={HTML}
-      script={SCRIPT}
-      title={`History — POWERS Manufacturing Performance Consulting v0.3.0`}
-      metaDescription={`POWERS was founded in 2004 in Gainesville, Georgia by executives who had run manufacturing operations. Two decades later, the founding principles still run the firm.`}
-    />
+    <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <PageStyles />
+      <BriefHeader mode="interior" />
+
+      {/* Content sits below the fixed 112/72px header. */}
+      <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
+        <HeroBeat />
+        <SectionWhereItStarted />
+        <SectionHowWeEvolved />
+        <SectionNewChapter />
+        <SectionTheConstants />
+        <SectionCTA />
+      </main>
+
+      <BriefFooter />
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────── */
+/*  Beats                                                          */
+/* ──────────────────────────────────────────────────────────────── */
+
+function HeroBeat() {
+  const ref = useRef(null);
+  useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-page-hero" style={{ background: NAVY }}>
+      <div className="brief-doc-inner">
+        <div className="brief-doc-col">
+          <div className="station-index wipe" style={{ color: GOLD_BRIGHT, marginBottom: 24 }}>Our Story</div>
+          <h1 className="brief-doc-h1 wipe wipe-d1">
+            Built from the floor up. <span style={{ color: GOLD_BRIGHT, fontStyle: 'italic' }}>Since 2004.</span>
+          </h1>
+          <p className="brief-doc-lede wipe wipe-d2" style={{ color: 'rgba(255,255,255,0.86)', marginTop: 28, maxWidth: 760 }}>
+            POWERS was not founded by academics or career consultants. It was founded by executives who had run manufacturing operations, managed P&amp;Ls, and understood firsthand where performance breaks down and why it stays broken.
+          </p>
+          <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionWhereItStarted() {
+  const ref = useRef(null);
+  useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-doc-station" style={{ background: PAPER }}>
+      <div className="brief-doc-inner">
+        <div className="brief-doc-col">
+          <div className="station-index wipe">Where It Started</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>Gainesville, Georgia.</span>
+            <span className="pivot">2004.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3">
+            <p>Randall Powers founded POWERS in Gainesville, Georgia, with a team of C-level executives who shared a common conviction: that the gap between executive intent and shop floor performance was not a strategy problem. It was a systems, leadership, and discipline problem. And it could be solved, permanently, by working inside the operation rather than advising from outside it.</p>
+            <p>That founding conviction has never changed. Every engagement POWERS takes on today is built on the same principle that drove the first one in 2004. <em>Get on the floor. Work with the people. Build what holds.</em></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionHowWeEvolved() {
+  const ref = useRef(null);
+  useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-doc-station" style={{ background: PAPER_DEEP }}>
+      <div className="brief-doc-inner">
+        <div className="brief-doc-col">
+          <div className="station-index wipe">How We Evolved</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>Two decades on the floor built something</span>
+            <span className="pivot">no competitor has.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3">
+            <p>Over twenty years of engagements across food and beverage, aerospace and defense, automotive, pharmaceutical, metals and mining, medical devices, and private equity portfolio operations, POWERS developed something that can only come from that kind of accumulated experience: a proprietary methodology that integrates management operating systems, frontline leadership development, and real-time operational visibility into a single coherent approach.</p>
+            <p>That approach is not a framework borrowed from Lean or Six Sigma. It is the direct result of watching what breaks, understanding why it breaks, and building the systems that prevent it from breaking again. The Management Operating System POWERS installs is not a product. It is an outcome built from the inside, tailored to how each specific organization operates.</p>
+            <p>The Digital Production System, POWERS&rsquo; proprietary execution layer, came from the same place. Not from a software team working from a distance, but from consultants on the floor who saw the same gap repeated across hundreds of engagements: organizations had data, but the data was not driving decisions at the speed and level required to maintain execution consistency. DPS closes that gap.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionNewChapter() {
+  const ref = useRef(null);
+  useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-doc-station" style={{ background: PAPER }}>
+      <div className="brief-doc-inner">
+        <div className="brief-doc-split">
+          <div>
+            <div className="station-index wipe">A New Chapter</div>
+            <h2 className="brief-doc-h2 wipe wipe-d1">
+              <span>Atlanta.</span>
+              <span className="pivot">2021.</span>
+            </h2>
+            <div className="brief-doc-rule-gold wipe wipe-d2" />
+            <div className="brief-doc-body wipe wipe-d3">
+              <p>In 2021, POWERS relocated its corporate headquarters from Gainesville to Atlanta, Georgia, establishing its offices at 1801 Peachtree Street NE. The move reflected what had been true for years: POWERS had grown into a firm operating at national and global scale, serving manufacturing leaders across industries and geographies, and its home base needed to reflect that ambition.</p>
+              <p>The work still happens on the floor. <em>That has never changed.</em> But Atlanta positions POWERS to attract the caliber of talent the firm&rsquo;s next chapter requires and keeps it connected to the broader business and investment community it increasingly serves.</p>
+            </div>
+          </div>
+          <div className="brief-doc-placeholder wipe wipe-d3" aria-hidden="true">
+            <span className="brief-doc-placeholder-label">
+              Atlanta skyline / 1801 Peachtree St NE<br />
+              <em>placeholder</em>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionTheConstants() {
+  const ref = useRef(null);
+  useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-doc-station" style={{ background: NAVY }}>
+      <div className="brief-doc-inner">
+        <div className="brief-doc-col">
+          <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>The Constants</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1" style={{ color: '#ffffff' }}>
+            <span>Twenty years in.</span>
+            <span className="pivot">The founding principles still run the firm.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3" style={{ color: 'rgba(255,255,255,0.78)' }}>
+            <p>The industries have expanded. The methodology has deepened. The team has grown. But the operating principles Randall Powers built the firm on in 2004 are the same ones that govern every engagement today.</p>
+          </div>
+        </div>
+
+        {/* Principles list — full inner width (NOT inside .brief-doc-col)
+            so the 5-up grid uses the full content area instead of
+            being constrained to the 900px reading column. */}
+        <div className="principles-row">
+          <div className="principles-rule" aria-hidden="true" />
+          <ol className="principles-list">
+            {FOUNDING_PRINCIPLES.map((p, i) => (
+              <li key={i} className="principle-card" style={{ ['--i']: i }}>
+                <span className="principle-num">{String(i + 1).padStart(2, '0')}</span>
+                <span className="principle-text">&ldquo;{p}&rdquo;</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionCTA() {
+  const ref = useRef(null);
+  useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: NAVY_DEEP }}>
+      <div className="brief-doc-inner" style={{ textAlign: 'center', paddingTop: 96, paddingBottom: 96 }}>
+        <h2 className="brief-doc-h2 wipe" style={{ color: '#ffffff', margin: '0 auto', maxWidth: 760 }}>
+          <span>See what twenty years of this approach</span>{' '}
+          <span className="pivot">produces.</span>
+        </h2>
+        <div style={{ marginTop: 36 }} className="wipe wipe-d2">
+          <a href="/case-studies" className="brief-doc-cta-link">
+            Read the Case Studies <span className="brief-doc-cta-arrow">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────── */
+/*  Page-scoped styles                                             */
+/* ──────────────────────────────────────────────────────────────── */
+
+function PageStyles() {
+  return (
+    <style>{`
+      .brief-doc * { box-sizing: border-box; }
+
+      /* Page hero — full-bleed navy slab. Matches the HomeV5 hero
+         spec for typography but without the video/swarm; History
+         carries its own gravitas via copy + ample padding. */
+      .brief-page-hero {
+        position: relative;
+        padding: clamp(120px, 14vh, 180px) 0 clamp(96px, 12vh, 140px);
+        overflow: hidden;
+      }
+      .brief-page-hero .brief-doc-inner { color: #ffffff; }
+
+      /* Stations — alternating paper / paper-deep / navy surfaces. */
+      .brief-doc-station {
+        padding: clamp(80px, 10vh, 140px) 0;
+        position: relative;
+      }
+      /* Outer page-edge frame. Spans the full viewport width; its
+         padding pushes content inside to align with the 1240-grid
+         centerline. Note: NOT capped to max-width — that would
+         compound with .brief-doc-col's own max-width and shrink
+         the content area to nothing. The inner column handles its
+         own measure constraint. */
+      .brief-doc-inner {
+        width: 100%;
+        padding: 0 max(40px, calc((100% - 1240px) / 2 + 40px));
+        box-sizing: border-box;
+      }
+      /* Reading-measure column for prose-heavy stations. Wraps
+         eyebrow + h2 + body into a single 900px-max read width
+         and centers nothing — content is left-aligned, the
+         leftover space lives on the right (standard editorial
+         single-column behavior). */
+      .brief-doc-col { max-width: 900px; }
+      .brief-doc-split {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      @media (max-width: 1023px) {
+        .brief-doc-split { grid-template-columns: 1fr; gap: 56px; }
+      }
+
+      /* Typography — locked to the HomeV5 type rhythm so the brief
+         feels like one continuous document across pages. */
+      .station-index {
+        font-family: ${TYPE.mono};
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: ${GOLD_BRIGHT};
+        margin-bottom: 20px;
+      }
+      .brief-doc-h1 {
+        font-family: ${TYPE.sans};
+        font-size: clamp(40px, 5vw, 64px);
+        font-weight: 800;
+        line-height: 1.04;
+        letter-spacing: -0.012em;
+        margin: 0;
+        text-wrap: balance;
+      }
+      .brief-doc-h2 {
+        font-family: ${TYPE.sans};
+        font-size: clamp(28px, 3.4vw, 40px);
+        font-weight: 800;
+        line-height: 1.12;
+        letter-spacing: -0.008em;
+        color: ${NAVY};
+        margin: 0;
+        text-wrap: balance;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .brief-doc-h2 .pivot {
+        font-style: italic;
+        font-weight: 600;
+        color: ${GOLD_BRIGHT};
+        text-wrap: pretty;
+      }
+      .brief-doc-lede {
+        font-family: ${TYPE.sans};
+        font-size: clamp(17px, 1.5vw, 21px);
+        font-weight: 300;
+        line-height: 1.55;
+        text-wrap: pretty;
+      }
+      .brief-doc-body {
+        font-family: ${TYPE.sans};
+        font-size: 17px;
+        font-weight: 300;
+        line-height: 1.72;
+        color: ${TEXT_BODY};
+        margin-top: 28px;
+        text-wrap: pretty;
+        max-width: 720px;
+      }
+      .brief-doc-body p + p { margin-top: 1.1em; }
+      .brief-doc-body em {
+        font-style: italic;
+        color: ${NAVY};
+        font-weight: 500;
+      }
+
+      /* Rules — gold hairlines used as visual page breaks. */
+      .brief-doc-rule {
+        width: 80px;
+        height: 1px;
+        background: ${GOLD_BRIGHT};
+        border: 0;
+      }
+      .brief-doc-rule-gold {
+        width: 64px;
+        height: 1px;
+        background: ${GOLD_BRIGHT};
+        margin: 24px 0 0;
+      }
+
+      /* Wipe animation — port of HomeV5's .wipe class. Each station's
+         eyebrow, h2, body, etc. start clipped 100% from the right
+         and reveal left-to-right when the section gains .is-in. */
+      .wipe {
+        clip-path: inset(-0.4em 100% -0.5em 0);
+        transition: clip-path 900ms cubic-bezier(.4, 0, .2, 1);
+      }
+      .brief-doc-station.is-in .wipe,
+      .brief-page-hero.is-in .wipe {
+        clip-path: inset(-0.4em 0 -0.5em 0);
+      }
+      .wipe-d1 { transition-delay: 120ms; }
+      .wipe-d2 { transition-delay: 240ms; }
+      .wipe-d3 { transition-delay: 360ms; }
+
+      /* Placeholder media tile (used by the "Atlanta 2021" split). */
+      .brief-doc-placeholder {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: ${NAVY}
+          repeating-linear-gradient(135deg, rgba(232,147,70,0.06) 0 12px, transparent 12px 24px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .brief-doc-placeholder-label {
+        font-family: ${TYPE.mono};
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: rgba(232,147,70, 0.55);
+        text-transform: uppercase;
+        padding: 0 24px;
+        text-align: center;
+        line-height: 1.6;
+      }
+
+      /* CTA section's gold-underline link, sized for the closing
+         moment. */
+      .brief-doc-cta-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: ${TYPE.sans};
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: ${GOLD_BRIGHT};
+        text-decoration: none;
+        border-bottom: 1px solid ${GOLD_BRIGHT};
+        padding-bottom: 4px;
+        transition: color 160ms ease, border-color 160ms ease;
+      }
+      .brief-doc-cta-link:hover { color: #ffffff; border-color: #ffffff; }
+      .brief-doc-cta-arrow { transition: transform 200ms ease; }
+      .brief-doc-cta-link:hover .brief-doc-cta-arrow { transform: translateX(4px); }
+
+      /* ── The five founding principles ───────────────────────────
+         Rendered in HomeV5's discipline-card grammar: a single gold
+         rule strikes across the row first, then the five cards drop
+         in from 12px above with a 70ms stagger. Choreography fires
+         when the parent station gains .is-in.
+
+         Cards sit in a 5-up grid on desktop, 2-up at tablet, 1-up
+         at mobile — same breakpoint pattern as the homepage. */
+      .principles-row {
+        position: relative;
+        margin-top: 56px;
+      }
+      .principles-rule {
+        height: 1px;
+        background: ${GOLD_BRIGHT};
+        width: 100%;
+        margin-bottom: 28px;
+        transform-origin: left center;
+        transform: scaleX(0);
+      }
+      .brief-doc-station.is-in .principles-rule {
+        animation: principles-rule-draw 360ms cubic-bezier(.4, 0, .2, 1) 320ms forwards;
+      }
+      @keyframes principles-rule-draw {
+        from { transform: scaleX(0); }
+        to   { transform: scaleX(1); }
+      }
+      .principles-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(232,147,70, 0.18);
+      }
+      @media (max-width: 1100px) {
+        .principles-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 600px) {
+        .principles-list { grid-template-columns: 1fr; }
+      }
+      .principle-card {
+        background: ${NAVY_DEEP};
+        padding: 26px 22px 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        color: #ffffff;
+        position: relative;
+        transition:
+          transform 220ms cubic-bezier(.2, .8, .2, 1),
+          background-color 220ms ease;
+        will-change: transform;
+      }
+      .principle-card:hover {
+        background: #0e2542;
+        transform: translateY(-3px);
+      }
+      .brief-doc-station.is-in .principle-card {
+        animation: principle-drop 380ms cubic-bezier(.2, .85, .25, 1) backwards;
+        animation-delay: calc(680ms + var(--i, 0) * 70ms);
+      }
+      @keyframes principle-drop {
+        from { opacity: 0; transform: translateY(-12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .principle-num {
+        font-family: ${TYPE.mono};
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: ${GOLD_BRIGHT};
+        line-height: 1;
+      }
+      .principle-text {
+        font-family: ${TYPE.sans};
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: rgba(255,255,255,0.92);
+        font-style: italic;
+        text-wrap: pretty;
+      }
+
+      /* Reduced-motion respect: no clip-path sweeps, no drop-in,
+         no rule draw — just static surfaces in their final state. */
+      @media (prefers-reduced-motion: reduce) {
+        .wipe { clip-path: none !important; }
+        .principles-rule { transform: scaleX(1) !important; }
+        .brief-doc-station.is-in .principles-rule,
+        .brief-doc-station.is-in .principle-card { animation: none !important; }
+        .principle-card { opacity: 1 !important; transform: none !important; }
+      }
+
+      @media (max-width: 767px) {
+        .brief-doc-station { padding: 64px 0; }
+        .brief-doc-body { font-size: 16px; }
+      }
+    `}</style>
   );
 }

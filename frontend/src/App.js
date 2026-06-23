@@ -58,6 +58,16 @@ function App() {
           <Route path="/v4" element={<HomeV4 />} />
           <Route path="/v4-locked" element={<HomeV4 />} />
           <Route path="/v5" element={<HomeV5 />} />
+
+          {/* Pages migrated to the "Operating Brief" design language
+              supply their own BriefHeader + BriefFooter, so they
+              must NOT live inside <Layout> (which injects the legacy
+              SiteHeader/SiteFooter). They sit here in the bare
+              <HomeLayout> group alongside the homepages. Migrate
+              additional pages into this group as their redesigns
+              ship; once <Layout> has zero children left it can be
+              removed altogether. */}
+          <Route path="/history" element={<History />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
@@ -72,7 +82,6 @@ function App() {
           <Route path="/equipment-reliability" element={<EquipmentReliability />} />
           <Route path="/workforce-capability" element={<WorkforceCapability />} />
           <Route path="/daily-accountability" element={<DailyAccountability />} />
-          <Route path="/history" element={<History />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/leadership/randall-powers" element={<BioRandallPowers />} />
           <Route path="/leadership/sean-hart" element={<BioSeanHart />} />
