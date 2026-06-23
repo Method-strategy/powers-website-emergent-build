@@ -32,6 +32,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { TYPE } from '../lib/designSpec';
+import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
+import { caseStudies } from '../data/caseStudies';
 
 /* ── Palette (this paradigm) ──────────────────────────────────────
  *  PAPER  — bright, near-white with a faint warmth. Lightened
@@ -1754,19 +1756,14 @@ function HomeV5() {
       {/* ── Beat VI — Industries ────────────────────────────────── */}
       <IndustriesBeat />
 
-      {/* ── Beat VII — Results (case study entry point) ─────────── */}
-      <CardsBeat
-        index="Client Success Stories"
-        headline="Building a strong execution capability"
-        pivot="produces results that speak for themselves."
-        body="Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours."
-        cards={[
-          { kind: 'Case study', title: 'Defense & aerospace OTD lift', meta: '$2.4B platform · 18 mo' },
-          { kind: 'Case study', title: 'Food & beverage labor productivity', meta: 'PE-backed multi-site · 9 mo' },
-          { kind: 'Case study', title: 'Metals throughput recovery', meta: '$700M operator · 12 mo' },
-        ]}
-        cta={{ label: 'See all case studies', href: '/case-studies' }}
-      />
+      {/* ── Beat VII — Results (case study entry point) ─────────────
+         Showcases three featured case studies using the canonical
+         <CaseStudyCard /> component — same design + field schema
+         already approved on the /case-studies page (and the same
+         schema being built in the production case-study database).
+         The three entries here are placeholder picks until a
+         `featured: true` flag (or curated list) is wired in. */}
+      <FeaturedCaseStudiesBeat />
 
       {/* ── Beat VIII — Insights (blog entry point) ─────────────── */}
       <CardsBeat
@@ -2312,6 +2309,241 @@ function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration
   const display = decimals > 0 ? val.toFixed(decimals) : Math.round(val).toString();
   return <span>{prefix}{display}{suffix}</span>;
 }
+
+/* ── Beat VII: Featured Case Studies ─────────────────────────────
+ * Renders three featured studies from the canonical caseStudies
+ * dataset using the same <CaseStudyCard /> component that powers
+ * the /case-studies library. The card design, field schema, and
+ * markup are already client-approved AND already drive the
+ * production case-study database build — so the homepage MUST
+ * use this exact component so the data shape (industry,
+ * headlineResult, resultSummary, serviceLines, challenges, date,
+ * internalRoute/externalUrl) matches 1:1 to whatever the CMS
+ * will eventually serve.
+ *
+ * Featured selection: hand-picked by `num` for visual + industry
+ * variety until a `featured: true` flag (or a curated featured
+ * list) is wired in. Cards 5 ($42.2M Food Mfg), 11 ($8.4M
+ * Pharma), 9 ($2M Aluminum) — three different industries, three
+ * different headline dollar amounts, three different service
+ * mixes. Placeholder choice; swap as desired.
+ *
+ * Styles: a SCOPED <style> block injects only the card-specific
+ * rules from caseStudiesLibraryStyles, prefixed under
+ * `.featured-case-studies` so the global :root variables and
+ * library hero/filters CSS don't leak into the brief. CSS
+ * variables for navy/gold/border are defined on the section
+ * scope and match the library's `--gold: #eabb71` (warm) — which
+ * is the card-internal accent, not the brief's brighter copper
+ * gold. Keeping the card's internal palette intact is intentional:
+ * the cards are a sealed, client-approved artifact within the
+ * brief, not part of its surrounding chromatics. */
+const FEATURED_NUMS = [5, 11, 9];
+function FeaturedCaseStudiesBeat() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const featured = FEATURED_NUMS
+    .map((n) => caseStudies.find((d) => d.num === n))
+    .filter(Boolean);
+  return (
+    <section ref={ref} className="brief-station featured-case-studies" style={{ gridTemplateColumns: '1fr' }}>
+      <style>{featuredCaseStudiesScopedCss}</style>
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
+      <div style={{ marginBottom: 36 }}>
+        <div className="station-index wipe" style={{ marginBottom: 14 }}>Client Success Stories</div>
+        <h2 className="station-h2 wipe wipe-d1">
+          <span>Building a strong execution capability</span>
+          <span className="pivot">produces results that speak for themselves.</span>
+        </h2>
+      </div>
+      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 56, maxWidth: 640 }}>
+        Different operations. Different pressures. The same five disciplines underneath. The successes below are what that execution looks like in operations like yours.
+      </p>
+      <div className="wipe wipe-d3 featured-case-grid">
+        {featured.map((d, i) => (
+          <CaseStudyCard key={d.num} data={d} animDelay={i * 0.06} />
+        ))}
+      </div>
+      <a href="/case-studies" className="featured-case-cta" style={{ marginTop: 36 }}>
+        See all case studies &rarr;
+      </a>
+    </section>
+  );
+}
+
+/* Scoped CSS for the case-study cards on the homepage. Extracted
+   from caseStudiesLibraryStyles.js (the card-only subset) and
+   namespaced under .featured-case-studies so it can't bleed into
+   the rest of the brief. Library-level :root vars are re-declared
+   on .featured-case-studies for the same reason. */
+const featuredCaseStudiesScopedCss = `
+  .featured-case-studies {
+    --navy: #183a61;
+    --navy-mid: #0d2442;
+    --gold: #eabb71;
+    --gold-bright: #eabb71;
+    --gold-muted: #c9963e;
+    --border: #e8e8e4;
+    --card-bg: #ffffff;
+    --text-muted: #888884;
+  }
+  .featured-case-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  @media (max-width: 1100px) {
+    .featured-case-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 720px) {
+    .featured-case-grid { grid-template-columns: 1fr; }
+  }
+  /* — case-card (verbatim port of the library treatment) — */
+  .featured-case-studies .case-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+  .featured-case-studies .case-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .featured-case-studies .case-card:hover {
+    border-color: rgba(234,187,113,0.5);
+  }
+  .featured-case-studies .case-card:hover::before { opacity: 1; }
+  .featured-case-studies .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .featured-case-studies .card-industry {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--gold-muted);
+    line-height: 1;
+  }
+  .featured-case-studies .card-num {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--border);
+    white-space: nowrap;
+  }
+  .featured-case-studies .card-title {
+    font-family: 'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.4;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .featured-case-studies .card-result {
+    background: linear-gradient(135deg, rgba(13,31,60,0.04), rgba(234,187,113,0.06));
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+  .featured-case-studies .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+  .featured-case-studies .tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .featured-case-studies .tag-engagement {
+    background: rgba(13,31,60,0.08);
+    color: var(--navy);
+  }
+  .featured-case-studies .tag-challenge {
+    background: rgba(234,187,113,0.12);
+    color: var(--gold-muted);
+  }
+  .featured-case-studies .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .featured-case-studies .card-date {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .featured-case-studies .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+  .featured-case-studies .case-card:hover .card-link { color: var(--gold-muted); }
+  .featured-case-studies .card-link svg { transition: transform 0.2s; }
+  .featured-case-studies .case-card:hover .card-link svg { transform: translateX(3px); }
+  .featured-case-studies .case-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  /* CTA link — matches existing CardsBeat treatment */
+  .featured-case-cta {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #E89346;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #E89346;
+    padding-bottom: 2px;
+    display: inline-block;
+    align-self: flex-start;
+  }
+`;
 
 /* ── Beat VII/VIII: Cards (case studies + insights) ────────────── */
 function CardsBeat({ index, headline, pivot, body, cards, cta }) {
