@@ -59,7 +59,14 @@ export default function LegacyPage({ css, html, script, title, metaDescription }
   return (
     <>
       {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      {/* Push legacy content below the fixed BriefHeader. var(--header-h)
+          is defined by BriefHeader's stylesheet (112px desktop / 72px
+          mobile). Without this padding, the legacy HTML's first section
+          tucks under the navy strip. */}
+      <div
+        style={{ paddingTop: 'var(--header-h, 112px)' }}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </>
   );
 }

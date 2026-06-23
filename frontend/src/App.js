@@ -69,6 +69,7 @@ function App() {
               removed altogether. */}
           <Route path="/history" element={<History />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/leadership" element={<Leadership />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
@@ -83,7 +84,6 @@ function App() {
           <Route path="/equipment-reliability" element={<EquipmentReliability />} />
           <Route path="/workforce-capability" element={<WorkforceCapability />} />
           <Route path="/daily-accountability" element={<DailyAccountability />} />
-          <Route path="/leadership" element={<Leadership />} />
           <Route path="/leadership/randall-powers" element={<BioRandallPowers />} />
           <Route path="/leadership/sean-hart" element={<BioSeanHart />} />
           <Route path="/leadership/saul-bautista" element={<BioSaulBautista />} />

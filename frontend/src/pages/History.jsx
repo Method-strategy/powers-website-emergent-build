@@ -1,52 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
-import {
-  NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT,
-  TEXT_BODY, TYPE,
-} from '../lib/briefTokens';
+import BriefDocStyles, {
+  useInViewClass, NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT, TYPE,
+} from '../components/BriefDocStyles';
 
-/**
- * History — POWERS' origin story, rebuilt Feb 2026 in the
- * "Operating Brief" design language introduced on HomeV5.
- *
- * Structure mirrors the original content (Hero, Where It Started,
- * How We Evolved, A New Chapter, The Constants, CTA) — copy is
- * preserved verbatim per the client review note that this pass is
- * design/aesthetic only. Visual treatment now matches the brief:
- *
- *   - BriefHeader (fixed navy strip, italic running tagline,
- *     gold rule, mega-menu nav) replaces the legacy SiteHeader
- *   - BriefFooter replaces the legacy SiteFooter
- *   - Each section follows the brief's beat grammar:
- *         eyebrow (mono small caps, gold)
- *         h2 (sans bold navy, italic gold "pivot" tail)
- *         lede (long-form serious body in TEXT_BODY)
- *   - Alternating paper / navy surfaces give the "page-break"
- *     rhythm the brief uses on the homepage
- *   - Wipe-in entries triggered by IntersectionObserver match the
- *     homepage's `.wipe` left-to-right clip-path sweep
- *   - The "Constants" section uses a 5-up disciplined list of the
- *     founding principles, styled like the homepage's discipline
- *     cards — same gold rule + drop-in choreography
- *
- * No scroll-snap: interior pages are normal scroll documents, per
- * the locked design decision. Snap is a homepage-only signature.
- */
-
-/* Helper: trigger a one-shot `.is-in` class when the section
-   enters the viewport so the .wipe clip-path animation plays. */
-function useInViewClass(ref, threshold = 0.18) {
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => el.classList.toggle('is-in', e.isIntersecting)),
-      { threshold }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [ref, threshold]);
-}
+/* History — POWERS' origin story, rebuilt in the brief language.
+   All shared styles live in BriefDocStyles. This file only carries
+   page-unique content + the principles-grid choreography. */
 
 const FOUNDING_PRINCIPLES = [
   'We earn the right to return to a client every week by delivering on our commitments.',
@@ -57,16 +18,12 @@ const FOUNDING_PRINCIPLES = [
 ];
 
 export default function History() {
-  useEffect(() => {
-    document.title = 'History | POWERS Manufacturing Consulting';
-  }, []);
-
+  useEffect(() => { document.title = 'History | POWERS Manufacturing Consulting'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
-      <PageStyles />
+      <BriefDocStyles />
+      <PrinciplesStyles />
       <BriefHeader mode="interior" />
-
-      {/* Content sits below the fixed 112/72px header. */}
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
         <HeroBeat />
         <SectionWhereItStarted />
@@ -75,26 +32,21 @@ export default function History() {
         <SectionTheConstants />
         <SectionCTA />
       </main>
-
       <BriefFooter />
     </div>
   );
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  Beats                                                          */
-/* ──────────────────────────────────────────────────────────────── */
-
 function HeroBeat() {
-  const ref = useRef(null);
-  useInViewClass(ref);
+  const ref = useRef(null); useInViewClass(ref);
   return (
-    <section ref={ref} className="brief-page-hero" style={{ background: NAVY }}>
+    <section ref={ref} className="brief-page-hero">
       <div className="brief-doc-inner">
         <div className="brief-doc-col">
-          <div className="station-index wipe" style={{ color: GOLD_BRIGHT, marginBottom: 24 }}>Our Story</div>
+          <div className="station-index wipe" style={{ marginBottom: 24 }}>Our Story</div>
           <h1 className="brief-doc-h1 wipe wipe-d1">
-            Built from the floor up. <span style={{ color: GOLD_BRIGHT, fontStyle: 'italic' }}>Since 2004.</span>
+            <span>Built from the floor up.</span>
+            <span className="accent">Since 2004.</span>
           </h1>
           <p className="brief-doc-lede wipe wipe-d2" style={{ color: 'rgba(255,255,255,0.86)', marginTop: 28, maxWidth: 760 }}>
             POWERS was not founded by academics or career consultants. It was founded by executives who had run manufacturing operations, managed P&amp;Ls, and understood firsthand where performance breaks down and why it stays broken.
@@ -107,8 +59,7 @@ function HeroBeat() {
 }
 
 function SectionWhereItStarted() {
-  const ref = useRef(null);
-  useInViewClass(ref);
+  const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: PAPER }}>
       <div className="brief-doc-inner">
@@ -130,8 +81,7 @@ function SectionWhereItStarted() {
 }
 
 function SectionHowWeEvolved() {
-  const ref = useRef(null);
-  useInViewClass(ref);
+  const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: PAPER_DEEP }}>
       <div className="brief-doc-inner">
@@ -154,8 +104,7 @@ function SectionHowWeEvolved() {
 }
 
 function SectionNewChapter() {
-  const ref = useRef(null);
-  useInViewClass(ref);
+  const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: PAPER }}>
       <div className="brief-doc-inner">
@@ -185,13 +134,12 @@ function SectionNewChapter() {
 }
 
 function SectionTheConstants() {
-  const ref = useRef(null);
-  useInViewClass(ref);
+  const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: NAVY }}>
       <div className="brief-doc-inner">
         <div className="brief-doc-col">
-          <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>The Constants</div>
+          <div className="station-index wipe">The Constants</div>
           <h2 className="brief-doc-h2 wipe wipe-d1" style={{ color: '#ffffff' }}>
             <span>Twenty years in.</span>
             <span className="pivot">The founding principles still run the firm.</span>
@@ -201,10 +149,6 @@ function SectionTheConstants() {
             <p>The industries have expanded. The methodology has deepened. The team has grown. But the operating principles Randall Powers built the firm on in 2004 are the same ones that govern every engagement today.</p>
           </div>
         </div>
-
-        {/* Principles list — full inner width (NOT inside .brief-doc-col)
-            so the 5-up grid uses the full content area instead of
-            being constrained to the 900px reading column. */}
         <div className="principles-row">
           <div className="principles-rule" aria-hidden="true" />
           <ol className="principles-list">
@@ -222,8 +166,7 @@ function SectionTheConstants() {
 }
 
 function SectionCTA() {
-  const ref = useRef(null);
-  useInViewClass(ref);
+  const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: PAPER }}>
       <div className="brief-doc-inner" style={{ textAlign: 'center', paddingTop: 96, paddingBottom: 96 }}>
@@ -241,217 +184,13 @@ function SectionCTA() {
   );
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  Page-scoped styles                                             */
-/* ──────────────────────────────────────────────────────────────── */
-
-function PageStyles() {
+/* Page-specific styles — the 5-card founding-principles grid uses
+   the homepage Thesis beat's "rule strikes then cards drop" pattern.
+   This is the only choreography unique to History. */
+function PrinciplesStyles() {
   return (
     <style>{`
-      .brief-doc * { box-sizing: border-box; }
-
-      /* Page hero — full-bleed navy slab. Matches the HomeV5 hero
-         spec for typography but without the video/swarm; History
-         carries its own gravitas via copy + ample padding. */
-      .brief-page-hero {
-        position: relative;
-        padding: clamp(120px, 14vh, 180px) 0 clamp(96px, 12vh, 140px);
-        overflow: hidden;
-      }
-      .brief-page-hero .brief-doc-inner { color: #ffffff; }
-
-      /* Stations — alternating paper / paper-deep / navy surfaces. */
-      .brief-doc-station {
-        padding: clamp(80px, 10vh, 140px) 0;
-        position: relative;
-      }
-      /* Outer page-edge frame. Spans the full viewport width; its
-         padding pushes content inside to align with the 1240-grid
-         centerline. Note: NOT capped to max-width — that would
-         compound with .brief-doc-col's own max-width and shrink
-         the content area to nothing. The inner column handles its
-         own measure constraint. */
-      .brief-doc-inner {
-        width: 100%;
-        padding: 0 max(40px, calc((100% - 1240px) / 2 + 40px));
-        box-sizing: border-box;
-      }
-      /* Reading-measure column for prose-heavy stations. Wraps
-         eyebrow + h2 + body into a single 900px-max read width
-         and centers nothing — content is left-aligned, the
-         leftover space lives on the right (standard editorial
-         single-column behavior). */
-      .brief-doc-col { max-width: 900px; }
-      .brief-doc-split {
-        display: grid;
-        grid-template-columns: 1.1fr 1fr;
-        gap: 80px;
-        align-items: center;
-      }
-      @media (max-width: 1023px) {
-        .brief-doc-split { grid-template-columns: 1fr; gap: 56px; }
-      }
-
-      /* Typography — locked to the HomeV5 type rhythm so the brief
-         feels like one continuous document across pages. */
-      .station-index {
-        font-family: ${TYPE.mono};
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-        color: ${GOLD_BRIGHT};
-        margin-bottom: 20px;
-      }
-      .brief-doc-h1 {
-        font-family: ${TYPE.sans};
-        font-size: clamp(40px, 5vw, 64px);
-        font-weight: 800;
-        line-height: 1.04;
-        letter-spacing: -0.012em;
-        margin: 0;
-        text-wrap: balance;
-      }
-      .brief-doc-h2 {
-        font-family: ${TYPE.sans};
-        font-size: clamp(28px, 3.4vw, 40px);
-        font-weight: 800;
-        line-height: 1.12;
-        letter-spacing: -0.008em;
-        color: ${NAVY};
-        margin: 0;
-        text-wrap: balance;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      .brief-doc-h2 .pivot {
-        /* Gold italic "pivot" clause — the resolution phrase inside
-           each H2. Must use the SERIF face (Newsreader / Source
-           Serif 4) to deliver the brief's signature sans→italic-
-           gold tonal lift. Inheriting sans here was a regression
-           from the homepage spec and was caught in the History POC
-           review. Sized 1.02× the sans clause so cap height aligns
-           cleanly even though the serif x-height runs slightly
-           smaller than Proxima Nova at the same px. */
-        font-family: ${TYPE.serif};
-        font-style: italic;
-        font-weight: 500;
-        font-size: 1.02em;
-        color: ${GOLD_BRIGHT};
-        letter-spacing: -0.012em;
-        text-wrap: pretty;
-        margin-top: 0.06em;
-      }
-      .brief-doc-lede {
-        font-family: ${TYPE.sans};
-        font-size: clamp(17px, 1.5vw, 21px);
-        font-weight: 300;
-        line-height: 1.55;
-        text-wrap: pretty;
-      }
-      .brief-doc-body {
-        font-family: ${TYPE.sans};
-        font-size: 17px;
-        font-weight: 300;
-        line-height: 1.72;
-        color: ${TEXT_BODY};
-        margin-top: 28px;
-        text-wrap: pretty;
-        max-width: 720px;
-      }
-      .brief-doc-body p + p { margin-top: 1.1em; }
-      .brief-doc-body em {
-        font-style: italic;
-        color: ${NAVY};
-        font-weight: 500;
-      }
-
-      /* Rules — gold hairlines used as visual page breaks. */
-      .brief-doc-rule {
-        width: 80px;
-        height: 1px;
-        background: ${GOLD_BRIGHT};
-        border: 0;
-      }
-      .brief-doc-rule-gold {
-        width: 64px;
-        height: 1px;
-        background: ${GOLD_BRIGHT};
-        margin: 24px 0 0;
-      }
-
-      /* Wipe animation — port of HomeV5's .wipe class. Each station's
-         eyebrow, h2, body, etc. start clipped 100% from the right
-         and reveal left-to-right when the section gains .is-in. */
-      .wipe {
-        clip-path: inset(-0.4em 100% -0.5em 0);
-        transition: clip-path 900ms cubic-bezier(.4, 0, .2, 1);
-      }
-      .brief-doc-station.is-in .wipe,
-      .brief-page-hero.is-in .wipe {
-        clip-path: inset(-0.4em 0 -0.5em 0);
-      }
-      .wipe-d1 { transition-delay: 120ms; }
-      .wipe-d2 { transition-delay: 240ms; }
-      .wipe-d3 { transition-delay: 360ms; }
-
-      /* Placeholder media tile (used by the "Atlanta 2021" split). */
-      .brief-doc-placeholder {
-        width: 100%;
-        aspect-ratio: 4 / 3;
-        background: ${NAVY}
-          repeating-linear-gradient(135deg, rgba(232,147,70,0.06) 0 12px, transparent 12px 24px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .brief-doc-placeholder-label {
-        font-family: ${TYPE.mono};
-        font-size: 11px;
-        letter-spacing: 0.12em;
-        color: rgba(232,147,70, 0.55);
-        text-transform: uppercase;
-        padding: 0 24px;
-        text-align: center;
-        line-height: 1.6;
-      }
-
-      /* CTA section closing link. Now sits on the cream PAPER
-         surface (was NAVY_DEEP) — gold text on cream still reads
-         strongly. Hover collapses to NAVY for the stronger
-         "clicked" cue that white-on-navy used to provide. */
-      .brief-doc-cta-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-family: ${TYPE.sans};
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: ${GOLD_BRIGHT};
-        text-decoration: none;
-        border-bottom: 1px solid ${GOLD_BRIGHT};
-        padding-bottom: 4px;
-        transition: color 160ms ease, border-color 160ms ease;
-      }
-      .brief-doc-cta-link:hover { color: ${NAVY}; border-color: ${NAVY}; }
-      .brief-doc-cta-arrow { transition: transform 200ms ease; }
-      .brief-doc-cta-link:hover .brief-doc-cta-arrow { transform: translateX(4px); }
-
-      /* ── The five founding principles ───────────────────────────
-         Rendered in HomeV5's discipline-card grammar: a single gold
-         rule strikes across the row first, then the five cards drop
-         in from 12px above with a 70ms stagger. Choreography fires
-         when the parent station gains .is-in.
-
-         Cards sit in a 5-up grid on desktop, 2-up at tablet, 1-up
-         at mobile — same breakpoint pattern as the homepage. */
-      .principles-row {
-        position: relative;
-        margin-top: 56px;
-      }
+      .principles-row { position: relative; margin-top: 56px; }
       .principles-rule {
         height: 1px;
         background: ${GOLD_BRIGHT};
@@ -489,11 +228,7 @@ function PageStyles() {
         flex-direction: column;
         gap: 16px;
         color: #ffffff;
-        position: relative;
-        transition:
-          transform 220ms cubic-bezier(.2, .8, .2, 1),
-          background-color 220ms ease;
-        will-change: transform;
+        transition: transform 220ms cubic-bezier(.2, .8, .2, 1), background-color 220ms ease;
       }
       .principle-card:hover {
         background: #0e2542;
@@ -525,20 +260,11 @@ function PageStyles() {
         font-style: italic;
         text-wrap: pretty;
       }
-
-      /* Reduced-motion respect: no clip-path sweeps, no drop-in,
-         no rule draw — just static surfaces in their final state. */
       @media (prefers-reduced-motion: reduce) {
-        .wipe { clip-path: none !important; }
         .principles-rule { transform: scaleX(1) !important; }
         .brief-doc-station.is-in .principles-rule,
         .brief-doc-station.is-in .principle-card { animation: none !important; }
         .principle-card { opacity: 1 !important; transform: none !important; }
-      }
-
-      @media (max-width: 767px) {
-        .brief-doc-station { padding: 64px 0; }
-        .brief-doc-body { font-size: 16px; }
       }
     `}</style>
   );
