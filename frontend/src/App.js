@@ -4,10 +4,6 @@ import Layout from './components/Layout';
 import HomeLayout from './components/HomeLayout';
 
 import Home from './pages/Home';
-import HomeV2 from './pages/HomeV2';
-import HomeV3 from './pages/HomeV3';
-import HomeV4 from './pages/HomeV4';
-import HomeV5 from './pages/HomeV5';
 import Approach from './pages/Approach';
 import DiscoveryProcess from './pages/DiscoveryProcess';
 import IndustriesServed from './pages/IndustriesServed';
@@ -36,28 +32,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Homepage renders its own inline Header + Footer — no shared chrome */}
+        {/* Homepage renders its own inline BriefHeader + BriefFooter
+            — no shared chrome. The "Operating Brief" V5 design is
+            client-approved and ships at `/` as the canonical
+            homepage. Older iterations (V1-V4) have been archived
+            to /app/_homepage_archive/ outside the build tree. */}
         <Route element={<HomeLayout />}>
-          {/* ⚠️ DEV-ONLY ROUTE CONFIG — V5 at `/` for preview convenience.
-              Emergent's preview pane has no URL bar, so iterating on
-              V5 requires it to be the default route. BEFORE NEXT PUSH
-              TO GITHUB, swap these two so V4 returns to `/` and V5
-              moves to `/v5`. The published Netlify site must keep
-              V4 at the root until V5 is approved for publication.
-              Older iterations stay live for stakeholder reference:
-                /v1         → original copy port
-                /v2         → first copy rewrite
-                /v3         → LOCKED pre-pivot version (archive)
-                /v4-locked  → polished editorial spine (currently shipped at production /)
-                /v5         → paradigm experiment (Operating Brief). */}
-          <Route path="/" element={<HomeV5 />} />
-          <Route path="/v1" element={<Home />} />
-          <Route path="/v2" element={<HomeV2 />} />
-          <Route path="/v3" element={<HomeV3 />} />
-          <Route path="/v3-locked" element={<HomeV3 />} />
-          <Route path="/v4" element={<HomeV4 />} />
-          <Route path="/v4-locked" element={<HomeV4 />} />
-          <Route path="/v5" element={<HomeV5 />} />
+          <Route path="/" element={<Home />} />
 
           {/* Pages migrated to the "Operating Brief" design language
               supply their own BriefHeader + BriefFooter, so they
