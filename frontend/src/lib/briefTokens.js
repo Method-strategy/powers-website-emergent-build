@@ -46,12 +46,18 @@ export const TEXT_MUTED  = 'rgba(13, 36, 66, 0.54)';
 
 /**
  * Typography stacks. SANS for everything except mono accents
- * (indices, eyebrows, meta strings). Proxima Nova is the loaded
- * brand face; the rest are graceful fallbacks.
+ * (indices, eyebrows, meta strings) and SERIF, which is reserved
+ * for the gold italic "pivot" clauses inside an H2. The serif
+ * italic is the brief's tonal lift — sans clause states the fact,
+ * serif italic clause resolves it (e.g. "Building a strong
+ * execution capability / produces results that speak for themselves.").
+ * The pivot rhythm is the brief's signature voice; mis-using the
+ * sans face there flattens every H2 into a single tone.
  */
 export const TYPE = {
-  sans: "'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
-  mono: "'SF Mono', 'Menlo', Consolas, 'Liberation Mono', monospace",
+  sans:  "'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+  serif: "'Newsreader', 'Source Serif 4', 'Tiempos Headline', Georgia, 'Times New Roman', serif",
+  mono:  "'SF Mono', 'Menlo', Consolas, 'Liberation Mono', monospace",
 };
 
 /**

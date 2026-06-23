@@ -3,7 +3,7 @@ import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import {
   NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT,
-  RULE, TEXT_BODY, TYPE,
+  TEXT_BODY, TYPE,
 } from '../lib/briefTokens';
 
 /**
@@ -225,10 +225,10 @@ function SectionCTA() {
   const ref = useRef(null);
   useInViewClass(ref);
   return (
-    <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: NAVY_DEEP }}>
+    <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: PAPER }}>
       <div className="brief-doc-inner" style={{ textAlign: 'center', paddingTop: 96, paddingBottom: 96 }}>
-        <h2 className="brief-doc-h2 wipe" style={{ color: '#ffffff', margin: '0 auto', maxWidth: 760 }}>
-          <span>See what twenty years of this approach</span>{' '}
+        <h2 className="brief-doc-h2 wipe" style={{ margin: '0 auto', maxWidth: 760, alignItems: 'center' }}>
+          <span>See what twenty years of this approach</span>
           <span className="pivot">produces.</span>
         </h2>
         <div style={{ marginTop: 36 }} className="wipe wipe-d2">
@@ -326,10 +326,22 @@ function PageStyles() {
         gap: 4px;
       }
       .brief-doc-h2 .pivot {
+        /* Gold italic "pivot" clause — the resolution phrase inside
+           each H2. Must use the SERIF face (Newsreader / Source
+           Serif 4) to deliver the brief's signature sans→italic-
+           gold tonal lift. Inheriting sans here was a regression
+           from the homepage spec and was caught in the History POC
+           review. Sized 1.02× the sans clause so cap height aligns
+           cleanly even though the serif x-height runs slightly
+           smaller than Proxima Nova at the same px. */
+        font-family: ${TYPE.serif};
         font-style: italic;
-        font-weight: 600;
+        font-weight: 500;
+        font-size: 1.02em;
         color: ${GOLD_BRIGHT};
+        letter-spacing: -0.012em;
         text-wrap: pretty;
+        margin-top: 0.06em;
       }
       .brief-doc-lede {
         font-family: ${TYPE.sans};
@@ -405,8 +417,10 @@ function PageStyles() {
         line-height: 1.6;
       }
 
-      /* CTA section's gold-underline link, sized for the closing
-         moment. */
+      /* CTA section closing link. Now sits on the cream PAPER
+         surface (was NAVY_DEEP) — gold text on cream still reads
+         strongly. Hover collapses to NAVY for the stronger
+         "clicked" cue that white-on-navy used to provide. */
       .brief-doc-cta-link {
         display: inline-flex;
         align-items: center;
@@ -422,7 +436,7 @@ function PageStyles() {
         padding-bottom: 4px;
         transition: color 160ms ease, border-color 160ms ease;
       }
-      .brief-doc-cta-link:hover { color: #ffffff; border-color: #ffffff; }
+      .brief-doc-cta-link:hover { color: ${NAVY}; border-color: ${NAVY}; }
       .brief-doc-cta-arrow { transition: transform 200ms ease; }
       .brief-doc-cta-link:hover .brief-doc-cta-arrow { transform: translateX(4px); }
 
