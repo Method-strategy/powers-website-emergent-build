@@ -39,7 +39,7 @@ function HeroBeat() {
             <span>This work is not for everyone.</span>
             <span className="accent">If it is for you, you will know.</span>
           </h1>
-          <p className="brief-doc-lede wipe wipe-d2" style={{ color: 'rgba(255,255,255,0.86)', marginTop: 28, maxWidth: 760 }}>
+          <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
             POWERS consultants work on the floor, in the shifts, inside the operations where performance actually breaks down. If you want to make a real difference in American manufacturing, this is where that work happens.
           </p>
           <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />

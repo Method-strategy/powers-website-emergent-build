@@ -56,7 +56,7 @@ function Hero() {
             <span>Where executive intent</span>
             <span className="accent">meets shop floor execution.</span>
           </h1>
-          <p className="brief-doc-lede wipe wipe-d2" style={{ color: 'rgba(255,255,255,0.86)', marginTop: 28, maxWidth: 760 }}>
+          <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
             We build the operating architecture that makes manufacturing performance sustainable, and scalable across shifts, sites, and the next phase of your business.
           </p>
           <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />

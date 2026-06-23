@@ -57,7 +57,7 @@ function Hero() {
             <span>The roadmap to value creation,</span>
             <span className="accent">built in two weeks.</span>
           </h1>
-          <p className="brief-doc-lede wipe wipe-d2" style={{ color: 'rgba(255,255,255,0.86)', marginTop: 28, maxWidth: 760 }}>
+          <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
             A paid, two-week, defined commercial engagement. Five named deliverables. A results-based Project Savings Commitment that governs everything that follows.
           </p>
           <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />

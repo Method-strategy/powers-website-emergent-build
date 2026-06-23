@@ -37,16 +37,22 @@ const briefDocCss = `
   .brief-doc * { box-sizing: border-box; }
 
   /* ── Hero ─────────────────────────────────────────────────────
-     Full-bleed page hero. Defaults to navy slab; consuming pages
-     can flip background via inline style if a page-specific
-     treatment is needed (cream hero, image hero, etc.). */
+     Full-bleed page hero on the brand PAPER (cream) surface — same
+     light background the approved homepage uses for its hero. The
+     navy hero treatment that appeared in earlier History/Careers
+     drafts was an unauthorized artifact carried over from the
+     legacy/unapproved pages; it has been removed in favor of the
+     locked PAPER/navy-text/gold-accent grammar that defines the
+     brief. Page text inherits NAVY from .brief-doc; lede sits at
+     TEXT_BODY so paragraph copy stays consistent with body
+     stations. */
   .brief-page-hero {
     position: relative;
     padding: clamp(120px, 14vh, 180px) 0 clamp(96px, 12vh, 140px);
     overflow: hidden;
-    background: ${NAVY};
+    background: ${PAPER};
   }
-  .brief-page-hero .brief-doc-inner { color: #ffffff; }
+  .brief-page-hero .brief-doc-inner { color: ${NAVY}; }
 
   /* ── Station (body sections) ─────────────────────────────────
      Standard interior page section. Page sets the background via
@@ -97,17 +103,18 @@ const briefDocCss = `
     margin-bottom: 20px;
   }
 
-  /* Hero H1 — sans only. Stacks clauses vertically via flex-column
-     so headlines can break across 2-3 lines without inline <br>.
-     The .accent class flips a clause to GOLD color, matching the
-     homepage hero's "Regardless of conditions." treatment.
-     IMPORTANT: no italic, no serif on the accent. */
+  /* Hero H1 — sans only. Stacks clauses vertically via flex-column.
+     Sized to match the approved HomeV5 hero exactly:
+     clamp(48px, 6.2vw, 96px). Previous interior-page rebuilds
+     shipped at 40-64px, a leftover from the unapproved pages —
+     corrected to the homepage spec so every page hero reads at
+     the same scale. */
   .brief-doc-h1 {
     font-family: ${TYPE.sans};
-    font-size: clamp(40px, 5vw, 64px);
+    font-size: clamp(48px, 6.2vw, 96px);
     font-weight: 800;
     line-height: 1.04;
-    letter-spacing: -0.012em;
+    letter-spacing: -0.014em;
     margin: 0;
     text-wrap: balance;
     display: flex;
@@ -120,13 +127,17 @@ const briefDocCss = `
   }
 
   /* Body H2 — sans clause + italic-serif-gold pivot. This is the
-     brief's signature tonal lift inside content sections. */
+     brief's signature tonal lift inside content sections. Sized
+     to match the approved HomeV5 station h2 exactly:
+     clamp(30px, 3.4vw, 48px). Previous interior-page rebuilds
+     shipped at 28-40px, an artifact from the unapproved pages —
+     corrected so every section heading reads at the same scale. */
   .brief-doc-h2 {
     font-family: ${TYPE.sans};
-    font-size: clamp(28px, 3.4vw, 40px);
+    font-size: clamp(30px, 3.4vw, 48px);
     font-weight: 800;
-    line-height: 1.12;
-    letter-spacing: -0.008em;
+    line-height: 1.06;
+    letter-spacing: -0.014em;
     color: ${NAVY};
     margin: 0;
     text-wrap: balance;
@@ -145,12 +156,16 @@ const briefDocCss = `
     margin-top: 0.06em;
   }
 
-  /* Hero lede & body copy. */
+  /* Hero lede & body copy. Lede size matches the HomeV5
+     station-lede (17px). Was clamp(17, 1.5vw, 21px) — adjusted
+     to the homepage spec so the same paragraph type reads the
+     same on every page. */
   .brief-doc-lede {
     font-family: ${TYPE.sans};
-    font-size: clamp(17px, 1.5vw, 21px);
-    font-weight: 300;
-    line-height: 1.55;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.62;
+    color: ${TEXT_BODY};
     text-wrap: pretty;
     margin: 0;
   }
