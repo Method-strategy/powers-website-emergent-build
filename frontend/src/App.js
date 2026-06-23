@@ -70,12 +70,12 @@ function App() {
           <Route path="/history" element={<History />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/leadership" element={<Leadership />} />
+          <Route path="/approach" element={<Approach />} />
+          <Route path="/discovery-process" element={<DiscoveryProcess />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
         <Route element={<Layout />}>
-          <Route path="/approach" element={<Approach />} />
-          <Route path="/discovery-process" element={<DiscoveryProcess />} />
           <Route path="/industries-served" element={<IndustriesServed />} />
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
