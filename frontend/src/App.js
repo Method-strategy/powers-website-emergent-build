@@ -68,6 +68,7 @@ function App() {
               ship; once <Layout> has zero children left it can be
               removed altogether. */}
           <Route path="/history" element={<History />} />
+          <Route path="/careers" element={<Careers />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
