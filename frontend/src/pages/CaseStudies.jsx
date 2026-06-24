@@ -135,7 +135,7 @@ export default function CaseStudies() {
                 <span className="accent">Built to perform.</span>
               </h1>
               <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
-                Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in the resilient execution capability we built working side by side with our clients and the lasting results it produced. Search by industry, service type, or operational challenge.
+                Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in what we built side by side with our clients. A resilient execution capability. And the lasting results it produced. Search by industry, service type, or operational challenge.
               </p>
               <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
             </div>
