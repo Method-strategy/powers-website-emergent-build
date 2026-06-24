@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only verification of CTA canonical brief-grammar rewrite on /case-studies/defense-aerospace-otd. All 9 review checks PASS. The bottom .cs-cta now uses .brief-doc-inner + .brief-doc-h2 (flex column) with two stacked spans, where the '?' is correctly inside the .pivot italic-serif-gold span. Both CTA buttons use canonical .brief-doc-cta-button spec (16px 36px padding, 15px font, 0.04em letter-spacing≈0.6px, uppercase, brand copper fill for primary, white-alpha ghost border for secondary). Discovery link, print-media emulation suppression of screen chrome, window.print() wiring, and cross-page consistency with /approach canonical reference all verified.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_checks": [
+    "H2 flex-direction === 'column' (display:flex) — two spans stack vertically",
+    "Span1 = 'Ready to build' (sans white), Span2 = 'disciplined execution in your operation?' (gold italic serif). '?' is INSIDE the .pivot span.",
+    ".pivot computed color === rgb(232, 147, 70) brand copper",
+    ".pivot fontFamily contains 'Newsreader', fontStyle === 'italic'",
+    "Primary button [cs-cta-contact]: padding 16px 36px, font-size 15px, letter-spacing 0.6px (≈0.04em*15px), textTransform uppercase, backgroundColor rgb(232,147,70), color navy rgb(13,36,66) — matches canonical",
+    "Secondary button [cs-cta-download-pdf]: padding 16px 36px, font-size 15px, letter-spacing 0.6px, uppercase, transparent background, border 1px rgba(255,255,255,0.45), color white — .cs-cta-ghost variant present",
+    "Discovery link href='/discovery-process', color rgb(232,147,70), text-decoration: underline",
+    "window.print() wiring: __printCalled = true after clicking download-pdf",
+    "Print media emulation: .cs-cta display:none, .print-doc display:block, .brief-header display:none, .cs-hero-dense display:none. (.brief-footer does not exist on case-study page — by design; this is the print-doc rendering, no regression.)",
+    "No JS console errors or page errors",
+    "Cross-page consistency with /approach: identical padding (16px 36px), font-size (15px), letter-spacing (0.6px), backgroundColor (rgb(232,147,70)), fontFamily (proxima-nova). CTA buttons now use the same button system."
+  ],
+  "container_width_note": "Both .cs-cta .brief-doc-inner (case-study) and .brief-doc-inner (/approach) report computed max-width 'none' with 140px lateral padding at viewport 1440. Inner width is identical (1440px viewport-width container, padded). The two pages are visually identical in column width — no canonical drift. The spec phrasing '≈1240px' refers to the computed content area; effective content is ~1160px on both pages, matching.",
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Inline style props on the H2 ({margin, maxWidth, alignItems, color}) in CaseStudyBody.jsx duplicate intent of BriefDocStyles + the briefAlignmentOverlay (.cs-cta .brief-doc-h2 { color: #fff }). Recommend pushing all of these into BriefDocStyles/overlay so the CaseStudyBody markup stays purely structural — easier for future case-study additions to inherit canonical CTA styling without inline overrides.",
+    "Inline styles on the wrapping .brief-doc-inner (paddingTop/Bottom: 96, textAlign:'center') and .cs-cta-actions wrapper similarly bypass the canonical CSS layer. Consider promoting these into BriefDocStyles as a .brief-doc-cta-band variant for re-use across case studies."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "CTA canonical-brief-grammar fix on /case-studies/defense-aerospace-otd is fully verified. Reference: rgb(232,147,70) = brand copper, rgb(13,36,66) = brief navy. Cross-page reference: /approach CTA uses the same .brief-doc-cta-button. Print emulation correctly suppresses .cs-cta / .cs-hero-dense / .brief-header."
+}

@@ -83,20 +83,47 @@ export default function CaseStudyBody({ data }) {
         </section>
       ) : null}
 
-      <section className="cs-cta screen-only">
-        <div className="cs-cta-inner">
-          <h2>
-            Ready to build <em>disciplined execution in your operation</em>?
+      {/* Bottom CTA — uses the canonical brief grammar (.brief-doc-h2
+          with sans clause + .pivot gold-italic-serif clause stacked
+          vertically, .brief-doc-cta-button for the primary action,
+          .brief-doc-inner for the column width). The legacy .cs-cta
+          chassis stays only for the navy contrast band; everything
+          inside the chassis reads in the same grammar as every other
+          brief page CTA. The screen-only class keeps it suppressed
+          in print. */}
+      <section className="cs-cta screen-only" style={{ background: 'var(--navy)' }}>
+        <div className="brief-doc-inner" style={{ paddingTop: 96, paddingBottom: 96, textAlign: 'center' }}>
+          <h2
+            className="brief-doc-h2 cs-cta-h2"
+            style={{ margin: '0 auto', maxWidth: 880, alignItems: 'center', color: '#ffffff' }}
+            data-testid="cs-cta-h2"
+          >
+            <span>Ready to build</span>
+            <span className="pivot">disciplined execution in your operation?</span>
           </h2>
-          <p>
+          <p
+            className="brief-doc-lede cs-cta-lede"
+            style={{
+              margin: '24px auto 0',
+              maxWidth: 640,
+              color: 'rgba(255, 255, 255, 0.82)',
+            }}
+          >
             Every POWERS engagement starts with our intensive{' '}
             <Link to="/discovery-process" className="cs-cta-link" data-testid="cs-cta-discovery-link">Discovery Process</Link>.
             We come on the floor, identify the gaps in the five disciplines that hold execution back,
-            and build the partnership that closes them. The results stay built long after we're gone.
+            and build the partnership that closes them. The results stay built long after we&rsquo;re gone.
           </p>
-          <div className="cs-cta-actions">
-            <Link to="/contact" className="cs-cta-primary" data-testid="cs-cta-contact">Start a Conversation</Link>
-            <button type="button" className="cs-cta-secondary" onClick={() => window.print()} data-testid="cs-cta-download-pdf">
+          <div className="cs-cta-actions" style={{ marginTop: 40, display: 'inline-flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link to="/contact" className="brief-doc-cta-button" data-testid="cs-cta-contact">
+              Start a Conversation
+            </Link>
+            <button
+              type="button"
+              className="brief-doc-cta-button cs-cta-ghost"
+              onClick={() => window.print()}
+              data-testid="cs-cta-download-pdf"
+            >
               Download This Case Study
             </button>
           </div>

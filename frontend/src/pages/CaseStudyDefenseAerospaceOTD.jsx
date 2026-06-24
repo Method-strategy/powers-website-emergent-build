@@ -4,6 +4,7 @@ import { caseStudyStyles } from '../components/caseStudy/caseStudyStyles';
 import CaseStudyHero from '../components/caseStudy/CaseStudyHero';
 import CaseStudyBody from '../components/caseStudy/CaseStudyBody';
 import CaseStudyPrintDoc from '../components/caseStudy/CaseStudyPrintDoc';
+import BriefDocStyles from '../components/BriefDocStyles';
 import { TYPE, GOLD_BRIGHT, NAVY, PAPER, TEXT_BODY } from '../lib/briefTokens';
 
 /* Brief-alignment overlay for the case-study detail page.
@@ -126,32 +127,31 @@ const briefAlignmentOverlay = `
     font-weight: 500;
   }
 
-  /* CTA card / footer band on the detail page — keep navy chassis,
-     swap gold to brief value (handled by --gold remap, but force it
-     here too in case any inline rule overrides). The CTA H2 also
-     supports the brief italic-serif-gold pivot via <em>. */
-  .cs-cta h2 {
-    font-family: ${TYPE.sans} !important;
-    font-size: clamp(32px, 3.6vw, 52px) !important;
-    font-weight: 800 !important;
-    line-height: 1.12 !important;
-    letter-spacing: -0.014em !important;
-    color: #ffffff !important;
-    max-width: 28ch !important;
-    text-wrap: balance;
+  /* Bottom CTA band — keeps the dark-navy chassis as a visual
+     contrast against the surrounding PAPER body sections. Inside
+     the chassis everything uses the canonical brief CTA grammar
+     (.brief-doc-h2 sans clause + .pivot italic-serif-gold clause
+     stacked vertically, .brief-doc-cta-button) — only the color
+     palette is inverted for the dark surface (white H2, white-82
+     lede, gold pivot/link/buttons stay as-is). */
+  .cs-cta {
+    background: ${NAVY} !important;
+    padding: 0 !important;       /* padding handled by .brief-doc-inner inline */
   }
-  .cs-cta h2 em,
-  .cs-cta h2 i {
-    font-family: ${TYPE.serif} !important;
-    font-style: italic !important;
-    font-weight: 500 !important;
+  .cs-cta .brief-doc-h2 {
+    color: #ffffff !important;
+  }
+  .cs-cta .brief-doc-h2 .pivot {
     color: ${GOLD_BRIGHT} !important;
   }
-  .cs-cta p { font-family: ${TYPE.sans}; }
+  .cs-cta .brief-doc-lede {
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-family: ${TYPE.sans};
+  }
   .cs-cta .cs-cta-link {
     color: ${GOLD_BRIGHT};
     text-decoration: underline;
-    text-decoration-color: rgba(232, 147, 70, 0.4);
+    text-decoration-color: rgba(232, 147, 70, 0.45);
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
     transition: text-decoration-color 160ms ease;
@@ -159,12 +159,23 @@ const briefAlignmentOverlay = `
   .cs-cta .cs-cta-link:hover {
     text-decoration-color: ${GOLD_BRIGHT};
   }
-  .cs-cta-secondary,
-  .cs-cta-primary {
-    font-family: ${TYPE.sans} !important;
-    letter-spacing: 0.04em !important;
+  /* Ghost variant of brief-doc-cta-button for the secondary action
+     on the dark-navy CTA chassis — same dimensions and typography
+     as the primary, transparent fill with a white border that
+     animates to gold on hover. */
+  .cs-cta .brief-doc-cta-button.cs-cta-ghost {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    cursor: pointer;
   }
-  .cs-cta-primary { background: ${GOLD_BRIGHT} !important; color: ${NAVY} !important; }
+  .cs-cta .brief-doc-cta-button.cs-cta-ghost:hover {
+    background: transparent;
+    border-color: ${GOLD_BRIGHT};
+    color: ${GOLD_BRIGHT};
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.4);
+  }
 `;
 
 /**
@@ -196,6 +207,7 @@ export default function CaseStudyDefenseAerospaceOTD() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: caseStudyStyles }} />
+      <BriefDocStyles />
       <style dangerouslySetInnerHTML={{ __html: briefAlignmentOverlay }} />
       <CaseStudyHero data={data} />
       <CaseStudyBody data={data} />
