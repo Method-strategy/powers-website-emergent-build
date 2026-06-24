@@ -7,23 +7,11 @@ import React from 'react';
  * Markup mirrors the locked legacy `.print-doc` exactly so the existing
  * @media print rules + page-break logic in `caseStudyStyles.js` apply
  * without modification. The whole content tree is sourced from `data`.
+ *
+ * Note: the previous PrintFooter band (POWERS · phone · email · address ·
+ * page indicator) was removed per client direction — the downloadable
+ * PDF should be content-only.
  */
-function PrintFooter({ page, total = 2 }) {
-  return (
-    <div className="pp-foot">
-      <div className="pp-foot-inner">
-        <span className="pp-foot-brand">POWERS</span>
-        <span className="pp-foot-sep">|</span>
-        <span>+1 678-971-4711</span>
-        <span className="pp-foot-sep">|</span>
-        <span>info@thepowerscompany.com</span>
-        <span className="pp-foot-sep">|</span>
-        <span>1801 Peachtree St NE, Suite 200, Atlanta, GA 30309</span>
-        <span className="pp-foot-page">{page} / {total}</span>
-      </div>
-    </div>
-  );
-}
 
 export default function CaseStudyPrintDoc({ data }) {
   if (!data) return null;
@@ -98,8 +86,6 @@ export default function CaseStudyPrintDoc({ data }) {
             </div>
           ) : null}
         </div>
-
-        <PrintFooter page={1} />
       </div>
 
       {/* ── PAGE 2 ── */}
@@ -156,8 +142,6 @@ export default function CaseStudyPrintDoc({ data }) {
             </div>
           ) : null}
         </div>
-
-        <PrintFooter page={2} />
       </div>
     </div>
   );
