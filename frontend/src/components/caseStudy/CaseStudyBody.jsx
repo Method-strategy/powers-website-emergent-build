@@ -85,8 +85,15 @@ export default function CaseStudyBody({ data }) {
 
       <section className="cs-cta screen-only">
         <div className="cs-cta-inner">
-          <h2>Ready to Make Performance Stick in Your Operation?</h2>
-          <p>Every POWERS engagement starts with a two-week Discovery. We document the gap between executive intent and shop floor performance, then build the system to close it.</p>
+          <h2>
+            Ready to build <em>disciplined execution in your operation</em>?
+          </h2>
+          <p>
+            Every POWERS engagement starts with our intensive{' '}
+            <Link to="/discovery-process" className="cs-cta-link" data-testid="cs-cta-discovery-link">Discovery Process</Link>.
+            We come on the floor, identify the gaps in the five disciplines that hold execution back,
+            and build the partnership that closes them. The results stay built long after we're gone.
+          </p>
           <div className="cs-cta-actions">
             <Link to="/contact" className="cs-cta-primary" data-testid="cs-cta-contact">Start a Conversation</Link>
             <button type="button" className="cs-cta-secondary" onClick={() => window.print()} data-testid="cs-cta-download-pdf">

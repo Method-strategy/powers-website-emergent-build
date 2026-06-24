@@ -128,7 +128,37 @@ const briefAlignmentOverlay = `
 
   /* CTA card / footer band on the detail page — keep navy chassis,
      swap gold to brief value (handled by --gold remap, but force it
-     here too in case any inline rule overrides). */
+     here too in case any inline rule overrides). The CTA H2 also
+     supports the brief italic-serif-gold pivot via <em>. */
+  .cs-cta h2 {
+    font-family: ${TYPE.sans} !important;
+    font-size: clamp(32px, 3.6vw, 52px) !important;
+    font-weight: 800 !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.014em !important;
+    color: #ffffff !important;
+    max-width: 28ch !important;
+    text-wrap: balance;
+  }
+  .cs-cta h2 em,
+  .cs-cta h2 i {
+    font-family: ${TYPE.serif} !important;
+    font-style: italic !important;
+    font-weight: 500 !important;
+    color: ${GOLD_BRIGHT} !important;
+  }
+  .cs-cta p { font-family: ${TYPE.sans}; }
+  .cs-cta .cs-cta-link {
+    color: ${GOLD_BRIGHT};
+    text-decoration: underline;
+    text-decoration-color: rgba(232, 147, 70, 0.4);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color 160ms ease;
+  }
+  .cs-cta .cs-cta-link:hover {
+    text-decoration-color: ${GOLD_BRIGHT};
+  }
   .cs-cta-secondary,
   .cs-cta-primary {
     font-family: ${TYPE.sans} !important;
