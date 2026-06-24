@@ -474,3 +474,18 @@ Implementation:
 - Find a home for "gains that sustain" — possibly Beat V eyebrow or a Beat III payoff variant.
 - Delete unused `RowAbilityToExecute.jsx` + retired `SectionDifferentApproach`.
 
+
+
+## 2026-02-24 — Case Studies copy & PDF wiring fixes
+
+**Implemented:**
+- `/case-studies` H1 updated to the two-line punchy form: **"Proven execution."** (navy) / **"Built to perform."** (gold accent). Lede copy and station-index preserved. Hero remains under the locked `brief-doc-h1` spec (sans, no italic on accent), consistent with the rest of the site.
+- Restored "DOWNLOAD PDF" wiring on `/case-studies/defense-aerospace-otd`. The `window.print()` triggers on `CaseStudyHero` + `CaseStudyBody` were intact; the silent regression was that the `@media print` rules in `caseStudyStyles.js` only hid the legacy `#site-header-root` / `#site-footer-root` IDs. After the migration to `BriefHeader` / `BriefFooter`, those rules no longer matched, so the new chrome was bleeding into the printed PDF. Extended the print sheet to also hide `.brief-header, .brief-footer, .brief-mobile-drawer*` and to reset html/body min-heights. Verified via Playwright `emulate_media(media="print")`: brief chrome hidden, `cs-hero` hidden, `.print-doc` cleanly displayed with masthead + executive brief + stats + situation section + footer page-number band.
+
+**Verification:**
+- Screenshot at `/case-studies` — H1 confirmed.
+- Playwright print-media emulation at `/case-studies/defense-aerospace-otd` — print-doc rendered alone, brief chrome hidden.
+
+**Files touched:**
+- `/app/frontend/src/pages/CaseStudies.jsx` (H1 copy)
+- `/app/frontend/src/components/caseStudy/caseStudyStyles.js` (print rules)

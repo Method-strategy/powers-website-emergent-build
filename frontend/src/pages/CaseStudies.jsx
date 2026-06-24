@@ -109,8 +109,8 @@ export default function CaseStudies() {
           <div className="brief-doc-col">
             <div className="station-index wipe" style={{ marginBottom: 24 }}>Case Studies</div>
             <h1 className="brief-doc-h1 wipe wipe-d1">
-              <span>Proven execution built to perform</span>
-              <span className="accent">across many different operational challenges.</span>
+              <span>Proven execution.</span>
+              <span className="accent">Built to perform.</span>
             </h1>
             <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
               Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in what we built with them and the results it produced. Search by industry, service type, or operational challenge.

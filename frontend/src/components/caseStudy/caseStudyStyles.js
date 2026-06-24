@@ -646,15 +646,31 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
-    /* Hide all screen chrome */
+    /* Hide all screen chrome — both legacy (#site-header-root /
+       #site-footer-root) and the current Brief* layout (.brief-header,
+       .brief-footer, mobile drawer overlays, sticky CTAs, etc.). The
+       brief-* rules are what the user reported as "PDF download is
+       broken" — the print-doc was still rendering, but the new
+       header/footer were bleeding into the printed page. */
     #site-header-root,
     #site-footer-root,
+    .brief-header,
+    .brief-footer,
+    .brief-mobile-drawer,
+    .brief-mobile-drawer-scrim,
     .cs-hero,
     .cs-actions,
     .cs-stats,
     .cs-section,
     .cs-cta,
     .screen-only { display: none !important; }
+
+    /* Reset any sticky/min-height the brief layout enforces so the
+       print doc starts at the very top of page 1. */
+    html, body {
+      min-height: 0 !important;
+      height: auto !important;
+    }
 
     /* Show print doc */
     .print-doc {
