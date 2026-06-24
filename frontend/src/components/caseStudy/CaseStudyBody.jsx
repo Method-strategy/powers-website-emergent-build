@@ -111,7 +111,7 @@ export default function CaseStudyBody({ data }) {
           >
             Every POWERS engagement starts with our intensive{' '}
             <Link to="/discovery-process" className="cs-cta-link" data-testid="cs-cta-discovery-link">Discovery Process</Link>.
-            We come on the floor, identify the gaps in the five disciplines that hold execution back,
+            We work with everyone on your team, identify the gaps in the five disciplines that hold execution back,
             and build the partnership that closes them. The results stay built long after we&rsquo;re gone.
           </p>
           <div className="cs-cta-actions" style={{ marginTop: 40, display: 'inline-flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
