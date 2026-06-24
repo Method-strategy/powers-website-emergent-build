@@ -48,7 +48,12 @@ const briefDocCss = `
      stations. */
   .brief-page-hero {
     position: relative;
-    padding: clamp(120px, 14vh, 180px) 0 clamp(96px, 12vh, 140px);
+    /* Top padding clears the 112px fixed BriefHeader and adds 56-120px
+       of viewport-scaled breathing room above the content. The earlier
+       value (clamp(120px, 14vh, 180px)) sat too tight against the
+       header because the header height was not factored in. Bottom
+       padding unchanged. */
+    padding: calc(var(--header-h, 112px) + clamp(56px, 8vh, 120px)) 0 clamp(96px, 12vh, 140px);
     overflow: hidden;
     background: ${PAPER};
   }

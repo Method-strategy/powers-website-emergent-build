@@ -2,20 +2,24 @@
 // the new React library page reuses the same visual treatment.
 export const caseStudiesLibraryStyles = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Brief-aligned tokens — promoted from briefTokens.js so the case-
+     study library palette matches the homepage and every other brief
+     page. Local var names preserved so existing selectors throughout
+     this stylesheet keep working without rewrites. */
   :root {
-    --navy: #183a61;
+    --navy: #0d2442;             /* brief NAVY (was #183a61) */
     --navy-mid: #0d2442;
-    --navy-light: #4a6a8a;
-    --gold: #eabb71;
-    --gold-bright: #eabb71;
-    --gold-muted: #c9963e;
+    --navy-light: rgba(13, 36, 66, 0.54);  /* TEXT_MUTED */
+    --gold: #e89346;             /* brief GOLD_BRIGHT (was #eabb71) */
+    --gold-bright: #e89346;
+    --gold-muted: #e89346;
     --white: #ffffff;
-    --off-white: #f5f5f3;
-    --text-main: #1a1a18;
-    --text-muted: #888884;
-    --border: #e8e8e4;
+    --off-white: #fbfaf6;        /* brief PAPER (was #f5f5f3) */
+    --text-main: #0d2442;        /* brief NAVY (was #1a1a18) */
+    --text-muted: rgba(13, 36, 66, 0.54);  /* brief TEXT_MUTED */
+    --border: rgba(13, 36, 66, 0.16);      /* brief RULE */
     --card-bg: #ffffff;
-    --tag-bg: #eef1f7;
+    --tag-bg: #f3f0e8;           /* brief PAPER_DEEP */
   }
 
   body {

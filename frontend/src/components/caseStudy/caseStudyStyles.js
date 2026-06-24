@@ -1,19 +1,24 @@
 export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Brief-aligned tokens — promoted from briefTokens.js so every
+     case-study page renders in the same palette as the homepage and
+     the rest of the brief. Local var names preserved so existing
+     selectors throughout this file (var(--navy), var(--gold), etc.)
+     keep working without rewrites. */
   :root {
-    --navy: #183a61;
-    --navy900: #0d2442;
-    --navy400: #4a6a8a;
+    --navy: #0d2442;             /* brief NAVY (was #183a61) */
+    --navy900: #0a1e36;          /* brief NAVY_DEEP */
+    --navy400: rgba(13, 36, 66, 0.54);  /* brief TEXT_MUTED */
     --navy100: #d6e2ee;
-    --navy50: #f0f4f8;
-    --gold: #eabb71;
-    --gold600: #c9963e;
+    --navy50: #fbfaf6;           /* aligned to PAPER */
+    --gold: #e89346;             /* brief GOLD_BRIGHT (was #eabb71) */
+    --gold600: #e89346;          /* collapsed per briefTokens */
     --white: #ffffff;
-    --gray50: #f5f5f3;
-    --gray100: #e8e8e4;
-    --gray400: #888884;
-    --gray700: #3a3a38;
-    --gray900: #1a1a18;
+    --gray50: #fbfaf6;           /* brief PAPER */
+    --gray100: #f3f0e8;          /* brief PAPER_DEEP */
+    --gray400: rgba(13, 36, 66, 0.54);  /* brief TEXT_MUTED */
+    --gray700: rgba(13, 36, 66, 0.72);  /* brief TEXT_BODY */
+    --gray900: #0d2442;          /* brief NAVY */
   }
 
   html, body {
@@ -42,7 +47,7 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
      SCREEN LAYOUT
      ════════════════════════════════════════════ */
   @media screen {
-    body { padding-top: 84px; }
+    body { padding-top: var(--header-h, 112px); }
 
     /* Site nav responsive show/hide — !important needed because site-nav.jsx
        uses inline style={{display:'flex'}} on both nav and hamburger */

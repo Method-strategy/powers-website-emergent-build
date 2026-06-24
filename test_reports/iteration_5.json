@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend-only verification of design cohesion tokens across case-study pages. All 9 review checks PASS: (1) /case-studies H1 reads 'Proven execution.' / 'Built to perform.' ; (2) .brief-doc-lede inner_text contains the exact required string 'The proof is in the resilient execution capability we built working side by side with our clients and the lasting results it produced.'; (3) BriefHeader bottom (112px) to 'CASE STUDIES' station-index eyebrow top (184px) gap is 72px >= 60px; (4) var(--gold) computed on /case-studies = rgb(232, 147, 70) — exact brand copper; (5) hero-download-pdf-btn visible AND fires window.print() when clicked; (6) print-media emulation: .brief-header hidden, .brief-footer not present (effectively hidden), .cs-hero-dense hidden, .print-doc visible with 2 print-pages; (7) Hero H1 font-family contains 'proxima-nova', font-size 64px (within 40-70px brief scale); descriptor uses 'Newsreader' serif italic; .cs-hd-results-eyebrow / .cs-hd-stat-icon / .cs-hd-pdf bg all rgb(232, 147, 70); (8) .cs-h2 font-size 48px (within 30-56), font-weight 800, color rgb(13, 36, 66) = brief NAVY exactly; .cs-eyebrow-dark color rgb(232, 147, 70) = brand copper; (9) Cross-page palette consistency: rgb(232, 147, 70) identical on / (homepage 'Regardless of conditions.' hero accent + 'Let's Talk' CTA), /case-studies (station-index eyebrow + var(--gold)), and /case-studies/defense-aerospace-otd (var(--gold) + all hero gold accents). Zero JS console errors on both /case-studies and /case-studies/defense-aerospace-otd.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "caseStudiesLibraryStyles.js line 77 still has a hardcoded gold hex '#eabb71' in '.hero-rule-gold' background — minor token drift, hairline rule will read as the old yellow-gold instead of brand copper. Replace with 'var(--gold)' for full consistency.",
+    "caseStudiesLibraryStyles.js line 153 ('#searchInput:focus' box-shadow) and lines 274, 313, 345 still reference rgba(234,187,113,...) — derivatives of the old gold #eabb71. They render as subtle hover/halo tints; visually close enough to copper that they likely won't be noticed, but for strict token discipline they should be rebased to rgba(232, 147, 70, ...).",
+    "caseStudyStyles.js line 226 hardcodes '#d9a85a' on .cs-hd-pdf:hover background and references undefined var(--navy-mid) for color — hover state still works due to fallback but should be tokenized.",
+    "caseStudyStyles.js line 760 (.pp-mast-meta .pp-bar) hardcodes rgba(234,187,113,0.55) (legacy gold) — for print fidelity recommend rgba(232, 147, 70, 0.55).",
+    "Same legacy gold rgba(234,187,113,...) appears in caseStudyStyles.js lines 926 (.pp-cont-meta .pp-cont-bar) — print continuation header — same recommendation."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "n/a",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Cross-page gold computed color rgb(232, 147, 70) === brief #e89346 on all three pages tested. Homepage HomeV5 inlines color via briefTokens.js (no global --gold CSS var on /), so to verify cross-page consistency, sample any rendered orange element (e.g., 'Let's Talk' CTA, or any letter span in 'Regardless of conditions.' hero accent) instead of probing var(--gold) directly. CaseStudies + Aerospace pages DO define --gold on :root from their style modules, so the var(--gold) probe works there. For print verification, intercept window.print BEFORE click (it's blocked in headless Chromium): page.evaluate('window.__printCalled=false; window.print=()=>{window.__printCalled=true;}'), then click, then read window.__printCalled. For print stylesheet, page.emulate_media(media='print') flips the CSS — .brief-header / .cs-hero-dense display:none, .print-doc display:block, 2 print-pages render. Reset with page.emulate_media(media='screen') after.",
+  "rca of the issue": "n/a — this iteration is verification of a successful design-cohesion refactor. All previously-drifted tokens (legacy navy #183a61, legacy gold #eabb71, body padding 84px, dead briefAlignmentOverlay selectors, /case-studies brief-page-hero clipping) have been correctly remapped to brief tokens (#0d2442 navy, #e89346 copper, padding via var(--header-h, 112px), live .cs-hero-dense/.cs-section/.cs-h2/.cs-eyebrow-dark selectors). Shell layout preserved: Aerospace dark-navy hero, 3-col stat grid, right-rail exec brief + PDF button all intact. Five residual hardcoded legacy hex strings remain in stylesheets (see critical_code_review_comments) — they are visually minor (hover halos / print accent bars) but should be cleaned up for strict single-source-of-truth discipline."
+}
