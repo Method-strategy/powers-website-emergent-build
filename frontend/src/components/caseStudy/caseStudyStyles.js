@@ -222,8 +222,8 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
       transition: background 160ms ease, color 160ms ease;
     }
     .cs-hd-pdf:hover {
-      background: #d9a85a;
-      color: var(--navy-mid);
+      background: #d27d2e;       /* brief GOLD darkened ~10% for hover */
+      color: var(--navy);
     }
 
     /* ── Tablet: brief column narrows, H1 scales ── */
@@ -757,7 +757,7 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     font-weight: 600;
   }
   .pp-mast-meta .pp-tag      { color: var(--gold); }
-  .pp-mast-meta .pp-bar      { color: rgba(234,187,113,0.55); font-weight: 400; }
+  .pp-mast-meta .pp-bar      { color: rgba(232, 147, 70, 0.55); font-weight: 400; }
   .pp-mast-meta .pp-industry { color: var(--gold); }
 
   /* ── PAGE 1 — BODY ─────────────────────────────────────────────── */
@@ -923,7 +923,7 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     font-weight: 600;
     color: var(--gold);
   }
-  .pp-cont-meta .pp-cont-bar      { color: rgba(234,187,113,0.55); font-weight: 400; }
+  .pp-cont-meta .pp-cont-bar      { color: rgba(232, 147, 70, 0.55); font-weight: 400; }
   .pp-cont-meta .pp-cont-industry { color: var(--gold); }
   .pp-cont-meta .pp-cont-tag      { color: var(--gold); }
   .pp-cont-label {

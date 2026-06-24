@@ -489,3 +489,23 @@ Implementation:
 **Files touched:**
 - `/app/frontend/src/pages/CaseStudies.jsx` (H1 copy)
 - `/app/frontend/src/components/caseStudy/caseStudyStyles.js` (print rules)
+
+
+## 2026-02-24 — Case Studies design cohesion pass + lede copy
+
+**Implemented:**
+- **Token alignment.** The case-study legacy stylesheets shipped their own `:root` palette with drifted values (gold `#eabb71`, navy `#183a61`, off-white `#f5f5f3`, gray body text). Both `caseStudyStyles.js` and `caseStudiesLibraryStyles.js` `:root` blocks remapped to brief tokens from `briefTokens.js`: gold → `#e89346` (brand copper), navy → `#0d2442` (deep ink), paper → `#fbfaf6`, body text → navy @ 72%, muted text → navy @ 54%. Local var names preserved so every downstream selector picked up the new palette without rewrites.
+- **Header clearance.** `caseStudyStyles.js` body padding-top changed from hardcoded `84px` to `var(--header-h, 112px)` so case-study screens no longer clip under the 112px fixed BriefHeader.
+- **Hero breathing room.** `BriefDocStyles.jsx` `.brief-page-hero` padding-top changed from `clamp(120px, 14vh, 180px)` to `calc(var(--header-h, 112px) + clamp(56px, 8vh, 120px))` — every brief-page hero (incl. /case-studies) now has a consistent 56-120px clear below the fixed header.
+- **Dead overlay revived.** `CaseStudyDefenseAerospaceOTD.jsx` `briefAlignmentOverlay` targeted nonexistent selectors (`.case-hero`, `.case-section`); rewritten to hit the real classes (`.cs-hero-dense`, `.cs-section`, `.cs-h2`, `.cs-eyebrow-dark`, `.cs-hd-h1`, `.cs-hd-descriptor`, etc.). Hero H1 now renders at brief scale (clamp 40-64px) in Proxima sans; descriptor in Newsreader italic gold; all eyebrows in mono+gold; body H2s at brief scale (clamp 30-48px) in brief NAVY; PDF button in brand copper. Shell layout (dark-navy hero, 3-col stats, right-rail exec brief, section stack) untouched.
+- **Residual hardcodes purged.** Cleaned 6 stragglers: `.hero-rule-gold` (legacy `#eabb71` → `var(--gold)`), 4 × `rgba(234,187,113,...)` legacy gold derivatives in focus halos/hover tints/print bars → `rgba(232, 147, 70, ...)`, and `.cs-hd-pdf:hover` `#d9a85a` → `#d27d2e` (brand-copper darkened ~10%).
+- **Copy.** `/case-studies` lede updated to "Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in the resilient execution capability we built working side by side with our clients and the lasting results it produced. Search by industry, service type, or operational challenge."
+
+**Verification (testing agent iteration_5):** 100% pass — 9/9 checks. Cross-page palette consistency confirmed: `rgb(232, 147, 70)` identical on /, /case-studies, /case-studies/defense-aerospace-otd. H1/H2 scales hit brief targets. PDF download wiring + print-media stylesheet unaffected. Zero JS console errors.
+
+**Files touched:**
+- `/app/frontend/src/components/caseStudy/caseStudyStyles.js`
+- `/app/frontend/src/components/caseStudy/caseStudiesLibraryStyles.js`
+- `/app/frontend/src/components/BriefDocStyles.jsx`
+- `/app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx`
+- `/app/frontend/src/pages/CaseStudies.jsx`

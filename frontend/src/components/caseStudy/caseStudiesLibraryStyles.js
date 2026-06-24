@@ -74,7 +74,7 @@ export const caseStudiesLibraryStyles = `*, *::before, *::after { box-sizing: bo
     text-wrap: pretty;
   }
 
-  .hero-rule-gold { width: 80px; height: 1px; background: #eabb71; border: 0; margin-top: 64px; }
+  .hero-rule-gold { width: 80px; height: 1px; background: var(--gold); border: 0; margin-top: 64px; }
 
   .stats-row {
     display: flex;
@@ -150,7 +150,7 @@ export const caseStudiesLibraryStyles = `*, *::before, *::after { box-sizing: bo
   }
   #searchInput:focus {
     border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(234,187,113,0.12);
+    box-shadow: 0 0 0 3px rgba(232, 147, 70, 0.12);
     background: var(--white);
   }
   #searchInput::placeholder { color: var(--text-muted); }
@@ -271,7 +271,7 @@ export const caseStudiesLibraryStyles = `*, *::before, *::after { box-sizing: bo
   }
   .case-card:hover {
     border-color: var(--gold);
-    border-color: rgba(234,187,113,0.3);
+    border-color: rgba(232, 147, 70, 0.3);
   }
   .case-card:hover::before { opacity: 1; }
 
@@ -310,7 +310,7 @@ export const caseStudiesLibraryStyles = `*, *::before, *::after { box-sizing: bo
   }
 
   .card-result {
-    background: linear-gradient(135deg, rgba(13,31,60,0.04), rgba(234,187,113,0.06));
+    background: linear-gradient(135deg, rgba(13,31,60,0.04), rgba(232, 147, 70, 0.06));
     border-left: 3px solid var(--gold);
     padding: 10px 14px;
     border-radius: 0 6px 6px 0;
@@ -341,7 +341,7 @@ export const caseStudiesLibraryStyles = `*, *::before, *::after { box-sizing: bo
     color: var(--navy);
   }
   .tag-challenge {
-    background: rgba(234,187,113,0.12);
+    background: rgba(232, 147, 70, 0.12);
     color: var(--gold-muted);
   }
 
