@@ -509,3 +509,19 @@ Implementation:
 - `/app/frontend/src/components/BriefDocStyles.jsx`
 - `/app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx`
 - `/app/frontend/src/pages/CaseStudies.jsx`
+
+
+## 2026-02-24 — Case Study CTA rewritten to canonical brief grammar
+
+**Implemented:**
+- Replaced legacy `.cs-cta-primary` / `.cs-cta-secondary` / inline `<em>` markup in `CaseStudyBody.jsx` with the canonical brief CTA grammar: `.brief-doc-inner` column, `.brief-doc-h2` with `<span>` + `<span className="pivot">` for the vertical stack, `.brief-doc-cta-button` for both buttons (primary gold-filled, secondary `.cs-cta-ghost` variant with white-alpha outline).
+- The "?" now lives inside the `.pivot` span so it renders in italic Newsreader serif gold instead of bleeding back to sans-white.
+- Added `<BriefDocStyles />` to `CaseStudyDefenseAerospaceOTD.jsx` (was missing — the canonical primitives weren't being injected on the detail page).
+- Updated `briefAlignmentOverlay` to invert the palette for the dark-navy CTA chassis (white H2, gold pivot, white-82 lede, gold inline link, white-outline ghost button hover-to-gold).
+- Dark-navy chassis preserved as an intentional visual contrast band against the surrounding PAPER body sections.
+
+**Verification (testing agent iteration_6): 100% pass / 9 of 9 checks.** Cross-page button consistency confirmed against `/approach` canonical reference (same padding 16px 36px, same font-size 15px, same letter-spacing 0.04em, same brand copper fill, same Proxima sans). PDF download wiring + print-media stylesheet unaffected. Zero console errors.
+
+**Files touched:**
+- `/app/frontend/src/components/caseStudy/CaseStudyBody.jsx`
+- `/app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx`
