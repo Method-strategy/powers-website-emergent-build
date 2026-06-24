@@ -111,6 +111,22 @@ export default function CaseStudies() {
           shallower than the rest of the site. */}
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
         <section ref={heroRef} className="brief-page-hero">
+          {/* Ghosted hi-vis shop-floor pair examining a clipboard —
+              "we work with everyone on your team" visual. Mirrors
+              the homepage hero's transparent video pattern (same
+              sepia tint, same multiply blend, same cream wash) so
+              the case-studies hero reads as part of the same
+              document. */}
+          <img
+            className="brief-page-hero-bg"
+            src="/uploads/case-studies-hero-bg.jpg"
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            data-testid="case-studies-hero-bg"
+          />
+          <div className="brief-page-hero-wash" aria-hidden="true" />
           <div className="brief-doc-inner">
             <div className="brief-doc-col">
               <div className="station-index wipe" style={{ marginBottom: 24 }}>Case Studies</div>

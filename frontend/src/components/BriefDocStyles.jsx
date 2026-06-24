@@ -57,7 +57,67 @@ const briefDocCss = `
     overflow: hidden;
     background: ${PAPER};
   }
-  .brief-page-hero .brief-doc-inner { color: ${NAVY}; }
+  .brief-page-hero .brief-doc-inner { color: ${NAVY}; position: relative; z-index: 2; }
+
+  /* ── Hero ghosted background image (optional) ──────────────────
+     Mirrors the homepage hero's transparent-video pattern, but with
+     a still image (each interior page picks its own gritty, candid
+     shop-floor shot). Same sepia + saturation + multiply-blend
+     treatment so the image reads as a tint of the cream PAPER
+     instead of a foreign photograph. Object-cover fills any aspect
+     ratio without letterboxing; opacity stays low so navy hero text
+     remains legible on top.
+
+     Opt-in via:
+       <section class="brief-page-hero">
+         <img class="brief-page-hero-bg" src="..." alt="" />
+         <div class="brief-page-hero-wash" />
+         <div class="brief-doc-inner"> ... content ... </div>
+       </section>
+  */
+  .brief-page-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    z-index: 0;
+    opacity: 0.22;
+    filter: sepia(0.95) saturate(1.55) hue-rotate(-10deg) brightness(1.06) contrast(0.92);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    user-select: none;
+  }
+  /* Cream wash sitting between the image and the hero content.
+     Knocks the photo back another stop on the left (where the
+     headline + lede sit) and lets it read more freely on the right.
+     Identical math to the homepage .brief-hero-wash so the two
+     surfaces feel like the same document. */
+  .brief-page-hero-wash {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(1100px 700px at 20% 50%,
+        rgba(251, 250, 246, 0.78) 0%,
+        rgba(251, 250, 246, 0.45) 45%,
+        rgba(251, 250, 246, 0.18) 80%,
+        rgba(251, 250, 246, 0.00) 100%);
+  }
+  @media (max-width: 720px) {
+    /* On phones the radial recenters and gets a bit denser so the
+       portrait crop of the image doesn't overwhelm the text. */
+    .brief-page-hero-wash {
+      background:
+        radial-gradient(900px 600px at 30% 40%,
+          rgba(251, 250, 246, 0.88) 0%,
+          rgba(251, 250, 246, 0.60) 50%,
+          rgba(251, 250, 246, 0.25) 85%,
+          rgba(251, 250, 246, 0.00) 100%);
+    }
+  }
 
   /* ── Station (body sections) ─────────────────────────────────
      Standard interior page section. Page sets the background via
