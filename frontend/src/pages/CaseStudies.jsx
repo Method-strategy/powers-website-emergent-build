@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { caseStudies } from '../data/caseStudies';
 import { caseStudiesLibraryStyles } from '../components/caseStudy/caseStudiesLibraryStyles';
 import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
+import BriefDocStyles, { useInViewClass, PAPER } from '../components/BriefDocStyles';
 
 /**
  * CaseStudies — the case-study library page at /case-studies.
@@ -89,18 +90,33 @@ export default function CaseStudies() {
     setSort('newest');
   };
 
+  // Hero in-view ref for the wipe-build choreography on entry.
+  const heroRef = useRef(null);
+  useInViewClass(heroRef);
+
   return (
     <>
+      {/* Library legacy styles (filter UI + card grid). The hero
+          block from this stylesheet (.library-hero) is overridden
+          and replaced with the brief's standard hero (cream PAPER
+          surface, 96px sans+gold-accent H1, 17px lede) so the
+          page reads as one document with the rest of the site. */}
       <style dangerouslySetInnerHTML={{ __html: caseStudiesLibraryStyles }} />
+      <BriefDocStyles />
 
-      <section className="library-hero">
-        <div className="library-hero-inner">
-          <div className="hero-eyebrow">Case Studies</div>
-          <h1 className="hero-headline">The Work Speaks for Itself.</h1>
-          <p className="hero-sub">
-            Every engagement is a real operation, a real challenge, and a measurable result. Find the proof most relevant to your situation.
-          </p>
-          <hr className="hero-rule-gold" />
+      <section ref={heroRef} className="brief-page-hero">
+        <div className="brief-doc-inner">
+          <div className="brief-doc-col">
+            <div className="station-index wipe" style={{ marginBottom: 24 }}>Case Studies</div>
+            <h1 className="brief-doc-h1 wipe wipe-d1">
+              <span>Proven execution built to perform</span>
+              <span className="accent">across many different operational challenges.</span>
+            </h1>
+            <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
+              Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in what we built with them and the results it produced. Search by industry, service type, or operational challenge.
+            </p>
+            <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
+          </div>
         </div>
       </section>
 
