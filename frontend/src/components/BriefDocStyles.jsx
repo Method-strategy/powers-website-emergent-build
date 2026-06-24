@@ -93,7 +93,13 @@ const briefDocCss = `
      Knocks the photo back another stop on the left (where the
      headline + lede sit) and lets it read more freely on the right.
      Identical math to the homepage .brief-hero-wash so the two
-     surfaces feel like the same document. */
+     surfaces feel like the same document. The ::after pseudo
+     stacked on top is an inline-SVG fractal-noise grain — gives
+     the hero that subtle "newsprint / silver halide" grit so the
+     ghosted photo feels candid and tactile instead of a flat
+     stock image. Data-URI = zero HTTP, scales infinitely, mix-blend
+     'overlay' lets the grain darken the photo and lighten the
+     paper in one pass without tinting either. */
   .brief-page-hero-wash {
     position: absolute;
     inset: 0;
@@ -105,6 +111,16 @@ const briefDocCss = `
         rgba(251, 250, 246, 0.45) 45%,
         rgba(251, 250, 246, 0.18) 80%,
         rgba(251, 250, 246, 0.00) 100%);
+  }
+  .brief-page-hero-wash::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.18;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 240px 240px;
   }
   @media (max-width: 720px) {
     /* On phones the radial recenters and gets a bit denser so the
