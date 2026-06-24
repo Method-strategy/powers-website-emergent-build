@@ -1,0 +1,40 @@
+{
+  "summary": "Verified the .brief-page-hero min-height fix in BriefDocStyles.jsx. At viewport 1440x1080, all three heroes (/approach, /discovery-process, /case-studies) now report EXACTLY 968px height — matching the user's target and confirming A === B === C. The original bug (Case Studies hero ~155px shorter than Approach) is fixed. Content is vertically centered, ghosted bg image fills the hero, cards grid renders, filter/search interactions work, and zero JS console errors on all three pages.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/approach hero at 1440x900",
+        "issues": [
+          "At viewport 1440x900 specifically, Approach hero measures 855.9px while Discovery and Case Studies measure 788px each. Approach's lede has more lines, causing content (padding-top 184 + content 564 + padding-bottom 108 = 856) to exceed min-height (900 - 112 = 788). min-height allows growth, so Approach overflows. NOT a regression — Approach has always been taller than 788 at this viewport. At taller viewports (>=1080), all three clamp to identical min-height (968). User's claim of '968 at 1440x900' appears to be a measurement-viewport mismatch — the 968 value matches 1080 viewport, not 900. Recommend either (a) shortening Approach hero copy, or (b) accepting that at sub-1080 viewports the tallest-content hero will set the bar."
+        ]
+      },
+      {
+        "screen": "/approach and /case-studies hero at mobile 390x844",
+        "issues": [
+          "On mobile, content wraps to more lines so Approach (815.4px) and Case Studies (817.7px) exceed min-height (772px). Discovery sits exactly at min-height (772). The three are NOT equal at this viewport but Case Studies and Approach are within 2.3px of each other. Discovery is 45px shorter. Same root cause: content overflow vs min-height. Mitigation: same as above."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: shorten /approach lede copy OR raise min-height baseline so heroes are visually identical at sub-1080 viewports (currently they only fully equalize at viewports >= ~1080px tall).",
+    "Optional: consider applying same min-height treatment more aggressively (e.g., a fixed min-height instead of viewport-relative) if absolute parity at all viewports is required."
+  ],
+  "critical_code_review_comments": [
+    "Fix in BriefDocStyles.jsx lines 49-71 is correctly implemented: min-height: calc(100dvh - var(--header-h, 112px)) + display:flex + flex-direction:column + justify-content:center — mirrors homepage .brief-hero pattern as claimed.",
+    "min-height (not height) is the right choice — preserves content overflow behavior so taller content (Approach) doesn't get clipped.",
+    "At viewports >= 1080, all three heroes now equal 968px (perfect parity). At 1440x900 only Discovery & Case Studies match (788px); Approach is taller due to content. This is an inherent trade-off of min-height-based viewport-filling."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "85%"},
+  "test_credentials": "n/a",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Measurements taken:\n  Desktop 1440x900: A=855.9, B=788, C=788 (B===C, A taller due to content overflow)\n  Desktop 1440x1080: A=968, B=968, C=968 (PERFECT PARITY — matches user's expectation)\n  Mobile 390x844: A=815.4, B=772, C=817.7 (B at min, A & C overflow)\n  Case Studies hero content vertically centered (hero_center=596, content_center=630.4, delta=34.4px, within 80px tolerance).\n  Hero bg image [data-testid='case-studies-hero-bg'] fills hero (1440x788 at 900vh).\n  [data-testid='cards-grid'] has 68 children, renders correctly below hero.\n  Search input, Industry filter dropdown all functional after the flex change.\n  Zero JS console errors on all three pages at both viewports.\n  Note: user said 'all three now report 968px at 1440x900' — this is only true at 1080vh. The fix is sound; just the user's claimed pixel value matches a taller viewport.",
+  "rca of the issue": "BEFORE FIX: .brief-page-hero only had padding; hero height = content + padding. Case Studies (shortest lede) was 767px while Approach (longest lede) was 920px and Discovery in between at 820px — visible depth glitch when switching pages. AFTER FIX: min-height: calc(100dvh - var(--header-h, 112px)) ensures every hero fills the viewport below the header. flex column + justify-content: center vertically centers the eyebrow/H1/lede/rule cluster in extra space. Verified at viewport 1080vh all three heroes are exactly 968px. Original bug resolved."
+}

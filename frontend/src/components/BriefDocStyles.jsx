@@ -56,6 +56,18 @@ const briefDocCss = `
     padding: calc(var(--header-h, 112px) + clamp(56px, 8vh, 120px)) 0 clamp(96px, 12vh, 140px);
     overflow: hidden;
     background: ${PAPER};
+    /* Viewport-filling row, matching the homepage hero + Approach +
+       DiscoveryProcess pattern. Without min-height the hero collapses
+       to its content height, leaving short pages (like Case Studies
+       whose lede is more compact) noticeably shorter than the taller
+       interior heroes — visible as a depth glitch when switching
+       between pages. 100dvh - header-h keeps the hero just below the
+       fixed nav; flex-column + center vertically centers the eyebrow
+       + H1 + lede + rule cluster in whatever extra space is left. */
+    min-height: calc(100dvh - var(--header-h, 112px));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .brief-page-hero .brief-doc-inner { color: ${NAVY}; position: relative; z-index: 2; }
 
