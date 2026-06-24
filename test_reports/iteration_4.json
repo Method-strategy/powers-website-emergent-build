@@ -1,0 +1,23 @@
+{
+  "summary": "Frontend-only verification of DOWNLOAD PDF fix on /case-studies/defense-aerospace-otd and H1 copy on /case-studies. All 6 review checks pass: H1 reads 'Proven execution.' (navy) / 'Built to perform.' (gold accent) split across two spans; Industry filter for 'Aerospace & Defense' yields the OTD case study card which routes to /case-studies/defense-aerospace-otd; the hero data-testid='hero-download-pdf-btn' and body data-testid='cs-cta-download-pdf' buttons are both visible and trigger window.print() (verified via intercept-then-click); page.emulate_media(media='print') confirms .brief-header, .brief-footer and .cs-hero-dense are all NOT visible while .print-doc IS visible; the rendered print-doc contains masthead/POWERS logo + 'CASE STUDY | AEROSPACE & DEFENSE' eyebrow + headline + Executive Brief + Results at a Glance + 59%/65%/69% stat tiles + 'The Situation' section + footer band with phone/email/address and '1 / 2' page indicator, plus a second .print-page with The Diagnosis / What POWERS Did / Full Result; zero JS console errors on either page.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "caseStudyStyles.js is 1051 lines — borderline file-size threshold; consider splitting screen vs print vs hero into separate modules in a future refactor.",
+    "Both Download PDF buttons attach window.print() inline via onClick; consider extracting a single handler so analytics/print-prep hooks can be added in one place."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "n/a",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "The @media print rules in /app/frontend/src/components/caseStudy/caseStudyStyles.js (lines 641-679) correctly hide both legacy (#site-header-root/#site-footer-root) and current (.brief-header/.brief-footer/.brief-mobile-drawer) navigation chrome, plus reset html/body min-height. Print stylesheet output verified via Playwright page.emulate_media(media='print'). window.print() is blocked in headless Chromium, so intercept it via page.evaluate(\"window.print = () => { window.__printCalled = true; }\") BEFORE clicking; never click without the override. Button visual text reads 'DOWNLOAD PDF' because of CSS text-transform:uppercase — DOM text content is 'Download PDF'. Use case-insensitive comparisons.",
+  "rca of the issue": "Root cause was already correctly diagnosed and fixed by the main agent before this test run: a prior fork migrated the site chrome from #site-header-root/#site-footer-root to the new BriefHeader/BriefFooter (class names .brief-header/.brief-footer) but did NOT update @media print { display:none } rules, so the new navigation chrome bled into the printed pages. The fix added .brief-header, .brief-footer, .brief-mobile-drawer, .brief-mobile-drawer-scrim to the print hide list (lines 657-660) and also reset html/body min-height/height in print context (lines 670-673) so the print-doc starts at the top of page 1. Verified end-to-end: print media now renders only .print-doc with all expected content (masthead, eyebrow, headline, exec brief, stat block, situation copy, footer band with page indicator) across 2 print-pages."
+}
