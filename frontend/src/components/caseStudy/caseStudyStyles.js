@@ -656,14 +656,20 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
        .brief-footer, mobile drawer overlays, sticky CTAs, etc.). The
        brief-* rules are what the user reported as "PDF download is
        broken" — the print-doc was still rendering, but the new
-       header/footer were bleeding into the printed page. */
+       header/footer were bleeding into the printed page. The bare
+       footer selector is a defense-in-depth hide in case the
+       BriefFooter root ever ships without the .brief-footer class
+       again. The .print-doc footer band (.pp-foot) is a div, so
+       this rule does not touch it. */
     #site-header-root,
     #site-footer-root,
     .brief-header,
     .brief-footer,
+    footer,
     .brief-mobile-drawer,
     .brief-mobile-drawer-scrim,
     .cs-hero,
+    .cs-hero-dense,
     .cs-actions,
     .cs-stats,
     .cs-section,

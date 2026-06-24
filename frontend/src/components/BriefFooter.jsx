@@ -16,7 +16,7 @@ import { GOLD_BRIGHT, TYPE } from '../lib/briefTokens';
  */
 export default function BriefFooter() {
   return (
-    <footer style={{ background: '#0f2a47', fontFamily: TYPE.sans, borderTop: '1px solid #e89346' }}>
+    <footer className="brief-footer" style={{ background: '#0f2a47', fontFamily: TYPE.sans, borderTop: '1px solid #e89346' }}>
       <style>{`
         .brief-footer-grid {
           max-width: 1240px;

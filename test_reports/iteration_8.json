@@ -1,0 +1,43 @@
+{
+  "summary": "Iteration 8 frontend verification — confirmed PDF print-media fix. BriefFooter root now has className='brief-footer', @media print blanket-hides <footer>+.brief-footer+.cs-hero-dense, and PrintFooter is restored on both print pages. All 8 review-request assertions PASS. Zero JS console errors in both screen and print modes.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_assertions": {
+    "print_brief_footer_hidden": true,
+    "print_all_footer_elements_hidden": true,
+    "print_pp_foot_count_2_both_visible": true,
+    "print_pp_foot_contains_POWERS_phone_email_address": true,
+    "print_pp_foot_page_indicators_1of2_and_2of2": true,
+    "print_brief_header_hidden": true,
+    "print_cs_hero_dense_hidden": true,
+    "print_cs_cta_hidden": true,
+    "print_cs_section_hidden": true,
+    "print_doc_visible": true,
+    "print_masthead_logo_and_eyebrow_visible": true,
+    "screen_brief_footer_visible": true,
+    "screen_pp_foot_not_visible": true,
+    "screen_footer_contains_Approach_DiscoveryProcess_ExpertiseAreas_Leadership": true,
+    "hero_download_pdf_btn_triggers_window_print": true,
+    "zero_console_errors_screen_and_print": true,
+    "brief_footer_on_/approach": true,
+    "brief_footer_on_/case-studies": true,
+    "brief_footer_on_homepage": "N/A — homepage uses HomeV5 SiteFooter, not BriefFooter component. Footer still renders correctly visually (verified via screenshot)."
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "caseStudyStyles.js is 1062 lines — well past the 700-line guidance. Consider splitting into screen.css/print.css/printDoc.css template-literal modules for maintainability.",
+    "The @media print rule uses a bare `footer` selector. This is fine here because .pp-foot is a <div>, but if any future component on this page renders a semantic <footer>, it will be hidden in print. Worth a comment in the rule (already present) but worth tracking as a known constraint.",
+    "Homepage does NOT use the new BriefFooter component (it has its own SiteFooter inside HomeV5). The shared .brief-footer hide rule therefore would not protect the homepage if a case-study route were ever embedded inside the homepage layout — not a current concern but worth knowing."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 8 fix verified end-to-end on the public preview URL. Playwright used page.emulate_media() to toggle print/screen. All print-mode website chrome (.brief-header, .brief-footer, .cs-hero-dense, .cs-cta, .cs-section, every <footer> element) is hidden; only .print-doc with its 2 .pp-foot bands renders. Hero DOWNLOAD PDF button correctly invokes window.print(). Screenshot at /tmp/cs-print-final-test.png matches the user's expected printout (masthead + content + POWERS contact band, no website nav/footer bleed). No JS console errors. No retest needed."
+}
