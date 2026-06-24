@@ -104,21 +104,32 @@ export default function CaseStudies() {
       <style dangerouslySetInnerHTML={{ __html: caseStudiesLibraryStyles }} />
       <BriefDocStyles />
 
-      <section ref={heroRef} className="brief-page-hero">
-        <div className="brief-doc-inner">
-          <div className="brief-doc-col">
-            <div className="station-index wipe" style={{ marginBottom: 24 }}>Case Studies</div>
-            <h1 className="brief-doc-h1 wipe wipe-d1">
-              <span>Proven execution.</span>
-              <span className="accent">Built to perform.</span>
-            </h1>
-            <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
-              Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in the resilient execution capability we built working side by side with our clients and the lasting results it produced. Search by industry, service type, or operational challenge.
-            </p>
-            <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
+      {/* paddingTop: var(--header-h) matches the canonical pattern
+          used by Approach, DiscoveryProcess, Leadership, etc. so this
+          page's hero depth aligns 1:1 with every other brief page.
+          Without this wrapper, the brief-page-hero sat ~112px
+          shallower than the rest of the site. */}
+      <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
+        <section ref={heroRef} className="brief-page-hero">
+          <div className="brief-doc-inner">
+            <div className="brief-doc-col">
+              <div className="station-index wipe" style={{ marginBottom: 24 }}>Case Studies</div>
+              <h1 className="brief-doc-h1 wipe wipe-d1">
+                <span>Proven execution.</span>
+                <span className="accent">Built to perform.</span>
+              </h1>
+              <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
+                Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in the resilient execution capability we built working side by side with our clients and the lasting results it produced. Search by industry, service type, or operational challenge.
+              </p>
+              <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Controls + cards grid moved INSIDE the same <main> so the
+            page has a single semantic main and the canonical header
+            clearance (paddingTop: var(--header-h)) applies to the
+            entire content tree, matching Approach + DiscoveryProcess. */}
 
       <div className="controls-bar">
         <div className="controls-bar-inner">
@@ -191,7 +202,7 @@ export default function CaseStudies() {
         </div>
       </div>
 
-      <main className="main-content">
+      <div className="main-content">
         <div className="cards-grid" id="cardsGrid" data-testid="cards-grid">
           {filtered.length === 0 ? (
             <div style={{ gridColumn: '1 / -1', padding: '60px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
@@ -208,6 +219,7 @@ export default function CaseStudies() {
             ))
           )}
         </div>
+      </div>
       </main>
     </>
   );
