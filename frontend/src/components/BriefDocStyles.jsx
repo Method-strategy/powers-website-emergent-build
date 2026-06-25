@@ -95,8 +95,8 @@ const briefDocCss = `
     object-fit: cover;
     object-position: center 35%;
     z-index: 0;
-    opacity: 0.22;
-    filter: sepia(0.95) saturate(1.55) hue-rotate(-10deg) brightness(1.06) contrast(0.92);
+    opacity: 0.16;
+    filter: sepia(0.95) saturate(1.55) hue-rotate(-10deg) brightness(1.10) contrast(0.90);
     mix-blend-mode: multiply;
     pointer-events: none;
     user-select: none;
@@ -119,9 +119,9 @@ const briefDocCss = `
     pointer-events: none;
     background:
       radial-gradient(1100px 700px at 20% 50%,
-        rgba(251, 250, 246, 0.78) 0%,
-        rgba(251, 250, 246, 0.45) 45%,
-        rgba(251, 250, 246, 0.18) 80%,
+        rgba(251, 250, 246, 0.86) 0%,
+        rgba(251, 250, 246, 0.55) 45%,
+        rgba(251, 250, 246, 0.26) 80%,
         rgba(251, 250, 246, 0.00) 100%);
   }
   .brief-page-hero-wash::after {
@@ -140,9 +140,9 @@ const briefDocCss = `
     .brief-page-hero-wash {
       background:
         radial-gradient(900px 600px at 30% 40%,
-          rgba(251, 250, 246, 0.88) 0%,
-          rgba(251, 250, 246, 0.60) 50%,
-          rgba(251, 250, 246, 0.25) 85%,
+          rgba(251, 250, 246, 0.94) 0%,
+          rgba(251, 250, 246, 0.70) 50%,
+          rgba(251, 250, 246, 0.34) 85%,
           rgba(251, 250, 246, 0.00) 100%);
     }
   }
