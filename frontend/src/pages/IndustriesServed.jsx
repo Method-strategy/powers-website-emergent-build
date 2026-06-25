@@ -1,39 +1,145 @@
-import React from 'react';
-import LegacyPage from '../components/LegacyPage';
+import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
+import BriefDocStyles, { useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE } from '../components/BriefDocStyles';
+import { INDUSTRY_GROUPS } from '../data/industries';
 
-const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      font-family: 'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
-      background: #ffffff;
-      min-height: 100vh;
-    }
-    body { padding-top: 84px; }
-    .nav-desktop { display: flex !important; }
-    .nav-mobile  { display: none !important; }
-    .nav-tagline { display: inline !important; }
-    @media (max-width: 767px) {
-      .nav-desktop { display: none !important; }
-      .nav-mobile  { display: flex !important; }
-      .nav-tagline { display: none !important; }
-    }`;
-
-const HTML = `<section style="background:#183a61;">
-  <div style="max-width:1280px;margin:0 auto;width:100%;padding:120px 48px;min-height:600px;display:flex;flex-direction:column;justify-content:center;">
-    <div style="font-size:12px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#eabb71;font-family:inherit;margin-bottom:24px;">Results</div>
-    <h1 style="font-size:clamp(36px,4.2vw,56px);font-weight:800;line-height:1.08;color:#ffffff;letter-spacing:-0.01em;font-family:inherit;max-width:920px;text-wrap:balance;">Industries Served</h1>
-  </div>
-</section>`;
-
-const SCRIPT = ``;
+function Section({ children, dark, style }) {
+  const ref = useRef(null); useInViewClass(ref);
+  return (
+    <section ref={ref} className="brief-doc-station" style={{ background: dark ? NAVY : PAPER, ...style }}>
+      <div className="brief-doc-inner">{children}</div>
+    </section>
+  );
+}
 
 export default function IndustriesServed() {
+  const heroRef = useRef(null); useInViewClass(heroRef);
   return (
-    <LegacyPage
-      css={CSS}
-      html={HTML}
-      script={SCRIPT}
-      title={`Industries Served — POWERS Manufacturing Performance Consulting`}
-      metaDescription={``}
-    />
+    <>
+      <BriefDocStyles />
+      <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
+        <section ref={heroRef} className="brief-page-hero">
+          <div className="brief-doc-inner">
+            <div className="brief-doc-col">
+              <div className="station-index wipe" style={{ marginBottom: 24 }}>Industries Served</div>
+              <h1 className="brief-doc-h1 wipe wipe-d1">
+                <span>Different industries.</span>
+                <span className="accent">The same execution discipline.</span>
+              </h1>
+              <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
+                We work in industries where the conditions look completely different on the surface and remarkably similar underneath. Different products. Different scales. Different regulatory regimes. The same five disciplines underneath the operations that perform. The same financial result when those disciplines hold up under pressure.
+              </p>
+              <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
+            </div>
+          </div>
+        </section>
+
+        <Section>
+          <div className="station-index wipe">The Pattern Across Industries</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>From the vantage point of execution,</span>
+            <span className="pivot">industries look more similar than different.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3" style={{ marginTop: 24 }}>
+            <p>A multi-site protein processor and a PE-backed metals platform produce completely different outputs. But the operational pressures that put their performance at risk look remarkably alike. Demand volatility. Supply chain stress. Workforce capability gaps. Regulatory and compliance expansion. Equipment reliability under conditions the operation wasn&rsquo;t designed for. The drift between executive intent and shop floor execution that quietly erodes margin between Monday morning and Friday afternoon.</p>
+            <p>What changes industry to industry is the specific operational vocabulary, the regulatory architecture, and the buyer&rsquo;s language. What doesn&rsquo;t change is the diagnostic frame, the disciplines we build, or the commercial structure we work under. <em>Paid engagement. Results-based ROI. Skin in the game.</em></p>
+            <p>That&rsquo;s why the pattern of our work travels. The operations we&rsquo;ve strengthened in food and beverage manufacturing taught us things that landed cleanly in metals and mining. The lessons from aerospace and defense translated into pharmaceutical and medical device engagements. The disciplines we built in automotive tier-1 supplier operations now serve consumer packaged goods platforms.</p>
+          </div>
+        </Section>
+
+        <Section style={{ background: '#f3f0e8' }}>
+          <div className="station-index wipe">Who We Work With</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>Multi-site operators. PE-backed platforms.</span>
+            <span className="pivot">Organizations under real-world pressure to perform.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <p className="brief-doc-body wipe wipe-d3" style={{ marginTop: 24 }}>
+            We work with manufacturers, processors, and distributors operating at scale across one to many sites. Operating leaders running production environments where execution gets measured every shift. PE operating partners who need an EBITDA improvement strategy that compounds rather than fades. Corporate executives managing integrations, growth initiatives, or footprint expansions that require operating capacity the legacy organization can&rsquo;t yet sustain.
+          </p>
+          <p className="brief-doc-body wipe wipe-d4" style={{ marginTop: 16, fontStyle: 'italic' }}>
+            If your operation runs across more than one site, the conversation about scope starts on the{' '}
+            <Link to="/contact" className="brief-inline-link" data-testid="hub-link-contact">contact page</Link>.
+          </p>
+        </Section>
+
+        <Section>
+          <div className="station-index wipe">Industries Grid</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>Fourteen industries.</span>
+            <span className="pivot">One execution discipline underneath.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <p className="brief-doc-body wipe wipe-d3" style={{ marginTop: 24 }}>
+            Each industry page below names the specific pressures, the operational vocabulary, the sub-segments we work in, and the metrics we move. The disciplines we build are the same. The application is industry-specific.
+          </p>
+          <div className="hub-groups wipe wipe-d4">
+            {INDUSTRY_GROUPS.map((group, gi) => (
+              <div key={gi} className="hub-group">
+                <div className="hub-group-label">{group.label}</div>
+                <ul className="hub-cards">
+                  {group.items.map(item => (
+                    <li key={item.slug} className="hub-card">
+                      <Link to={`/industries-served/${item.slug}`} className="hub-card-link" data-testid={`industry-card-${item.slug}`}>
+                        <div className="hub-card-name">{item.name}</div>
+                        <div className="hub-card-blurb">{item.blurb}</div>
+                        <div className="hub-card-arrow">&rarr;</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <section className="brief-doc-station brief-doc-cta" style={{ background: NAVY }}>
+          <div className="brief-doc-inner" style={{ paddingTop: 96, paddingBottom: 96, textAlign: 'center' }}>
+            <div className="station-index wipe" style={{ margin: '0 auto 18px', color: GOLD_BRIGHT }}>Don&rsquo;t See Your Industry?</div>
+            <h2 className="brief-doc-h2 wipe wipe-d1" style={{ margin: '0 auto', maxWidth: 880, alignItems: 'center', color: '#ffffff' }}>
+              <span>Find your industry above.</span>
+              <span className="pivot">Or let&rsquo;s talk about your operation directly.</span>
+            </h2>
+            <p className="brief-doc-lede wipe wipe-d2" style={{ margin: '24px auto 0', maxWidth: 680, color: 'rgba(255,255,255,0.82)' }}>
+              If your industry isn&rsquo;t listed but the pressures sound familiar, we should still talk. The disciplines we build translate across industries because the underlying causes of underperformance are remarkably consistent.
+            </p>
+            <div style={{ marginTop: 36, display: 'inline-flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }} className="wipe wipe-d3">
+              <Link to="/contact" className="brief-doc-cta-button" data-testid="hub-cta-contact">Start a Conversation</Link>
+              <Link to="/case-studies" className="brief-doc-cta-button ip-cta-ghost" data-testid="hub-cta-cases">Search Case Studies</Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <style>{`
+        .hub-groups { margin-top: 56px; display: flex; flex-direction: column; gap: 56px; }
+        .hub-group-label {
+          font-family: ${TYPE.mono}; font-size: 11px;
+          letter-spacing: 0.28em; text-transform: uppercase;
+          color: ${GOLD_BRIGHT}; margin-bottom: 24px;
+          padding-bottom: 12px; border-bottom: 1px solid rgba(13,36,66,0.16);
+        }
+        .hub-cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        @media (max-width: 768px) { .hub-cards { grid-template-columns: 1fr; } }
+        .hub-card-link {
+          display: block; padding: 24px; background: #ffffff;
+          border: 1px solid rgba(13,36,66,0.12); text-decoration: none; color: ${NAVY};
+          transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+          position: relative; height: 100%;
+        }
+        .hub-card-link:hover {
+          border-color: ${GOLD_BRIGHT}; transform: translateY(-2px);
+          box-shadow: 0 16px 40px -16px rgba(13,36,66,0.18);
+        }
+        .hub-card-name { font-family: ${TYPE.sans}; font-size: 18px; font-weight: 700; color: ${NAVY}; margin-bottom: 8px; letter-spacing: -0.005em; }
+        .hub-card-blurb { font-family: ${TYPE.sans}; font-size: 14px; line-height: 1.55; color: ${TEXT_BODY}; padding-right: 32px; }
+        .hub-card-arrow { position: absolute; right: 20px; top: 24px; color: ${GOLD_BRIGHT}; font-size: 18px; transition: transform 200ms ease; }
+        .hub-card-link:hover .hub-card-arrow { transform: translateX(4px); }
+
+        .brief-doc-cta-button.ip-cta-ghost { background: transparent; color: #ffffff; border: 1px solid rgba(255,255,255,0.45); }
+        .brief-doc-cta-button.ip-cta-ghost:hover { border-color: ${GOLD_BRIGHT}; color: ${GOLD_BRIGHT}; transform: translateY(-2px); }
+      `}</style>
+    </>
   );
 }
