@@ -2069,17 +2069,17 @@ function PressureSwarm() {
         }
         .ps-p.fall .ps-arrow {
           /* Downward red triangle — points toward the baseline. */
-          border-top: 5px solid rgba(224, 101, 79, 0.62);
+          border-top: 5px solid rgba(224, 101, 79, 0.66);
         }
         .ps-p.rise .ps-arrow {
           /* Upward green triangle — points away from the baseline,
              toward the top (the compounding direction). */
-          border-bottom: 5px solid rgba(91, 191, 115, 0.62);
+          border-bottom: 5px solid rgba(91, 191, 115, 0.66);
         }
         /* Red pressure: rains straight down, shatters at baseline. */
         .ps-p.fall {
           top: -32px;
-          color: rgba(224, 101, 79, 0.62);
+          color: rgba(224, 101, 79, 0.66);
           animation-name: ps-fall;
         }
         /* Green outcome: EMERGES at the baseline (~56vh — the same
@@ -2087,19 +2087,19 @@ function PressureSwarm() {
            near the top. The shared horizon is the disciplines. */
         .ps-p.rise {
           top: 56vh;
-          color: rgba(91, 191, 115, 0.62);
+          color: rgba(91, 191, 115, 0.66);
           animation-name: ps-rise;
           animation-timing-function: cubic-bezier(.5,.0,.5,1);
         }
         @keyframes ps-fall {
           0%   { transform: translateY(0) scaleY(1);         opacity: 0;    letter-spacing: 0.18em; }
-          8%   { opacity: 0.62; }
+          8%   { opacity: 0.66; }
           /* Travel down to baseline, intact. */
-          76%  { transform: translateY(54vh) scaleY(1);      opacity: 0.62; letter-spacing: 0.18em; }
+          76%  { transform: translateY(54vh) scaleY(1);      opacity: 0.66; letter-spacing: 0.18em; }
           /* First shatter beat — letter-spacing starts to spread,
              opacity dips, the word stretches just enough to register
              as 'breaking'. */
-          86%  { transform: translateY(56vh) scaleY(0.85);   opacity: 0.45; letter-spacing: 0.46em; }
+          86%  { transform: translateY(56vh) scaleY(0.85);   opacity: 0.48; letter-spacing: 0.46em; }
           /* Full disintegration: letters fly apart laterally,
              vertical scale crushes to nothing, opacity to zero. */
           100% { transform: translateY(58vh) scaleY(0.30);   opacity: 0;    letter-spacing: 0.95em; }
@@ -2108,8 +2108,8 @@ function PressureSwarm() {
           /* Emerges AT the baseline (translateY 0 from top: 56vh),
              rises upward, fades near the top of the section. */
           0%   { transform: translateY(0);          opacity: 0; }
-          14%  { opacity: 0.62; }
-          88%  { transform: translateY(-52vh);      opacity: 0.62; }
+          14%  { opacity: 0.66; }
+          88%  { transform: translateY(-52vh);      opacity: 0.66; }
           100% { transform: translateY(-58vh);      opacity: 0; }
         }
         @media (prefers-reduced-motion: reduce) {
