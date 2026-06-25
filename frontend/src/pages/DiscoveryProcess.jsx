@@ -1,24 +1,27 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
 
-/* Discovery Process — rebuilt in brief language. Copy verbatim
-   from the legacy V0.3 (sentence-case + brief headline rhythm). */
+/* Discovery Process — full content rewrite (2026-02-24 client draft).
+   10 rows. Internal links to /approach, /case-studies, /contact use
+   React Router <Link> for SPA navigation. */
 
 const STUDY_AREAS = [
-  { num: '01', h: 'Processes.',           items: ['Bottlenecks','Redundancies','System integration issues','Organization structure','Process complexities','Scheduling and planning','Inventory control'] },
-  { num: '02', h: 'Systems and tools.',   items: ['What systems and tools exist','Whether they are being utilized','Level of understanding across the team','Key Performance Indicators and standards','Whether the KPIs and standards are correct'] },
-  { num: '03', h: 'People and behaviors.',items: ['Process discipline gaps','Human errors and rework','Performance variation between employees','Allocation of work and resources','Frontline supervisor and middle management capability','Labor coverage and capacity'] },
+  { num: '01', h: 'Processes.',           items: ['Bottlenecks', 'Redundancies', 'Process complexities', 'Scheduling and planning', 'Inventory control', 'Organization structure', 'System integration issues'] },
+  { num: '02', h: 'Systems.',             items: ['What management operating systems exist', 'Whether they\u2019re driving the right cadence', 'Key Performance Indicators and standards', 'Whether the KPIs and standards are correct', 'Reliability systems', 'Communication flow structures'] },
+  { num: '03', h: 'Tools.',               items: ['What tools the operation has in place', 'Whether they\u2019re being utilized', 'Level of understanding across the team', 'Visual management', 'Hour-by-hour tracking', 'Root cause problem solving capability'] },
+  { num: '04', h: 'People and Behaviors.', items: ['Process discipline gaps', 'Human errors and rework', 'Performance variation between employees', 'Allocation of work and resources', 'Frontline supervisor and middle management capability', 'Labor coverage and capacity'] },
 ];
 
 const DELIVERABLES = [
   { num: '01', h: 'Operations Studies.',                                            body: 'A complete report including the studies our practitioners conducted on the floor, plus the informal observations of operational problems, opportunities, and best practices exhibited across operations and support activities. The studies become source material for the senior leadership presentation at the end of Discovery.' },
   { num: '02', h: 'Custom Management Operating System Design.',                     body: 'Not a template. A specific operating architecture designed for your site, defining the processes, the cadence, the meeting rhythm, the visual management, and the accountability structures that produce the right output, at the right time, at the right cost. The design accounts for your products, your people, and the conditions your operation actually runs under.' },
   { num: '03', h: 'Operational Cost Profile at Full Capacity Potential.',           body: 'Based on the observed and measured behavioral and performance gaps directly correlated to the current operating system, structure, skills, and operating environment, we identify the achievable performance levels and cost profiles your site could be operating at if the architecture above were in place.' },
-  { num: '04', h: 'Project Savings Commitment.',                                    body: 'The difference between your current cost baseline and the operational cost profile at full capacity potential is the Project Savings Commitment that POWERS makes to your organization. This is not a projection. It is a commercial commitment that governs how POWERS gets compensated during Implementation.' },
+  { num: '04', h: 'Project Savings Commitment.',                                    body: 'The difference between your current cost baseline and the operational cost profile at full capacity potential is the Project Savings Commitment we make to your organization. Not a projection. A commercial commitment that governs how we get compensated during Implementation.' },
   { num: '05', h: 'Project Cost Proposal.',                                         body: 'Based on the Key Event Schedule, the staffing and shift structure of your site, and the sequenced roadmap, we identify the number of weeks and the number of senior practitioners required to fully implement the custom Management Operating System. The cost proposal is built against the savings commitment, not against billable hours.' },
 ];
 
@@ -80,8 +83,8 @@ function StartingPoint() {
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3">
-            <p>Most operational consulting firms offer a free assessment to win the work. POWERS does not. Discovery is the work. It is a paid two-week engagement with senior practitioners on the floor of your operation, conducting comprehensive studies across processes, systems and tools, and people and behaviors.</p>
-            <p>The deliverable is not a recommendation. It is a quantified roadmap with five named outputs and a results-based savings commitment that POWERS will stand behind during implementation. Most clients are surprised by the magnitude of opportunity Discovery uncovers. Many are surprised that the magnitude is detailed by line item on their own P&amp;L.</p>
+            <p>Most operational consulting firms offer a free assessment to win the work. We don&rsquo;t. Discovery is the work. A paid two-week engagement with senior practitioners on the floor of your operation, conducting comprehensive studies across processes, systems and tools, and people and behaviors.</p>
+            <p>The deliverable isn&rsquo;t a recommendation. It&rsquo;s a quantified roadmap with five named outputs and a results-based Project Savings Commitment we stand behind during Implementation. Most clients are surprised by the magnitude of opportunity Discovery uncovers. Many are surprised that the magnitude is detailed by line item on their own P&amp;L.</p>
             <p>If after Discovery you decide not to move forward, you keep the assessment, the studies, the custom Management Operating System design, and the savings model. <em>The relationship is structured so the value is delivered before the implementation decision is made.</em></p>
           </div>
         </div>
@@ -98,17 +101,18 @@ function MultiSite() {
         <div className="brief-doc-col">
           <div className="station-index wipe">When the Scope is Larger</div>
           <h2 className="brief-doc-h2 wipe wipe-d1" style={{ fontSize: 'clamp(22px, 2.6vw, 30px)' }}>
-            <span>Multi-site Discovery. Four to eight weeks.</span>
+            <span>Multi-site Discovery.</span>
             <span className="pivot">Same architecture, larger scope.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3">
             <p>A two-week Discovery is the right scope for a single-site operation. For multi-site enterprises, PE-backed portfolios, and operations spanning multiple sites or regions, the assessment needs the time to do justice to the operating realities at each site and the architecture that has to work across all of them.</p>
-            <p>Multi-site Discovery runs four to eight weeks, scaled to the number of sites in scope, the operational complexity, and the depth of the assessment your team needs to take to the board. Senior POWERS practitioners deploy across the operation in a coordinated sequence, conducting the same studies, building the same five named deliverables, and standing behind the same Project Savings Commitment that governs a standard Discovery.</p>
-            <p><em>What changes is scope, not method.</em> What scales is duration, practitioner deployment, and the size of the financial opportunity surfaced. What does not change is the commercial structure: paid engagement, results-based ROI, skin in the game.</p>
+            <p>Multi-site Discovery runs four to eight weeks, scaled to the number of sites in scope, the operational complexity, and the depth of the assessment your team needs to take to the board. Senior practitioners deploy across the operation in a coordinated sequence, conducting the same studies, building the same five named deliverables, and standing behind the same Project Savings Commitment that governs a standard Discovery.</p>
+            <p><em>What changes is scope, not method.</em> What scales is duration, practitioner deployment, and the size of the financial opportunity surfaced. What doesn&rsquo;t change is the commercial structure. Paid engagement. Results-based ROI. Skin in the game.</p>
           </div>
           <p className="wipe wipe-d4" style={{ marginTop: 24, fontSize: 14, color: TEXT_BODY, fontStyle: 'italic' }}>
-            If your operation runs across more than one site, the conversation about scope starts before Discovery does. <a href="/contact" style={{ color: GOLD_BRIGHT, textDecoration: 'none', borderBottom: `1px solid ${GOLD_BRIGHT}` }}>Start it on the contact page &rarr;</a>
+            If your operation runs across more than one site, the conversation about scope starts before Discovery does.{' '}
+            <Link to="/contact" style={{ color: GOLD_BRIGHT, textDecoration: 'none', borderBottom: `1px solid ${GOLD_BRIGHT}` }} data-testid="discovery-multisite-contact">Start it on the contact page &rarr;</Link>
           </p>
         </div>
       </div>
@@ -125,11 +129,11 @@ function WhatWeStudy() {
           <div className="station-index wipe">What We Study</div>
           <h2 className="brief-doc-h2 wipe wipe-d1" style={{ alignItems: 'center' }}>
             <span>Opportunities present themselves</span>
-            <span className="pivot">in three areas.</span>
+            <span className="pivot">in four areas.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" style={{ margin: '24px auto 0' }} />
           <div className="brief-doc-body wipe wipe-d3" style={{ margin: '28px auto 0', maxWidth: 720 }}>
-            <p>Discovery uses proven methods to perform comprehensive studies in three areas. The studies often surface chronic operating issues that have become ingrained in how the operation runs but have never been quantified, never connected to a financial cost, and never built into a roadmap for resolution.</p>
+            <p>Discovery uses proven methods to perform comprehensive studies in four areas. The same four elements that comprise the operating architecture we build during Implementation. The studies often surface chronic operating issues that have become ingrained in how the operation runs but have never been quantified, never connected to a financial cost, and never built into a roadmap for resolution.</p>
           </div>
         </div>
         <ol className="study-grid">
@@ -163,14 +167,14 @@ function WeekOne() {
           </div>
           <div>
             <div className="brief-doc-body wipe wipe-d2" style={{ marginTop: 0 }}>
-              <p>Senior POWERS practitioners deploy to your site for the first week and conduct comprehensive studies across operations and the support functions that surround them. Process flows are mapped. Operating data is analyzed. Inventory, labor utilization, equipment utilization, and the management cadence are all observed under live conditions, on every shift the operation runs.</p>
-              <p>The findings are documented in a workbook that becomes the foundation for the second week. By the end of week one, your team will have an honest, quantified read on the operational gaps the studies surface, with the magnitude of the cost detailed by line item on your P&amp;L.</p>
+              <p>Senior practitioners deploy to your site for the first week and conduct comprehensive studies across operations and the support functions that surround them. Process flows are mapped. Operating data is analyzed. Inventory, labor utilization, equipment utilization, and the management cadence are all observed under live conditions, on every shift the operation runs.</p>
+              <p>The findings are documented in a workbook that becomes the foundation for the second week. By the end of week one, your team has an honest, quantified read on the operational gaps the studies surface, with the magnitude of the cost detailed by line item on your P&amp;L.</p>
             </div>
             <div className="week-output wipe wipe-d3">
               <div className="week-output-cap">Week One Output</div>
-              <div className="week-output-line">Comprehensive operational studies, with formal and informal observations</div>
-              <div className="week-output-line">Magnitude of savings, detailed line-by-line on the P&amp;L</div>
-              <div className="week-output-line">Results-based ROI and cash flow commitments</div>
+              <div className="week-output-line">Comprehensive operational studies, with formal and informal observations.</div>
+              <div className="week-output-line">Magnitude of savings detailed line-by-line on the P&amp;L.</div>
+              <div className="week-output-line">Results-based ROI and cash flow commitments.</div>
             </div>
           </div>
         </div>
@@ -194,14 +198,14 @@ function WeekTwo() {
           </div>
           <div>
             <div className="brief-doc-body wipe wipe-d2" style={{ marginTop: 0 }}>
-              <p>Week two is where the assessment becomes a plan. POWERS lays out the facts and connects the dots with your team to validate what the studies surfaced. From there, we set a course of action to bridge gaps, eliminate root causes, and build the roadmap from current state to the desired future state.</p>
-              <p>Your business is unique. The roadmap is custom-built to fit your operation while maintaining the values and core beliefs that drive your organization. <em>The output is not a templated playbook.</em> It is a specific, sequenced plan for your site, with the financial commitment behind it.</p>
+              <p>Week two is where the assessment becomes a plan. We lay out the facts and connect the dots with your team to validate what the studies surfaced. From there, we set a course of action to bridge gaps, eliminate root causes, and build the roadmap from current state to the desired future state.</p>
+              <p>Your business is unique. The roadmap is custom-built to fit your operation while maintaining the values and core beliefs that drive your organization. <em>The output isn&rsquo;t a templated playbook.</em> It&rsquo;s a specific, sequenced plan for your site, with the financial commitment behind it.</p>
             </div>
             <div className="week-output on-tint wipe wipe-d3">
               <div className="week-output-cap">Week Two Output</div>
-              <div className="week-output-line">Validated findings, presented to senior leadership</div>
-              <div className="week-output-line">Custom roadmap to the desired future state</div>
-              <div className="week-output-line">Approach, sequencing, and the case for moving forward</div>
+              <div className="week-output-line">Validated findings, presented to senior leadership.</div>
+              <div className="week-output-line">Custom roadmap to the desired future state.</div>
+              <div className="week-output-line">Approach, sequencing, and the case for moving forward.</div>
             </div>
             <p className="wipe wipe-d4" style={{ marginTop: 24, fontSize: 13, color: TEXT_BODY, fontStyle: 'italic' }}>
               Multi-site Discovery extends this rhythm across the operation. Scope and duration are scaled to the assessment needed.
@@ -258,8 +262,8 @@ function SkinInTheGame() {
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" style={{ margin: '24px auto 0' }} />
           <div className="brief-doc-body wipe wipe-d3" style={{ margin: '28px auto 0', maxWidth: 740, color: 'rgba(255,255,255,0.82)', textAlign: 'left' }}>
-            <p>The Project Savings Commitment is the foundation of the commercial relationship that follows Discovery. POWERS earns its fee against the savings delivered, tracked weekly and reconciled against the model your team agreed to at the close of week two. If we miss the commitment, the commercial structure absorbs that. <em>The risk is not transferred back to your organization.</em></p>
-            <p>This is not how most consulting firms structure their work. We do it this way because we have done it more than 250 times across the manufacturing sectors that matter, and the structure is what allows our practitioners to do the job the way it actually needs to be done. On the floor. Under live conditions. For as long as the architecture takes to build.</p>
+            <p>The Project Savings Commitment is the foundation of the commercial relationship that follows Discovery. We earn our fee against the savings delivered, tracked weekly and reconciled against the model your team agreed to at the close of week two. If we miss the commitment, the commercial structure absorbs that. <em>The risk isn&rsquo;t transferred back to your organization.</em></p>
+            <p>This isn&rsquo;t how most consulting firms structure their work. We do it this way because we&rsquo;ve done it more than 250 times across the manufacturing sectors that matter, and the structure is what allows our practitioners to do the job the way it actually needs to be done. On the floor. Under live conditions. For as long as the architecture takes to build.</p>
           </div>
         </div>
         <ol className="skin-stats wipe wipe-d4">
@@ -268,7 +272,7 @@ function SkinInTheGame() {
           <li><div className="skin-stat-num">3</div><div className="skin-stat-cap">Compensation milestones tracked weekly</div></li>
         </ol>
         <p style={{ marginTop: 24, textAlign: 'center', fontSize: 13, fontStyle: 'italic', color: 'rgba(255,255,255,0.55)' }}>
-          Annualized savings rate ROI. Weekly cash flow. Total project cost.
+          Annualized savings rate. ROI. Weekly cash flow.
         </p>
       </div>
     </section>
@@ -291,20 +295,21 @@ function PhasesTwoThree() {
           <div className="phase-col wipe wipe-d2">
             <div className="phase-eyebrow">Phase 2</div>
             <h3 className="phase-h">Implementation.</h3>
-            <p className="phase-body">If your team approves the Discovery findings and the Project Savings Commitment, Implementation begins. POWERS practitioners deploy to your site for the duration defined by the Key Event Schedule. We work shoulder to shoulder with your frontline leaders, on every shift, under live operating conditions, until the custom Management Operating System is built, the leadership behaviors are reinforced, and the financial performance is tracking against the commitment.</p>
+            <p className="phase-body">If your team approves the Discovery findings and the Project Savings Commitment, Implementation begins. Senior practitioners deploy to your site for the duration defined by the Key Event Schedule. We work shoulder to shoulder with your frontline leaders, on every shift, under live operating conditions, until the custom Management Operating System is built, the leadership behaviors are reinforced, and the financial performance is tracking against the commitment.</p>
             <ul className="phase-list">
-              <li>A defined Key Event Schedule</li>
-              <li>A specified scope of engagement</li>
-              <li>A weekly financial performance tracking methodology</li>
-              <li>A defined partnership duration</li>
+              <li>A defined Key Event Schedule.</li>
+              <li>A specified scope of engagement.</li>
+              <li>A weekly financial performance tracking methodology.</li>
+              <li>A defined partnership duration.</li>
             </ul>
           </div>
           <div className="phase-col wipe wipe-d3">
             <div className="phase-eyebrow">Phase 3</div>
             <h3 className="phase-h">Evaluate ROI &amp; Savings.</h3>
-            <p className="phase-body">The success of the engagement is measured against your numbers, on your P&amp;L, using the savings model your team validated at the end of Discovery. Not against fuzzy outcomes, not against activity, not against billable hours. POWERS provides a detailed analysis of the actual ROI and savings achieved, on the cadence agreed at engagement start.</p>
+            <p className="phase-body">The success of the engagement is measured against your numbers, on your P&amp;L, using the savings model your team validated at the end of Discovery. Not against fuzzy outcomes, not against activity, not against billable hours. We provide a detailed analysis of the actual ROI and savings achieved, on the cadence agreed at engagement start.</p>
             <ul className="phase-list">
-              <li>Annualized savings rate ROI</li>
+              <li>Annualized savings rate</li>
+              <li>ROI</li>
               <li>Weekly cash flow against the model</li>
               <li>Total project cost reconciled against savings delivered</li>
               <li>Final report on results achieved against commitment</li>
@@ -312,11 +317,11 @@ function PhasesTwoThree() {
           </div>
         </div>
         <div className="phases-footer wipe wipe-d4">
-          <p>The architecture and the durability that follows are described on the Approach page. The case studies on the Results page are the evidence.</p>
+          <p>The architecture and the durability that follows are described on the <Link to="/approach" className="phases-inline-link" data-testid="discovery-link-approach-inline">Approach</Link> page. The <Link to="/case-studies" className="phases-inline-link" data-testid="discovery-link-cases-inline">Case Studies</Link> are the evidence.</p>
           <div className="phases-footer-links">
-            <a href="/approach">See the Approach &rarr;</a>
+            <Link to="/approach" data-testid="discovery-link-approach">See the Approach &rarr;</Link>
             <span aria-hidden="true">·</span>
-            <a href="/case-studies">See the Results &rarr;</a>
+            <Link to="/case-studies" data-testid="discovery-link-cases">See the Results &rarr;</Link>
           </div>
         </div>
       </div>
@@ -342,7 +347,7 @@ function DiscoveryCTA() {
           <a href="mailto:info@thepowerscompany.com" className="cta-email">info@thepowerscompany.com</a>
         </div>
         <div style={{ marginTop: 32 }} className="wipe wipe-d4">
-          <a href="/contact" className="brief-doc-cta-button">Start the conversation &rarr;</a>
+          <Link to="/contact" className="brief-doc-cta-button" data-testid="discovery-final-cta">Start the conversation &rarr;</Link>
         </div>
       </div>
     </section>
@@ -352,19 +357,24 @@ function DiscoveryCTA() {
 function DiscoveryStyles() {
   return (
     <style>{`
-      /* Study area 3-col grid */
+      /* Study area 4-col grid (was 3-col; client added "Tools" as
+         its own column in the 2026-02-24 draft so Processes /
+         Systems / Tools / People & Behaviors each render in their
+         own column). On mid-width screens it falls to 2-col, then
+         1-col on phones. */
       .study-grid {
         list-style: none;
         padding: 0;
         margin: 72px 0 0;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 48px;
-        max-width: 1100px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+        max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
       }
-      @media (max-width: 900px) { .study-grid { grid-template-columns: 1fr; gap: 40px; } }
+      @media (max-width: 1100px) { .study-grid { grid-template-columns: repeat(2, 1fr); gap: 44px; } }
+      @media (max-width: 600px)  { .study-grid { grid-template-columns: 1fr; gap: 40px; } }
       .study-col {
         opacity: 0;
         transform: translateY(-12px);
@@ -595,6 +605,25 @@ function DiscoveryStyles() {
       .phases-footer-links { display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
       .phases-footer-links a { color: ${GOLD_BRIGHT}; text-decoration: none; border-bottom: 1px solid ${GOLD_BRIGHT}; padding-bottom: 2px; }
       .phases-footer-links a:hover { color: ${NAVY}; border-color: ${NAVY}; }
+
+      /* Inline link grammar for the phases-footer paragraph
+         ("...described on the Approach page. The Case Studies are
+         the evidence."). Gold inline-link with a subtle underline
+         that warms on hover — consistent with the Approach page's
+         .approach-inline-link grammar. */
+      .phases-inline-link {
+        color: ${GOLD_BRIGHT};
+        text-decoration: underline;
+        text-decoration-color: rgba(232, 147, 70, 0.45);
+        text-underline-offset: 3px;
+        text-decoration-thickness: 1px;
+        transition: text-decoration-color 160ms ease, color 160ms ease;
+        font-weight: 500;
+      }
+      .phases-inline-link:hover {
+        text-decoration-color: ${GOLD_BRIGHT};
+        color: #d27d2e;
+      }
 
       /* CTA contact block (same as Leadership) */
       .cta-contact { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
