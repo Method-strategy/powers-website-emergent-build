@@ -167,7 +167,7 @@ export default function BriefHeader({ mode = 'interior' }) {
                 <Link to="/case-studies"      className="brief-mega-link">Case Studies</Link>
               </div>
               <div style={{ padding: '24px 28px 28px' }}>
-                <div className="brief-mega-link brief-mega-parent" aria-hidden="true">Areas of Expertise</div>
+                <div className="brief-mega-link brief-mega-parent" aria-hidden="true">What We Build</div>
                 <Link to="/operational-discipline" className="brief-mega-link brief-mega-nested">Operational Discipline</Link>
                 <Link to="/frontline-leadership"   className="brief-mega-link brief-mega-nested">Frontline Leadership</Link>
                 <Link to="/equipment-reliability"  className="brief-mega-link brief-mega-nested">Equipment Reliability</Link>
@@ -233,7 +233,7 @@ export default function BriefHeader({ mode = 'interior' }) {
               onClick={() => setMobileExpertiseOpen(v => !v)}
               aria-expanded={mobileExpertiseOpen}
             >
-              Areas of Expertise
+              What We Build
               <span className="brief-drawer-caret" aria-hidden="true" />
             </button>
             <div className="brief-drawer-subsub" data-open={mobileExpertiseOpen}>

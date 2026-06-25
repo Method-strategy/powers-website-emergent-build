@@ -1,27 +1,69 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import BriefDocStyles, {
   useInViewClass, NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
 
-/* Approach — rebuilt in brief language. Copy preserved verbatim
-   from the legacy V0.3 version (with sentence-case adjustments to
-   match the brief headline rhythm). 9 stations. */
+/* Approach — new copy (2026-02-24 client draft). 7 rows. Two
+   link targets:
+     • "Discovery Process" → internal /discovery-process (Row 4
+       caption and Row 5 lede)
+     • "DPS" / "Digital Production System" → external
+       https://www.powersdps.com (Row 3 Tools card) */
 
 const DISCIPLINES = [
-  { num: '01', h: 'Management operating system, built for your operation.',          body: 'The cadence, signals, and accountability structures that make performance visible and manageable across shifts and sites. Not a product we install. A custom system, designed for how your business actually runs, that drives long-term, sustainable improvement.' },
-  { num: '02', h: 'Process discipline at the point of execution.',                   body: "Standards that survive pressure. Routines that don't relax when the schedule tightens. The structural elimination of the variation that quietly erodes margin between Monday morning and Friday afternoon." },
-  { num: '03', h: 'Frontline leadership behavior, reinforced daily.',                body: 'Capable supervisors on every shift, equipped with the skills, language, and standard work to lead consistently. Not a training event. A daily practice that becomes how the operation is run.' },
-  { num: '04', h: 'Visibility across every level of the organization.',              body: 'The same operational truth available to the floor, the plant, and the executive team. Decisions made on the same data. Drift detected before it compounds. The Digital Production System enforces the discipline rather than just reporting it.' },
+  {
+    num: '01',
+    h: 'Processes',
+    body: "Standard work. Operating routines. Daily management systems. Escalation processes. Visual performance management. The work that survives pressure. Routines that don\u2019t relax when the schedule tightens. The structural elimination of variation that quietly erodes margin between Monday morning and Friday afternoon.",
+  },
+  {
+    num: '02',
+    h: 'Systems',
+    body: 'Management Operating System (MOS). KPI accountability cadence. Digital production systems. Reliability systems. Communication flow structures. The cadence, signals, and accountability structures that make performance visible and manageable across shifts and sites. A custom system designed for how your business actually runs.',
+  },
+  {
+    num: '03',
+    h: 'Tools',
+    /* Body is rendered via JSX to support the inline DPS link */
+    body: null,
+    bodyJsx: (
+      <>
+        SQDC boards. Hour-by-hour tracking. Leader standard work. Root cause problem solving. Short-interval controls.{' '}
+        <a
+          href="https://www.powersdps.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="approach-inline-link"
+          data-testid="approach-link-dps"
+        >DPS</a>
+        , our{' '}
+        <a
+          href="https://www.powersdps.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="approach-inline-link"
+          data-testid="approach-link-dps-full"
+        >Digital Production System</a>
+        , enforces the discipline in real time rather than just reporting on it. The instruments that give the floor, the plant, and the executive team the same operational truth. Decisions made on the same data. Drift detected before it compounds.
+      </>
+    ),
+  },
+  {
+    num: '04',
+    h: 'Behaviors',
+    body: 'Frontline ownership. Coaching leadership. Daily accountability. Execution discipline. A continuous improvement mindset. Capable supervisors on every shift, equipped with the skills, language, and standard work to lead consistently. Not a training event. A daily practice that becomes how the operation is run.',
+  },
 ];
 
 const ARC = [
-  { stage: 'Stage I',   h: 'Underperformance',         body: 'Reactive execution. Effort consumed by problems a disciplined system would prevent.' },
-  { stage: 'Stage II',  h: 'Stability',                body: 'Variability reduced. Structure introduced. Still sensitive to staffing, demand, and leadership coverage.' },
-  { stage: 'Stage III', h: 'High performance',         body: 'Consistent results under normal conditions. The stage where most engagements end and most improvement begins to drift.' },
-  { stage: 'Stage IV',  h: 'Sustainable performance',  body: 'Performance continues despite changes in conditions, schedules, and leadership. The architecture is doing the work.' },
-  { stage: 'Stage V',   h: 'Scaled performance',       body: 'What works at one site works at the next. Performance transfers across teams, sites, and holdings without degradation.' },
+  { stage: 'Stage I',   h: 'Underperformance',         body: 'Reactive execution. Supervisors firefighting. Effort consumed by problems a disciplined system would prevent.' },
+  { stage: 'Stage II',  h: 'Stability',                body: 'Variability reduced. Structure introduced. Margin recovery begins. Still sensitive to staffing, demand, and leadership coverage.' },
+  { stage: 'Stage III', h: 'High performance',         body: 'Consistent results under normal conditions. Returns visible on the income statement. The stage where most engagements end and most improvement begins to drift.' },
+  { stage: 'Stage IV',  h: 'Sustainable performance',  body: 'Performance continues despite changes in conditions, schedules, and leadership. Returns compound quarter over quarter. The architecture is doing the work.' },
+  { stage: 'Stage V',   h: 'Scaled performance',       body: 'What works at one site works at the next. Performance transfers across teams, sites, and holdings without degradation. The enterprise-level return.' },
 ];
 
 export default function Approach() {
@@ -53,11 +95,11 @@ function Hero() {
         <div className="brief-doc-col">
           <div className="station-index wipe" style={{ marginBottom: 24 }}>Approach</div>
           <h1 className="brief-doc-h1 wipe wipe-d1">
-            <span>Where executive intent</span>
-            <span className="accent">meets shop floor execution.</span>
+            <span>How stronger execution</span>
+            <span className="accent">gets built.</span>
           </h1>
           <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
-            We build the operating architecture that makes manufacturing performance sustainable, and scalable across shifts, sites, and the next phase of your business.
+            This is where we show you how. The operating architecture at the roots of your operation. The mechanism that makes performance sustainable across shifts, sites, holdings, and operating conditions. Built on the floor, alongside the leaders who will run it after we leave.
           </p>
           <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />
         </div>
@@ -79,10 +121,10 @@ function TheGap() {
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3">
-            <p>Every credible firm in this market can demonstrate that performance gets better when they engage. That&rsquo;s not differentiation anymore. It&rsquo;s the price of admission.</p>
-            <p>The harder question, the one most engagements aren&rsquo;t designed to answer, is what happens after the consultant leaves. Whether the operation continues to perform when conditions change. Whether the gains transfer when leadership turns over. Whether what works at one site works at the next one.</p>
-            <p>The reason most improvement does not sustain is structural. The operating architecture required to keep it in place was never fully built. Performance was achieved through external effort rather than internal design. When the external effort stops, the performance follows.</p>
-            <p><em>We exist to close that gap.</em></p>
+            <p>Every credible consulting firm can demonstrate that performance improves while they&rsquo;re engaged and on site. It&rsquo;s not unique. It&rsquo;s the price of admission.</p>
+            <p>The harder question, the one most engagements aren&rsquo;t built to answer, is what happens after the consulting team leaves. Whether the operation keeps performing when conditions change. Whether the gains transfer when leadership turns over. Whether what works at one site works at the next.</p>
+            <p>Performance improvement came because the consultants were on site, keeping things together. Not internal design. When they leave, the performance follows them out the door.</p>
+            <p><em>That&rsquo;s the gap we close.</em></p>
           </div>
         </div>
       </div>
@@ -99,13 +141,14 @@ function TheMechanism() {
           <div>
             <div className="station-index wipe">The Mechanism</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>We build the operating architecture</span>
-              <span className="pivot">that makes performance sustainable.</span>
+              <span>We build the foundation</span>
+              <span className="pivot">that makes performance hold up long after we&rsquo;re gone.</span>
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
             <div className="brief-doc-body wipe wipe-d3">
-              <p>The four disciplines below are not a service menu. They are an integrated system. A management operating system without leadership behavior produces documentation, not performance. Leadership development without a defined operating architecture produces individual improvement that walks out the door when the individual does.</p>
-              <p><em>We build all four together, on the floor, until the operation runs by design rather than by effort.</em></p>
+              <p>We build the processes, systems, tools, and behaviors that comprise sustained performance in each of the five discipline areas. Together they form the operating architecture beneath every engagement.</p>
+              <p>A management operating system without leadership behavior produces documentation, not performance. Leadership development without process discipline produces individual improvement that walks out the door when the individual does. Tools without systems produce dashboards no one acts on.</p>
+              <p><em>The four elements only work as an integrated whole. We build all four together, on the floor, until the operation runs by design rather than by effort.</em></p>
             </div>
           </div>
           <ol className="approach-mech-list">
@@ -114,7 +157,7 @@ function TheMechanism() {
                 <div className="approach-mech-num">{d.num}</div>
                 <div>
                   <h3 className="approach-mech-h">{d.h}</h3>
-                  <p className="approach-mech-body">{d.body}</p>
+                  <p className="approach-mech-body">{d.bodyJsx || d.body}</p>
                 </div>
               </li>
             ))}
@@ -133,13 +176,13 @@ function PerformanceArc() {
         <div className="brief-doc-col" style={{ margin: '0 auto', textAlign: 'center' }}>
           <div className="station-index wipe">How Performance Evolves</div>
           <h2 className="brief-doc-h2 wipe wipe-d1" style={{ alignItems: 'center' }}>
-            <span>Performance does not move in a straight line.</span>
+            <span>Performance doesn&rsquo;t move in a straight line.</span>
             <span className="pivot">It moves in stages.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" style={{ margin: '24px auto 0' }} />
           <div className="brief-doc-body wipe wipe-d3" style={{ margin: '28px auto 0', maxWidth: 720 }}>
-            <p>Manufacturing operations evolve through five distinct stages. Each one carries different risks. The most common failure mode in this industry is attempting to skip a stage, scaling before performance is sustainable, sustaining before performance is consistent, optimizing before the system is stable.</p>
-            <p>Our work begins with an honest read of where your operation actually is, not where the strategy deck says it should be.</p>
+            <p>Operations evolve through five distinct stages. Each one carries different risks. The most common failure mode in this industry is trying to skip a stage. Scaling before performance is sustainable. Sustaining before performance is consistent. Optimizing before the system is stable.</p>
+            <p>Our work begins with an honest read of where your operation actually is. Not where the strategy deck says it should be.</p>
           </div>
         </div>
         <ol className="approach-arc">
@@ -153,7 +196,15 @@ function PerformanceArc() {
           ))}
         </ol>
         <p className="approach-arc-cap wipe wipe-d4">
-          <em>We diagnose the stage during Discovery. Every engagement is calibrated to move the operation one stage forward, structurally. Not faster than the architecture can support.</em>
+          <em>
+            We diagnose the stage during the{' '}
+            <Link
+              to="/discovery-process"
+              className="approach-inline-link"
+              data-testid="approach-link-discovery-arc"
+            >Discovery Process</Link>.
+            Every engagement is calibrated to move the operation one stage forward, structurally. Not faster than the architecture can support.
+          </em>
         </p>
       </div>
     </section>
@@ -173,16 +224,26 @@ function TheEngagement() {
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3" style={{ color: 'rgba(255,255,255,0.82)' }}>
-            <p>The architecture above is not built from a deck. It is built on the floor, on every shift, under real operating conditions, alongside the leaders who will run it after we leave.</p>
-            <p>Our engagement begins with a two-week Discovery, a paid assessment that maps the current state of your operation, quantifies the cost of the gaps your team has lived with long enough to consider normal, and delivers a custom roadmap with a results-based ROI commitment. From there, Implementation runs the roadmap. Evaluate ROI &amp; Savings closes the engagement against the financial commitment we made at the start.</p>
-            <p style={{ color: '#ffffff' }}><em>POWERS gets paid for results, not for time. That structure is the commercial expression of how seriously we take the work.</em></p>
+            <p>The architecture above isn&rsquo;t built from a deck. It&rsquo;s built on the floor, on every shift, under real operating conditions, alongside the leaders who&rsquo;ll run it after we leave.</p>
+            <p>
+              Every engagement starts with an intensive{' '}
+              <Link
+                to="/discovery-process"
+                className="approach-inline-link approach-inline-link--on-dark"
+                data-testid="approach-link-discovery-engagement"
+              >Discovery Process</Link>.
+              A paid assessment that maps the current state of your operation, quantifies the cost of the gaps your team has lived with long enough to consider normal, and delivers a custom roadmap with a results-based ROI commitment.
+            </p>
+            <p>From there, Implementation runs the roadmap. We translate productivity and efficiency gains into bottom-line value and report them in three ways: annualized savings rate, weekly cash flow, and total project cost. Most engagements deliver positive cash flow within the engagement window itself. The architecture we build keeps returning long after we&rsquo;re off-site, which is why our average client is still seeing the gains years after we leave.</p>
+            <p>Evaluate ROI &amp; Savings closes the engagement against the financial commitment we made at the start.</p>
+            <p style={{ color: '#ffffff' }}><em>We get paid for results, measured at the financial line, not for time on site. That structure is the commercial expression of how seriously we take the work.</em></p>
           </div>
           <div style={{ marginTop: 40 }} className="wipe wipe-d4">
-            <a href="/discovery-process" className="brief-doc-cta-link" style={{ color: GOLD_BRIGHT, borderColor: GOLD_BRIGHT }}>
+            <Link to="/discovery-process" className="brief-doc-cta-link" style={{ color: GOLD_BRIGHT, borderColor: GOLD_BRIGHT }} data-testid="approach-engagement-cta">
               See how the engagement runs <span className="brief-doc-cta-arrow">&rarr;</span>
-            </a>
+            </Link>
             <p style={{ marginTop: 16, fontSize: 13, fontStyle: 'italic', color: 'rgba(255,255,255,0.55)' }}>
-              Two weeks. Five deliverables. A defined commercial process.
+              A few short weeks. Five deliverables. A defined commercial process.
             </p>
           </div>
         </div>
@@ -204,9 +265,10 @@ function Durability() {
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3">
-            <p>The result of a POWERS engagement is not a higher number on a single KPI. It is an operation that produces that number consistently, under varying conditions, with internal leadership running it.</p>
-            <p>Standards hold when conditions change. Frontline supervisors lead with the discipline our team modeled. The management operating system continues to surface drift before it compounds. Performance no longer depends on extraordinary effort. It is the byproduct of a properly built system, running by design.</p>
-            <p><em>That is the durability we build to.</em></p>
+            <p>The result of a POWERS engagement isn&rsquo;t a higher number on a single KPI. It&rsquo;s an operation that produces that number consistently, under varying conditions, with internal leadership running it.</p>
+            <p>Standards hold up when conditions change. Frontline supervisors lead with the discipline our team modeled. The management operating system continues to surface drift before it compounds. Performance no longer depends on extraordinary effort. It&rsquo;s the byproduct of a properly built system running by design.</p>
+            <p>When the roots are strong, results don&rsquo;t have to be chased. They grow. Which means the return on a POWERS engagement compounds for years. The number our client signed for at the start keeps growing after the contract closes.</p>
+            <p><em>That&rsquo;s the durability we build to.</em></p>
           </div>
         </div>
       </div>
@@ -225,10 +287,10 @@ function ApproachCTA() {
           <span className="pivot">we should talk.</span>
         </h2>
         <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 24, color: TEXT_BODY, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
-          The conversation starts with a call. No deck. No pitch. Just a real discussion about whether what we do is what you need.
+          The conversation starts with a call. No slide deck promises. Only durable performance. Just a real discussion about whether what we do is what you need.
         </p>
         <div style={{ marginTop: 36 }} className="wipe wipe-d3">
-          <a href="/contact" className="brief-doc-cta-button">Start the conversation</a>
+          <Link to="/contact" className="brief-doc-cta-button" data-testid="approach-final-cta">Start the conversation</Link>
         </div>
       </div>
     </section>
@@ -265,6 +327,33 @@ function ApproachStyles() {
         line-height: 1.6;
         color: ${TEXT_BODY};
         margin: 0;
+      }
+
+      /* Inline link grammar — gold copper text with a subtle
+         underline that warms on hover. Used for in-paragraph link
+         targets like "Discovery Process" and "DPS / Digital
+         Production System". The --on-dark modifier brightens the
+         link enough to read on the navy Engagement section. */
+      .approach-inline-link {
+        color: ${GOLD_BRIGHT};
+        text-decoration: underline;
+        text-decoration-color: rgba(232, 147, 70, 0.45);
+        text-underline-offset: 3px;
+        text-decoration-thickness: 1px;
+        transition: text-decoration-color 160ms ease, color 160ms ease;
+        font-weight: 500;
+      }
+      .approach-inline-link:hover {
+        text-decoration-color: ${GOLD_BRIGHT};
+        color: #d27d2e;
+      }
+      .approach-inline-link--on-dark {
+        color: ${GOLD_BRIGHT};
+        text-decoration-color: rgba(232, 147, 70, 0.55);
+      }
+      .approach-inline-link--on-dark:hover {
+        color: #ffd9a8;
+        text-decoration-color: #ffd9a8;
       }
 
       /* Performance arc — 5-stage row */

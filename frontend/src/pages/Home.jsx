@@ -1518,7 +1518,7 @@ function Home() {
                     parent/child relationship clear. The 5 discipline
                     links sit indented underneath it as the visual
                     submenu. */}
-                <div className="brief-mega-link brief-mega-parent" aria-hidden="true">Areas of Expertise</div>
+                <div className="brief-mega-link brief-mega-parent" aria-hidden="true">What We Build</div>
                 <a href="/operational-discipline" className="brief-mega-link brief-mega-nested">Operational Discipline</a>
                 <a href="/frontline-leadership"   className="brief-mega-link brief-mega-nested">Frontline Leadership</a>
                 <a href="/equipment-reliability"  className="brief-mega-link brief-mega-nested">Equipment Reliability</a>
@@ -1594,7 +1594,7 @@ function Home() {
               onClick={() => setMobileExpertiseOpen(v => !v)}
               aria-expanded={mobileExpertiseOpen}
             >
-              Areas of Expertise
+              What We Build
               <span className="brief-drawer-caret" aria-hidden="true" />
             </button>
             <div className="brief-drawer-subsub" data-open={mobileExpertiseOpen}>
