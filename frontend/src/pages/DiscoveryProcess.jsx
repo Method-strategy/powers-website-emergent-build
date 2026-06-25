@@ -278,11 +278,11 @@ function SkinInTheGame() {
           <div className="brief-doc-rule-gold wipe wipe-d2" style={{ margin: '24px auto 0' }} />
           <div className="brief-doc-body wipe wipe-d3" style={{ margin: '28px auto 0', maxWidth: 740, color: 'rgba(255,255,255,0.82)', textAlign: 'left' }}>
             <p>The Project Savings Commitment is the foundation of the commercial relationship that follows Discovery. We earn our fee against the savings delivered, tracked weekly and reconciled against the model your team agreed to at the close of week two. If we miss the commitment, the commercial structure absorbs that. <em>The risk isn&rsquo;t transferred back to your organization.</em></p>
-            <p>This isn&rsquo;t how most consulting firms structure their work. We do it this way because we&rsquo;ve done it more than 250 times across the manufacturing sectors that matter, and the structure is what allows our practitioners to do the job the way it actually needs to be done. On the floor. Under live conditions. For as long as the architecture takes to build.</p>
+            <p>This isn&rsquo;t how most consulting firms structure their work. We do it this way because we&rsquo;ve done it more than 500 times across the manufacturing sectors that matter, and the structure is what allows our practitioners to do the job the way it actually needs to be done. On the floor. Under live conditions. For as long as the architecture takes to build.</p>
           </div>
         </div>
         <ol className="skin-stats wipe wipe-d4">
-          <li><div className="skin-stat-num">250+</div><div className="skin-stat-cap">Projects delivered</div></li>
+          <li><div className="skin-stat-num">500+</div><div className="skin-stat-cap">Projects delivered</div></li>
           <li><div className="skin-stat-num">100%</div><div className="skin-stat-cap">Measurable returns</div></li>
           <li><div className="skin-stat-num">3</div><div className="skin-stat-cap">Compensation milestones tracked weekly</div></li>
         </ol>
