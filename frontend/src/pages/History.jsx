@@ -46,11 +46,11 @@ function HeroBeat() {
         <div className="brief-doc-col">
           <div className="station-index wipe" style={{ marginBottom: 24 }}>Our Story</div>
           <h1 className="brief-doc-h1 wipe wipe-d1">
-            <span>Built from the floor up.</span>
+            <span>Built from the shop floor up.</span>
             <span className="accent">Since 2004.</span>
           </h1>
           <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
-            POWERS was not founded by academics or career consultants. It was founded by executives who had run manufacturing operations, managed P&amp;Ls, and understood firsthand where performance breaks down and why it stays broken.
+            POWERS wasn&rsquo;t founded by academics or career consultants. It was founded by executives who had run manufacturing operations, managed P&amp;Ls, and understood firsthand where performance breaks down and why it stays broken.
           </p>
           <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />
         </div>
@@ -72,8 +72,8 @@ function SectionWhereItStarted() {
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3">
-            <p>Randall Powers founded POWERS in Gainesville, Georgia, with a team of C-level executives who shared a common conviction: that the gap between executive intent and shop floor performance was not a strategy problem. It was a systems, leadership, and discipline problem. And it could be solved, permanently, by working inside the operation rather than advising from outside it.</p>
-            <p>That founding conviction has never changed. Every engagement POWERS takes on today is built on the same principle that drove the first one in 2004. <em>Get on the floor. Work with the people. Build what holds.</em></p>
+            <p>Randall Powers founded POWERS in Gainesville, Georgia, with a team of C-level executives who shared a common conviction. That what separates the operations that perform from the ones that don&rsquo;t isn&rsquo;t a strategy problem. It&rsquo;s a systems, leadership, and discipline problem. And it can be solved, permanently, by working inside the operation rather than advising from outside it.</p>
+            <p>That founding conviction has never changed. Every engagement we take on today is built on the same principle that drove the first one in 2004. <em>Get on the floor. Work with the people. Build what holds up.</em></p>
           </div>
         </div>
       </div>
@@ -89,14 +89,31 @@ function SectionHowWeEvolved() {
         <div className="brief-doc-col">
           <div className="station-index wipe">How We Evolved</div>
           <h2 className="brief-doc-h2 wipe wipe-d1">
-            <span>Two decades on the floor built something</span>
+            <span>Decades of shop floor insight built something</span>
             <span className="pivot">no competitor has.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3">
-            <p>Over twenty years of engagements across food and beverage, aerospace and defense, automotive, pharmaceutical, metals and mining, medical devices, and private equity portfolio operations, POWERS developed something that can only come from that kind of accumulated experience: a proprietary methodology that integrates management operating systems, frontline leadership development, and real-time operational visibility into a single coherent approach.</p>
-            <p>That approach is not a framework borrowed from Lean or Six Sigma. It is the direct result of watching what breaks, understanding why it breaks, and building the systems that prevent it from breaking again. The Management Operating System POWERS installs is not a product. It is an outcome built from the inside, tailored to how each specific organization operates.</p>
-            <p>The Digital Production System, POWERS&rsquo; proprietary execution layer, came from the same place. Not from a software team working from a distance, but from consultants on the floor who saw the same gap repeated across hundreds of engagements: organizations had data, but the data was not driving decisions at the speed and level required to maintain execution consistency. DPS closes that gap.</p>
+            <p>Across more than twenty years of engagements in food and beverage, aerospace and defense, automotive, pharmaceuticals, metals and mining, medical devices, and private equity portfolio operations, we developed something that can only come from that kind of accumulated experience. A proprietary methodology that integrates management operating systems, frontline leadership development, and real-time operational visibility into a single coherent approach.</p>
+            <p>That approach isn&rsquo;t a framework borrowed from Lean or Six Sigma. It&rsquo;s the direct result of watching what breaks, understanding why it breaks, and building the systems that prevent it from breaking again. The Management Operating System we install isn&rsquo;t a product. It&rsquo;s an outcome built from the inside, tailored to how each specific organization operates.</p>
+            <p>
+              <a
+                href="https://www.powersdps.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="brief-inline-link"
+                data-testid="history-link-dps"
+              >DPS</a>
+              , our{' '}
+              <a
+                href="https://www.powersdps.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="brief-inline-link"
+                data-testid="history-link-dps-full"
+              >Digital Production System</a>
+              , came from the same place. Not from a software team working from a distance, but from practitioners on the floor who saw the same gap repeated across hundreds of engagements. Organizations had data, but the data wasn&rsquo;t driving decisions at the speed and level required to maintain execution consistency. DPS closes that gap.
+            </p>
           </div>
         </div>
       </div>
@@ -118,8 +135,8 @@ function SectionNewChapter() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
             <div className="brief-doc-body wipe wipe-d3">
-              <p>In 2021, POWERS relocated its corporate headquarters from Gainesville to Atlanta, Georgia, establishing its offices at 1801 Peachtree Street NE. The move reflected what had been true for years: POWERS had grown into a firm operating at national and global scale, serving manufacturing leaders across industries and geographies, and its home base needed to reflect that ambition.</p>
-              <p>The work still happens on the floor. <em>That has never changed.</em> But Atlanta positions POWERS to attract the caliber of talent the firm&rsquo;s next chapter requires and keeps it connected to the broader business and investment community it increasingly serves.</p>
+              <p>In 2021, we relocated corporate headquarters from Gainesville to Atlanta, establishing our offices at 1801 Peachtree Street NE. The move reflected what had been true for years. POWERS had grown into a firm operating at national and global scale, serving manufacturing leaders across industries and geographies, and the home base needed to reflect that ambition.</p>
+              <p>The work still happens on the floor. <em>That has never changed.</em> But Atlanta positions us to attract the caliber of talent the firm&rsquo;s next chapter requires and keeps the firm connected to the broader business and investment community it increasingly serves.</p>
             </div>
           </div>
           <div className="brief-doc-placeholder wipe wipe-d3" aria-hidden="true">
@@ -142,7 +159,7 @@ function SectionTheConstants() {
         <div className="brief-doc-col">
           <div className="station-index wipe">The Constants</div>
           <h2 className="brief-doc-h2 wipe wipe-d1" style={{ color: '#ffffff' }}>
-            <span>Twenty years in.</span>
+            <span>More than two decades in.</span>
             <span className="pivot">The founding principles still run the firm.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
@@ -173,7 +190,7 @@ function SectionCTA() {
       <div className="brief-doc-inner" style={{ textAlign: 'center', paddingTop: 96, paddingBottom: 96 }}>
         <div className="station-index wipe" style={{ margin: '0 auto 18px' }}>See the Results</div>
         <h2 className="brief-doc-h2 wipe wipe-d1" style={{ margin: '0 auto', maxWidth: 760, alignItems: 'center' }}>
-          <span>See what twenty years of this approach</span>
+          <span>See what more than two decades of this approach</span>
           <span className="pivot">produces.</span>
         </h2>
         <div style={{ marginTop: 36 }} className="wipe wipe-d2">
