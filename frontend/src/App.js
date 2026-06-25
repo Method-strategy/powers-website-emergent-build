@@ -20,14 +20,8 @@ import CompanyNews from './pages/CompanyNews';
 import Careers from './pages/Careers';
 import Insights from './pages/Insights';
 import Contact from './pages/Contact';
-import BioRandallPowers from './pages/BioRandallPowers';
-import BioSeanHart from './pages/BioSeanHart';
-import BioSaulBautista from './pages/BioSaulBautista';
-import BioKenWiesinger from './pages/BioKenWiesinger';
-import BioJustinPethick from './pages/BioJustinPethick';
-import BioKevinSabany from './pages/BioKevinSabany';
-import CaseStudyDefenseAerospaceOTD from './pages/CaseStudyDefenseAerospaceOTD';
-import NotFound from './pages/NotFound';
+import LeaderBio from './components/LeaderBio';
+import CaseStudyDefenseAerospaceOTD from './pages/CaseStudyDefenseAerospaceOTD';import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -52,6 +46,7 @@ function App() {
           <Route path="/history" element={<History />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/leadership" element={<Leadership />} />
+          <Route path="/leadership/:slug" element={<LeaderBio />} />
           <Route path="/approach" element={<Approach />} />
           <Route path="/discovery-process" element={<DiscoveryProcess />} />
           <Route path="/operational-discipline" element={<OperationalDiscipline />} />
@@ -67,12 +62,6 @@ function App() {
           <Route path="/industries-served/:slug" element={<IndustryPage />} />
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
-          <Route path="/leadership/randall-powers" element={<BioRandallPowers />} />
-          <Route path="/leadership/sean-hart" element={<BioSeanHart />} />
-          <Route path="/leadership/saul-bautista" element={<BioSaulBautista />} />
-          <Route path="/leadership/ken-wiesinger" element={<BioKenWiesinger />} />
-          <Route path="/leadership/justin-pethick" element={<BioJustinPethick />} />
-          <Route path="/leadership/kevin-sabany" element={<BioKevinSabany />} />
           <Route path="/company-news" element={<CompanyNews />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/insights" element={<Insights />} />
