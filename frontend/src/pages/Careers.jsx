@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import BriefDocStyles, {
-  useInViewClass, NAVY, PAPER, PAPER_DEEP, TEXT_BODY, TYPE,
+  useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
 
 /* Careers — copy preserved verbatim (sentence-case adjusted to
@@ -126,18 +127,29 @@ function SectionWhatPowersOffers() {
 function SectionCTA() {
   const ref = useRef(null); useInViewClass(ref);
   return (
-    <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: PAPER }}>
+    <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: NAVY }}>
       <div className="brief-doc-inner" style={{ textAlign: 'center', paddingTop: 96, paddingBottom: 96 }}>
-        <h2 className="brief-doc-h2 wipe" style={{ margin: '0 auto', maxWidth: 760, alignItems: 'center' }}>
+        <div className="station-index wipe" style={{ margin: '0 auto 18px', color: GOLD_BRIGHT }}>Open Roles</div>
+        <h2 className="brief-doc-h2 wipe wipe-d1" style={{ margin: '0 auto', maxWidth: 820, alignItems: 'center', color: '#ffffff' }}>
           <span>Ready to do work</span>
           <span className="pivot">that actually makes a difference?</span>
         </h2>
-        <p className="brief-doc-lede wipe wipe-d1" style={{ marginTop: 18, color: TEXT_BODY, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto' }}>
+        <p className="brief-doc-lede wipe wipe-d2" style={{ margin: '24px auto 0', maxWidth: 560, color: 'rgba(255,255,255,0.82)' }}>
           See current openings and apply.
         </p>
-        <div style={{ marginTop: 36 }} className="wipe wipe-d2">
-          <a href="#" className="brief-doc-cta-button">View Open Positions</a>
+        <div style={{ marginTop: 36 }} className="wipe wipe-d3">
+          <Link to="/contact" className="brief-doc-cta-button" data-testid="careers-cta-contact">
+            View Open Positions <span className="brief-doc-cta-arrow" aria-hidden="true">&rarr;</span>
+          </Link>
         </div>
+        <p className="wipe wipe-d4" style={{ marginTop: 22, fontSize: 13, fontStyle: 'italic', color: 'rgba(255,255,255,0.62)' }}>
+          Or send a note about your background to{' '}
+          <a
+            href="mailto:careers@thepowerscompany.com"
+            className="brief-inline-link brief-inline-link--on-dark"
+            data-testid="careers-cta-email"
+          >careers@thepowerscompany.com &rarr;</a>
+        </p>
       </div>
     </section>
   );
