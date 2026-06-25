@@ -20,13 +20,12 @@ function Section({ children, dark, style }) {
 export default function IndustryPage() {
   const { slug } = useParams();
   const data = getIndustry(slug);
+  const heroRef = useRef(null); useInViewClass(heroRef);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }); }, [slug]);
   if (!data) return <Navigate to="/industries-served" replace />;
 
   const ctaH2 = data.ctaH2 || { top: "Let's build your operation to", pivot: 'execute under any circumstances.' };
   const ctaBody = data.ctaBody || "Tell us where the operation is feeling pressure. We'll come see it on the floor, find the gaps that are hiding inside it, and build the disciplines that close them.";
-
-  const heroRef = useRef(null); useInViewClass(heroRef);
 
   return (
     <>

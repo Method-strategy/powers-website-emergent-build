@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Approach from './pages/Approach';
 import DiscoveryProcess from './pages/DiscoveryProcess';
 import IndustriesServed from './pages/IndustriesServed';
+import IndustryPage from './components/IndustryPage';
 import CaseStudies from './pages/CaseStudies';
 import OperationalDiscipline from './pages/OperationalDiscipline';
 import FrontlineLeadership from './pages/FrontlineLeadership';
@@ -53,18 +54,19 @@ function App() {
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/approach" element={<Approach />} />
           <Route path="/discovery-process" element={<DiscoveryProcess />} />
-        </Route>
-
-        {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
-        <Route element={<Layout />}>
-          <Route path="/industries-served" element={<IndustriesServed />} />
-          <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
           <Route path="/operational-discipline" element={<OperationalDiscipline />} />
           <Route path="/frontline-leadership" element={<FrontlineLeadership />} />
           <Route path="/equipment-reliability" element={<EquipmentReliability />} />
           <Route path="/workforce-capability" element={<WorkforceCapability />} />
           <Route path="/daily-accountability" element={<DailyAccountability />} />
+        </Route>
+
+        {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
+        <Route element={<Layout />}>
+          <Route path="/industries-served" element={<IndustriesServed />} />
+          <Route path="/industries-served/:slug" element={<IndustryPage />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
+          <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
           <Route path="/leadership/randall-powers" element={<BioRandallPowers />} />
           <Route path="/leadership/sean-hart" element={<BioSeanHart />} />
           <Route path="/leadership/saul-bautista" element={<BioSaulBautista />} />

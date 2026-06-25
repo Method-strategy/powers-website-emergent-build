@@ -1,39 +1,48 @@
-import React from 'react';
-import LegacyPage from '../components/LegacyPage';
+import React, { useEffect, useRef } from 'react';
+import BriefHeader from '../components/BriefHeader';
+import BriefFooter from '../components/BriefFooter';
+import BriefDocStyles, { useInViewClass, NAVY, PAPER, TYPE } from '../components/BriefDocStyles';
 
-const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      font-family: 'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
-      background: #ffffff;
-      min-height: 100vh;
-    }
-    body { padding-top: 84px; }
-    .nav-desktop { display: flex !important; }
-    .nav-mobile  { display: none !important; }
-    .nav-tagline { display: inline !important; }
-    @media (max-width: 767px) {
-      .nav-desktop { display: none !important; }
-      .nav-mobile  { display: flex !important; }
-      .nav-tagline { display: none !important; }
-    }`;
-
-const HTML = `<section style="background:#183a61;">
-  <div style="max-width:1280px;margin:0 auto;width:100%;padding:120px 48px;min-height:600px;display:flex;flex-direction:column;justify-content:center;">
-    <div style="font-size:12px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#eabb71;font-family:inherit;margin-bottom:24px;">Expertise Areas</div>
-    <h1 style="font-size:clamp(36px,4.2vw,56px);font-weight:800;line-height:1.08;color:#ffffff;letter-spacing:-0.01em;font-family:inherit;max-width:920px;text-wrap:balance;">Operational Discipline</h1>
-  </div>
-</section>`;
-
-const SCRIPT = ``;
+/* Operational Discipline — refactored onto the canonical "Operating
+   Brief" shell. Title-only for now; the hero is structured to
+   accept a ghosted + grit background image (drop the compressed
+   JPG at /uploads/operational-discipline-hero-bg.jpg and uncomment
+   the <img> + <div className="brief-page-hero-wash"> block). Body
+   sections will land as copy is delivered. */
 
 export default function OperationalDiscipline() {
+  useEffect(() => { document.title = 'Operational Discipline | POWERS Manufacturing Consulting'; }, []);
+  const heroRef = useRef(null); useInViewClass(heroRef);
   return (
-    <LegacyPage
-      css={CSS}
-      html={HTML}
-      script={SCRIPT}
-      title={`Operational Discipline — POWERS Manufacturing Performance Consulting`}
-      metaDescription={``}
-    />
+    <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <BriefDocStyles />
+      <BriefHeader mode="interior" />
+      <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
+        <section ref={heroRef} className="brief-page-hero">
+          {/* Hero background image slot — uncomment when the
+              compressed ghosted + grit hero is ready.
+          <img
+            className="brief-page-hero-bg"
+            src="/uploads/operational-discipline-hero-bg.jpg"
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            data-testid="operational-discipline-hero-bg"
+          />
+          <div className="brief-page-hero-wash" aria-hidden="true" /> */}
+          <div className="brief-doc-inner">
+            <div className="brief-doc-col">
+              <div className="station-index wipe" style={{ marginBottom: 24 }}>What We Build</div>
+              <h1 className="brief-doc-h1 wipe wipe-d1">
+                <span>Operational Discipline.</span>
+              </h1>
+              <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />
+            </div>
+          </div>
+        </section>
+      </main>
+      <BriefFooter />
+    </div>
   );
 }
