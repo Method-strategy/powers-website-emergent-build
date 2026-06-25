@@ -115,7 +115,7 @@ function MultiSite() {
       <div className="brief-doc-inner">
         <div className="brief-doc-col">
           <div className="station-index wipe">When the Scope is Larger</div>
-          <h2 className="brief-doc-h2 wipe wipe-d1" style={{ fontSize: 'clamp(22px, 2.6vw, 30px)' }}>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
             <span>Multi-site Discovery.</span>
             <span className="pivot">Same architecture, larger scope.</span>
           </h2>
@@ -175,7 +175,7 @@ function WeekOne() {
         <div className="week-grid">
           <div>
             <div className="week-eyebrow wipe">Week One</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1" style={{ fontSize: 'clamp(26px, 3vw, 36px)' }}>
+            <h2 className="brief-doc-h2 wipe wipe-d1">
               <span>Discovery Assessment.</span>
               <span className="pivot">Establishing the current state.</span>
             </h2>
@@ -206,7 +206,7 @@ function WeekTwo() {
         <div className="week-grid">
           <div>
             <div className="week-eyebrow wipe">Week Two</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1" style={{ fontSize: 'clamp(26px, 3vw, 36px)' }}>
+            <h2 className="brief-doc-h2 wipe wipe-d1">
               <span>Roadmap and Approach.</span>
               <span className="pivot">From current state to desired future state.</span>
             </h2>
