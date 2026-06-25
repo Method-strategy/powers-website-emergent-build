@@ -21,6 +21,7 @@ export default function IndustryPage() {
   const { slug } = useParams();
   const data = getIndustry(slug);
   const heroRef = useRef(null); useInViewClass(heroRef);
+  const ctaRef = useRef(null); useInViewClass(ctaRef);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }); }, [slug]);
   if (!data) return <Navigate to="/industries-served" replace />;
 
@@ -131,7 +132,7 @@ export default function IndustryPage() {
         </Section>
 
         {/* Final CTA */}
-        <section className="brief-doc-station brief-doc-cta" style={{ background: NAVY }}>
+        <section className="brief-doc-station brief-doc-cta" ref={ctaRef} style={{ background: NAVY }}>
           <div className="brief-doc-inner" style={{ paddingTop: 96, paddingBottom: 96, textAlign: 'center' }}>
             <div className="station-index wipe" style={{ margin: '0 auto 18px', color: GOLD_BRIGHT }}>When You&rsquo;re Ready</div>
             <h2 className="brief-doc-h2 wipe wipe-d1" style={{ margin: '0 auto', maxWidth: 820, alignItems: 'center', color: '#ffffff' }}>

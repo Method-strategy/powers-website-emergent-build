@@ -525,3 +525,35 @@ Implementation:
 **Files touched:**
 - `/app/frontend/src/components/caseStudy/CaseStudyBody.jsx`
 - `/app/frontend/src/pages/CaseStudyDefenseAerospaceOTD.jsx`
+
+
+
+## 2026-02-25 — Industries Served (hub + 14 child pages) wired, Disciplines refactored to Brief shell
+
+**Implemented:**
+- **Industries Served hub + 14 child pages routed.** Added the missing `import IndustryPage from './components/IndustryPage'` and the dynamic `<Route path="/industries-served/:slug" element={<IndustryPage />} />` to `App.js`. The hub already lived at `/industries-served`; this completes the originally-interrupted wiring.
+- The 14 industry slugs now resolve: food-beverage-manufacturing, meat-poultry-processing, consumer-packaged-goods, animal-nutrition-feed-manufacturing, agribusiness, pharmaceuticals-medical-devices, aerospace-defense, automotive-manufacturing, industrial-manufacturing, metals-mining, oil-gas, chemicals, warehouse-distribution, private-equity-portfolio-operations. Each renders the 7-row brief template (Hero with `Return to Industries Served` back link, The Pressures, How We Work, The Outcomes, Sub-segments, Why POWERS, Final CTA). Unknown slugs redirect via `<Navigate to="/industries-served" replace />`. Child pages stay hub-only — they do NOT appear in the global menu.
+- **5 Discipline pages refactored off `<LegacyPage>`** onto the canonical Brief shell (`BriefHeader` interior + `BriefDocStyles` + `<main paddingTop=var(--header-h)>` + title-only hero + `BriefFooter`). Pages: OperationalDiscipline, FrontlineLeadership, EquipmentReliability, WorkforceCapability, DailyAccountability. Eyebrow renamed from legacy "Expertise Areas" to "What We Build" matching the menu rename. Each hero ships with a commented-out `<img className="brief-page-hero-bg">` + `.brief-page-hero-wash` block ready to receive the ghosted + grit composite when the client delivers hero images. Routes moved from the `<Layout>` group to the `<HomeLayout>` group (no double chrome).
+- **Bug fix — clip-path on final CTA bands.** Testing-agent iteration_14 caught a critical bug: the final CTA `<section>` blocks in both `IndustriesServed.jsx` and `IndustryPage.jsx` were raw `<section>` tags without `useInViewClass`, so `.is-in` never landed and every `.wipe` descendant (eyebrow, H2, lede, **and both CTA buttons**) stayed clipped to 0-width and unclickable. Fixed by adding `const ctaRef = useRef(null); useInViewClass(ctaRef)` and `ref={ctaRef}` to both sections. Click verification on `hub-cta-contact`, `hub-cta-cases`, `industry-cta-cases-agribusiness` now passes.
+
+**Verification:**
+- Testing agent iteration_14: hub + 14 industry pages + 5 discipline pages all render correctly, all data-testids present, back link navigation works, unknown-slug redirect works, global Results > What We Build dropdown still routes to the 5 disciplines, zero console errors.
+- Post-fix self-test (Playwright): Both hub CTAs and a sample industry-page CTA navigate to `/contact` / `/case-studies` as expected.
+
+**Files touched:**
+- `/app/frontend/src/App.js`
+- `/app/frontend/src/components/IndustryPage.jsx`
+- `/app/frontend/src/pages/IndustriesServed.jsx`
+- `/app/frontend/src/pages/OperationalDiscipline.jsx`
+- `/app/frontend/src/pages/FrontlineLeadership.jsx`
+- `/app/frontend/src/pages/EquipmentReliability.jsx`
+- `/app/frontend/src/pages/WorkforceCapability.jsx`
+- `/app/frontend/src/pages/DailyAccountability.jsx`
+
+**Backlog / next:**
+- P1: Hero images for the 5 Discipline pages — uncomment the `<img>` + `.brief-page-hero-wash` blocks once the compressed JPGs (~200KB, 1920x1080) land at `/uploads/{slug}-hero-bg.jpg`. Discipline hero copy (lede + body sections) when the client delivers it.
+- P1: Decide whether Leadership + History pages get hero images (TBD by user).
+- P2: Insights archive search/filtering.
+- P2: Roll the remaining 66 case studies into `caseStudies.js` and route them.
+- P2: Contact form backend endpoint (UI-only today).
+- P2: Defensive guard — add a non-clipped fallback to `.wipe` so a missing `useInViewClass` never silently hides content (audit other brief-doc pages first).
