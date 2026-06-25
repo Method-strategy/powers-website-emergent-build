@@ -20,6 +20,16 @@ export default function IndustriesServed() {
       <BriefDocStyles />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
         <section ref={heroRef} className="brief-page-hero">
+          <img
+            className="brief-page-hero-bg"
+            src="/uploads/industries-served-hero-bg.jpg"
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            data-testid="industries-served-hero-bg"
+          />
+          <div className="brief-page-hero-wash" aria-hidden="true" />
           <div className="brief-doc-inner">
             <div className="brief-doc-col">
               <div className="station-index wipe" style={{ marginBottom: 24 }}>Industries Served</div>
