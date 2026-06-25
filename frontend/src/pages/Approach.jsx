@@ -91,6 +91,21 @@ function Hero() {
   const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-page-hero">
+      {/* Ghosted bottling-line pair — beverage operations,
+          tablet + clipboard. "We work with everyone on your
+          team" visual. Same sepia + multiply + cream wash + film
+          grain primitives as /case-studies — pattern lives in
+          BriefDocStyles. */}
+      <img
+        className="brief-page-hero-bg"
+        src="/uploads/approach-hero-bg.jpg"
+        alt=""
+        aria-hidden="true"
+        loading="eager"
+        decoding="async"
+        data-testid="approach-hero-bg"
+      />
+      <div className="brief-page-hero-wash" aria-hidden="true" />
       <div className="brief-doc-inner">
         <div className="brief-doc-col">
           <div className="station-index wipe" style={{ marginBottom: 24 }}>Approach</div>
