@@ -87,7 +87,7 @@ export default function BriefFooter() {
           <div className="brief-foot-head">Results</div>
           <Link className="brief-foot-link" to="/approach">Approach</Link>
           <Link className="brief-foot-link" to="/discovery-process">Discovery Process</Link>
-          <Link className="brief-foot-link" to="/operational-readiness">Expertise Areas</Link>
+          <Link className="brief-foot-link" to="/operational-readiness">What We Build</Link>
           <Link className="brief-foot-link" to="/industries-served">Industries Served</Link>
           <Link className="brief-foot-link" to="/case-studies">Case Studies</Link>
         </div>

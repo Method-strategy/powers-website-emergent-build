@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import BriefDocStyles, {
@@ -66,13 +67,13 @@ function LeadersGrid() {
         <ol className="leaders-grid">
           {LEADERS.map((p, i) => (
             <li key={p.slug} className="leader-card" style={{ ['--i']: i }}>
-              <a className="leader-card-link" href={`/${p.slug}`}>
+              <Link className="leader-card-link" to={`/leadership/${p.slug}`} data-testid={`leader-card-${p.slug}`}>
                 <div className="leader-photo">
                   <img src={`/uploads/leaders/${p.photo}`} alt={p.name} loading="lazy" />
                 </div>
                 <div className="leader-name">{p.name}</div>
                 <div className="leader-title">{p.title}</div>
-              </a>
+              </Link>
               {p.linkedin && (
                 <a className="leader-linkedin" href={p.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`Connect with ${p.name} on LinkedIn`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -107,7 +108,7 @@ function SectionCTA() {
           <a href="mailto:info@thepowerscompany.com" className="cta-email">info@thepowerscompany.com</a>
         </div>
         <div style={{ marginTop: 32 }} className="wipe wipe-d4">
-          <a href="/contact" className="brief-doc-cta-button">Start the conversation &rarr;</a>
+          <Link to="/contact" className="brief-doc-cta-button" data-testid="leadership-final-cta">Start the conversation &rarr;</Link>
         </div>
       </div>
     </section>

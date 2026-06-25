@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import BriefDocStyles, {
@@ -170,14 +171,15 @@ function SectionCTA() {
   return (
     <section ref={ref} className="brief-doc-station brief-doc-cta" style={{ background: PAPER }}>
       <div className="brief-doc-inner" style={{ textAlign: 'center', paddingTop: 96, paddingBottom: 96 }}>
-        <h2 className="brief-doc-h2 wipe" style={{ margin: '0 auto', maxWidth: 760, alignItems: 'center' }}>
+        <div className="station-index wipe" style={{ margin: '0 auto 18px' }}>See the Results</div>
+        <h2 className="brief-doc-h2 wipe wipe-d1" style={{ margin: '0 auto', maxWidth: 760, alignItems: 'center' }}>
           <span>See what twenty years of this approach</span>
           <span className="pivot">produces.</span>
         </h2>
         <div style={{ marginTop: 36 }} className="wipe wipe-d2">
-          <a href="/case-studies" className="brief-doc-cta-link">
-            Read the Case Studies <span className="brief-doc-cta-arrow">&rarr;</span>
-          </a>
+          <Link to="/case-studies" className="brief-doc-cta-button" data-testid="history-final-cta">
+            Read the Case Studies &rarr;
+          </Link>
         </div>
       </div>
     </section>

@@ -1872,7 +1872,7 @@ function SiteFooter() {
           <div className="v5-foot-head">Results</div>
           <a className="v5-foot-link" href="/approach">Approach</a>
           <a className="v5-foot-link" href="/discovery-process">Discovery Process</a>
-          <a className="v5-foot-link" href="/operational-readiness">Expertise Areas</a>
+          <a className="v5-foot-link" href="/operational-readiness">What We Build</a>
           <a className="v5-foot-link" href="/industries-served">Industries Served</a>
           <a className="v5-foot-link" href="/case-studies">Case Studies</a>
         </div>
