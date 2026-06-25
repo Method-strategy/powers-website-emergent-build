@@ -53,6 +53,21 @@ function Hero() {
   const ref = useRef(null); useInViewClass(ref);
   return (
     <section ref={ref} className="brief-page-hero">
+      {/* Ghosted discovery walk — three engineers in hi-vis walking
+          into a heavy industrial facility. "We come on the floor"
+          visual for the assessment story. Same sepia + multiply +
+          cream wash + film grain primitives as /case-studies and
+          /approach — pattern lives in BriefDocStyles. */}
+      <img
+        className="brief-page-hero-bg"
+        src="/uploads/discovery-process-hero-bg.jpg"
+        alt=""
+        aria-hidden="true"
+        loading="eager"
+        decoding="async"
+        data-testid="discovery-process-hero-bg"
+      />
+      <div className="brief-page-hero-wash" aria-hidden="true" />
       <div className="brief-doc-inner">
         <div className="brief-doc-col">
           <div className="station-index wipe" style={{ marginBottom: 24 }}>Discovery Process</div>
