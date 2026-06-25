@@ -97,18 +97,27 @@ export default function IndustriesServed() {
 
         <section className="brief-doc-station brief-doc-cta" ref={ctaRef} style={{ background: NAVY }}>
           <div className="brief-doc-inner" style={{ paddingTop: 96, paddingBottom: 96, textAlign: 'center' }}>
-            <div className="station-index wipe" style={{ margin: '0 auto 18px', color: GOLD_BRIGHT }}>Don&rsquo;t See Your Industry?</div>
+            <div className="station-index wipe" style={{ margin: '0 auto 18px', color: GOLD_BRIGHT }}>Ready to Talk</div>
             <h2 className="brief-doc-h2 wipe wipe-d1" style={{ margin: '0 auto', maxWidth: 880, alignItems: 'center', color: '#ffffff' }}>
-              <span>Find your industry above.</span>
-              <span className="pivot">Or let&rsquo;s talk about your operation directly.</span>
+              <span>The disciplines that drive performance</span>
+              <span className="pivot">travel across every industry we serve.</span>
             </h2>
-            <p className="brief-doc-lede wipe wipe-d2" style={{ margin: '24px auto 0', maxWidth: 680, color: 'rgba(255,255,255,0.82)' }}>
-              If your industry isn&rsquo;t listed but the pressures sound familiar, we should still talk. The disciplines we build translate across industries because the underlying causes of underperformance are remarkably consistent.
+            <p className="brief-doc-lede wipe wipe-d2" style={{ margin: '24px auto 0', maxWidth: 760, color: 'rgba(255,255,255,0.82)' }}>
+              The execution challenges that compress margin look remarkably similar across industries. The operational gaps that erode margin between Monday morning and Friday afternoon don&rsquo;t recognize industry boundaries. Whether your operation is listed above, adjacent to one that is, or in a category we haven&rsquo;t named, the disciplines we build apply. Let&rsquo;s talk about your operation.
             </p>
-            <div style={{ marginTop: 36, display: 'inline-flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }} className="wipe wipe-d3">
-              <Link to="/contact" className="brief-doc-cta-button" data-testid="hub-cta-contact">Start a Conversation</Link>
-              <Link to="/case-studies" className="brief-doc-cta-button ip-cta-ghost" data-testid="hub-cta-cases">Search Case Studies</Link>
+            <div style={{ marginTop: 36 }} className="wipe wipe-d3">
+              <Link to="/contact" className="brief-doc-cta-button" data-testid="hub-cta-contact">
+                Start a Conversation <span className="brief-doc-cta-arrow" aria-hidden="true">&rarr;</span>
+              </Link>
             </div>
+            <p className="wipe wipe-d4" style={{ marginTop: 22, fontSize: 13, fontStyle: 'italic', color: 'rgba(255,255,255,0.62)' }}>
+              Looking for proof?{' '}
+              <Link
+                to="/case-studies"
+                className="brief-inline-link brief-inline-link--on-dark"
+                data-testid="hub-cta-cases"
+              >Search our case study library by industry, service type, or operational challenge &rarr;</Link>
+            </p>
           </div>
         </section>
       </main>
