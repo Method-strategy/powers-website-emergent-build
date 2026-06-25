@@ -42,7 +42,7 @@ export default function CaseStudies() {
   const [sort, setSort] = useState('newest');
 
   useEffect(() => {
-    document.title = 'Case Studies | POWERS Manufacturing Consulting';
+    document.title = 'Manufacturing Case Studies — Proven Operations Results | POWERS';
   }, []);
 
   // Filter facet values, derived from the canonical dataset.

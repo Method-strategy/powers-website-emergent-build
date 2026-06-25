@@ -61,7 +61,7 @@ function App() {
           <Route path="/industries-served" element={<IndustriesServed />} />
           <Route path="/industries-served/:slug" element={<IndustryPage />} />
           <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/case-studies/defense-aerospace-otd" element={<CaseStudyDefenseAerospaceOTD />} />
+          <Route path="/case-studies/aerospace-defense-on-time-delivery" element={<CaseStudyDefenseAerospaceOTD />} />
           <Route path="/company-news" element={<CompanyNews />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/insights" element={<Insights />} />

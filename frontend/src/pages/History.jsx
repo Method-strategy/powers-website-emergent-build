@@ -19,7 +19,7 @@ const FOUNDING_PRINCIPLES = [
 ];
 
 export default function History() {
-  useEffect(() => { document.title = 'History | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Our History — 25 Years Building Operations Discipline | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
       <BriefDocStyles />

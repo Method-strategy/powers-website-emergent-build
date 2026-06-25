@@ -32,7 +32,7 @@ export default function CompanyNews() {
       css={CSS}
       html={HTML}
       script={SCRIPT}
-      title={`Company News — POWERS Manufacturing Performance Consulting`}
+      title={`POWERS Company News & Announcements`}
       metaDescription={``}
     />
   );

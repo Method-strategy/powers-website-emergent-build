@@ -26,7 +26,7 @@ const DELIVERABLES = [
 ];
 
 export default function DiscoveryProcess() {
-  useEffect(() => { document.title = 'Discovery Process | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Discovery Process — Manufacturing Operations Assessment | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
       <BriefDocStyles />

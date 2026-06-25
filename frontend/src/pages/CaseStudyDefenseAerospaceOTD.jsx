@@ -180,17 +180,17 @@ const briefAlignmentOverlay = `
 
 /**
  * CaseStudyDefenseAerospaceOTD — case-study detail route at
- *   /case-studies/defense-aerospace-otd
+ *   /case-studies/aerospace-defense-on-time-delivery
  * Prototype layout for all future case studies. Three parametric
  * components rendered from the canonical caseStudies record;
  * structure preserved. Brief alignment via overlay only.
  */
 export default function CaseStudyDefenseAerospaceOTD() {
-  const data = getCaseStudy('defense-aerospace-otd');
+  const data = getCaseStudy('aerospace-defense-on-time-delivery');
 
   useEffect(() => {
     if (!data) return;
-    document.title = `${data.headlineResult.slice(0, 80)} | POWERS Case Study`;
+    document.title = 'Aerospace & Defense On-Time Delivery Case Study | POWERS';
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement('meta');

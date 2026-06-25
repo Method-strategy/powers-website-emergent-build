@@ -105,6 +105,12 @@ const logoSrc = (l) =>
     : `https://img.logo.dev/${l.domain}?token=${LOGO_DEV_TOKEN}&size=400&format=png&retina=true`;
 
 function Home() {
+  /* SEO title — broad-category term for the homepage. The on-page
+     brand tagline ("Operations Performance Consulting") is preserved
+     verbatim in the hero copy; this <title> targets the higher-volume
+     search term ("Manufacturing Operations Management Consulting") used
+     by buyers and analyst categories (Gartner / McKinsey). */
+  useEffect(() => { document.title = 'POWERS — Manufacturing Operations Management Consulting'; }, []);
   const pageRef  = useRef(null);
   const railFill = useRef(null);
   const heroRef  = useRef(null);

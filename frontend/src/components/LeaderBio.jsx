@@ -26,7 +26,7 @@ export default function LeaderBio() {
   const insightsRef = useRef(null); useInViewClass(insightsRef);
   const ctaRef = useRef(null); useInViewClass(ctaRef);
   useEffect(() => {
-    if (data) document.title = `${data.name}, ${data.title} | POWERS Manufacturing Consulting`;
+    if (data) document.title = `${data.name} — ${data.title} | POWERS`;
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [slug, data]);
   if (!data) return <Navigate to="/leadership" replace />;

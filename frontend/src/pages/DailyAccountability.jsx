@@ -10,7 +10,7 @@ import BriefDocStyles, { useInViewClass, NAVY, PAPER, TYPE } from '../components
    <img> + <div className="brief-page-hero-wash"> block when ready. */
 
 export default function DailyAccountability() {
-  useEffect(() => { document.title = 'Daily Accountability | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Daily Accountability Systems for Plant Floors | POWERS'; }, []);
   const heroRef = useRef(null); useInViewClass(heroRef);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>

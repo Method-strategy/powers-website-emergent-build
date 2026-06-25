@@ -67,7 +67,7 @@ const ARC = [
 ];
 
 export default function Approach() {
-  useEffect(() => { document.title = 'Approach | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Our Approach — Operations Performance Consulting | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
       <BriefDocStyles />

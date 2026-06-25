@@ -1,1 +1,6 @@
+# 301 redirects (must precede the SPA fallback)
+# ─ Case Studies — SEO slug rename (Feb 2026)
+/case-studies/defense-aerospace-otd    /case-studies/aerospace-defense-on-time-delivery    301
+
+# SPA fallback — every unmatched path serves index.html so React Router can route it
 /*    /index.html   200

@@ -32,7 +32,7 @@ export default function Contact() {
       css={CSS}
       html={HTML}
       script={SCRIPT}
-      title={`Start a Conversation. — POWERS Manufacturing Performance Consulting`}
+      title={`Contact POWERS — Start a Manufacturing Operations Conversation`}
       metaDescription={``}
     />
   );

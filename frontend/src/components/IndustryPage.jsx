@@ -22,7 +22,10 @@ export default function IndustryPage() {
   const data = getIndustry(slug);
   const heroRef = useRef(null); useInViewClass(heroRef);
   const ctaRef = useRef(null); useInViewClass(ctaRef);
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }); }, [slug]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    if (data) document.title = `${data.name} Operations Consulting | POWERS`;
+  }, [slug, data]);
   if (!data) return <Navigate to="/industries-served" replace />;
 
   const ctaH2 = data.ctaH2 || { top: "Let's build your operation to", pivot: 'execute under any circumstances.' };

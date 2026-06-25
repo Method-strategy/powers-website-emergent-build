@@ -26,7 +26,7 @@ export const HTML_TO_ROUTE = {
   'ken-wiesinger.html': '/leadership/ken-wiesinger',
   'justin-pethick.html': '/leadership/justin-pethick',
   'kevin-sabany.html': '/leadership/kevin-sabany',
-  'case-study-defense-aerospace-otd.html': '/case-studies/defense-aerospace-otd',
+  'case-study-defense-aerospace-otd.html': '/case-studies/aerospace-defense-on-time-delivery',
   'our-approach.html': '/approach', // retired alias
 };
 

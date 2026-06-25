@@ -32,7 +32,7 @@ export default function Insights() {
       css={CSS}
       html={HTML}
       script={SCRIPT}
-      title={`The Ideas Behind the Work. — POWERS Manufacturing Performance Consulting`}
+      title={`Manufacturing Operations Insights & Articles | POWERS`}
       metaDescription={``}
     />
   );

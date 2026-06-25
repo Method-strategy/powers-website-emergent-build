@@ -22,7 +22,7 @@ const LEADERS = [
 ];
 
 export default function Leadership() {
-  useEffect(() => { document.title = 'Leadership | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Leadership Team — Senior Manufacturing Practitioners | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
       <BriefDocStyles />

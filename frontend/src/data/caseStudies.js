@@ -36,8 +36,8 @@
 // ── Defense & Aerospace OTD — fully refreshed against locked v0.2.1 template ──
 const defenseAerospaceOTD = {
   num: 54,
-  slug: 'defense-aerospace-otd',
-  internalRoute: '/case-studies/defense-aerospace-otd',
+  slug: 'aerospace-defense-on-time-delivery',
+  internalRoute: '/case-studies/aerospace-defense-on-time-delivery',
   date: '2021-08-18',
 
   // Hero fields

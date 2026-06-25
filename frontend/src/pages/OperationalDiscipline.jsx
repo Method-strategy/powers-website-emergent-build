@@ -11,7 +11,7 @@ import BriefDocStyles, { useInViewClass, NAVY, PAPER, TYPE } from '../components
    sections will land as copy is delivered. */
 
 export default function OperationalDiscipline() {
-  useEffect(() => { document.title = 'Operational Discipline | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Operational Discipline — Eliminate Variation | POWERS'; }, []);
   const heroRef = useRef(null); useInViewClass(heroRef);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>

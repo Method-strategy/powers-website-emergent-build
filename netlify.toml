@@ -3,6 +3,18 @@
   command = "yarn build"
   publish = "build"
 
+# 301 redirects — must precede the SPA fallback so they take priority.
+# ─ Case Studies — SEO slug rename (Feb 2026): "defense-aerospace-otd"
+#   was renamed to "aerospace-defense-on-time-delivery" so the slug
+#   leads with the higher-volume search term and is keyword-explicit.
+#   _redirects in /public is also present (Netlify reads both; ordering
+#   guarantees the 301 wins over the SPA 200 fallback).
+[[redirects]]
+  from   = "/case-studies/defense-aerospace-otd"
+  to     = "/case-studies/aerospace-defense-on-time-delivery"
+  status = 301
+  force  = true
+
 # SPA fallback — every unmatched path serves index.html so React Router can route it
 [[redirects]]
   from   = "/*"

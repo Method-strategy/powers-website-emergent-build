@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const FONT = "'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif";
 
 export default function NotFound() {
+  useEffect(() => { document.title = 'Page Not Found | POWERS Manufacturing Operations Consulting'; }, []);
   return (
     <section style={{ background: '#183a61' }}>
       <div style={{

@@ -10,7 +10,7 @@ import BriefDocStyles, { useInViewClass, NAVY, PAPER, TYPE } from '../components
    <img> + <div className="brief-page-hero-wash"> block when ready. */
 
 export default function FrontlineLeadership() {
-  useEffect(() => { document.title = 'Frontline Leadership | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Frontline Leadership Development for Manufacturers | POWERS'; }, []);
   const heroRef = useRef(null); useInViewClass(heroRef);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>

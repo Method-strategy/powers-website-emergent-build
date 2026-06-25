@@ -12,7 +12,7 @@ import BriefDocStyles, {
    pivot pattern. */
 
 export default function Careers() {
-  useEffect(() => { document.title = 'Careers | POWERS Manufacturing Consulting'; }, []);
+  useEffect(() => { document.title = 'Manufacturing Consulting Careers — Join POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
       <BriefDocStyles />
