@@ -25,7 +25,7 @@ import { NAVY, GOLD, GOLD_BRIGHT, TYPE } from '../lib/briefTokens';
  *   - Mega-menu nav (Results / About) with hover-with-timer open
  *     behavior, plus single-link Insights + Let's Talk CTA.
  *   - Mobile: hamburger toggles a right-side slide-in drawer with
- *     nested-collapsible Results > Areas of Expertise.
+ *     nested-collapsible Results > What We Build.
  *
  * Routing: uses React Router <Link> for in-app routes so navigation
  * never round-trips the page. External links use <a>.
@@ -230,6 +230,7 @@ export default function BriefHeader({ mode = 'interior' }) {
               type="button"
               className="brief-drawer-sublink brief-drawer-subparent"
               data-open={mobileExpertiseOpen}
+              data-testid="brief-drawer-what-we-build"
               onClick={() => setMobileExpertiseOpen(v => !v)}
               aria-expanded={mobileExpertiseOpen}
             >
