@@ -68,7 +68,7 @@ export default function IndustriesServed() {
         <Section>
           <div className="station-index wipe">Industries Grid</div>
           <h2 className="brief-doc-h2 wipe wipe-d1">
-            <span>Fourteen industries.</span>
+            <span>Experience that crosses many industries.</span>
             <span className="pivot">One execution discipline underneath.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
