@@ -275,6 +275,43 @@ const briefDocCss = `
   .brief-doc-body p + p { margin-top: 1.1em; }
   .brief-doc-body em { font-style: italic; color: ${NAVY}; font-weight: 500; }
 
+  /* ── Inline link grammar ─────────────────────────────────────
+     Global gold inline-link used for in-paragraph link targets
+     across the brief (Approach → Discovery Process, Discovery
+     Process → Approach + Case Studies, Case Studies CTA →
+     Discovery Process, future Insights / Leadership / Careers
+     body copy). Single source of truth so every page reads in
+     the same voice.
+
+     Variants:
+       .brief-inline-link              Default (navy / paper surfaces)
+       .brief-inline-link--on-dark     Brightens enough to read on
+                                       the navy Engagement band / CTA
+                                       chassis without losing the
+                                       gold identity.
+  */
+  .brief-inline-link {
+    color: ${GOLD_BRIGHT};
+    text-decoration: underline;
+    text-decoration-color: rgba(232, 147, 70, 0.45);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color 160ms ease, color 160ms ease;
+    font-weight: 500;
+  }
+  .brief-inline-link:hover {
+    text-decoration-color: ${GOLD_BRIGHT};
+    color: #d27d2e;
+  }
+  .brief-inline-link--on-dark {
+    color: ${GOLD_BRIGHT};
+    text-decoration-color: rgba(232, 147, 70, 0.55);
+  }
+  .brief-inline-link--on-dark:hover {
+    color: #ffd9a8;
+    text-decoration-color: #ffd9a8;
+  }
+
   /* Hairline rules. */
   .brief-doc-rule {
     width: 80px;

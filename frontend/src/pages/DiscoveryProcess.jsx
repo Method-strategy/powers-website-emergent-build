@@ -317,7 +317,7 @@ function PhasesTwoThree() {
           </div>
         </div>
         <div className="phases-footer wipe wipe-d4">
-          <p>The architecture and the durability that follows are described on the <Link to="/approach" className="phases-inline-link" data-testid="discovery-link-approach-inline">Approach</Link> page. The <Link to="/case-studies" className="phases-inline-link" data-testid="discovery-link-cases-inline">Case Studies</Link> are the evidence.</p>
+          <p>The architecture and the durability that follows are described on the <Link to="/approach" className="brief-inline-link" data-testid="discovery-link-approach-inline">Approach</Link> page. The <Link to="/case-studies" className="brief-inline-link" data-testid="discovery-link-cases-inline">Case Studies</Link> are the evidence.</p>
           <div className="phases-footer-links">
             <Link to="/approach" data-testid="discovery-link-approach">See the Approach &rarr;</Link>
             <span aria-hidden="true">·</span>
@@ -605,25 +605,6 @@ function DiscoveryStyles() {
       .phases-footer-links { display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
       .phases-footer-links a { color: ${GOLD_BRIGHT}; text-decoration: none; border-bottom: 1px solid ${GOLD_BRIGHT}; padding-bottom: 2px; }
       .phases-footer-links a:hover { color: ${NAVY}; border-color: ${NAVY}; }
-
-      /* Inline link grammar for the phases-footer paragraph
-         ("...described on the Approach page. The Case Studies are
-         the evidence."). Gold inline-link with a subtle underline
-         that warms on hover — consistent with the Approach page's
-         .approach-inline-link grammar. */
-      .phases-inline-link {
-        color: ${GOLD_BRIGHT};
-        text-decoration: underline;
-        text-decoration-color: rgba(232, 147, 70, 0.45);
-        text-underline-offset: 3px;
-        text-decoration-thickness: 1px;
-        transition: text-decoration-color 160ms ease, color 160ms ease;
-        font-weight: 500;
-      }
-      .phases-inline-link:hover {
-        text-decoration-color: ${GOLD_BRIGHT};
-        color: #d27d2e;
-      }
 
       /* CTA contact block (same as Leadership) */
       .cta-contact { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 4px; }

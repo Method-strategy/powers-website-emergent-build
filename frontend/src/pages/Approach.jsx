@@ -36,7 +36,7 @@ const DISCIPLINES = [
           href="https://www.powersdps.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="approach-inline-link"
+          className="brief-inline-link"
           data-testid="approach-link-dps"
         >DPS</a>
         , our{' '}
@@ -44,7 +44,7 @@ const DISCIPLINES = [
           href="https://www.powersdps.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="approach-inline-link"
+          className="brief-inline-link"
           data-testid="approach-link-dps-full"
         >Digital Production System</a>
         , enforces the discipline in real time rather than just reporting on it. The instruments that give the floor, the plant, and the executive team the same operational truth. Decisions made on the same data. Drift detected before it compounds.
@@ -200,7 +200,7 @@ function PerformanceArc() {
             We diagnose the stage during the{' '}
             <Link
               to="/discovery-process"
-              className="approach-inline-link"
+              className="brief-inline-link"
               data-testid="approach-link-discovery-arc"
             >Discovery Process</Link>.
             Every engagement is calibrated to move the operation one stage forward, structurally. Not faster than the architecture can support.
@@ -229,7 +229,7 @@ function TheEngagement() {
               Every engagement starts with an intensive{' '}
               <Link
                 to="/discovery-process"
-                className="approach-inline-link approach-inline-link--on-dark"
+                className="brief-inline-link brief-inline-link--on-dark"
                 data-testid="approach-link-discovery-engagement"
               >Discovery Process</Link>.
               A paid assessment that maps the current state of your operation, quantifies the cost of the gaps your team has lived with long enough to consider normal, and delivers a custom roadmap with a results-based ROI commitment.
@@ -327,33 +327,6 @@ function ApproachStyles() {
         line-height: 1.6;
         color: ${TEXT_BODY};
         margin: 0;
-      }
-
-      /* Inline link grammar — gold copper text with a subtle
-         underline that warms on hover. Used for in-paragraph link
-         targets like "Discovery Process" and "DPS / Digital
-         Production System". The --on-dark modifier brightens the
-         link enough to read on the navy Engagement section. */
-      .approach-inline-link {
-        color: ${GOLD_BRIGHT};
-        text-decoration: underline;
-        text-decoration-color: rgba(232, 147, 70, 0.45);
-        text-underline-offset: 3px;
-        text-decoration-thickness: 1px;
-        transition: text-decoration-color 160ms ease, color 160ms ease;
-        font-weight: 500;
-      }
-      .approach-inline-link:hover {
-        text-decoration-color: ${GOLD_BRIGHT};
-        color: #d27d2e;
-      }
-      .approach-inline-link--on-dark {
-        color: ${GOLD_BRIGHT};
-        text-decoration-color: rgba(232, 147, 70, 0.55);
-      }
-      .approach-inline-link--on-dark:hover {
-        color: #ffd9a8;
-        text-decoration-color: #ffd9a8;
       }
 
       /* Performance arc — 5-stage row */
