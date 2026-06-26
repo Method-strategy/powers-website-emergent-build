@@ -144,34 +144,13 @@ export default function OperationalDiscipline() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
-            {/* The thesis statement, rendered as a typographic
-                moment. The strike line draws across "people problem"
-                as the section enters; the replacement clause writes
-                in just beneath it. Single line on desktop, stacked
-                on mobile. */}
-            <div className="od-reframe-thesis wipe wipe-d3" data-testid="od-reframe-thesis">
-              <div className="od-thesis-row od-thesis-strike">
-                <span className="od-thesis-prefix">It is not a&nbsp;</span>
-                <span className="od-thesis-target">
-                  people problem
-                  <span className="od-thesis-line" aria-hidden="true" />
-                </span>
-                <span className="od-thesis-suffix">.</span>
-              </div>
-              <div className="od-thesis-row od-thesis-replace">
-                <span className="od-thesis-prefix">It is a&nbsp;</span>
-                <span className="od-thesis-target od-thesis-target--gold">system problem</span>
-                <span className="od-thesis-suffix">.</span>
-              </div>
-            </div>
-
-            <div className="brief-doc-body wipe wipe-d4" style={{ marginTop: 48 }}>
+            <div className="brief-doc-body od-body-wide wipe wipe-d3" style={{ marginTop: 48 }}>
               <p>Walk an underperforming plant and the symptoms look like a people problem. Supervisors firefighting. Standards drifting between shifts. The same issues recurring on the same lines. Effort going in, results not coming out. The diagnosis usually runs to the workforce. Hire better. Train more. Hold people accountable. And the cycle continues, because the workforce wasn&rsquo;t the cause.</p>
               <p>The cause is the absence of the system that would make consistent execution the default. The standards aren&rsquo;t documented or aren&rsquo;t enforced. The operating routines vary shift to shift. The cadence that surfaces drift before it compounds doesn&rsquo;t exist. Performance is the byproduct of individual effort rather than structural design.</p>
               <p>When the system isn&rsquo;t there, the best people in the world produce the same outcome as the average people: a lot of effort, inconsistent results, and a slow grinding-down of the team. That isn&rsquo;t a workforce failure. That&rsquo;s a system failure expressed through the workforce.</p>
             </div>
 
-            <blockquote className="brief-doc-pullquote wipe wipe-d5" data-testid="od-reframe-pullquote">
+            <blockquote className="brief-doc-pullquote wipe wipe-d4" data-testid="od-reframe-pullquote">
               <span className="od-pq-mark" aria-hidden="true">&ldquo;</span>
               Discipline, not just experience.
             </blockquote>
@@ -446,48 +425,16 @@ export default function OperationalDiscipline() {
           letter-spacing: -0.005em;
         }
 
-        /* ── Reframe: animated thesis ──────────────────────────
-           Strike-through draws across "people problem" once the
-           section enters viewport; the replacement line writes in
-           a beat later. The .is-in class arrives from
-           useInViewClass on the section wrapper. */
-        .od-reframe-thesis {
-          margin: 56px 0 8px;
-          font-family: ${TYPE.sans};
-          font-weight: 700;
-          color: ${NAVY};
-          font-size: clamp(26px, 3.4vw, 44px);
-          line-height: 1.18;
-          letter-spacing: -0.012em;
-        }
-        .od-thesis-row { display: flex; flex-wrap: wrap; align-items: baseline; }
-        .od-thesis-strike { opacity: 0.96; }
-        .od-thesis-replace { margin-top: 14px; }
-        .od-thesis-target {
-          position: relative;
-          display: inline-block;
-        }
-        .od-thesis-target--gold {
-          font-family: ${TYPE.serif};
-          font-style: italic;
-          font-weight: 500;
-          color: ${GOLD_BRIGHT};
-          clip-path: inset(0 100% 0 0);
-          transition: clip-path 1100ms cubic-bezier(.2,.6,.2,1) 900ms;
-        }
-        .od-thesis-line {
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 56%;
-          height: 0.10em;
-          background: #e0654f;
-          transform: scaleX(0);
-          transform-origin: 0 50%;
-          transition: transform 900ms cubic-bezier(.7,.0,.3,1) 320ms;
-        }
-        .od-reframe.is-in .od-thesis-line { transform: scaleX(1); }
-        .od-reframe.is-in .od-thesis-target--gold { clip-path: inset(0 0 0 0); }
+        /* ── Wider body measure ─────────────────────────────────
+           Lifts multi-paragraph reading blocks off the global
+           720px brief-doc-body cap when the surrounding hero/lede
+           sits at full container width. Keeps long-form prose
+           readable while removing the orphan-tail effect the
+           narrower measure produced on shorter sentences. The
+           global measure remains unchanged on the rest of the
+           brief; this override is scoped to the discipline page
+           via the .od-body-wide modifier so each row can opt in. */
+        .od-body-wide.brief-doc-body { max-width: 920px; }
 
         /* ── MOS stacked blueprint ─────────────────────────────
            Four horizontal slabs separated by hairline gold rules.
@@ -902,7 +849,6 @@ export default function OperationalDiscipline() {
           .od-build-rail      { grid-template-columns: 1fr; }
           .od-handoff         { grid-template-columns: 1fr; gap: 8px; padding: 24px 22px; }
           .od-handoff-arrow   { font-size: 28px; }
-          .od-reframe-thesis  { font-size: clamp(22px, 6vw, 32px); }
         }
       `}</style>
     </div>
