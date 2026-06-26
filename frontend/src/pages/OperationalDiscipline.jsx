@@ -89,7 +89,7 @@ const BUILD_STEPS = [
 
 const OUTCOMES = [
   { num: '01', name: 'Predictable execution.',     body: 'Standards hold across shifts. Routines run without supervision. Plan vs. actual variance shrinks. The operation produces consistent output without depending on heroic individual effort.' },
-  { num: '02', name: 'Faster, better decisions.',  body: 'The cadence surfaces issues early. Tiered escalation routes problems to the right level. Decision rights are clear. Information moves at the speed the operation requires.' },
+  { num: '02', name: 'Better Decisions',  body: 'The cadence surfaces issues early. Tiered escalation routes problems to the right level. Decision rights are clear. Information moves at the speed the operation requires.' },
   { num: '03', name: 'Margin recovery.',           body: 'Bottlenecks identified. Variation reduced. Reactive spend converted to planned spend. Capacity recovered without capital investment. The operational efficiency gains translate directly to bottom-line value.' },
   { num: '04', name: 'Scalability.',               body: 'What works at one site works at the next. The system transfers because it\u2019s documented and embedded, not because the right people happen to be on staff. Operations can grow without performance degradation.' },
   { num: '05', name: 'Durability.',                body: 'The gains stay built. Performance no longer depends on extraordinary effort. It\u2019s the byproduct of a properly built system running by design. The architecture is doing the work.' },
@@ -373,7 +373,7 @@ export default function OperationalDiscipline() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
             <p className="brief-doc-lede wipe wipe-d3">
-              Operational Discipline is the first of the five and the one the other four attach to. None of them can do its job without it, and on its own it can&rsquo;t do their jobs either. The foundation only holds up when all five are built together.
+              Operational Discipline is the first of the five and the backbone the other four attach to. None of them can do its job without it, and on its own it can&rsquo;t do their jobs either. Build them together and the foundation holds. Build any one of them alone and the operation underperforms.
             </p>
 
             {/* Five-discipline mosaic. The current discipline (01)
@@ -409,10 +409,6 @@ export default function OperationalDiscipline() {
                 </Link>
               ))}
             </div>
-
-            <p className="brief-doc-lede wipe" style={{ marginTop: 40 }}>
-              Together they are the foundation. Build them together and they interlock into something load-bearing. Build any one of them alone and the operation underperforms.
-            </p>
 
             <blockquote className="brief-doc-pullquote wipe wipe-d2" data-testid="od-lockin-pullquote">
               <span className="od-pq-mark" aria-hidden="true">&ldquo;</span>
