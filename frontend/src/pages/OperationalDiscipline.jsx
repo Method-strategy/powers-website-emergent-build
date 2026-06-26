@@ -65,10 +65,12 @@ const SISTER_DISCIPLINES = [
 ];
 
 const MOS_LAYERS = [
-  { idx: 'L1', name: 'Standards',         body: 'Documented expectations for how the work gets done. Standard operating procedures, work instructions, quality requirements, safety protocols. Not binders that sit on a shelf. The actual reference the floor runs by.' },
-  { idx: 'L2', name: 'Routines',          body: 'Daily production meetings, plan vs. actual reviews, tiered escalation, layered accountability. The recurring operating practices that make performance visible, manageable, and self-correcting.' },
-  { idx: 'L3', name: 'Cadence',           body: 'The rhythm of structured communication and decision-making. Daily huddles. Weekly business reviews. Monthly operational reviews. The drumbeat that ties the floor to the plant to the executive team in real time.' },
-  { idx: 'L4', name: 'Visual Management', body: 'Standards made visible. Performance made visible. Drift made visible. The visual triggers and controls at every workstation that let an operator assess in seconds whether the operation is running to standard.' },
+  { idx: 'L1', name: 'Standards',             body: 'Documented expectations for how the work gets done. Standard operating procedures, work instructions, quality requirements, safety protocols. Not binders that sit on a shelf. The actual reference the floor runs by.' },
+  { idx: 'L2', name: 'Routines',              body: 'Daily production meetings, plan vs. actual reviews, tiered escalation, layered accountability. The recurring operating practices that make performance visible, manageable, and self-correcting.' },
+  { idx: 'L3', name: 'Cadence',               body: 'The rhythm of structured communication and decision-making. Daily huddles. Weekly business reviews. Monthly operational reviews. The drumbeat that ties the floor to the plant to the executive team in real time.' },
+  { idx: 'L4', name: 'Visual Management',     body: 'Standards made visible. Performance made visible. Drift made visible. The visual triggers and controls at every workstation that let an operator assess in seconds whether the operation is running to standard.' },
+  { idx: 'L5', name: 'Financial Discipline',  body: 'AR/AP forensic analysis and operating cash recovery. AI-enhanced review of accounts receivable and accounts payable to find the cash that\u2019s already yours but isn\u2019t on the balance sheet yet. The financial layer of operational discipline. Cash that funds the rest of the work.' },
+  { idx: 'L6', name: 'Supply Chain Discipline', body: 'Demand planning, procurement, logistics, inventory, distribution, and risk management as disciplined operating practices, not departmental silos. The same discipline that holds execution on the floor, applied to the flow of goods, materials, and information into and out of the operation.' },
 ];
 
 const COSTS = [
@@ -78,6 +80,7 @@ const COSTS = [
   { num: '04', name: 'Costs climb.',       body: 'Reactive maintenance. Overtime to cover slack. Expedited freight. Premium spend on rush parts. Every category of avoidable cost expands when the underlying system isn\u2019t holding execution together.' },
   { num: '05', name: 'Scaling stalls.',    body: 'Operations that depend on individual effort don\u2019t replicate cleanly. The second site doesn\u2019t perform like the first. The acquisition doesn\u2019t integrate. The growth thesis depends on operational discipline the platform doesn\u2019t have.' },
   { num: '06', name: 'Engagement drops.',  body: 'Working in chaos burns people out. Frontline leaders become firefighters. Operators stop flagging problems because flagging them doesn\u2019t produce solutions. Turnover increases. Tribal knowledge walks out the door.' },
+  { num: '07', name: 'Cash leaks.',        body: 'AR sitting uncollected. AP overpaid. Supply chain costs absorbing margin that should have been protected. The financial dimensions of operational discipline get treated as someone else\u2019s problem until the operating cash dries up.' },
 ];
 
 const BUILD_STEPS = [
@@ -179,7 +182,7 @@ export default function OperationalDiscipline() {
               </p>
               <div className="brief-doc-rule-gold wipe wipe-d3" style={{ marginTop: 56, marginBottom: 40 }} />
               <p className="brief-doc-lede wipe wipe-d4">
-                Standards. Routines. Cadence. The structured practices that run through every shift and hold execution together when conditions shift, leadership turns over, or pressure compounds. Operational Discipline is the first of the five disciplines and the one the other four attach to. Without it, the foundation has nothing holding it upright.
+                Standards. Routines. Cadence. The structured practices that run through every shift and hold execution together up and down the value chain. From financial discipline to supply chain discipline to shop floor discipline. Operational Discipline is the first of the five disciplines and the one the other four attach to. Without it, the foundation has nothing holding it upright.
               </p>
             </div>
           </div>
@@ -219,7 +222,7 @@ export default function OperationalDiscipline() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
             <p className="brief-doc-lede wipe wipe-d3">
-              Operational Discipline is the integrated system we build. Standards, routines, structured practices, and management rhythm that keep an operation aligned to its commitments shift after shift. We build the <em>Management Operating System</em> that connects strategic intent to daily execution. The MOS we build isn&rsquo;t a product. It&rsquo;s a custom architecture, designed and built for how your specific business actually runs. It shows up across four interlocking layers:
+              Operational Discipline is the integrated system we build. Standards, routines, structured practices, and management rhythm that keep an operation aligned to its commitments shift after shift. We build the <em>Management Operating System</em> that connects strategic intent to daily execution. The MOS we build isn&rsquo;t a product. It&rsquo;s a custom architecture, designed and built for how your specific business actually runs. It shows up across the operational layers that hold execution together on the floor, and extends into the financial and supply chain layers that hold execution together up and down the value chain:
             </p>
 
             {/* Four-layer stacked blueprint. Layers reveal in order
@@ -242,7 +245,7 @@ export default function OperationalDiscipline() {
             </div>
 
             <p className="brief-doc-lede wipe wipe-d5" style={{ marginTop: 40 }}>
-              Together these four layers form the Management Operating System we build. We start the build during the <Link className="brief-inline-link" to="/discovery-process">Discovery Process</Link>. We deepen it across every week of the engagement. By the time we leave, the MOS is owned by your team and running by itself.
+              Together these layers form the Management Operating System we build. We start the build during the <Link className="brief-inline-link" to="/discovery-process">Discovery Process</Link>. We deepen it across every week of the engagement. By the time we leave, the MOS is owned by your team and running by itself.
             </p>
           </div>
         </section>
@@ -390,7 +393,7 @@ export default function OperationalDiscipline() {
                 <div className="od-mosaic-num">01</div>
                 <h3 className="od-mosaic-name">Operational Discipline</h3>
                 <p className="od-mosaic-caption">
-                  Standards, routines, cadence. The system the other four attach to.
+                  Standards, routines, cadence. The backbone of the foundation.
                 </p>
               </article>
               {SISTER_DISCIPLINES.map((d, i) => (
