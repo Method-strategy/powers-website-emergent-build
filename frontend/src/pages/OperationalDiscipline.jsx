@@ -446,13 +446,13 @@ export default function OperationalDiscipline() {
         /* ── Wider body measure ─────────────────────────────────
            Lifts multi-paragraph reading blocks off the global
            720px brief-doc-body cap when the surrounding hero/lede
-           sits at full container width. Keeps long-form prose
-           readable while removing the orphan-tail effect the
-           narrower measure produced on shorter sentences. The
+           sits at full container width. Opting in via .od-body-wide
+           removes the cap entirely so the block flows at the full
+           brief-doc-inner width, matching the lede above it. The
            global measure remains unchanged on the rest of the
            brief; this override is scoped to the discipline page
-           via the .od-body-wide modifier so each row can opt in. */
-        .od-body-wide.brief-doc-body { max-width: 920px; }
+           so each row can opt in. */
+        .od-body-wide.brief-doc-body { max-width: none; }
 
         /* ── MOS stacked blueprint ─────────────────────────────
            Four horizontal slabs separated by hairline gold rules.
