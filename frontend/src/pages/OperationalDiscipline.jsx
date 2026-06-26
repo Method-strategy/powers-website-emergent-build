@@ -199,15 +199,13 @@ export default function OperationalDiscipline() {
               <p>Walk an underperforming plant and the symptoms look like a people problem. Supervisors firefighting. Standards drifting between shifts. The same issues recurring on the same lines. Effort going in, results not coming out. The diagnosis usually runs to the workforce. Hire better. Train more. Hold people accountable. And the cycle continues, because the workforce wasn&rsquo;t the cause.</p>
               <p>The cause is the absence of the system that would make consistent execution the default. The standards aren&rsquo;t documented or aren&rsquo;t enforced. The operating routines vary shift to shift. The cadence that surfaces drift before it compounds doesn&rsquo;t exist. Performance is the byproduct of individual effort rather than structural design.</p>
               <p>When the system isn&rsquo;t there, the best people in the world produce the same outcome as the average people: a lot of effort, inconsistent results, and a slow grinding-down of the team. That isn&rsquo;t a workforce failure. That&rsquo;s a system failure expressed through the workforce.</p>
+              <p>Operational Discipline is what makes execution repeatable. The framework that holds the operation together when individual effort can&rsquo;t carry the load alone.</p>
             </div>
 
             <blockquote className="brief-doc-pullquote wipe wipe-d4" data-testid="od-reframe-pullquote">
               <span className="od-pq-mark" aria-hidden="true">&ldquo;</span>
               Discipline, not just experience.
             </blockquote>
-            <p className="brief-doc-lede wipe wipe-d5" style={{ marginTop: 24 }}>
-              Operational Discipline is what makes execution repeatable. The framework that holds the operation together when individual effort can&rsquo;t carry the load alone.
-            </p>
           </div>
         </section>
 
