@@ -89,7 +89,7 @@ const BUILD_STEPS = [
 
 const OUTCOMES = [
   { num: '01', name: 'Predictable execution.',     body: 'Standards hold across shifts. Routines run without supervision. Plan vs. actual variance shrinks. The operation produces consistent output without depending on heroic individual effort.' },
-  { num: '02', name: 'Better decisions',  body: 'The cadence surfaces issues early. Tiered escalation routes problems to the right level. Decision rights are clear. Information moves at the speed the operation requires.' },
+  { num: '02', name: 'Better decisions.',  body: 'The cadence surfaces issues early. Tiered escalation routes problems to the right level. Decision rights are clear. Information moves at the speed the operation requires.' },
   { num: '03', name: 'Margin recovery.',           body: 'Bottlenecks identified. Variation reduced. Reactive spend converted to planned spend. Capacity recovered without capital investment. The operational efficiency gains translate directly to bottom-line value.' },
   { num: '04', name: 'Scalability.',               body: 'What works at one site works at the next. The system transfers because it\u2019s documented and embedded, not because the right people happen to be on staff. Operations can grow without performance degradation.' },
   { num: '05', name: 'Durability.',                body: 'The gains stay built. Performance no longer depends on extraordinary effort. It\u2019s the byproduct of a properly built system running by design. The architecture is doing the work.' },
