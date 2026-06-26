@@ -175,7 +175,7 @@ export default function OperationalDiscipline() {
               <span className="od-pq-mark" aria-hidden="true">&ldquo;</span>
               Discipline, not just experience.
             </blockquote>
-            <p className="brief-doc-body wipe wipe-d5" style={{ marginTop: 24 }}>
+            <p className="brief-doc-lede wipe wipe-d5" style={{ marginTop: 24 }}>
               Operational Discipline is what makes execution repeatable. The framework that holds the operation together when individual effort can&rsquo;t carry the load alone.
             </p>
           </div>
@@ -213,7 +213,7 @@ export default function OperationalDiscipline() {
               ))}
             </div>
 
-            <p className="brief-doc-body wipe wipe-d5" style={{ marginTop: 40 }}>
+            <p className="brief-doc-lede wipe wipe-d5" style={{ marginTop: 40 }}>
               Together these four layers form the Management Operating System we build. We start the build during the <Link className="brief-inline-link" to="/discovery-process">Discovery Process</Link>. We deepen it across every week of the engagement. By the time we leave, the MOS is owned by your team and running by itself.
             </p>
           </div>
@@ -249,13 +249,13 @@ export default function OperationalDiscipline() {
               ))}
             </div>
 
-            <p className="brief-doc-body wipe" style={{ marginTop: 40 }}>
+            <p className="brief-doc-lede wipe" style={{ marginTop: 40 }}>
               These aren&rsquo;t isolated issues. They compound. Left unchecked, they create a culture of firefighting, inconsistent quality, and chronic underperformance. Leadership spends more time chasing problems than building capability.
             </p>
 
             <blockquote className="brief-doc-pullquote wipe wipe-d2" data-testid="od-costs-pullquote">
               <span className="od-pq-mark" aria-hidden="true">&ldquo;</span>
-              The same root cause expressed as ten different symptoms.
+              One root cause. Many costly symptoms.
             </blockquote>
           </div>
         </section>
@@ -333,7 +333,7 @@ export default function OperationalDiscipline() {
               ))}
             </div>
 
-            <p className="brief-doc-body wipe" style={{ marginTop: 40 }}>
+            <p className="brief-doc-lede wipe" style={{ marginTop: 40 }}>
               Operational gains translate into the financial dimensions your CFO is already reporting on: annualized savings rate, weekly cash flow, total project cost reconciled against savings delivered.
             </p>
           </div>
@@ -364,7 +364,6 @@ export default function OperationalDiscipline() {
                 aria-current="page"
               >
                 <div className="od-mosaic-num">01</div>
-                <div className="od-mosaic-label">The Foundation</div>
                 <h3 className="od-mosaic-name">Operational Discipline</h3>
                 <p className="od-mosaic-caption">
                   Standards, routines, cadence. The system the other four attach to.
@@ -387,8 +386,8 @@ export default function OperationalDiscipline() {
               ))}
             </div>
 
-            <p className="brief-doc-body wipe" style={{ marginTop: 40 }}>
-              Together they are the foundation. Build them together and they interlock into something load-bearing. Build any one of them alone and the operation tilts.
+            <p className="brief-doc-lede wipe" style={{ marginTop: 40 }}>
+              Together they are the foundation. Build them together and they interlock into something load-bearing. Build any one of them alone and the operation underperforms.
             </p>
 
             <blockquote className="brief-doc-pullquote wipe wipe-d2" data-testid="od-lockin-pullquote">
