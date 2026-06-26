@@ -282,7 +282,6 @@ const briefDocCss = `
     color: ${TEXT_BODY};
     margin-top: 28px;
     text-wrap: pretty;
-    max-width: 720px;
   }
   .brief-doc-body p + p { margin-top: 1.1em; }
   .brief-doc-body em { font-style: italic; color: ${NAVY}; font-weight: 500; }

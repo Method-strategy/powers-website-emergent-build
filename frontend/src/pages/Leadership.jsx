@@ -49,7 +49,7 @@ function HeroBeat() {
             <span>The team that built</span>
             <span className="accent">the architecture.</span>
           </h1>
-          <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 720 }}>
+          <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28 }}>
             POWERS leadership comes from inside manufacturing operations. Plant floors, production lines, finance functions, and the rooms where operating decisions get made under real pressure. Not advisors who studied the work. Practitioners who did it.
           </p>
           <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 64 }} />

@@ -162,7 +162,7 @@ export default function OperationalDiscipline() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
-            <div className="brief-doc-body od-body-wide wipe wipe-d3" style={{ marginTop: 48 }}>
+            <div className="brief-doc-body wipe wipe-d3" style={{ marginTop: 48 }}>
               <p>Walk an underperforming plant and the symptoms look like a people problem. Supervisors firefighting. Standards drifting between shifts. The same issues recurring on the same lines. Effort going in, results not coming out. The diagnosis usually runs to the workforce. Hire better. Train more. Hold people accountable. And the cycle continues, because the workforce wasn&rsquo;t the cause.</p>
               <p>The cause is the absence of the system that would make consistent execution the default. The standards aren&rsquo;t documented or aren&rsquo;t enforced. The operating routines vary shift to shift. The cadence that surfaces drift before it compounds doesn&rsquo;t exist. Performance is the byproduct of individual effort rather than structural design.</p>
               <p>When the system isn&rsquo;t there, the best people in the world produce the same outcome as the average people: a lot of effort, inconsistent results, and a slow grinding-down of the team. That isn&rsquo;t a workforce failure. That&rsquo;s a system failure expressed through the workforce.</p>
@@ -442,17 +442,6 @@ export default function OperationalDiscipline() {
           line-height: 1.2;
           letter-spacing: -0.005em;
         }
-
-        /* ── Wider body measure ─────────────────────────────────
-           Lifts multi-paragraph reading blocks off the global
-           720px brief-doc-body cap when the surrounding hero/lede
-           sits at full container width. Opting in via .od-body-wide
-           removes the cap entirely so the block flows at the full
-           brief-doc-inner width, matching the lede above it. The
-           global measure remains unchanged on the rest of the
-           brief; this override is scoped to the discipline page
-           so each row can opt in. */
-        .od-body-wide.brief-doc-body { max-width: none; }
 
         /* ── MOS stacked blueprint ─────────────────────────────
            Four horizontal slabs separated by hairline gold rules.
