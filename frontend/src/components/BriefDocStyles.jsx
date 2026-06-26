@@ -86,6 +86,18 @@ const briefDocCss = `
          <div class="brief-page-hero-wash" />
          <div class="brief-doc-inner"> ... content ... </div>
        </section>
+
+     The same class also accepts a <video class="brief-page-hero-bg">
+     for atmospheric loops (Operational Discipline + the four sister
+     discipline pages). Use:
+       <video class="brief-page-hero-bg" autoPlay muted loop
+              playsInline preload="metadata" poster="...">
+         <source src="...webm" type="video/webm" />
+         <source src="...mp4"  type="video/mp4"  />
+       </video>
+     object-fit, mix-blend-mode, opacity, and filter all apply to
+     <video> exactly as they do to <img>, so the ghosted+grit look
+     stays identical across static and motion heros.
   */
   .brief-page-hero-bg {
     position: absolute;

@@ -114,9 +114,27 @@ export default function OperationalDiscipline() {
 
         {/* ─── ROW 1 ─ Hero ───────────────────────────────────── */}
         <section ref={heroRef} className="brief-page-hero">
-          {/* Hero background image slot — uncomment when ready.
-          <img className="brief-page-hero-bg" src="/uploads/operational-discipline-hero-bg.jpg" alt="" aria-hidden="true" loading="eager" decoding="async" />
-          <div className="brief-page-hero-wash" aria-hidden="true" /> */}
+          {/* Hero motion — atmospheric loop of the discipline's
+              human moment, lifted from a longer cut of the homepage
+              montage. Same ghosted + grit treatment as the static
+              brief heros (sepia + brightness + cream wash + grain),
+              applied via CSS so the look stays in sync with the
+              static-image heros and can be tuned globally. */}
+          <video
+            className="brief-page-hero-bg brief-page-hero-bg--video"
+            poster="/uploads/videos/operational-discipline-hero-poster.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            data-testid="operational-discipline-hero-video"
+          >
+            <source src="/uploads/videos/operational-discipline-hero.webm" type="video/webm" />
+            <source src="/uploads/videos/operational-discipline-hero.mp4" type="video/mp4" />
+          </video>
+          <div className="brief-page-hero-wash" aria-hidden="true" />
           <div className="brief-doc-inner">
             <div className="brief-doc-col">
               <div className="station-index wipe" style={{ marginBottom: 24 }}>What We Build</div>
