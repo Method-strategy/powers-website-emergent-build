@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
@@ -94,6 +94,39 @@ const OUTCOMES = [
   { num: '04', name: 'Scalability.',               body: 'What works at one site works at the next. The system transfers because it\u2019s documented and embedded, not because the right people happen to be on staff. Operations can grow without performance degradation.' },
   { num: '05', name: 'Durability.',                body: 'The gains stay built. Performance no longer depends on extraordinary effort. It\u2019s the byproduct of a properly built system running by design. The architecture is doing the work.' },
 ];
+
+/* CollapseCard — shared accordion primitive for the Costs and
+   Gains sections. Title is always visible; clicking the card
+   toggles the body open/closed. Keyboard accessible via the
+   underlying <button> element + aria-expanded. Variant prop
+   drives the red-↓ (cost) vs green-↑ (gain) colour signal that
+   mirrors the homepage Pressures/Outcomes animation. */
+function CollapseCard({ variant, num, name, body, indexLabel, dataTestid, delayClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(o => !o)}
+      aria-expanded={open}
+      className={`od-collapse-card od-collapse-card--${variant} ${open ? 'is-open' : ''} wipe ${delayClass || ''}`}
+      data-testid={dataTestid}
+    >
+      <div className="od-collapse-head">
+        <span className={`od-collapse-idx od-collapse-idx--${variant}`}>{indexLabel}&nbsp;{num}</span>
+        <span className="od-collapse-marks" aria-hidden="true">
+          <span className={`od-collapse-arrow od-collapse-arrow--${variant}`} />
+          <span className="od-collapse-toggle">{open ? '\u2212' : '+'}</span>
+        </span>
+      </div>
+      <div className="od-collapse-name">{name}</div>
+      <div className="od-collapse-body">
+        <div className="od-collapse-body-inner">
+          <p>{body}</p>
+        </div>
+      </div>
+    </button>
+  );
+}
 
 export default function OperationalDiscipline() {
   useEffect(() => { document.title = 'Operational Discipline — Eliminate Variation | POWERS'; }, []);
@@ -231,18 +264,16 @@ export default function OperationalDiscipline() {
 
             <div className="od-cost-grid" data-testid="od-cost-grid">
               {COSTS.map((c, i) => (
-                <article
+                <CollapseCard
                   key={c.num}
-                  className={`od-cost-card wipe wipe-d${Math.min(6, i + 1)}`}
-                  data-testid={`od-cost-card-${c.num}`}
-                >
-                  <div className="od-cost-card-head">
-                    <span className="od-cost-idx">COST&nbsp;{c.num}</span>
-                    <span className="od-cost-arrow" aria-hidden="true" />
-                  </div>
-                  <div className="od-cost-name">{c.name}</div>
-                  <p className="od-cost-body">{c.body}</p>
-                </article>
+                  variant="cost"
+                  indexLabel="COST"
+                  num={c.num}
+                  name={c.name}
+                  body={c.body}
+                  dataTestid={`od-cost-card-${c.num}`}
+                  delayClass={`wipe-d${Math.min(6, i + 1)}`}
+                />
               ))}
             </div>
 
@@ -300,10 +331,10 @@ export default function OperationalDiscipline() {
           </div>
         </section>
 
-        {/* ─── ROW 6 ─ What It Produces ───────────────────────── */}
+        {/* ─── ROW 6 ─ What You Gain ──────────────────────────── */}
         <section ref={produceRef} className="brief-doc-station od-produce" style={{ background: PAPER_DEEP }}>
           <div className="brief-doc-inner">
-            <div className="station-index wipe">What It Produces</div>
+            <div className="station-index wipe">What You Gain</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
               <span>Build the Management Operating System.</span>
               <span className="pivot">The operation runs by design.</span>
@@ -313,20 +344,18 @@ export default function OperationalDiscipline() {
               With Operational Discipline built in, the symptoms above start reversing themselves. Not because the workforce changed. Because the system the workforce runs inside changed.
             </p>
 
-            <div className="od-outcome-grid" data-testid="od-outcome-grid">
+            <div className="od-outcome-grid" data-testid="od-gain-grid">
               {OUTCOMES.map((o, i) => (
-                <article
+                <CollapseCard
                   key={o.num}
-                  className={`od-outcome-card wipe wipe-d${Math.min(5, i + 1)}`}
-                  data-testid={`od-outcome-card-${o.num}`}
-                >
-                  <div className="od-outcome-card-head">
-                    <span className="od-outcome-idx">OUTCOME&nbsp;{o.num}</span>
-                    <span className="od-outcome-arrow" aria-hidden="true" />
-                  </div>
-                  <div className="od-outcome-name">{o.name}</div>
-                  <p className="od-outcome-body">{o.body}</p>
-                </article>
+                  variant="gain"
+                  indexLabel="GAIN"
+                  num={o.num}
+                  name={o.name}
+                  body={o.body}
+                  dataTestid={`od-gain-card-${o.num}`}
+                  delayClass={`wipe-d${Math.min(5, i + 1)}`}
+                />
               ))}
             </div>
 
@@ -499,58 +528,137 @@ export default function OperationalDiscipline() {
           color: ${TEXT_BODY};
         }
 
-        /* ── Cost cascade ──────────────────────────────────────
-           Six cards in a 3-up grid (desktop), 2-up tablet, stack
-           mobile. Each card carries the gold mono index, a red
-           ↓ chevron, the failure mode name in navy, and the body.
-           Staggered entrance via wipe-d1..d6. */
+        /* ── Cost / Gain accordion grid ─────────────────────────
+           Shared "CollapseCard" primitive. Each card:
+            • renders as a <button> for keyboard accessibility +
+              aria-expanded toggle
+            • shows the gold mono index + colour-coded triangle
+              (red ↓ cost / green ↑ gain) + the +/− toggle mark
+              + the name (always visible)
+            • body is height-animated open on click
+           The cost grid is 3-up on desktop, the gain grid is
+           5-up. Both collapse to 1-up on mobile via the shared
+           media query at the bottom of this file. */
         .od-cost-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 22px;
+          gap: 18px;
           margin-top: 56px;
+          align-items: start;
         }
-        .od-cost-card {
+        .od-outcome-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 14px;
+          margin-top: 56px;
+          align-items: start;
+        }
+        .od-collapse-card {
+          /* Reset native <button> chrome before applying our look. */
+          appearance: none;
+          font: inherit;
+          color: inherit;
           background: ${PAPER};
           border: 1px solid rgba(13, 36, 66, 0.10);
-          padding: 28px 26px 30px;
+          padding: 24px 24px 0;
+          margin: 0;
+          width: 100%;
+          text-align: left;
+          cursor: pointer;
           position: relative;
           overflow: hidden;
-          transition: transform 240ms cubic-bezier(.2,.6,.2,1), border-color 240ms ease, box-shadow 240ms ease;
+          transition: transform 220ms cubic-bezier(.2,.6,.2,1),
+                      border-color 220ms ease,
+                      box-shadow 220ms ease;
         }
-        .od-cost-card:hover {
-          transform: translateY(-2px);
-          border-color: rgba(224, 101, 79, 0.5);
-          box-shadow: 0 14px 30px -22px rgba(224, 101, 79, 0.5);
+        .od-collapse-card:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 2px;
         }
-        .od-cost-card-head {
+        .od-collapse-card--cost:hover {
+          border-color: rgba(224, 101, 79, 0.55);
+          transform: translateY(-1px);
+          box-shadow: 0 14px 30px -22px rgba(224, 101, 79, 0.50);
+        }
+        .od-collapse-card--gain:hover {
+          border-color: rgba(91, 165, 110, 0.55);
+          transform: translateY(-1px);
+          box-shadow: 0 14px 30px -22px rgba(91, 165, 110, 0.55);
+        }
+        .od-collapse-head {
           display: flex; align-items: center; justify-content: space-between;
-          margin-bottom: 14px;
+          margin-bottom: 12px;
         }
-        .od-cost-idx {
+        .od-collapse-idx {
           font-family: ${TYPE.mono};
           font-size: 11px;
           letter-spacing: 0.24em;
-          color: #c04a37;
           text-transform: uppercase;
         }
-        .od-cost-arrow {
-          width: 0; height: 0;
-          border-left: 7px solid transparent;
-          border-right: 7px solid transparent;
-          border-top: 10px solid rgba(224, 101, 79, 0.78);
+        .od-collapse-idx--cost { color: #c04a37; }
+        .od-collapse-idx--gain { color: #4a7a55; }
+        .od-collapse-marks {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
         }
-        .od-cost-name {
+        .od-collapse-arrow {
+          width: 0; height: 0;
+        }
+        .od-collapse-arrow--cost {
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-top: 9px solid rgba(224, 101, 79, 0.78);
+        }
+        .od-collapse-arrow--gain {
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-bottom: 9px solid rgba(91, 165, 110, 0.85);
+        }
+        .od-collapse-toggle {
+          font-family: ${TYPE.mono};
+          font-size: 16px;
+          line-height: 1;
+          color: ${TEXT_BODY};
+          width: 18px; height: 18px;
+          display: inline-flex;
+          align-items: center; justify-content: center;
+          transition: color 180ms ease, transform 220ms ease;
+        }
+        .od-collapse-card--cost.is-open .od-collapse-toggle { color: #c04a37; }
+        .od-collapse-card--gain.is-open .od-collapse-toggle { color: #4a7a55; }
+        .od-collapse-name {
           font-family: ${TYPE.sans};
           font-weight: 700;
-          font-size: 19px;
+          font-size: 17px;
           line-height: 1.3;
           color: ${NAVY};
-          margin-bottom: 10px;
           letter-spacing: -0.005em;
+          padding-bottom: 24px;
         }
-        .od-cost-body {
-          margin: 0;
+        /* Body slot — height animated from collapsed to open.
+           Using max-height + grid-template-rows would be ideal
+           but the simpler max-height trick reads well at the
+           short content lengths used here. */
+        .od-collapse-body {
+          max-height: 0;
+          opacity: 0;
+          overflow: hidden;
+          transition: max-height 320ms cubic-bezier(.2,.6,.2,1),
+                      opacity 240ms ease 60ms;
+        }
+        .od-collapse-card.is-open .od-collapse-body {
+          max-height: 360px;
+          opacity: 1;
+        }
+        .od-collapse-body-inner {
+          padding: 4px 0 26px;
+          border-top: 1px solid rgba(13, 36, 66, 0.08);
+          margin-top: 4px;
+        }
+        .od-collapse-body-inner p {
+          margin: 18px 0 0;
+          font-family: ${TYPE.sans};
           font-size: 14.5px;
           line-height: 1.6;
           color: ${TEXT_BODY};
@@ -649,61 +757,6 @@ export default function OperationalDiscipline() {
           font-size: 16px;
           line-height: 1.6;
           color: ${NAVY};
-        }
-
-        /* ── Outcome rise (mirrors costs) ──────────────────────
-           Five cards, 5-up on desktop, identical grammar to costs
-           but with green palette and ↑ chevrons. Visual symmetry
-           with Row 4 is the page's payoff beat. */
-        .od-outcome-grid {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          gap: 18px;
-          margin-top: 56px;
-        }
-        .od-outcome-card {
-          background: ${PAPER};
-          border: 1px solid rgba(13, 36, 66, 0.10);
-          padding: 26px 22px 28px;
-          position: relative;
-          transition: transform 240ms cubic-bezier(.2,.6,.2,1), border-color 240ms ease, box-shadow 240ms ease;
-        }
-        .od-outcome-card:hover {
-          transform: translateY(-2px);
-          border-color: rgba(91, 165, 110, 0.5);
-          box-shadow: 0 14px 30px -22px rgba(91, 165, 110, 0.55);
-        }
-        .od-outcome-card-head {
-          display: flex; align-items: center; justify-content: space-between;
-          margin-bottom: 14px;
-        }
-        .od-outcome-idx {
-          font-family: ${TYPE.mono};
-          font-size: 11px;
-          letter-spacing: 0.24em;
-          color: #4a7a55;
-          text-transform: uppercase;
-        }
-        .od-outcome-arrow {
-          width: 0; height: 0;
-          border-left: 7px solid transparent;
-          border-right: 7px solid transparent;
-          border-bottom: 10px solid rgba(91, 165, 110, 0.85);
-        }
-        .od-outcome-name {
-          font-family: ${TYPE.sans};
-          font-weight: 700;
-          font-size: 18px;
-          line-height: 1.3;
-          color: ${NAVY};
-          margin-bottom: 10px;
-          letter-spacing: -0.005em;
-        }
-        .od-outcome-body {
-          margin: 0;
-          font-size: 14px;
-          line-height: 1.6;
-          color: ${TEXT_BODY};
         }
 
         /* ── Lock-in mosaic ────────────────────────────────────
