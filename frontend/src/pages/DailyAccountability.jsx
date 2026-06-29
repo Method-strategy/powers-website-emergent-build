@@ -175,13 +175,15 @@ export default function DailyAccountability() {
               Daily Accountability is the structured operating rhythm that runs every day in every operation we build. Not a meeting cadence layered on top of the work. It&rsquo;s the way the work gets managed, shift by shift, with the disciplines we build embedded into every routine. Six interlocking layers, run in a daily loop.
             </p>
 
-            {/* Cadence Loop — serpentine 3+3 grid. Row 1 reads
-                left to right (01 02 03). Row 2 reads right to
-                left (06 05 04). A soft gold arc on the right
-                links the end of row 1 down to the start of row
-                2; a second arc on the left links the end of row
-                2 back up to row 1, visualising the closed loop
-                that runs shift after shift. */}
+            {/* Cadence Loop — 6 cadence-layer cards in a clean
+                3+2 grid reading naturally 01-02-03 across the
+                top row, 04-05-06 across the bottom row. The
+                closed-loop metaphor lives in the gold italic
+                label below ("A daily loop, run every shift.")
+                rather than serpentine reading direction or arc
+                connectors — numerical clarity wins over the
+                visual flourish so users can scan the layers in
+                order. */}
             <div className="da-cadence-loop" data-testid="da-cadence-loop">
               <div className="da-cadence-row da-cadence-row--top">
                 {LAYERS.slice(0, 3).map((l, i) => (
@@ -191,32 +193,25 @@ export default function DailyAccountability() {
                     <p className="da-cadence-card-body">{l.body}</p>
                   </article>
                 ))}
-                {/* Arc on the right of row 1 curving down to row 2 */}
-                <span className="da-cadence-arc da-cadence-arc--right" aria-hidden="true">
-                  <svg viewBox="0 0 60 120" preserveAspectRatio="none" width="60" height="120">
-                    <path d="M 0 12 C 50 12, 50 108, 0 108" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    <polygon points="0,105 6,108 0,111" fill="currentColor" />
-                  </svg>
-                </span>
               </div>
 
               <div className="da-cadence-row da-cadence-row--bottom">
-                {LAYERS.slice(3).reverse().map((l, i) => (
+                {LAYERS.slice(3).map((l, i) => (
                   <article key={l.num} className={`da-cadence-card wipe wipe-d${i + 3}`} data-testid={`da-layer-${l.num}`}>
                     <div className="da-cadence-card-idx">LAYER&nbsp;{l.num}</div>
                     <h3 className="da-cadence-card-name">{l.name}</h3>
                     <p className="da-cadence-card-body">{l.body}</p>
                   </article>
                 ))}
-                {/* Arc on the left of row 2 curving back up to row 1 */}
-                <span className="da-cadence-arc da-cadence-arc--left" aria-hidden="true">
-                  <svg viewBox="0 0 60 120" preserveAspectRatio="none" width="60" height="120">
-                    <path d="M 60 108 C 10 108, 10 12, 60 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 4" strokeLinecap="round" />
-                  </svg>
-                </span>
               </div>
 
-              <div className="da-cadence-loop-label">A daily loop, run every shift.</div>
+              <div className="da-cadence-loop-label">
+                <svg className="da-cadence-loop-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 3-6.7" />
+                  <path d="M3 4v5h5" />
+                </svg>
+                A daily loop, run every shift.
+              </div>
             </div>
 
             <p className="brief-doc-lede wipe" style={{ marginTop: 48 }}>
@@ -448,7 +443,7 @@ export default function DailyAccountability() {
           gap: 14px;
           position: relative;
         }
-        .da-cadence-row--top { margin-bottom: 90px; }
+        .da-cadence-row--top { margin-bottom: 18px; }
         .da-cadence-card {
           position: relative;
           padding: 28px 28px 30px;
@@ -493,27 +488,6 @@ export default function DailyAccountability() {
           line-height: 1.55;
           color: ${TEXT_BODY};
         }
-        /* Arcs connecting row 1 → row 2 and row 2 → row 1 (loop) */
-        .da-cadence-arc {
-          position: absolute;
-          color: ${GOLD_BRIGHT};
-          opacity: 0.6;
-          pointer-events: none;
-        }
-        .da-cadence-arc--right {
-          right: -42px;
-          top: 50%;
-          width: 60px;
-          height: 180px;
-          transform: translateY(-10%);
-        }
-        .da-cadence-arc--left {
-          left: -42px;
-          top: 50%;
-          width: 60px;
-          height: 180px;
-          transform: translateY(-90%);
-        }
         .da-cadence-loop-label {
           margin-top: 28px;
           text-align: center;
@@ -521,6 +495,16 @@ export default function DailyAccountability() {
           font-style: italic;
           font-size: clamp(15px, 1.4vw, 17px);
           color: ${GOLD_BRIGHT};
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          justify-self: center;
+          width: 100%;
+          justify-content: center;
+        }
+        .da-cadence-loop-icon {
+          flex-shrink: 0;
+          opacity: 0.85;
         }
 
         /* ── DPS Band (Row 4 — unique to DA) ─────────────────── */
@@ -748,8 +732,7 @@ export default function DailyAccountability() {
         /* ── Tablet ────────────────────────────────────────── */
         @media (max-width: 1099px) {
           .da-cadence-row        { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-          .da-cadence-row--top   { margin-bottom: 60px; }
-          .da-cadence-arc        { display: none; }
+          .da-cadence-row--top   { margin-bottom: 12px; }
           .da-dps-grid           { grid-template-columns: 1fr; }
           .da-cost-grid          { grid-template-columns: repeat(2, 1fr); }
           .da-phase-grid         { grid-template-columns: repeat(2, 1fr); }
