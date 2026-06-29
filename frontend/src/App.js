@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomeLayout from './components/HomeLayout';
+import RouteTransitionRule from './components/RouteTransitionRule';
 
 import Home from './pages/Home';
 import Approach from './pages/Approach';
@@ -26,6 +27,7 @@ import CaseStudyDefenseAerospaceOTD from './pages/CaseStudyDefenseAerospaceOTD';
 function App() {
   return (
     <BrowserRouter>
+      <RouteTransitionRule />
       <Routes>
         {/* Homepage renders its own inline BriefHeader + BriefFooter
             — no shared chrome. The "Operating Brief" V5 design is

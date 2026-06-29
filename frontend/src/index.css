@@ -51,6 +51,47 @@ html, body {
    in older browsers it falls back to default behavior (the original shift). */
 html { scrollbar-gutter: stable; }
 
+/* ── Page transition: gold rule wipe on every route change ──
+   The 1px gold hairline that sits along the bottom of every
+   .brief-header gets reborn as a left-to-right scaleX wipe each
+   time the user navigates between pages. Reinforces the
+   "Operating Brief, chapter by chapter" reading metaphor —
+   route changes feel deliberately authored rather than instant
+   React swaps.
+
+   Implementation: we suppress the existing border-bottom: 1px
+   solid gold on .brief-header and re-introduce it as a pseudo-
+   element so the line is independently transformable. The
+   default state is scaleX(1) (rule fully drawn). When the
+   <html> element gains .brief-route-transitioning (toggled by
+   RouteTransitionRule on react-router pathname change), the
+   pseudo runs a single 700ms brief-rule-wipe-in animation.
+   Animation is fully suppressed under prefers-reduced-motion. */
+.brief-header { border-bottom: none !important; position: relative; }
+.brief-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: #e89346;
+  transform-origin: left center;
+  transform: scaleX(1);
+  pointer-events: none;
+  z-index: 101;
+}
+html.brief-route-transitioning .brief-header::after {
+  animation: brief-rule-wipe-in 700ms cubic-bezier(.2, .6, .2, 1) both;
+}
+@keyframes brief-rule-wipe-in {
+  0%   { transform: scaleX(0); transform-origin: left center; }
+  100% { transform: scaleX(1); transform-origin: left center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.brief-route-transitioning .brief-header::after { animation: none; }
+}
+
 /* Typography QC — global balancing per CLAUDE.md standing instruction */
 h1, h2, h3, .eyebrow, .pw-eyebrow { text-wrap: balance; }
 .pw-body p, .pw-body li { text-wrap: pretty; }
