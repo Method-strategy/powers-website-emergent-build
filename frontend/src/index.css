@@ -88,32 +88,32 @@ html { scrollbar-gutter: stable; }
   position: absolute;
   left: 0;
   bottom: -2px;
-  width: 110px;
+  width: 140px;
   height: 3px;
   border-radius: 2px;
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 207, 140, 1) 0%,
-    rgba(232, 147, 70, 0.85) 35%,
-    rgba(232, 147, 70, 0) 75%
+    rgba(255, 215, 155, 1) 0%,
+    rgba(232, 147, 70, 0.92) 35%,
+    rgba(232, 147, 70, 0) 78%
   );
   box-shadow:
-    0 0 6px rgba(255, 207, 140, 0.55),
-    0 0 14px rgba(232, 147, 70, 0.30);
+    0 0 8px rgba(255, 215, 155, 0.65),
+    0 0 18px rgba(232, 147, 70, 0.38);
   filter: blur(0.4px);
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-130px);
+  transform: translateX(-160px);
   z-index: 102;
 }
 html.brief-route-transitioning .brief-header::before {
-  animation: brief-rule-pulse 900ms cubic-bezier(.4, .08, .35, 1) both;
+  animation: brief-rule-pulse 1500ms cubic-bezier(.45, .05, .55, .95) both;
 }
 @keyframes brief-rule-pulse {
-  0%   { transform: translateX(-130px); opacity: 0; }
-  10%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { transform: translateX(calc(100vw + 20px)); opacity: 0; }
+  0%   { transform: translateX(-160px); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateX(calc(100vw + 30px)); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   html.brief-route-transitioning .brief-header::before { animation: none; }

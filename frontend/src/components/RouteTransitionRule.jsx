@@ -46,7 +46,7 @@ export default function RouteTransitionRule() {
     root.classList.add('brief-route-transitioning');
     const t = setTimeout(() => {
       root.classList.remove('brief-route-transitioning');
-    }, 800);
+    }, 1600);
     return () => clearTimeout(t);
   }, [pathname]);
 
