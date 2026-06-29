@@ -82,7 +82,7 @@ const TECHNICAL = [
 const RESULTS = [
   { figure: '47%',  caption: 'productivity gains documented in POWERS engagements driven by maintenance performance improvement.' },
   { figure: '85%',  caption: 'maintenance labor utilization improvements delivered through the AMP program.' },
-  { figure: '$M+',  caption: 'multi-million-dollar annualized savings from maintenance performance improvement alone.' },
+  { figure: '$500+', caption: 'multi-million-dollar annualized savings from maintenance performance improvement alone.' },
 ];
 
 const SISTER_DISCIPLINES = [

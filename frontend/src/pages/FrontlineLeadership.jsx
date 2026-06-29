@@ -217,20 +217,36 @@ export default function FrontlineLeadership() {
               Frontline Leadership is the operational capability we build in supervisors, team leads, and shift managers so they can run their part of the operation with discipline, judgment, and confidence. It is not a training program. It is a daily practice that becomes how the operation gets run. It shows up across four areas of leadership capability we build directly into your supervisors:
             </p>
 
-            <div className="fl-cap-stack" data-testid="fl-cap-stack">
-              {LEADERSHIP_CAPABILITIES.map((c, i) => (
-                <article
-                  key={c.idx}
-                  className={`fl-cap-layer wipe wipe-d${Math.min(4, i + 3)}`}
-                  data-testid={`fl-cap-layer-${c.idx.toLowerCase()}`}
-                >
-                  <div className="fl-cap-layer-idx">{c.idx}</div>
-                  <div className="fl-cap-layer-body">
-                    <div className="fl-cap-layer-name">{c.name}</div>
-                    <p>{c.body}</p>
-                  </div>
-                </article>
-              ))}
+            <div className="fl-quadrant" data-testid="fl-quadrant">
+              {/* Central cross-axis + role node. The four capability
+                  cells live in a 2x2 grid around this hub, each
+                  pushed away from the center so the gold cross
+                  axis reads as a structural divider. Distinct from
+                  the horizontal MOS stack on OD and the duo-channel
+                  diagram on Equipment Reliability. */}
+              <div className="fl-quadrant-axis" aria-hidden="true">
+                <span className="fl-quadrant-axis-h" />
+                <span className="fl-quadrant-axis-v" />
+                <span className="fl-quadrant-center">
+                  <span className="fl-quadrant-center-eyebrow">The Role</span>
+                  <span className="fl-quadrant-center-name">Frontline Leader</span>
+                </span>
+              </div>
+              {LEADERSHIP_CAPABILITIES.map((c, i) => {
+                const positions = ['nw', 'ne', 'sw', 'se'];
+                const pos = positions[i] || 'nw';
+                return (
+                  <article
+                    key={c.idx}
+                    className={`fl-quadrant-cell fl-quadrant-cell--${pos} wipe wipe-d${Math.min(4, i + 3)}`}
+                    data-testid={`fl-cap-layer-${c.idx.toLowerCase()}`}
+                  >
+                    <div className="fl-quadrant-cell-idx">{c.idx}</div>
+                    <div className="fl-quadrant-cell-name">{c.name}</div>
+                    <p className="fl-quadrant-cell-body">{c.body}</p>
+                  </article>
+                );
+              })}
             </div>
 
             <p className="brief-doc-lede wipe wipe-d5" style={{ marginTop: 40 }}>
@@ -538,58 +554,125 @@ export default function FrontlineLeadership() {
           color: ${NAVY};
         }
 
-        /* ── Capability stack (Row 3) ──────────────────────────
-           Same stacked-blueprint visual as the MOS layers on
-           /operational-discipline. Four horizontal slabs, hairline
-           gold rules between, mono index left + name + body
-           right. Hover reveals a 3px gold left edge. */
-        .fl-cap-stack {
-          margin-top: 56px;
-          border: 1px solid rgba(13, 36, 66, 0.12);
-          background: ${PAPER};
-          box-shadow: 0 1px 0 rgba(13, 36, 66, 0.04), 0 30px 80px -60px rgba(13, 36, 66, 0.35);
-        }
-        .fl-cap-layer {
-          display: grid;
-          grid-template-columns: 112px 1fr;
-          gap: 32px;
-          align-items: start;
-          padding: 36px 40px;
-          border-bottom: 1px solid rgba(232, 147, 70, 0.30);
+        /* ── Quadrant matrix (Row 3) ──────────────────────────
+           Four capability cells arranged in a 2x2 grid around a
+           central gold cross-axis with a circular role node at
+           the intersection. Distinct visual primitive from the
+           horizontal slab stacks used on OD (MOS stack) and the
+           duo-channel diagram used on Equipment Reliability. */
+        .fl-quadrant {
           position: relative;
+          margin-top: 64px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: auto auto;
+          gap: 0;
+          background: ${PAPER};
+          border: 1px solid rgba(13, 36, 66, 0.12);
+          box-shadow: 0 1px 0 rgba(13, 36, 66, 0.04), 0 30px 80px -60px rgba(13, 36, 66, 0.35);
+          isolation: isolate;
         }
-        .fl-cap-layer:last-child { border-bottom: none; }
-        .fl-cap-layer::before {
-          content: '';
+        .fl-quadrant-axis {
           position: absolute;
-          left: 0; top: 0; bottom: 0;
-          width: 3px;
+          inset: 0;
+          pointer-events: none;
+          z-index: 2;
+        }
+        .fl-quadrant-axis-h,
+        .fl-quadrant-axis-v {
+          position: absolute;
           background: ${GOLD_BRIGHT};
-          opacity: 0.0;
-          transition: opacity 240ms ease;
+          opacity: 0.55;
         }
-        .fl-cap-layer:hover::before { opacity: 1; }
-        .fl-cap-layer-idx {
+        .fl-quadrant-axis-h {
+          left: 0; right: 0;
+          top: 50%;
+          height: 1px;
+          transform: translateY(-0.5px);
+          clip-path: inset(0 50% 0 50%);
+          transition: clip-path 1100ms cubic-bezier(.2,.6,.2,1) 300ms;
+        }
+        .fl-quadrant-axis-v {
+          top: 0; bottom: 0;
+          left: 50%;
+          width: 1px;
+          transform: translateX(-0.5px);
+          clip-path: inset(50% 0 50% 0);
+          transition: clip-path 1100ms cubic-bezier(.2,.6,.2,1) 550ms;
+        }
+        .fl-cap.is-in .fl-quadrant-axis-h { clip-path: inset(0 0 0 0); }
+        .fl-cap.is-in .fl-quadrant-axis-v { clip-path: inset(0 0 0 0); }
+        .fl-quadrant-center {
+          position: absolute;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%) scale(0.6);
+          opacity: 0;
+          width: 168px; height: 168px;
+          border-radius: 50%;
+          background: ${NAVY};
+          color: #ffffff;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          border: 2px solid ${GOLD_BRIGHT};
+          box-shadow: 0 0 0 8px ${PAPER}, 0 20px 50px -30px rgba(13, 36, 66, 0.55);
+          transition: opacity 600ms ease 800ms, transform 700ms cubic-bezier(.2,.6,.2,1) 800ms;
+        }
+        .fl-cap.is-in .fl-quadrant-center {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        .fl-quadrant-center-eyebrow {
           font-family: ${TYPE.mono};
-          font-size: 13px;
-          letter-spacing: 0.24em;
+          font-size: 10px;
+          letter-spacing: 0.32em;
           color: ${GOLD_BRIGHT};
-          padding-top: 6px;
+          text-transform: uppercase;
         }
-        .fl-cap-layer-name {
+        .fl-quadrant-center-name {
           font-family: ${TYPE.sans};
           font-weight: 700;
-          font-size: clamp(22px, 2.1vw, 28px);
-          line-height: 1.2;
-          color: ${NAVY};
-          margin-bottom: 12px;
+          font-size: 17px;
+          line-height: 1.15;
+          text-align: center;
           letter-spacing: -0.005em;
         }
-        .fl-cap-layer-body p {
+        .fl-quadrant-cell {
+          position: relative;
+          padding: 48px 56px;
+          z-index: 1;
+        }
+        /* Each cell is pushed away from the center node so the
+           cross-axis reads as a divider and the content doesn't
+           collide with the circular hub. */
+        .fl-quadrant-cell--nw { padding-right: 124px; padding-bottom: 124px; text-align: right; }
+        .fl-quadrant-cell--ne { padding-left:  124px; padding-bottom: 124px; }
+        .fl-quadrant-cell--sw { padding-right: 124px; padding-top:    124px; text-align: right; }
+        .fl-quadrant-cell--se { padding-left:  124px; padding-top:    124px; }
+        .fl-quadrant-cell-idx {
+          font-family: ${TYPE.mono};
+          font-size: 12px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          margin-bottom: 14px;
+        }
+        .fl-quadrant-cell-name {
+          font-family: ${TYPE.sans};
+          font-weight: 700;
+          font-size: clamp(20px, 1.9vw, 24px);
+          line-height: 1.22;
+          color: ${NAVY};
+          margin-bottom: 14px;
+          letter-spacing: -0.005em;
+        }
+        .fl-quadrant-cell-body {
           margin: 0;
           font-family: ${TYPE.sans};
-          font-size: 16px;
-          line-height: 1.65;
+          font-size: 15px;
+          line-height: 1.6;
           color: ${TEXT_BODY};
         }
 
@@ -926,11 +1009,29 @@ export default function FrontlineLeadership() {
           .fl-build-rail   { grid-template-columns: repeat(2, 1fr); gap: 40px 32px; }
           .fl-build-rail-line { display: none; }
           .fl-stat-strip-grid { grid-template-columns: 1fr; gap: 22px; }
+          .fl-quadrant     {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto auto;
+          }
+          .fl-quadrant-axis { display: none; }
+          .fl-quadrant-cell,
+          .fl-quadrant-cell--nw,
+          .fl-quadrant-cell--ne,
+          .fl-quadrant-cell--sw,
+          .fl-quadrant-cell--se {
+            padding: 36px 40px;
+            text-align: left;
+            border-bottom: 1px solid rgba(232, 147, 70, 0.30);
+          }
+          .fl-quadrant-cell:last-child { border-bottom: none; }
         }
         /* ── Mobile ────────────────────────────────────────── */
         @media (max-width: 639px) {
-          .fl-cap-layer    { grid-template-columns: 1fr; gap: 12px; padding: 28px 22px; }
-          .fl-cap-layer-idx { padding-top: 0; }
+          .fl-quadrant-cell,
+          .fl-quadrant-cell--nw,
+          .fl-quadrant-cell--ne,
+          .fl-quadrant-cell--sw,
+          .fl-quadrant-cell--se { padding: 28px 22px; }
           .fl-cost-grid,
           .fl-gain-grid,
           .fl-mosaic,
