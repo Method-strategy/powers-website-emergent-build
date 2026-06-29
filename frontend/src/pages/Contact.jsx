@@ -9,26 +9,26 @@ import BriefDocStyles, {
 /* ╔══════════════════════════════════════════════════════════════════
    ║  Contact — "Let's Talk"
    ║  ─────────────────────────────────────────────────────────────
-   ║  Plain hero (no video, no background image — same chassis as
-   ║  the About-menu pages like /leadership). Five rows:
-   ║    1. Hero — H1 + lede + gold rule
-   ║    2. How To Reach Us — three channels (call / email / online)
-   ║    3. What To Expect — prose about the first conversation
-   ║    4. Contact Form — mockup placeholder (8 fields). Submit is
-   ║       a no-op until the Gravity Forms / WP REST integration
-   ║       lands at launch. Submitting shows an inline "received"
-   ║       confirmation so the affordance is testable.
-   ║    5. Corporate Offices — address block + LinkedIn link
+   ║  Three rows (down from five — the earlier draft fragmented
+   ║  the page into hero / channels / expect / form / offices,
+   ║  each with its own background switch, which read as
+   ║  disjointed):
    ║
-   ║  All selectors `ct-` prefixed so this page's form + offices
-   ║  styles never collide with any discipline page.
+   ║    1. Hero               — paper, H1 + gold rule + lede
+   ║    2. What To Expect     — paper_deep, prose + "won't do" list
+   ║    3. Send Us a Note     — paper, two-column composition:
+   ║         left  : the contact form (primary action)
+   ║         right : sidebar with phone / email / LinkedIn +
+   ║                 hairline + corporate office address
+   ║
+   ║  This puts the form (the page's actual conversion) at the
+   ║  visual centre instead of one of five equal-weight bands,
+   ║  and reduces background-color switching to twice instead of
+   ║  four times.  All content from the earlier draft is
+   ║  preserved.
+   ║
+   ║  All selectors `ct-` prefixed.
    ╚══════════════════════════════════════════════════════════════════ */
-
-const CHANNELS = [
-  { kind: 'Call',   tag: 'Call',   value: '+1 678-971-4711',          href: 'tel:+16789714711',                  testid: 'ct-channel-call'  },
-  { kind: 'Email',  tag: 'Email',  value: 'info@thepowerscompany.com', href: 'mailto:info@thepowerscompany.com',  testid: 'ct-channel-email' },
-  { kind: 'Online', tag: 'Online', value: 'Send the note below',       href: '#ct-form',                          testid: 'ct-channel-online'},
-];
 
 const LINKEDIN_URL = 'https://www.linkedin.com/company/the-powers-company/';
 
@@ -41,96 +41,62 @@ function ContactForm() {
   const change = (k) => (e) => setValues(v => ({ ...v, [k]: e.target.value }));
   const submit = (e) => {
     e.preventDefault();
-    // Mockup behaviour — Gravity Forms / WP REST integration ships at
-    // launch. For now, show the affordance and acknowledge receipt
-    // inline so testing + visual review can exercise the flow.
+    // Mockup — Gravity Forms / WP REST integration lands at launch.
     setSent(true);
   };
-
   return (
     <form className="ct-form" onSubmit={submit} noValidate data-testid="ct-form">
       <div className="ct-form-row">
         <label className="ct-field">
           <span className="ct-field-label">First Name <em>*</em></span>
-          <input
-            type="text" required
-            value={values.firstName} onChange={change('firstName')}
-            data-testid="ct-field-firstName" autoComplete="given-name"
-          />
+          <input type="text" required value={values.firstName} onChange={change('firstName')} data-testid="ct-field-firstName" autoComplete="given-name" />
         </label>
         <label className="ct-field">
           <span className="ct-field-label">Last Name <em>*</em></span>
-          <input
-            type="text" required
-            value={values.lastName} onChange={change('lastName')}
-            data-testid="ct-field-lastName" autoComplete="family-name"
-          />
+          <input type="text" required value={values.lastName} onChange={change('lastName')} data-testid="ct-field-lastName" autoComplete="family-name" />
+        </label>
+      </div>
+
+      <div className="ct-form-row">
+        <label className="ct-field">
+          <span className="ct-field-label">Title <em>*</em></span>
+          <input type="text" required value={values.title} onChange={change('title')} data-testid="ct-field-title" autoComplete="organization-title" />
+        </label>
+        <label className="ct-field">
+          <span className="ct-field-label">Company <em>*</em></span>
+          <input type="text" required value={values.company} onChange={change('company')} data-testid="ct-field-company" autoComplete="organization" />
         </label>
       </div>
 
       <label className="ct-field">
-        <span className="ct-field-label">Title <em>*</em></span>
-        <input
-          type="text" required
-          value={values.title} onChange={change('title')}
-          data-testid="ct-field-title" autoComplete="organization-title"
-        />
-      </label>
-
-      <label className="ct-field">
-        <span className="ct-field-label">Company <em>*</em></span>
-        <input
-          type="text" required
-          value={values.company} onChange={change('company')}
-          data-testid="ct-field-company" autoComplete="organization"
-        />
-      </label>
-
-      <label className="ct-field">
         <span className="ct-field-label">Company Website <em>*</em></span>
-        <input
-          type="url" required placeholder="https://"
-          value={values.website} onChange={change('website')}
-          data-testid="ct-field-website" autoComplete="url"
-        />
+        <input type="url" required placeholder="https://" value={values.website} onChange={change('website')} data-testid="ct-field-website" autoComplete="url" />
       </label>
 
       <div className="ct-form-row">
         <label className="ct-field">
           <span className="ct-field-label">Email <em>*</em></span>
-          <input
-            type="email" required
-            value={values.email} onChange={change('email')}
-            data-testid="ct-field-email" autoComplete="email"
-          />
+          <input type="email" required value={values.email} onChange={change('email')} data-testid="ct-field-email" autoComplete="email" />
         </label>
         <label className="ct-field">
           <span className="ct-field-label">Phone <em>*</em></span>
-          <input
-            type="tel" required
-            value={values.phone} onChange={change('phone')}
-            data-testid="ct-field-phone" autoComplete="tel"
-          />
+          <input type="tel" required value={values.phone} onChange={change('phone')} data-testid="ct-field-phone" autoComplete="tel" />
         </label>
       </div>
 
       <label className="ct-field">
         <span className="ct-field-label">What&rsquo;s on your mind? <span className="ct-field-optional">optional</span></span>
         <textarea
-          rows={5}
-          value={values.message} onChange={change('message')}
+          rows={4}
+          value={values.message}
+          onChange={change('message')}
           data-testid="ct-field-message"
           placeholder="A sentence or two about the operation, the pressure you&rsquo;re feeling, or the conversation you want to start."
         />
       </label>
 
       <div className="ct-form-footer">
-        <button
-          type="submit"
-          className="ct-submit"
-          disabled={sent}
-          data-testid="ct-submit"
-        >
+        <button type="submit" className="ct-submit" disabled={sent} data-testid="ct-submit">
           {sent ? 'Note Received' : 'Send the Note'}
           <span aria-hidden="true" className="ct-submit-arrow">&rarr;</span>
         </button>
@@ -154,11 +120,9 @@ function ContactForm() {
 
 export default function Contact() {
   useEffect(() => { document.title = "Let\u2019s Talk — Contact POWERS"; }, []);
-  const heroRef    = useRef(null); useInViewClass(heroRef);
-  const reachRef   = useRef(null); useInViewClass(reachRef, 0.20);
-  const expectRef  = useRef(null); useInViewClass(expectRef, 0.18);
-  const formRef    = useRef(null); useInViewClass(formRef, 0.14);
-  const officesRef = useRef(null); useInViewClass(officesRef, 0.18);
+  const heroRef   = useRef(null); useInViewClass(heroRef);
+  const expectRef = useRef(null); useInViewClass(expectRef, 0.18);
+  const formRef   = useRef(null); useInViewClass(formRef, 0.14);
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
@@ -183,36 +147,8 @@ export default function Contact() {
           </div>
         </section>
 
-        {/* ─── ROW 2 ─ How to Reach Us ────────────────────────── */}
-        <section ref={reachRef} className="brief-doc-station ct-reach" style={{ background: PAPER_DEEP }}>
-          <div className="brief-doc-inner">
-            <div className="station-index wipe">Start the Conversation</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>Three ways to reach us.</span>
-              <span className="pivot">Whichever fits how you work.</span>
-            </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
-
-            <div className="ct-channels" data-testid="ct-channels">
-              {CHANNELS.map((c, i) => (
-                <a
-                  key={c.kind}
-                  href={c.href}
-                  className={`ct-channel wipe wipe-d${i + 3}`}
-                  data-testid={c.testid}
-                  {...(c.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  <div className="ct-channel-tag">{c.tag}</div>
-                  <div className="ct-channel-value">{c.value}</div>
-                  <span className="ct-channel-arrow" aria-hidden="true">&rarr;</span>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ─── ROW 3 ─ What to Expect ─────────────────────────── */}
-        <section ref={expectRef} className="brief-doc-station" style={{ background: PAPER }}>
+        {/* ─── ROW 2 ─ What to Expect ─────────────────────────── */}
+        <section ref={expectRef} className="brief-doc-station" style={{ background: PAPER_DEEP }}>
           <div className="brief-doc-inner">
             <div className="station-index wipe">What to Expect</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
@@ -238,13 +174,8 @@ export default function Contact() {
           </div>
         </section>
 
-        {/* ─── ROW 4 ─ Contact Form ───────────────────────────── */}
-        <section
-          id="ct-form"
-          ref={formRef}
-          className="brief-doc-station ct-form-station"
-          style={{ background: PAPER_DEEP }}
-        >
+        {/* ─── ROW 3 ─ Send Us a Note (form + sidebar) ────────── */}
+        <section id="ct-form" ref={formRef} className="brief-doc-station ct-form-station" style={{ background: PAPER }}>
           <div className="brief-doc-inner">
             <div className="station-index wipe">Send Us a Note</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
@@ -253,47 +184,58 @@ export default function Contact() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
-            <div className="ct-form-shell wipe wipe-d3">
-              <ContactForm />
-            </div>
-          </div>
-        </section>
-
-        {/* ─── ROW 5 ─ Corporate Offices ──────────────────────── */}
-        <section ref={officesRef} className="brief-doc-station ct-offices" style={{ background: NAVY }}>
-          <div className="brief-doc-inner">
-            <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Corporate Offices</div>
-
-            <div className="ct-offices-grid wipe wipe-d1">
-              <address className="ct-offices-address" data-testid="ct-offices-address">
-                <div className="ct-offices-line ct-offices-line--name">POWERS</div>
-                <div className="ct-offices-line">1801 Peachtree Street NE, Suite 200</div>
-                <div className="ct-offices-line">Atlanta, GA 30309</div>
-                <div className="ct-offices-line ct-offices-line--gap">
-                  <a href="tel:+16789714711" className="ct-offices-link" data-testid="ct-offices-phone">+1 678-971-4711</a>
-                </div>
-                <div className="ct-offices-line">
-                  <a href="mailto:info@thepowerscompany.com" className="ct-offices-link" data-testid="ct-offices-email">info@thepowerscompany.com</a>
-                </div>
-              </address>
-
-              <div className="ct-offices-social">
-                <a
-                  href={LINKEDIN_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ct-offices-linkedin"
-                  data-testid="ct-offices-linkedin"
-                >
-                  <span className="ct-offices-linkedin-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                      <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.65-1.85 3.39-1.85 3.62 0 4.29 2.38 4.29 5.48v6.26zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
-                    </svg>
-                  </span>
-                  <span className="ct-offices-linkedin-label">Connect on LinkedIn</span>
-                  <span className="ct-offices-linkedin-arrow" aria-hidden="true">&rarr;</span>
-                </a>
+            <div className="ct-grid wipe wipe-d3">
+              {/* Left — form */}
+              <div className="ct-form-shell">
+                <ContactForm />
               </div>
+
+              {/* Right — sidebar: alt channels + corporate offices */}
+              <aside className="ct-sidebar" data-testid="ct-sidebar">
+                <div className="ct-sidebar-block">
+                  <div className="ct-sidebar-heading">Or reach us another way</div>
+                  <ul className="ct-sidebar-list">
+                    <li>
+                      <span className="ct-sidebar-tag">Call</span>
+                      <a className="ct-sidebar-value" href="tel:+16789714711" data-testid="ct-channel-call">
+                        +1 678-971-4711
+                      </a>
+                    </li>
+                    <li>
+                      <span className="ct-sidebar-tag">Email</span>
+                      <a className="ct-sidebar-value" href="mailto:info@thepowerscompany.com" data-testid="ct-channel-email">
+                        info@thepowerscompany.com
+                      </a>
+                    </li>
+                    <li>
+                      <span className="ct-sidebar-tag">LinkedIn</span>
+                      <a
+                        className="ct-sidebar-value ct-sidebar-value--linkedin"
+                        href={LINKEDIN_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="ct-channel-linkedin"
+                      >
+                        <svg className="ct-li-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                          <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.65-1.85 3.39-1.85 3.62 0 4.29 2.38 4.29 5.48v6.26zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
+                        </svg>
+                        Connect on LinkedIn
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="ct-sidebar-divider" aria-hidden="true" />
+
+                <div className="ct-sidebar-block">
+                  <div className="ct-sidebar-heading">Corporate Office</div>
+                  <address className="ct-sidebar-address" data-testid="ct-offices-address">
+                    <div className="ct-sidebar-address-name">POWERS</div>
+                    <div>1801 Peachtree Street NE, Suite 200</div>
+                    <div>Atlanta, GA 30309</div>
+                  </address>
+                </div>
+              </aside>
             </div>
           </div>
         </section>
@@ -301,75 +243,11 @@ export default function Contact() {
       <BriefFooter />
 
       <style>{`
-        /* ── Channels strip (Row 2) ────────────────────────── */
-        .ct-channels {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 18px;
-          margin-top: 56px;
-        }
-        .ct-channel {
-          position: relative;
-          display: block;
-          padding: 32px 32px 36px;
-          background: ${PAPER};
-          border: 1px solid rgba(13, 36, 66, 0.10);
-          color: ${NAVY};
-          text-decoration: none;
-          overflow: hidden;
-          transition: transform 220ms cubic-bezier(.2,.6,.2,1), border-color 220ms ease, box-shadow 220ms ease;
-        }
-        .ct-channel::before {
-          content: '';
-          position: absolute;
-          left: 0; top: 0; bottom: 0;
-          width: 3px;
-          background: ${GOLD_BRIGHT};
-          opacity: 0;
-          transition: opacity 220ms ease;
-        }
-        .ct-channel:hover {
-          transform: translateY(-2px);
-          border-color: rgba(232, 147, 70, 0.55);
-          box-shadow: 0 14px 30px -22px rgba(232, 147, 70, 0.45);
-        }
-        .ct-channel:hover::before { opacity: 0.85; }
-        .ct-channel-tag {
-          font-family: ${TYPE.mono};
-          font-size: 11px;
-          letter-spacing: 0.30em;
-          color: ${GOLD_BRIGHT};
-          text-transform: uppercase;
-          margin-bottom: 12px;
-        }
-        .ct-channel-value {
-          font-family: ${TYPE.serif};
-          font-style: italic;
-          font-weight: 500;
-          font-size: clamp(22px, 2.1vw, 28px);
-          line-height: 1.18;
-          color: ${NAVY};
-          letter-spacing: -0.005em;
-        }
-        .ct-channel-arrow {
-          position: absolute;
-          right: 22px; bottom: 18px;
-          font-size: 18px;
-          color: ${TEXT_BODY};
-          opacity: 0.6;
-          transition: transform 220ms ease, color 220ms ease, opacity 220ms ease;
-        }
-        .ct-channel:hover .ct-channel-arrow {
-          color: ${GOLD_BRIGHT};
-          opacity: 1;
-          transform: translateX(4px);
-        }
-
-        /* ── "What we won't do" callout (Row 3) ────────────── */
+        /* ── "What we won't do" callout (Row 2) ─────────────── */
         .ct-wont {
           margin: 40px 0 0;
           padding: 28px 32px;
-          background: ${PAPER_DEEP};
+          background: ${PAPER};
           border-left: 3px solid ${GOLD_BRIGHT};
           max-width: 880px;
         }
@@ -411,14 +289,18 @@ export default function Contact() {
           color: ${GOLD_BRIGHT};
         }
 
-        /* ── Contact form (Row 4) ───────────────────────────── */
-        .ct-form-shell {
+        /* ── Row 3 grid: form (left) + sidebar (right) ─────── */
+        .ct-grid {
           margin-top: 56px;
-          max-width: 760px;
-          padding: 44px 48px;
+          display: grid;
+          grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+          gap: 56px;
+          align-items: start;
+        }
+        .ct-form-shell {
           background: ${PAPER};
           border: 1px solid rgba(13, 36, 66, 0.10);
-          box-shadow: 0 30px 80px -60px rgba(13, 36, 66, 0.35);
+          padding: 36px 40px;
         }
         .ct-form {
           display: grid;
@@ -429,9 +311,7 @@ export default function Contact() {
           grid-template-columns: 1fr 1fr;
           gap: 22px;
         }
-        .ct-field {
-          display: block;
-        }
+        .ct-field { display: block; }
         .ct-field-label {
           display: block;
           font-family: ${TYPE.mono};
@@ -565,104 +445,91 @@ export default function Contact() {
           color: ${NAVY};
         }
 
-        /* ── Corporate offices (Row 5) ──────────────────────── */
-        .ct-offices-grid {
-          margin-top: 56px;
+        /* ── Sidebar (right column of Row 3) ─────────────────── */
+        .ct-sidebar {
+          padding: 8px 0 0;
+        }
+        .ct-sidebar-block + .ct-sidebar-block {
+          margin-top: 0;
+        }
+        .ct-sidebar-heading {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          margin-bottom: 18px;
+        }
+        .ct-sidebar-list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 48px;
-          align-items: start;
+          gap: 18px;
         }
-        .ct-offices-address {
-          font-style: normal;
-          color: rgba(255, 255, 255, 0.86);
+        .ct-sidebar-list li {
+          display: grid;
+          gap: 4px;
         }
-        .ct-offices-line {
+        .ct-sidebar-tag {
+          font-family: ${TYPE.mono};
+          font-size: 10px;
+          letter-spacing: 0.24em;
+          color: ${TEXT_BODY};
+          text-transform: uppercase;
+        }
+        .ct-sidebar-value {
           font-family: ${TYPE.sans};
-          font-size: 16px;
-          line-height: 1.75;
-        }
-        /* "POWERS" sits at the top of the address block as a bold
-           version of the same address-line styling — same font,
-           same size, same line-height, just bold. This section
-           intentionally has no H2 subhead — the eyebrow + the
-           address itself carry the row. */
-        .ct-offices-line--name {
-          font-family: ${TYPE.sans};
-          font-weight: 800;
-          font-size: 16px;
-          line-height: 1.75;
-          letter-spacing: 0;
-          color: #ffffff;
-          text-transform: none;
-        }
-        .ct-offices-line--gap { margin-top: 18px; }
-        .ct-offices-link {
-          color: rgba(255, 255, 255, 0.86);
+          font-weight: 600;
+          font-size: 17px;
+          line-height: 1.35;
+          color: ${NAVY};
           text-decoration: none;
-          border-bottom: 1px solid rgba(232, 147, 70, 0.4);
-          transition: color 200ms ease, border-color 200ms ease;
+          word-break: break-word;
+          border-bottom: 1px solid rgba(13, 36, 66, 0.18);
+          padding-bottom: 2px;
+          align-self: start;
+          transition: color 180ms ease, border-color 180ms ease;
         }
-        .ct-offices-link:hover {
+        .ct-sidebar-value:hover {
           color: ${GOLD_BRIGHT};
           border-bottom-color: ${GOLD_BRIGHT};
         }
-        .ct-offices-linkedin {
-          display: grid;
-          grid-template-columns: 56px 1fr 24px;
-          gap: 22px;
-          align-items: center;
-          padding: 24px 28px;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.10);
-          color: #ffffff;
-          text-decoration: none;
-          transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
-        }
-        .ct-offices-linkedin:hover {
-          background: rgba(232, 147, 70, 0.10);
-          border-color: rgba(232, 147, 70, 0.5);
-          transform: translateY(-1px);
-        }
-        .ct-offices-linkedin-icon {
-          width: 56px; height: 56px;
-          background: ${GOLD_BRIGHT};
-          color: ${NAVY};
+        .ct-sidebar-value--linkedin {
           display: inline-flex;
           align-items: center;
-          justify-content: center;
-          border-radius: 4px;
+          gap: 10px;
         }
-        .ct-offices-linkedin-label {
-          font-family: ${TYPE.sans};
-          font-weight: 700;
-          font-size: 17px;
-          letter-spacing: -0.005em;
-          color: #ffffff;
-        }
-        .ct-offices-linkedin-arrow {
-          font-size: 20px;
-          color: rgba(255, 255, 255, 0.6);
-          transition: transform 220ms ease, color 220ms ease;
-        }
-        .ct-offices-linkedin:hover .ct-offices-linkedin-arrow {
+        .ct-li-icon {
           color: ${GOLD_BRIGHT};
-          transform: translateX(4px);
+          flex-shrink: 0;
+        }
+        .ct-sidebar-divider {
+          height: 1px;
+          background: rgba(13, 36, 66, 0.12);
+          margin: 32px 0;
+        }
+        .ct-sidebar-address {
+          font-style: normal;
+          font-family: ${TYPE.sans};
+          font-size: 15px;
+          line-height: 1.7;
+          color: ${NAVY};
+        }
+        .ct-sidebar-address-name {
+          font-weight: 800;
         }
 
         /* ── Tablet ────────────────────────────────────────── */
         @media (max-width: 1099px) {
-          .ct-channels         { grid-template-columns: 1fr; gap: 14px; }
-          .ct-offices-grid     { grid-template-columns: 1fr; gap: 32px; }
-          .ct-form-shell       { padding: 36px 32px; }
+          .ct-grid       { grid-template-columns: 1fr; gap: 40px; }
+          .ct-form-shell { padding: 32px 32px; }
+          .ct-sidebar    { padding: 0; }
         }
         /* ── Mobile ────────────────────────────────────────── */
         @media (max-width: 639px) {
-          .ct-form-row         { grid-template-columns: 1fr; }
-          .ct-form-shell       { padding: 28px 22px; }
-          .ct-channel          { padding: 26px 22px 30px; }
-          .ct-offices-linkedin { grid-template-columns: 48px 1fr; gap: 16px; padding: 20px 22px; }
-          .ct-offices-linkedin-arrow { display: none; }
+          .ct-form-row   { grid-template-columns: 1fr; }
+          .ct-form-shell { padding: 26px 22px; }
         }
       `}</style>
     </div>
