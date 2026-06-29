@@ -48,12 +48,13 @@ const briefDocCss = `
      stations. */
   .brief-page-hero {
     position: relative;
-    /* Top padding clears the 112px fixed BriefHeader and adds 56-120px
-       of viewport-scaled breathing room above the content. The earlier
-       value (clamp(120px, 14vh, 180px)) sat too tight against the
-       header because the header height was not factored in. Bottom
-       padding unchanged. */
-    padding: calc(var(--header-h, 112px) + clamp(56px, 8vh, 120px)) 0 clamp(96px, 12vh, 140px);
+    /* Top padding clears the 112px fixed BriefHeader and adds
+       viewport-scaled breathing room above the content. Tightened
+       from clamp(56px, 8vh, 120px) → clamp(36px, 5vh, 88px) and
+       bottom padding from clamp(96px, 12vh, 140px) → clamp(64px,
+       9vh, 112px) so the H1 + lede + rule cluster sits comfortably
+       inside 100dvh on 1366x768 laptops without scrolling. */
+    padding: calc(var(--header-h, 112px) + clamp(36px, 5vh, 88px)) 0 clamp(64px, 9vh, 112px);
     overflow: hidden;
     background: ${PAPER};
     /* Viewport-filling row, matching the homepage hero + Approach +
@@ -216,7 +217,13 @@ const briefDocCss = `
      the same scale. */
   .brief-doc-h1 {
     font-family: ${TYPE.sans};
-    font-size: clamp(48px, 6.2vw, 96px);
+    /* Cap reduced from 96px to 76px so longer two-clause hero
+       titles (e.g. "Equipment Reliability. Where uptime,
+       throughput, and margin meet.") still fit the accent on
+       a single visual line at 1366px+ and keep the entire hero
+       within 100vh on standard laptops. Lower bound + scaling
+       slope preserved so short heroes still feel commanding. */
+    font-size: clamp(44px, 5vw, 76px);
     font-weight: 800;
     line-height: 1.04;
     letter-spacing: -0.014em;
