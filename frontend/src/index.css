@@ -36,6 +36,21 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
+/* ── Scrollbar gutter — keeps viewport width constant across pages ──
+   The homepage uses an inner .brief-page scroll container (height:100dvh
+   + overflow-y:auto) so the window itself never scrolls. Interior pages
+   let the document body scroll. On Windows + classic-scrollbar browsers,
+   this means the homepage has NO window scrollbar (full viewport width)
+   while interior pages DO (viewport width - ~15px). The position:fixed
+   .brief-header is centered against window.innerWidth, so its centered
+   content (the POWERS logo) was shifting horizontally by ~7-8px between
+   the two layouts. Reserving a stable scrollbar gutter on the root
+   element forces the browser to always allocate the scrollbar slot,
+   so window.innerWidth stays constant whether or not the document is
+   actually scrolling. Widely supported (Chrome 94+, Firefox 97+, Safari 18+);
+   in older browsers it falls back to default behavior (the original shift). */
+html { scrollbar-gutter: stable; }
+
 /* Typography QC — global balancing per CLAUDE.md standing instruction */
 h1, h2, h3, .eyebrow, .pw-eyebrow { text-wrap: balance; }
 .pw-body p, .pw-body li { text-wrap: pretty; }
