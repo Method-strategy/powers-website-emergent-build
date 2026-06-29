@@ -59,8 +59,6 @@ function FeaturedLarge({ article }) {
     <NewsLink article={article} className="cn-card cn-card--featured-large">
       <div className="cn-card-meta">
         <span className="cn-card-date">{article.date}</span>
-        <span className="cn-card-divider" aria-hidden="true" />
-        <span className="cn-card-kicker">Engagement Announcement</span>
       </div>
       <h3 className="cn-card-title cn-card-title--xl">{article.title}</h3>
       <p className="cn-card-excerpt">{article.excerpt}</p>
@@ -76,8 +74,6 @@ function FeaturedStacked({ article }) {
     <NewsLink article={article} className="cn-card cn-card--featured-stacked">
       <div className="cn-card-meta">
         <span className="cn-card-date">{article.date}</span>
-        <span className="cn-card-divider" aria-hidden="true" />
-        <span className="cn-card-kicker">Engagement</span>
       </div>
       <h3 className="cn-card-title cn-card-title--md">{article.title}</h3>
       <span className="cn-card-cta">
@@ -92,8 +88,6 @@ function StandardCard({ article }) {
     <NewsLink article={article} className="cn-card cn-card--standard">
       <div className="cn-card-meta">
         <span className="cn-card-date">{article.date}</span>
-        <span className="cn-card-divider" aria-hidden="true" />
-        <span className="cn-card-kicker">Engagement</span>
       </div>
       <h3 className="cn-card-title cn-card-title--sm">{article.title}</h3>
       <p className="cn-card-excerpt cn-card-excerpt--clamp">{article.excerpt}</p>
