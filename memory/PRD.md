@@ -697,3 +697,37 @@ The lock-in mosaic on every discipline now resolves all 5 routes — the cross-l
 - P2 (Launch): SEOPress WP REST integration if the user wants per-page metadata managed in WordPress instead of in code.
 - P2: Refresh the remaining 66 case studies into the locked detail template — sitemap.xml entries need fanning out as they land.
 - P3: Extract repeated discipline-page CSS into shared `.module.css` files.
+
+## 2026-06-29 (later) — Company News page rebuilt as native aggregator
+
+User direction: the legacy Company News page at thepowerscompany.com/news needs to ship inside the React SPA. Client-supplied brief (`POWERS_Company_News_Page_Full_Draft.docx`, aggregator layout, 4 rows). The current `/company-news` route was a `LegacyPage`-wrapped stub showing only a navy "Company News" hero band.
+
+**Implemented:**
+- **`/app/frontend/src/data/companyNews.js`** — canonical dataset for the page. 14 articles seeded from the live legacy site (`thepowerscompany.com/news`). Schema mirrors WPGraphQL/SEOPress response shape: slug / title / date / dateISO / category / excerpt / author / image / externalUrl. At launch, this file gets swapped for a `useQuery` returning the same shape with no component edits. Categories per the brief: `All News | Engagements | Industry Commentary | Leadership | Recognition`.
+- **`/app/frontend/src/pages/CompanyNews.jsx`** — full rewrite from `LegacyPage` stub to a native brief-language aggregator. Four rows per the client brief:
+  - **Row 1 Hero**: "Company News" eyebrow → H1 "News and updates / from POWERS." (italic gold accent) → 5-line italic serif stack with gold hairline ticks (Engagement announcements / Industry commentary / Leadership voices / Recognition and recaps) → lede "What's happening across POWERS and the work we're doing."
+  - **Row 2 Featured Grid**: 1 large card (left, 2/3 width, 16:10 image ratio, 2-line excerpt) + 2 stacked smaller cards (right column). Pulls the 3 most-recent articles in reverse chronological order — featured stays editorial regardless of category filter.
+  - **Row 3 Category Filter**: hairline-bordered horizontal pill row. Underline-on-active in gold. Resets paging on filter change. Filter buttons have `data-testid="cn-filter-{slug}"` for QA.
+  - **Row 4 Standard Card Grid**: 3-per-row card grid (`STANDARD_PAGE_SIZE = 9`). Each card: image / meta (date · category in gold mono) / title (clamped to 3 lines) / "Read →" CTA. Below the grid: real-time count ("8 articles in *Engagements*") + "Load More →" button that reveals the next 9 cards.
+- **Card image fallback**: articles without a WP image render a brand-aligned gradient block (navy for Engagements / green for Industry Commentary / copper for Leadership / purple for Recognition) with `POWERS` watermark — so the grid reads as a finished page right now and only gets richer when WP supplies real thumbnails at launch.
+- **Article links**: open the legacy WP article URL in a new tab (`target="_blank" rel="noopener noreferrer"`) until the native React article-detail template lands. Pattern matches how `CaseStudyCard` handles external case studies.
+- **Route moved** from `<Layout>` (legacy chrome) to `<HomeLayout>` (brief chrome) in `App.js`, alongside the discipline pages and Contact.
+- **SEO**: title "Company News & Announcements | POWERS", per-page description, canonical, OG/Twitter Card all wired via the new `<SEO />` component.
+- **Responsive**: 3-up at desktop, 2-up at tablet (≤1099px), 1-up at mobile (≤639px). Featured stack flips to side-by-side at tablet and full-width at mobile.
+- **a11y**: filter pills have `role="tab"` + `aria-selected`, image fallback marked `aria-hidden`, focus-visible outlines on all interactive elements, prefers-reduced-motion respected.
+
+**Verification (Playwright):**
+- 14 articles in dataset, 3 featured + 11 in standard pool.
+- "All News" → 9 cards shown + Load More visible.
+- "Leadership" → 2 cards, count text "2 articles in *Leadership*".
+- "Engagements" → 8 cards.
+- Hero renders fully after wipe animations complete (verified screenshot at scrollTop=0 after 1.8s settle).
+- Featured grid shows real image for the protein-processing engagement + branded color-block fallbacks for Leadership + Industry Commentary articles.
+
+**Files touched this pass:**
+- NEW: `/app/frontend/src/data/companyNews.js`
+- REWRITE: `/app/frontend/src/pages/CompanyNews.jsx`
+- EDIT: `/app/frontend/src/App.js` (route moved from Layout group to HomeLayout group)
+
+**At launch — swap to WordPress data layer:**
+Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-build fetch) that hits the WP REST `/wp/v2/posts` endpoint, returning objects with the same field shape. Featured-grid + filter + card grid + Load More all work unchanged.
