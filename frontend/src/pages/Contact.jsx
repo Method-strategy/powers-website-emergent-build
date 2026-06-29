@@ -290,10 +290,7 @@ export default function Contact() {
                       <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.65-1.85 3.39-1.85 3.62 0 4.29 2.38 4.29 5.48v6.26zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
                     </svg>
                   </span>
-                  <div>
-                    <div className="ct-offices-linkedin-label">Connect on LinkedIn</div>
-                    <div className="ct-offices-linkedin-handle">/company/the-powers-company</div>
-                  </div>
+                  <span className="ct-offices-linkedin-label">Connect on LinkedIn</span>
                   <span className="ct-offices-linkedin-arrow" aria-hidden="true">&rarr;</span>
                 </a>
               </div>
@@ -586,18 +583,18 @@ export default function Contact() {
           line-height: 1.75;
         }
         /* "POWERS" sits at the top of the address block as a bold
-           version of the same sans-serif used for the address lines
-           below. This section intentionally has no H2 subhead — the
-           eyebrow + the address itself carry the row. */
+           version of the same address-line styling — same font,
+           same size, same line-height, just bold. This section
+           intentionally has no H2 subhead — the eyebrow + the
+           address itself carry the row. */
         .ct-offices-line--name {
           font-family: ${TYPE.sans};
           font-weight: 800;
-          font-size: clamp(28px, 3vw, 38px);
-          line-height: 1.05;
-          letter-spacing: -0.012em;
+          font-size: 16px;
+          line-height: 1.75;
+          letter-spacing: 0;
           color: #ffffff;
           text-transform: none;
-          margin-bottom: 18px;
         }
         .ct-offices-line--gap { margin-top: 18px; }
         .ct-offices-link {
@@ -642,13 +639,6 @@ export default function Contact() {
           font-size: 17px;
           letter-spacing: -0.005em;
           color: #ffffff;
-        }
-        .ct-offices-linkedin-handle {
-          font-family: ${TYPE.mono};
-          font-size: 11.5px;
-          letter-spacing: 0.18em;
-          color: ${GOLD_BRIGHT};
-          margin-top: 4px;
         }
         .ct-offices-linkedin-arrow {
           font-size: 20px;
