@@ -51,22 +51,26 @@ html, body {
    in older browsers it falls back to default behavior (the original shift). */
 html { scrollbar-gutter: stable; }
 
-/* ── Page transition: gold rule wipe on every route change ──
-   The 1px gold hairline that sits along the bottom of every
-   .brief-header gets reborn as a left-to-right scaleX wipe each
-   time the user navigates between pages. Reinforces the
-   "Operating Brief, chapter by chapter" reading metaphor —
-   route changes feel deliberately authored rather than instant
-   React swaps.
+/* ── Page transition: glowing pulse blip across the gold rule ──
+   Subtle "page jump" signal — a small (~110px) brighter, slightly
+   thicker patch of the gold rule travels left-to-right across the
+   header's bottom edge once on every route change. Reads as a
+   pulse/blip moving across the line rather than the whole rule
+   re-drawing, which earlier felt like a glitch on rapid nav.
 
-   Implementation: we suppress the existing border-bottom: 1px
-   solid gold on .brief-header and re-introduce it as a pseudo-
-   element so the line is independently transformable. The
-   default state is scaleX(1) (rule fully drawn). When the
-   <html> element gains .brief-route-transitioning (toggled by
-   RouteTransitionRule on react-router pathname change), the
-   pseudo runs a single 700ms brief-rule-wipe-in animation.
-   Animation is fully suppressed under prefers-reduced-motion. */
+   Implementation:
+   • The static gold rule lives on .brief-header::after (a 1px
+     line, always at full opacity, never animated — so the chrome
+     itself never appears to redraw or shift on navigation).
+   • A second pseudo, .brief-header::before, carries the moving
+     glow: a soft radial-gradient patch with a halo box-shadow.
+     It's invisible by default (opacity 0, parked off the left
+     edge) and runs a single ~900ms brief-rule-pulse animation
+     when <html> gains .brief-route-transitioning (toggled by
+     RouteTransitionRule on react-router pathname change).
+
+   prefers-reduced-motion: the pulse animation is suppressed; the
+   static rule remains. */
 .brief-header { border-bottom: none !important; position: relative; }
 .brief-header::after {
   content: '';
@@ -76,41 +80,43 @@ html { scrollbar-gutter: stable; }
   bottom: -1px;
   height: 1px;
   background: #e89346;
-  transform-origin: left center;
-  transform: scaleX(1);
   pointer-events: none;
   z-index: 101;
 }
-html.brief-route-transitioning .brief-header::after {
-  animation: brief-rule-wipe-in 700ms cubic-bezier(.2, .6, .2, 1) both;
+.brief-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 110px;
+  height: 3px;
+  border-radius: 2px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 207, 140, 1) 0%,
+    rgba(232, 147, 70, 0.85) 35%,
+    rgba(232, 147, 70, 0) 75%
+  );
+  box-shadow:
+    0 0 6px rgba(255, 207, 140, 0.55),
+    0 0 14px rgba(232, 147, 70, 0.30);
+  filter: blur(0.4px);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-130px);
+  z-index: 102;
 }
-@keyframes brief-rule-wipe-in {
-  0%   { transform: scaleX(0); transform-origin: left center; }
-  100% { transform: scaleX(1); transform-origin: left center; }
+html.brief-route-transitioning .brief-header::before {
+  animation: brief-rule-pulse 900ms cubic-bezier(.4, .08, .35, 1) both;
+}
+@keyframes brief-rule-pulse {
+  0%   { transform: translateX(-130px); opacity: 0; }
+  10%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(calc(100vw + 20px)); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html.brief-route-transitioning .brief-header::after { animation: none; }
-}
-
-/* ── Content cross-fade — paired with the gold-rule wipe ──
-   Wrappers in HomeLayout + Layout key their <Outlet /> with the
-   pathname, so this animation fires fresh on every route change.
-   The chrome (BriefHeader, BriefFooter) stays mounted; only the
-   page content under .brief-route-fader cross-fades. Timing is
-   intentionally shorter (380ms) than the gold-rule wipe (700ms)
-   so the content settles first while the chrome's rule completes
-   its sweep underneath — gives the transition a sense of the
-   page arriving and the chrome "catching up" rather than two
-   animations running in parallel for the same beat. */
-.brief-route-fader {
-  animation: brief-route-enter 380ms cubic-bezier(.2, .6, .2, 1) both;
-}
-@keyframes brief-route-enter {
-  0%   { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .brief-route-fader { animation: none; }
+  html.brief-route-transitioning .brief-header::before { animation: none; }
 }
 
 /* Typography QC — global balancing per CLAUDE.md standing instruction */
