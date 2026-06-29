@@ -557,3 +557,36 @@ Implementation:
 - P2: Roll the remaining 66 case studies into `caseStudies.js` and route them.
 - P2: Contact form backend endpoint (UI-only today).
 - P2: Defensive guard — add a non-clipped fallback to `.wipe` so a missing `useInViewClass` never silently hides content (audit other brief-doc pages first).
+
+
+## Implemented (2026-02-29) — Equipment Reliability page (Discipline 3 of 5, full build)
+
+Built `/equipment-reliability` end-to-end against the user-supplied copy draft (`POWERS_Equipment_Reliability_Page_Full_Draft.docx`) and hero video (`Equipment Reliability Page Hero Video.mp4`). User explicitly warned against the page feeling templated — chassis is shared with `/operational-discipline` and `/frontline-leadership`, but three new visual primitives carry the bulk of the argument and read as fresh:
+
+- **`.er-margin-gauge`** — Horizontal stacked bar visualising the maintenance-spend gap (world-class 1.5–2.5% vs reactive 4–6% RAV) with the recoverable margin band in gold. Animates `clip-path` open from left when the row enters the viewport.
+- **`.er-amp-duo`** — Two-channel parallel diagram (Tactical || Technical) flanking a central navy "AMP / PROGRAM" axis with a gold connector line. Replaces the vertical stack diagrams used on OD/FL.
+- **`.er-phase-timeline`** — Vertical numbered timeline with a left gold rail, circular phase nodes (italic 01/02/03), and gantt-style content blocks with a gold left edge. Replaces the horizontal dot rail used on FL.
+
+**Other elements:**
+- Hero `<video>` with .webm + .mp4 sources and a duotone (navy → paper) ghosted+grit poster generated via PIL pipeline (FFmpeg reinstalled in container after dropping out, then 720p H.264 + VP9 + poster pulled at frame 30 → /uploads/videos/equipment-reliability-hero.{mp4,webm} + equipment-reliability-hero-poster.jpg).
+- Shared CollapseCard primitive reused for both the 6-card cost grid and the 5-card gain grid (page-scoped `.er-collapse-*` selectors).
+- `.er-results-strip` — A documented-results stat strip at the close of Row 6 with three gold serif figures (47%, 85%, $M+).
+- Cross-discipline lock-in mosaic with the current discipline (03) in the anchor card and four sister cards routing to the other disciplines.
+- Navy CTA band with "Recover the Margin You're Already Paying For" eyebrow.
+
+**Verification:**
+- Testing agent iteration_16: 69/69 assertions passed across page load, hero video, all three new primitives, accordion behaviour, mosaic routing, CTA links, responsive collapse at 1920/768/375, and cross-discipline regression (OD + FL videos still autoplay). Zero console errors. No bugs. No retest needed.
+
+**Files touched:**
+- `/app/frontend/src/pages/EquipmentReliability.jsx` (replaced 46-line stub with 1256-line full build)
+- `/app/frontend/public/uploads/videos/equipment-reliability-hero.mp4`
+- `/app/frontend/public/uploads/videos/equipment-reliability-hero.webm`
+- `/app/frontend/public/uploads/videos/equipment-reliability-hero-poster.jpg`
+
+**Backlog / next:**
+- P1: Build `/workforce-capability` (Discipline 4) once user delivers copy + hero video.
+- P1: Build `/daily-accountability` (Discipline 5) once user delivers copy + hero video.
+- P2: Gravity Forms headless integration for `/contact` (currently placeholder).
+- P2: SEOPress WP REST integration for headless metadata at launch.
+- P2: Lift `robots.txt` Disallow when site goes live.
+- P3 (refactor): Discipline pages are now 900–1250 lines each, mostly inlined `<style>` CSS. Consider extracting per-page CSS into co-located `.module.css` files. Defer until after all 5 disciplines ship to avoid churn.
