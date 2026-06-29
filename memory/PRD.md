@@ -590,3 +590,29 @@ Built `/equipment-reliability` end-to-end against the user-supplied copy draft (
 - P2: SEOPress WP REST integration for headless metadata at launch.
 - P2: Lift `robots.txt` Disallow when site goes live.
 - P3 (refactor): Discipline pages are now 900–1250 lines each, mostly inlined `<style>` CSS. Consider extracting per-page CSS into co-located `.module.css` files. Defer until after all 5 disciplines ship to avoid churn.
+
+
+## Implemented (2026-02-29) — Workforce Capability page (Discipline 4 of 5, full build)
+
+Built `/workforce-capability` end-to-end against the user-supplied copy draft (`POWERS_Workforce_Capability_Page_Full_Draft.docx`) and hero video. Two new signature primitives introduced so the page reads as a fresh chapter rather than a re-skin of OD/FL/ER:
+
+- **`.wc-mosaic`** — 5-tile asymmetric magazine layout on a 12-col grid. Row 1: tile 01 (cols 1–7, wide) + 02 (cols 8–12, narrow). Row 2: tile 03 spans cols 1–12 full width. Row 3: tile 04 (cols 1–5, narrow) + 05 (cols 6–12, wide) — mirrored ratio around row 2, creating an ABA-with-reversed-A composition. Visualises "five interlocking capability streams". Tiles 02 + 04 use PAPER_DEEP backgrounds for subtle texture variation.
+- **`.wc-chevron-strip`** — Horizontal 4-phase process strip with gold SVG ">" chevron separators between cards. Each card has a gold left-edge accent, mono PHASE 0X eyebrow, bold verb title, body text. Distinct from FL's horizontal dot rail and ER's vertical timeline.
+
+Plus a 5-cell `.wc-stat-ribbon` (3.8M / 1.9M / 92% / 1·3 / 2.5y) for the Reframe row, two pull quotes, 6-card collapsible cost grid, 5-card collapsible gain grid, lock-in mosaic with 04 anchored as the current discipline, navy CTA band.
+
+Hero pipeline: FFmpeg 720p mp4 + VP9 webm + duotone PIL poster at `/uploads/videos/workforce-capability-hero.{mp4,webm,jpg}`.
+
+**Testing**: iteration_17 — 110+ assertions, 99% pass. Caught one layout inversion (row 3 of the mosaic), now fixed via 12-col explicit grid-column spans. Verified at 1920/1440/768/375. Cross-discipline regression clean. Zero console errors. Hero fits 100vh at 1366×768 + 1440×900.
+
+**Files touched:**
+- `/app/frontend/src/pages/WorkforceCapability.jsx` (replaced 46-line stub with 939-line full build)
+- `/app/frontend/public/uploads/videos/workforce-capability-hero.{mp4,webm,jpg}`
+- (App.js + BriefHeader nav routing was already wired in earlier passes)
+
+**Backlog / next:**
+- P1: Build `/daily-accountability` (Discipline 5, the final chapter) once user delivers copy + hero video. Signature primitive candidates: cadence rhythm chart, pulse/heartbeat trace, or operational tempo grid.
+- P2: Gravity Forms headless integration for `/contact`.
+- P2: SEOPress WP REST integration at launch.
+- P2: Lift `robots.txt` Disallow when site goes live.
+- P3 (refactor): Extract page-scoped CSS from the 5 discipline pages into co-located `.module.css` files once all 5 ship.

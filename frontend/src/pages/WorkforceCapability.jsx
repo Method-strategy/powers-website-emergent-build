@@ -538,23 +538,24 @@ export default function WorkforceCapability() {
         }
 
         /* ── Capability Mosaic (Row 3) ─────────────────────────
-           5-tile asymmetric magazine layout. Grid:
-              ┌────────────┬──────┐
-              │     01     │  02  │
-              ├────────────┴──────┤
-              │        03         │
-              ├──────┬────────────┤
-              │  04  │     05     │
-              └──────┴────────────┘
-           The tessellation itself visualises "five interlocking
-           capability streams" — pieces of different shapes fitting
-           together into a single foundation. Each tile keeps the
-           same internal anatomy (index eyebrow / name / body) so
-           the family feel holds, but the tiles' size and position
-           vary, giving the row its own rhythm. */
+           5-tile asymmetric magazine layout on a 12-column grid:
+              ┌────────────────────┬──────────────┐
+              │  01  (cols 1–7)    │  02 (8–12)   │
+              ├────────────────────┴──────────────┤
+              │        03  (cols 1–12, full)      │
+              ├──────────────┬────────────────────┤
+              │  04 (1–5)    │  05  (cols 6–12)   │
+              └──────────────┴────────────────────┘
+           Row 3 mirrors row 1's column ratio (narrow / wide
+           inverted), creating the signature ABA-with-reversed-A
+           composition that visualises "five interlocking streams"
+           — pieces of different shapes fitting together. Each
+           tile keeps the same internal anatomy (index eyebrow /
+           name / body) so the family feel holds while the grid
+           rhythm is unique to this page. */
         .wc-mosaic {
           display: grid;
-          grid-template-columns: 7fr 5fr;
+          grid-template-columns: repeat(12, 1fr);
           grid-auto-rows: minmax(220px, auto);
           gap: 14px;
           margin-top: 56px;
@@ -581,14 +582,11 @@ export default function WorkforceCapability() {
           transition: opacity 220ms ease;
         }
         .wc-mosaic-tile:hover::before { opacity: 0.7; }
-        .wc-mosaic-tile--01 { grid-column: 1 / 2; grid-row: 1 / 2; }
-        .wc-mosaic-tile--02 { grid-column: 2 / 3; grid-row: 1 / 2; background: ${PAPER_DEEP}; }
-        .wc-mosaic-tile--03 { grid-column: 1 / 3; grid-row: 2 / 3; }
-        .wc-mosaic-tile--04 { grid-column: 1 / 2; grid-row: 3 / 4; background: ${PAPER_DEEP}; }
-        .wc-mosaic-tile--05 { grid-column: 2 / 3; grid-row: 3 / 4; }
-        /* Reverse the 5/7 column ratio on row 3 so 04 is narrow
-           and 05 is wide — re-balances the layout visually. */
-        .wc-mosaic-tile--04 { /* narrower visual via reduced padding/text */ }
+        .wc-mosaic-tile--01 { grid-column: 1 / span 7;  grid-row: 1; }
+        .wc-mosaic-tile--02 { grid-column: 8 / span 5;  grid-row: 1; background: ${PAPER_DEEP}; }
+        .wc-mosaic-tile--03 { grid-column: 1 / span 12; grid-row: 2; }
+        .wc-mosaic-tile--04 { grid-column: 1 / span 5;  grid-row: 3; background: ${PAPER_DEEP}; }
+        .wc-mosaic-tile--05 { grid-column: 6 / span 7;  grid-row: 3; }
         .wc-mosaic-tile-idx {
           font-family: ${TYPE.mono};
           font-size: 11px;
@@ -907,7 +905,7 @@ export default function WorkforceCapability() {
           .wc-mosaic-tile--02,
           .wc-mosaic-tile--03,
           .wc-mosaic-tile--04,
-          .wc-mosaic-tile--05    { grid-column: 1; grid-row: auto; }
+          .wc-mosaic-tile--05    { grid-column: 1 / -1; grid-row: auto; }
           .wc-cost-grid          { grid-template-columns: repeat(2, 1fr); }
           .wc-gain-grid          { grid-template-columns: repeat(2, 1fr); }
           .wc-lockin-grid        { grid-template-columns: repeat(2, 1fr); }
