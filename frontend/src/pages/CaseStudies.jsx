@@ -3,6 +3,7 @@ import { caseStudies } from '../data/caseStudies';
 import { caseStudiesLibraryStyles } from '../components/caseStudy/caseStudiesLibraryStyles';
 import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
 import BriefDocStyles, { useInViewClass, PAPER } from '../components/BriefDocStyles';
+import SEO from '../components/SEO';
 
 /**
  * CaseStudies — the case-study library page at /case-studies.
@@ -40,10 +41,6 @@ export default function CaseStudies() {
   const [engagement, setEngagement] = useState('');
   const [challenge, setChallenge] = useState('');
   const [sort, setSort] = useState('newest');
-
-  useEffect(() => {
-    document.title = 'Manufacturing Case Studies — Proven Operations Results | POWERS';
-  }, []);
 
   // Filter facet values, derived from the canonical dataset.
   const industries  = useMemo(() => unique(caseStudies.map((d) => d.industry)), []);
@@ -96,6 +93,11 @@ export default function CaseStudies() {
 
   return (
     <>
+      <SEO
+        title="Manufacturing Case Studies — Proven Operations Results | POWERS"
+        description="Real operations. Real pressure. Measurable results. Every POWERS case is an operation that had to execute and perform under conditions like yours."
+        path="/case-studies"
+      />
       {/* Library legacy styles (filter UI + card grid). The hero
           block from this stylesheet (.library-hero) is overridden
           and replaced with the brief's standard hero (cream PAPER

@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -26,9 +27,13 @@ const DELIVERABLES = [
 ];
 
 export default function DiscoveryProcess() {
-  useEffect(() => { document.title = 'Discovery Process — Manufacturing Operations Assessment | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Discovery Process — Manufacturing Operations Assessment | POWERS"
+        description="POWERS Discovery — a structured two-week operations diagnostic that finds the gap between current performance and the result your operation should be producing."
+        path="/discovery-process"
+      />
       <BriefDocStyles />
       <DiscoveryStyles />
       <BriefHeader mode="interior" />

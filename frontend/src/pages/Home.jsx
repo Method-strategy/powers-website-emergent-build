@@ -34,6 +34,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TYPE } from '../lib/designSpec';
 import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
 import { caseStudies } from '../data/caseStudies';
+import SEO from '../components/SEO';
 
 /* ── Palette (this paradigm) ──────────────────────────────────────
  *  PAPER  — bright, near-white with a faint warmth. Lightened
@@ -110,7 +111,6 @@ function Home() {
      verbatim in the hero copy; this <title> targets the higher-volume
      search term ("Manufacturing Operations Management Consulting") used
      by buyers and analyst categories (Gartner / McKinsey). */
-  useEffect(() => { document.title = 'POWERS — Manufacturing Operations Management Consulting'; }, []);
   const pageRef  = useRef(null);
   const railFill = useRef(null);
   const heroRef  = useRef(null);
@@ -264,6 +264,11 @@ function Home() {
         overflowX: 'hidden',
       }}
     >
+      <SEO
+        title="POWERS — Manufacturing Operations Management Consulting"
+        description="POWERS is a manufacturing operations management consulting firm. We build the execution discipline that drives sustained operations performance — on the floor, with the team."
+        path="/"
+      />
       <style>{`
         :root { --brief-progress: 0; }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import LegacyPage from '../components/LegacyPage';
+import SEO from '../components/SEO';
 
 const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -28,12 +29,19 @@ const SCRIPT = ``;
 
 export default function CompanyNews() {
   return (
-    <LegacyPage
-      css={CSS}
-      html={HTML}
-      script={SCRIPT}
-      title={`POWERS Company News & Announcements`}
-      metaDescription={``}
-    />
+    <>
+      <SEO
+        title="POWERS Company News & Announcements"
+        description="Latest news, announcements, and milestones from POWERS — manufacturing operations management consulting."
+        path="/company-news"
+      />
+      <LegacyPage
+        css={CSS}
+        html={HTML}
+        script={SCRIPT}
+        title={`POWERS Company News & Announcements`}
+        metaDescription={``}
+      />
+    </>
   );
 }

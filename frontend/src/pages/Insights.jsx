@@ -1,5 +1,6 @@
 import React from 'react';
 import LegacyPage from '../components/LegacyPage';
+import SEO from '../components/SEO';
 
 const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -28,12 +29,19 @@ const SCRIPT = ``;
 
 export default function Insights() {
   return (
-    <LegacyPage
-      css={CSS}
-      html={HTML}
-      script={SCRIPT}
-      title={`Manufacturing Operations Insights & Articles | POWERS`}
-      metaDescription={``}
-    />
+    <>
+      <SEO
+        title="Manufacturing Operations Insights & Articles | POWERS"
+        description="POWERS insights — practitioner perspectives on operational discipline, frontline leadership, and the manufacturing performance gap from senior operators in the field."
+        path="/insights"
+      />
+      <LegacyPage
+        css={CSS}
+        html={HTML}
+        script={SCRIPT}
+        title={`Manufacturing Operations Insights & Articles | POWERS`}
+        metaDescription={``}
+      />
+    </>
   );
 }

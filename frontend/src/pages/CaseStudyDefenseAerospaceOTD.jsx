@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { getCaseStudy } from '../data/caseStudies';
 import { caseStudyStyles } from '../components/caseStudy/caseStudyStyles';
 import CaseStudyHero from '../components/caseStudy/CaseStudyHero';
 import CaseStudyBody from '../components/caseStudy/CaseStudyBody';
 import CaseStudyPrintDoc from '../components/caseStudy/CaseStudyPrintDoc';
 import BriefDocStyles from '../components/BriefDocStyles';
+import SEO from '../components/SEO';
 import { TYPE, GOLD_BRIGHT, NAVY, PAPER, TEXT_BODY } from '../lib/briefTokens';
 
 /* Brief-alignment overlay for the case-study detail page.
@@ -188,24 +189,18 @@ const briefAlignmentOverlay = `
 export default function CaseStudyDefenseAerospaceOTD() {
   const data = getCaseStudy('aerospace-defense-on-time-delivery');
 
-  useEffect(() => {
-    if (!data) return;
-    document.title = 'Aerospace & Defense On-Time Delivery Case Study | POWERS';
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', 'description');
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute('content', data.summary || '');
-  }, [data]);
-
   if (!data) {
     return <div style={{ padding: 96, textAlign: 'center' }}>Case study not found.</div>;
   }
 
   return (
     <>
+      <SEO
+        title="Aerospace & Defense On-Time Delivery Case Study | POWERS"
+        description={data.summary || 'POWERS case study: how a defense and aerospace manufacturer rebuilt on-time delivery performance under fixed-price contract pressure.'}
+        path="/case-studies/aerospace-defense-on-time-delivery"
+        type="article"
+      />
       <style dangerouslySetInnerHTML={{ __html: caseStudyStyles }} />
       <BriefDocStyles />
       <style dangerouslySetInnerHTML={{ __html: briefAlignmentOverlay }} />

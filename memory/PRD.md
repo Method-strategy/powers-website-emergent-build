@@ -655,3 +655,45 @@ The lock-in mosaic on every discipline now resolves all 5 routes — the cross-l
 - P2: Lift `robots.txt` Disallow when site goes live
 - P3 refactor: Extract page-scoped CSS from the 5 discipline pages + Contact into co-located `.module.css` files (now that all 5 are shipped, this is the right moment for the de-dup pass — cost grid, lock-in mosaic, pull quote, and CTA band CSS repeats across 5 files)
 
+
+## 2026-06-29 — White-Hat SEO Audit Pass (Phase A — pre-Insights Hub)
+
+**User direction:** Comb the site for "white hat best practice top tier website build standards" before the Insights Hub build. Audit confirmed the previous handoff's flagged issues (missing `alt`, missing `rel="noopener noreferrer"`) were **false positives** — the prior bash scripts used single-line regex that didn't match multi-line JSX attributes. Actual code was already compliant.
+
+**What this pass shipped (real white-hat foundations the site was missing):**
+
+- **`<SEO />` component** at `/app/frontend/src/components/SEO.jsx` — single source of truth for every page's `<title>`, `<meta name="description">`, `<link rel="canonical">`, full Open Graph stack (og:title / og:description / og:url / og:type / og:image / og:image:alt / og:site_name / og:locale), and Twitter Card stack (twitter:card / twitter:title / twitter:description / twitter:image / twitter:image:alt / twitter:site). No external deps — uses the same direct DOM-upsert pattern the codebase already used for `document.title`. Replaces the `useEffect(() => { document.title = ... })` pattern across the site.
+- **Site metadata constants** at `/app/frontend/src/lib/siteMeta.js` — SITE_NAME, SITE_URL (env-driven, defaults to `https://thepowerscompany.com`), DEFAULT_OG_IMAGE, DEFAULT_DESCRIPTION, TWITTER_HANDLE, `absoluteUrl()` helper.
+- **Wired `<SEO />` into 20 pages**: Home, Approach, DiscoveryProcess, IndustriesServed, CaseStudies, CaseStudyDefenseAerospaceOTD, OperationalDiscipline, FrontlineLeadership, EquipmentReliability, WorkforceCapability, DailyAccountability, History, Leadership, Careers, Contact, NotFound, CompanyNews, Insights — plus dynamic `LeaderBio` (6 routes) and `IndustryPage` (14 routes). Every page now has a unique title + tailored 150–160 char meta description authored for SEO.
+- **JSON-LD Organization + WebSite schema** added site-wide in `public/index.html`. Captures: name, alternateName, URL, logo, image, description, foundingDate (2004), founder (Randall Powers), corporate address (1801 Peachtree Street NE, Suite 200, Atlanta GA 30309), contactPoint (+1-678-971-4711, info@thepowerscompany.com), sameAs (LinkedIn). Verified live: `JSONLD: 1` per page.
+- **Open Graph + Twitter Card defaults** added to `public/index.html` so the static index also has correct fallback metadata if the SPA hasn't hydrated yet (important for social-card scrapers that don't run JS).
+- **`public/sitemap.xml`** built — 37 URLs covering home + 5 disciplines + 6 about-tree pages + 14 industries + 6 leader bios + 1 case study + insights/news/contact. Pre-built so it's ready to expose at launch.
+- **`public/robots.txt`** rewritten — staging block (`Disallow: /`) stays active for the Netlify preview, with the LAUNCH-MODE block commented inline ready to swap at go-live. Cloudflare auto-appends its AI-crawler managed block in front; our directives sit underneath.
+- **`public/index.html` launch-toggle comment block** — explicit ╔═══╗ box above the `noindex, nofollow` metas listing the three steps to flip the site to launch mode (delete meta robots, replace robots.txt, confirm sitemap).
+- **Theme color** corrected from generic `#000000` to brand navy `#0d2442`.
+
+**Verification (Playwright, 1920×800):**
+- `/approach` — title, description, canonical, og:url, twitter:card all unique + correct.
+- `/industries-served/aerospace-defense` — dynamic title "Aerospace & Defense Operations Consulting | POWERS", canonical resolves to `https://thepowerscompany.com/industries-served/aerospace-defense`, single H1.
+- `/` — title "POWERS — Manufacturing Operations Management Consulting", canonical `https://thepowerscompany.com/`.
+- `/leadership/sean-hart` — dynamic title "Sean Hart — Chief Executive Officer and Managing Partner | POWERS".
+- JSON-LD Organization schema present in DOM on every route (count: 1).
+- `/sitemap.xml` served, 37 `<url>` entries.
+- `/robots.txt` served with staging Disallow active + launch-mode block commented.
+
+**What this gives the launch checklist:**
+- One toggle (3 lines in 2 files) flips the entire site from staging-blocked to launch-indexable, with sitemap + structured data + full OG/Twitter card support already in place. No scrambling at go-live.
+
+**Files touched:**
+- NEW: `/app/frontend/src/components/SEO.jsx`
+- NEW: `/app/frontend/src/lib/siteMeta.js`
+- NEW: `/app/frontend/public/sitemap.xml`
+- REWRITE: `/app/frontend/public/robots.txt`, `/app/frontend/public/index.html`
+- EDIT (SEO wiring): 19 page files + 2 dynamic-route components
+
+**Still open (Backlog, unchanged):**
+- P0: Build the **Insights Hub** page (awaiting copy/assets from user).
+- P2 (Launch): Gravity Forms API integration for `/contact`.
+- P2 (Launch): SEOPress WP REST integration if the user wants per-page metadata managed in WordPress instead of in code.
+- P2: Refresh the remaining 66 case studies into the locked detail template — sitemap.xml entries need fanning out as they land.
+- P3: Extract repeated discipline-page CSS into shared `.module.css` files.

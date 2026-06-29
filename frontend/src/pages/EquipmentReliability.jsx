@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -122,7 +123,6 @@ function CollapseCard({ variant, num, name, body, indexLabel, dataTestid, delayC
 }
 
 export default function EquipmentReliability() {
-  useEffect(() => { document.title = 'Equipment Reliability & Uptime Improvement | POWERS'; }, []);
   const heroRef    = useRef(null); useInViewClass(heroRef);
   const reframeRef = useRef(null); useInViewClass(reframeRef, 0.20);
   const ampRef     = useRef(null); useInViewClass(ampRef, 0.16);
@@ -134,6 +134,11 @@ export default function EquipmentReliability() {
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Equipment Reliability & Uptime Improvement | POWERS"
+        description="Eliminate the unplanned downtime that quietly eats throughput and margin. POWERS builds the reliability discipline that keeps equipment producing at planned rate."
+        path="/equipment-reliability"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

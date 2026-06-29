@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BriefDocStyles, { useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE } from '../components/BriefDocStyles';
+import SEO from '../components/SEO';
 import { INDUSTRY_GROUPS } from '../data/industries';
 
 function Section({ children, dark, style }) {
@@ -13,11 +14,15 @@ function Section({ children, dark, style }) {
 }
 
 export default function IndustriesServed() {
-  useEffect(() => { document.title = 'Manufacturing Industries We Serve | POWERS Consulting'; }, []);
   const heroRef = useRef(null); useInViewClass(heroRef);
   const ctaRef = useRef(null); useInViewClass(ctaRef);
   return (
     <>
+      <SEO
+        title="Manufacturing Industries We Serve | POWERS Consulting"
+        description="POWERS serves manufacturers across food & beverage, aerospace & defense, automotive, pharma, consumer goods, chemicals, metals, oil & gas, and PE portfolio operations."
+        path="/industries-served"
+      />
       <BriefDocStyles />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
         <section ref={heroRef} className="brief-page-hero">

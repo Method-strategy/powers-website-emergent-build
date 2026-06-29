@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -113,7 +114,6 @@ function CollapseCard({ variant, num, name, body, indexLabel, dataTestid, delayC
 }
 
 export default function FrontlineLeadership() {
-  useEffect(() => { document.title = 'Frontline Leadership Development for Manufacturers | POWERS'; }, []);
   const heroRef    = useRef(null); useInViewClass(heroRef);
   const reframeRef = useRef(null); useInViewClass(reframeRef, 0.20);
   const capRef     = useRef(null); useInViewClass(capRef, 0.18);
@@ -125,6 +125,11 @@ export default function FrontlineLeadership() {
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Frontline Leadership Development for Manufacturers | POWERS"
+        description="Develop the supervisors and team leads who hold daily performance. POWERS builds frontline leadership capability that converts plans into consistent floor execution."
+        path="/frontline-leadership"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

@@ -1,12 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const FONT = "'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif";
 
 export default function NotFound() {
-  useEffect(() => { document.title = 'Page Not Found | POWERS Manufacturing Operations Consulting'; }, []);
   return (
     <section style={{ background: '#183a61' }}>
+      <SEO
+        title="Page Not Found | POWERS Manufacturing Operations Consulting"
+        description="The page you’re looking for has moved or never existed. Head back to the POWERS homepage to find what you need."
+        path="/404"
+      />
       <div style={{
         maxWidth: 1280, margin: '0 auto', width: '100%',
         padding: '120px 48px', minHeight: 600,

@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -119,13 +120,17 @@ function ContactForm() {
 }
 
 export default function Contact() {
-  useEffect(() => { document.title = "Let\u2019s Talk — Contact POWERS"; }, []);
   const heroRef   = useRef(null); useInViewClass(heroRef);
   const expectRef = useRef(null); useInViewClass(expectRef, 0.18);
   const formRef   = useRef(null); useInViewClass(formRef, 0.14);
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Let’s Talk — Contact POWERS"
+        description="Talk to POWERS about your operation. We respond within one business day and start with a structured discovery, not a sales pitch."
+        path="/contact"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

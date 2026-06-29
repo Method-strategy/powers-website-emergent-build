@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -12,9 +13,13 @@ import BriefDocStyles, {
    pivot pattern. */
 
 export default function Careers() {
-  useEffect(() => { document.title = 'Manufacturing Consulting Careers — Join POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Manufacturing Consulting Careers — Join POWERS"
+        description="Join POWERS — a senior-only manufacturing operations consulting firm. We hire experienced practitioners who lead from the floor, not from a slide deck."
+        path="/careers"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

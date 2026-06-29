@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  POWERS sitemap — pre-built. Routes match /app/frontend/src/App.js.
+  Update lastmod when content materially changes. Replace
+  https://thepowerscompany.com if the production domain changes.
+
+  THIS FILE IS NOT FETCHED BY CRAWLERS WHILE robots.txt SAYS Disallow.
+  At launch, flip robots.txt to the launch-mode block + remove the
+  noindex meta in index.html.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Home -->
+  <url>
+    <loc>https://thepowerscompany.com/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Primary content pages -->
+  <url><loc>https://thepowerscompany.com/approach</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/discovery-process</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/case-studies</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/insights</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/company-news</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+
+  <!-- Five disciplines -->
+  <url><loc>https://thepowerscompany.com/operational-discipline</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/frontline-leadership</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/equipment-reliability</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/workforce-capability</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thepowerscompany.com/daily-accountability</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+
+  <!-- Industries (14) -->
+  <url><loc>https://thepowerscompany.com/industries-served/food-beverage-manufacturing</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/meat-poultry-processing</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/consumer-packaged-goods</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/animal-nutrition-feed-manufacturing</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/agribusiness</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/pharmaceuticals-medical-devices</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/aerospace-defense</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/automotive-manufacturing</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/industrial-manufacturing</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/metals-mining</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/oil-gas</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/chemicals</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/warehouse-distribution</loc><priority>0.8</priority></url>
+  <url><loc>https://thepowerscompany.com/industries-served/private-equity-portfolio-operations</loc><priority>0.8</priority></url>
+
+  <!-- Case studies (production data work will fan out the remaining 66 — keep this list aligned with App.js Routes) -->
+  <url><loc>https://thepowerscompany.com/case-studies/aerospace-defense-on-time-delivery</loc><priority>0.7</priority></url>
+
+  <!-- About / Leadership / Careers / Contact -->
+  <url><loc>https://thepowerscompany.com/history</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thepowerscompany.com/leadership</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://thepowerscompany.com/careers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thepowerscompany.com/contact</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+
+  <!-- Leader bios (6) -->
+  <url><loc>https://thepowerscompany.com/leadership/randall-powers</loc><priority>0.5</priority></url>
+  <url><loc>https://thepowerscompany.com/leadership/sean-hart</loc><priority>0.5</priority></url>
+  <url><loc>https://thepowerscompany.com/leadership/saul-bautista</loc><priority>0.5</priority></url>
+  <url><loc>https://thepowerscompany.com/leadership/ken-wiesinger</loc><priority>0.5</priority></url>
+  <url><loc>https://thepowerscompany.com/leadership/justin-pethick</loc><priority>0.5</priority></url>
+  <url><loc>https://thepowerscompany.com/leadership/kevin-sabany</loc><priority>0.5</priority></url>
+
+</urlset>

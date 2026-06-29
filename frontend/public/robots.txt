@@ -1,2 +1,17 @@
+# ═══════════════════════════════════════════════════════════════════
+# STAGING — site is currently set to NOT be crawled.
+# This block is correct for the Netlify preview environment.
+# ═══════════════════════════════════════════════════════════════════
 User-agent: *
 Disallow: /
+
+# ═══════════════════════════════════════════════════════════════════
+# LAUNCH — replace the two lines above with the block below at launch.
+# Also remove the noindex/nofollow <meta> in /app/frontend/public/index.html.
+# ═══════════════════════════════════════════════════════════════════
+#
+# User-agent: *
+# Allow: /
+# Disallow: /404
+#
+# Sitemap: https://thepowerscompany.com/sitemap.xml

@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -113,7 +114,6 @@ function CollapseCard({ variant, num, name, body, indexLabel, dataTestid, delayC
 }
 
 export default function WorkforceCapability() {
-  useEffect(() => { document.title = 'Workforce Capability Development | POWERS'; }, []);
   const heroRef    = useRef(null); useInViewClass(heroRef);
   const reframeRef = useRef(null); useInViewClass(reframeRef, 0.20);
   const mosaicRef  = useRef(null); useInViewClass(mosaicRef, 0.16);
@@ -125,6 +125,11 @@ export default function WorkforceCapability() {
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Workforce Capability Development | POWERS"
+        description="Build the workforce capability that converts headcount into trained, deployable production hours. POWERS develops skills, certifications, and bench depth."
+        path="/workforce-capability"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

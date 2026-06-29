@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -22,9 +23,13 @@ const LEADERS = [
 ];
 
 export default function Leadership() {
-  useEffect(() => { document.title = 'Leadership Team — Senior Manufacturing Practitioners | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Leadership Team — Senior Manufacturing Practitioners | POWERS"
+        description="Meet the POWERS leadership team — senior manufacturing practitioners with multi-decade plant, operations, and PE-portfolio operating experience."
+        path="/leadership"
+      />
       <BriefDocStyles />
       <LeadershipStyles />
       <BriefHeader mode="interior" />

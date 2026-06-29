@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import BriefHeader from './BriefHeader';
 import BriefFooter from './BriefFooter';
+import SEO from './SEO';
 import BriefDocStyles, { useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE } from './BriefDocStyles';
 import { getLeader } from '../data/leaders';
 
@@ -26,13 +27,20 @@ export default function LeaderBio() {
   const insightsRef = useRef(null); useInViewClass(insightsRef);
   const ctaRef = useRef(null); useInViewClass(ctaRef);
   useEffect(() => {
-    if (data) document.title = `${data.name} — ${data.title} | POWERS`;
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [slug, data]);
+  }, [slug]);
   if (!data) return <Navigate to="/leadership" replace />;
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title={`${data.name} — ${data.title} | POWERS`}
+        description={data.paragraphs && data.paragraphs[0] ? data.paragraphs[0].slice(0, 200) : `${data.name}, ${data.title} at POWERS.`}
+        path={`/leadership/${slug}`}
+        image={data.photo}
+        imageAlt={data.name}
+        type="profile"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

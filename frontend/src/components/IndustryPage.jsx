@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import BriefDocStyles, { useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE } from './BriefDocStyles';
+import SEO from './SEO';
 import { getIndustry } from '../data/industries';
 
 /* Generic <IndustryPage> — renders any /industries-served/:slug from
@@ -24,8 +25,7 @@ export default function IndustryPage() {
   const ctaRef = useRef(null); useInViewClass(ctaRef);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-    if (data) document.title = `${data.name} Operations Consulting | POWERS`;
-  }, [slug, data]);
+  }, [slug]);
   if (!data) return <Navigate to="/industries-served" replace />;
 
   const ctaH2 = data.ctaH2 || { top: "Let's build your operation to", pivot: 'execute under any circumstances.' };
@@ -33,6 +33,11 @@ export default function IndustryPage() {
 
   return (
     <>
+      <SEO
+        title={`${data.name} Operations Consulting | POWERS`}
+        description={data.metaDescription || data.heroLede || `POWERS operations consulting for ${data.name}. Build the execution discipline that delivers sustained operational performance in ${data.name.toLowerCase()}.`}
+        path={`/industries-served/${slug}`}
+      />
       <BriefDocStyles />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
         {/* Hero */}

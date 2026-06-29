@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -132,7 +133,6 @@ function CollapseCard({ variant, num, name, body, indexLabel, dataTestid, delayC
 }
 
 export default function OperationalDiscipline() {
-  useEffect(() => { document.title = 'Operational Discipline — Eliminate Variation | POWERS'; }, []);
   const heroRef    = useRef(null); useInViewClass(heroRef);
   const reframeRef = useRef(null); useInViewClass(reframeRef, 0.32);
   const mosRef     = useRef(null); useInViewClass(mosRef, 0.20);
@@ -144,6 +144,11 @@ export default function OperationalDiscipline() {
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Operational Discipline — Eliminate Variation | POWERS"
+        description="Build the operating discipline that holds your numbers under pressure. Standard work, daily routines, and escalation paths that structurally eliminate variation."
+        path="/operational-discipline"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

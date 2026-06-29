@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT, TYPE,
 } from '../components/BriefDocStyles';
@@ -19,9 +20,13 @@ const FOUNDING_PRINCIPLES = [
 ];
 
 export default function History() {
-  useEffect(() => { document.title = 'Our History — 25 Years Building Operations Discipline | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Our History — 25 Years Building Operations Discipline | POWERS"
+        description="POWERS — more than two decades of building operations discipline. From the original engagement model to 500+ operations strengthened across the industries that build."
+        path="/history"
+      />
       <BriefDocStyles />
       <PrinciplesStyles />
       <BriefHeader mode="interior" />

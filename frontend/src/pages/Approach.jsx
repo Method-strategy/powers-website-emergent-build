@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -67,9 +68,13 @@ const ARC = [
 ];
 
 export default function Approach() {
-  useEffect(() => { document.title = 'Our Approach — Operations Performance Consulting | POWERS'; }, []);
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Our Approach — Operations Performance Consulting | POWERS"
+        description="Our approach: build the operating discipline that produces results under any conditions. From underperformance to scalable, sustained execution — without the consultant dependency cycle."
+        path="/approach"
+      />
       <BriefDocStyles />
       <ApproachStyles />
       <BriefHeader mode="interior" />

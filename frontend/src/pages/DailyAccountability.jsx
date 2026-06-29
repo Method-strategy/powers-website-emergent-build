@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
+import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
@@ -95,7 +96,6 @@ function CollapseCard({ variant, num, name, body, indexLabel, dataTestid, delayC
 }
 
 export default function DailyAccountability() {
-  useEffect(() => { document.title = 'Daily Accountability & Operating Rhythm | POWERS'; }, []);
   const heroRef    = useRef(null); useInViewClass(heroRef);
   const reframeRef = useRef(null); useInViewClass(reframeRef, 0.20);
   const loopRef    = useRef(null); useInViewClass(loopRef, 0.14);
@@ -107,6 +107,11 @@ export default function DailyAccountability() {
 
   return (
     <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
+      <SEO
+        title="Daily Accountability & Operating Rhythm | POWERS"
+        description="Install the daily operating rhythm — tier huddles, KPI ownership, and floor walks — that makes operations performance visible, owned, and corrected in hours."
+        path="/daily-accountability"
+      />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

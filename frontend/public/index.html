@@ -3,10 +3,42 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--
+            ╔══════════════════════════════════════════════════════════════════
+            ║  ROBOTS — staging mode
+            ║  Preview / staging is set to noindex, nofollow so the in-progress
+            ║  site does not get crawled by Google or other indexers. AT LAUNCH:
+            ║    1. Delete both <meta name="robots"> + <meta name="googlebot">
+            ║       lines below (or change content to "index, follow").
+            ║    2. Replace public/robots.txt with the LAUNCH-MODE block already
+            ║       commented inside that file.
+            ║    3. Confirm public/sitemap.xml lists every live route + matches
+            ║       production domain in <SITE_URL>.
+            ╚══════════════════════════════════════════════════════════════════
+        -->
         <meta name="robots" content="noindex, nofollow" />
         <meta name="googlebot" content="noindex, nofollow" />
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#0d2442" />
         <meta name="description" content="POWERS is a manufacturing operations management consulting firm. We build the execution discipline that drives sustained operations performance — on the floor, with the team, where the work actually happens." />
+
+        <!-- Open Graph defaults (per-page values are upserted by <SEO /> at runtime) -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="POWERS" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:title" content="POWERS — Manufacturing Operations Management Consulting" />
+        <meta property="og:description" content="POWERS is a manufacturing operations management consulting firm. We build the execution discipline that drives sustained operations performance." />
+        <meta property="og:url" content="https://thepowerscompany.com/" />
+        <meta property="og:image" content="https://thepowerscompany.com/uploads/powers-banner-2026-v2-poster.jpg" />
+        <meta property="og:image:alt" content="POWERS — Manufacturing Operations Management Consulting" />
+
+        <!-- Twitter Card defaults -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@thepowerscompany" />
+        <meta name="twitter:title" content="POWERS — Manufacturing Operations Management Consulting" />
+        <meta name="twitter:description" content="POWERS is a manufacturing operations management consulting firm. We build the execution discipline that drives sustained operations performance." />
+        <meta name="twitter:image" content="https://thepowerscompany.com/uploads/powers-banner-2026-v2-poster.jpg" />
+
+        <link rel="canonical" href="https://thepowerscompany.com/" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="preconnect" href="https://use.typekit.net" />
@@ -31,6 +63,57 @@
         Learn how to configure a non-root public URL by running `npm run build`.
         -->
         <title>POWERS — Manufacturing Operations Management Consulting</title>
+
+        <!-- JSON-LD: Organization + WebSite. Site-wide structured data
+             so search engines surface the brand entity, the corporate
+             address, and the in-site sitelinks search box. -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://thepowerscompany.com/#organization",
+              "name": "POWERS",
+              "alternateName": "The POWERS Company",
+              "url": "https://thepowerscompany.com/",
+              "logo": "https://thepowerscompany.com/uploads/powers-logo-dark.png",
+              "image": "https://thepowerscompany.com/uploads/powers-banner-2026-v2-poster.jpg",
+              "description": "POWERS is a manufacturing operations management consulting firm. We build the execution discipline that drives sustained operations performance — on the floor, with the team, where the work actually happens.",
+              "foundingDate": "2004",
+              "founder": { "@type": "Person", "name": "Randall Powers" },
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "1801 Peachtree Street NE, Suite 200",
+                "addressLocality": "Atlanta",
+                "addressRegion": "GA",
+                "postalCode": "30309",
+                "addressCountry": "US"
+              },
+              "contactPoint": [{
+                "@type": "ContactPoint",
+                "telephone": "+1-678-971-4711",
+                "email": "info@thepowerscompany.com",
+                "contactType": "sales",
+                "areaServed": "US",
+                "availableLanguage": ["English"]
+              }],
+              "sameAs": [
+                "https://www.linkedin.com/company/the-powers-company/"
+              ]
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://thepowerscompany.com/#website",
+              "url": "https://thepowerscompany.com/",
+              "name": "POWERS",
+              "publisher": { "@id": "https://thepowerscompany.com/#organization" },
+              "inLanguage": "en-US"
+            }
+          ]
+        }
+        </script>
+
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
     </head>
