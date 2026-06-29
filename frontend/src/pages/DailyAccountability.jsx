@@ -247,9 +247,15 @@ export default function DailyAccountability() {
             </div>
 
             <div className="da-dps-cta-wrap wipe">
-              <Link to="/dps" className="da-dps-cta" data-testid="da-dps-cta">
+              <a
+                href="https://powersdps.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="da-dps-cta"
+                data-testid="da-dps-cta"
+              >
                 Learn more about DPS <span aria-hidden="true" className="da-dps-cta-arrow">&rarr;</span>
-              </Link>
+              </a>
             </div>
           </div>
         </section>
