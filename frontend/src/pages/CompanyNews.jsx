@@ -32,8 +32,8 @@ import { companyNews } from '../data/companyNews';
    ║  All selectors `cn-` prefixed.
    ╚══════════════════════════════════════════════════════════════════ */
 
-const STANDARD_PAGE_SIZE = 9;
-const LOAD_MORE_INCREMENT = 9;
+const STANDARD_PAGE_SIZE = 12;     // 4 rows × 3 cols — a natural visual page
+const LOAD_MORE_INCREMENT = 12;
 
 const SORTED = [...companyNews].sort((a, b) =>
   (b.dateISO || '').localeCompare(a.dateISO || '')
