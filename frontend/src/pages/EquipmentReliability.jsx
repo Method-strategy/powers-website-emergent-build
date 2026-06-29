@@ -208,7 +208,7 @@ export default function EquipmentReliability() {
                 </div>
                 <div className="er-margin-gauge-legend-item er-margin-gauge-legend-item--gap">
                   <span className="er-margin-gauge-chip er-margin-gauge-chip--gap" /> The recoverable margin
-                  <em>the band AMP closes</em>
+                  <em>the performance gap AMP closes</em>
                 </div>
                 <div className="er-margin-gauge-legend-item">
                   <span className="er-margin-gauge-chip er-margin-gauge-chip--reactive" /> Average operations
