@@ -143,8 +143,8 @@ export default function CompanyNews() {
           <div className="brief-doc-inner">
             <div className="station-index wipe">Latest</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>Most recent.</span>
-              <span className="pivot">From the past few weeks.</span>
+              <span>Featured stories of new partnerships</span>
+              <span className="pivot">and operational improvement.</span>
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
@@ -167,14 +167,13 @@ export default function CompanyNews() {
         {/* ─── ROW 3 ─ Standard grid + Load More ───────────────── */}
         <section ref={gridRef} className="brief-doc-station cn-grid-station" style={{ background: PAPER }}>
           <div className="brief-doc-inner">
-            <div className="station-index wipe">The Archive</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>Earlier engagements.</span>
-              <span className="pivot">Stories of partnership and operational improvement.</span>
+            <h2 className="brief-doc-h2 wipe">
+              <span>Earlier news and engagements.</span>
+              <span className="pivot">Partnerships, promotions, milestones, and the work behind them.</span>
             </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
+            <div className="brief-doc-rule-gold wipe wipe-d1" />
 
-            <div className="cn-grid-meta wipe wipe-d3">
+            <div className="cn-grid-meta wipe wipe-d2">
               <span className="cn-grid-count" data-testid="cn-grid-count">
                 {standardAll.length} {standardAll.length === 1 ? 'announcement' : 'announcements'}
               </span>
