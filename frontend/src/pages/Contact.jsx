@@ -161,16 +161,6 @@ export default function Contact() {
               <p>The first conversation happens by phone. It&rsquo;s a real conversation, not a sales call. We start by listening. To understand where the operation is underperforming, we ask the questions that decades of experience on the floor have taught us to ask. The numbers your team is chasing and not catching. The patterns underneath them. The implications you may or may not have connected yet. By the end of the call, we both have a sharper picture of the gaps in the operation, the challenges of closing them, and whether what we do is what you need.</p>
               <p>From there, the conversation goes wherever it needs to go. Another call. A wider discussion with more of your team. A deeper conversation about a specific part of the operation. Eventually, if it&rsquo;s a fit on both sides, an in-person meeting with your executive and senior operations leadership, and the intensive <Link to="/discovery-process" className="brief-inline-link" data-testid="ct-link-discovery">Discovery Process</Link> that begins every POWERS engagement.</p>
             </div>
-
-            <aside className="ct-wont wipe wipe-d4" data-testid="ct-wont">
-              <div className="ct-wont-label">What We Won&rsquo;t Do</div>
-              <ul>
-                <li>Send a generic capability deck.</li>
-                <li>Route you through a junior gatekeeper.</li>
-                <li>Treat the first conversation as a qualifying call.</li>
-              </ul>
-              <p className="ct-wont-tag">The first conversation is just a conversation.</p>
-            </aside>
           </div>
         </section>
 
@@ -243,52 +233,6 @@ export default function Contact() {
       <BriefFooter />
 
       <style>{`
-        /* ── "What we won't do" callout (Row 2) ─────────────── */
-        .ct-wont {
-          margin: 40px 0 0;
-          padding: 28px 32px;
-          background: ${PAPER};
-          border-left: 3px solid ${GOLD_BRIGHT};
-          max-width: 880px;
-        }
-        .ct-wont-label {
-          font-family: ${TYPE.mono};
-          font-size: 11px;
-          letter-spacing: 0.30em;
-          color: ${GOLD_BRIGHT};
-          text-transform: uppercase;
-          margin-bottom: 16px;
-        }
-        .ct-wont ul {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          display: grid;
-          gap: 8px;
-        }
-        .ct-wont li {
-          padding-left: 22px;
-          position: relative;
-          font-family: ${TYPE.sans};
-          font-size: 15.5px;
-          line-height: 1.55;
-          color: ${NAVY};
-        }
-        .ct-wont li::before {
-          content: '\u2014';
-          position: absolute;
-          left: 0;
-          color: ${GOLD_BRIGHT};
-          font-weight: 700;
-        }
-        .ct-wont-tag {
-          margin: 18px 0 0;
-          font-family: ${TYPE.serif};
-          font-style: italic;
-          font-size: clamp(17px, 1.5vw, 19px);
-          color: ${GOLD_BRIGHT};
-        }
-
         /* ── Row 3 grid: form (left) + sidebar (right) ─────── */
         .ct-grid {
           margin-top: 56px;
