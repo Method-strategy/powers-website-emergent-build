@@ -92,6 +92,27 @@ html.brief-route-transitioning .brief-header::after {
   html.brief-route-transitioning .brief-header::after { animation: none; }
 }
 
+/* ── Content cross-fade — paired with the gold-rule wipe ──
+   Wrappers in HomeLayout + Layout key their <Outlet /> with the
+   pathname, so this animation fires fresh on every route change.
+   The chrome (BriefHeader, BriefFooter) stays mounted; only the
+   page content under .brief-route-fader cross-fades. Timing is
+   intentionally shorter (380ms) than the gold-rule wipe (700ms)
+   so the content settles first while the chrome's rule completes
+   its sweep underneath — gives the transition a sense of the
+   page arriving and the chrome "catching up" rather than two
+   animations running in parallel for the same beat. */
+.brief-route-fader {
+  animation: brief-route-enter 380ms cubic-bezier(.2, .6, .2, 1) both;
+}
+@keyframes brief-route-enter {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brief-route-fader { animation: none; }
+}
+
 /* Typography QC — global balancing per CLAUDE.md standing instruction */
 h1, h2, h3, .eyebrow, .pw-eyebrow { text-wrap: balance; }
 .pw-body p, .pw-body li { text-wrap: pretty; }

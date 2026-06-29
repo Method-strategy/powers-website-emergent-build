@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import BriefHeader from './BriefHeader';
 import BriefFooter from './BriefFooter';
 import { useLegacyLinkIntercept, useScrollToTopOnNav } from '../lib/navHooks';
@@ -27,11 +27,20 @@ import { useLegacyLinkIntercept, useScrollToTopOnNav } from '../lib/navHooks';
 export default function Layout() {
   useLegacyLinkIntercept();
   useScrollToTopOnNav();
+  const { pathname } = useLocation();
 
+  /* Keyed fader: remounts the route content on every pathname
+     change so the CSS animation brief-route-enter (opacity + 6px
+     lift) fires fresh each navigation. The BriefHeader + Footer
+     stay mounted across navigations — their own gold-rule wipe
+     (driven by RouteTransitionRule) handles the chrome's part of
+     the transition. */
   return (
     <>
       <BriefHeader mode="interior" />
-      <Outlet />
+      <div key={pathname} className="brief-route-fader">
+        <Outlet />
+      </div>
       <BriefFooter />
     </>
   );

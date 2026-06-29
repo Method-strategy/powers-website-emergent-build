@@ -16,5 +16,15 @@ export default function HomeLayout() {
     document.body.classList.remove('pw-has-fixed-header');
     window.scrollTo({ top: 0 });
   }, [pathname]);
-  return <Outlet />;
+  /* Keyed wrapper: remounts on every pathname change so the
+     CSS animation brief-route-enter (opacity + 6px lift) fires
+     fresh each navigation. Layouts/headers stay mounted; only
+     the page content under <Outlet /> cross-fades. Pairs with
+     the .brief-header gold-rule wipe driven by RouteTransitionRule
+     for a single coordinated 700ms page transition. */
+  return (
+    <div key={pathname} className="brief-route-fader">
+      <Outlet />
+    </div>
+  );
 }
