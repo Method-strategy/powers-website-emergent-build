@@ -56,6 +56,7 @@ function App() {
           <Route path="/equipment-reliability" element={<EquipmentReliability />} />
           <Route path="/workforce-capability" element={<WorkforceCapability />} />
           <Route path="/daily-accountability" element={<DailyAccountability />} />
+          <Route path="/contact" element={<Contact />} />
         </Route>
 
         {/* All other pages share the canonical Header/Footer from site-nav.jsx */}
@@ -65,9 +66,7 @@ function App() {
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/case-studies/aerospace-defense-on-time-delivery" element={<CaseStudyDefenseAerospaceOTD />} />
           <Route path="/company-news" element={<CompanyNews />} />
-          <Route path="/careers" element={<Careers />} />
           <Route path="/insights" element={<Insights />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

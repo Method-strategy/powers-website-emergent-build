@@ -263,13 +263,8 @@ export default function Contact() {
         <section ref={officesRef} className="brief-doc-station ct-offices" style={{ background: NAVY }}>
           <div className="brief-doc-inner">
             <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Corporate Offices</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1" style={{ color: '#ffffff' }}>
-              <span>POWERS</span>
-              <span className="pivot" style={{ color: GOLD_BRIGHT }}>Atlanta, GA.</span>
-            </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
 
-            <div className="ct-offices-grid wipe wipe-d3">
+            <div className="ct-offices-grid wipe wipe-d1">
               <address className="ct-offices-address" data-testid="ct-offices-address">
                 <div className="ct-offices-line ct-offices-line--name">POWERS</div>
                 <div className="ct-offices-line">1801 Peachtree Street NE, Suite 200</div>
@@ -590,13 +585,19 @@ export default function Contact() {
           font-size: 16px;
           line-height: 1.75;
         }
+        /* "POWERS" sits at the top of the address block as a bold
+           version of the same sans-serif used for the address lines
+           below. This section intentionally has no H2 subhead — the
+           eyebrow + the address itself carry the row. */
         .ct-offices-line--name {
-          font-family: ${TYPE.mono};
-          font-size: 11px;
-          letter-spacing: 0.30em;
-          color: ${GOLD_BRIGHT};
-          text-transform: uppercase;
-          margin-bottom: 14px;
+          font-family: ${TYPE.sans};
+          font-weight: 800;
+          font-size: clamp(28px, 3vw, 38px);
+          line-height: 1.05;
+          letter-spacing: -0.012em;
+          color: #ffffff;
+          text-transform: none;
+          margin-bottom: 18px;
         }
         .ct-offices-line--gap { margin-top: 18px; }
         .ct-offices-link {
