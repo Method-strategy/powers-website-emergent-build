@@ -176,10 +176,8 @@ export default function OperationalDiscipline() {
               <div className="station-index wipe" style={{ marginBottom: 24 }}>What We Build</div>
               <h1 className="brief-doc-h1 wipe wipe-d1" data-testid="od-hero-h1">
                 <span>Operational Discipline.</span>
+                <span className="accent">The backbone of the foundation.</span>
               </h1>
-              <p className="od-hero-sub wipe wipe-d2" data-testid="od-hero-sub">
-                The backbone of the foundation.
-              </p>
               <div className="brief-doc-rule-gold wipe wipe-d3" style={{ marginTop: 56, marginBottom: 40 }} />
               <p className="brief-doc-lede wipe wipe-d4">
                 Standards. Routines. Cadence. The structured practices that run through every shift and hold execution together up and down the value chain. From financial discipline to supply chain discipline to shop floor discipline. Operational Discipline is the first of the five disciplines and the one the other four attach to. Without it, the foundation has nothing holding it upright.
@@ -453,21 +451,9 @@ export default function OperationalDiscipline() {
           ║  without selector collisions.
           ╚════════════════════════════════════════════════════════ */}
       <style>{`
-        /* ── Hero supporting line ───────────────────────────────
-           The "backbone of the foundation." subhead sits directly
-           below the discipline H1 in serif italic gold. It is not
-           a brief-doc-h2 .pivot because it functions structurally
-           as part of the hero, not as a section subhead. */
-        .od-hero-sub {
-          margin: 12px 0 0;
-          font-family: ${TYPE.serif};
-          font-style: italic;
-          font-weight: 400;
-          color: ${GOLD_BRIGHT};
-          font-size: clamp(22px, 2.4vw, 32px);
-          line-height: 1.2;
-          letter-spacing: -0.005em;
-        }
+        /* (legacy .od-hero-sub removed — hero supporting line now
+           lives inside the H1 as a second .accent span, matching
+           the Approach + Discovery + homepage hero standard.) */
 
         /* ── MOS stacked blueprint ─────────────────────────────
            Four horizontal slabs separated by hairline gold rules.

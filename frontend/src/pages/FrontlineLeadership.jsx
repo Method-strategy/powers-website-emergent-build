@@ -151,10 +151,8 @@ export default function FrontlineLeadership() {
               <div className="station-index wipe" style={{ marginBottom: 24 }}>What We Build</div>
               <h1 className="brief-doc-h1 wipe wipe-d1" data-testid="fl-hero-h1">
                 <span>Frontline Leadership.</span>
+                <span className="accent">The most consequential role in your operation.</span>
               </h1>
-              <p className="fl-hero-sub wipe wipe-d2" data-testid="fl-hero-sub">
-                The most consequential role in your operation. Where value is won or lost.
-              </p>
               <div className="brief-doc-rule-gold wipe wipe-d3" style={{ marginTop: 56, marginBottom: 40 }} />
               <p className="brief-doc-lede wipe wipe-d4">
                 Supervisors who can plan a shift, run a problem to ground, and hold the standard with their team. The frontline leader is the closest layer of management to the work itself, and the layer through which every operational outcome eventually flows. Without capable frontline leadership, the system underneath has no one to run it on the floor.
@@ -464,17 +462,9 @@ export default function FrontlineLeadership() {
           ║  same document, but the selectors stay scoped.
           ╚════════════════════════════════════════════════════════ */}
       <style>{`
-        /* ── Hero supporting line ─────────────────────────────── */
-        .fl-hero-sub {
-          margin: 12px 0 0;
-          font-family: ${TYPE.serif};
-          font-style: italic;
-          font-weight: 400;
-          color: ${GOLD_BRIGHT};
-          font-size: clamp(22px, 2.4vw, 32px);
-          line-height: 1.2;
-          letter-spacing: -0.005em;
-        }
+        /* (legacy .fl-hero-sub removed — hero supporting line now
+           lives inside the H1 as a second .accent span, matching
+           the Approach + Discovery + homepage hero standard.) */
 
         /* ── Pull quote ──────────────────────────────────────── */
         .brief-doc-pullquote {
