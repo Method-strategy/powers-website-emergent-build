@@ -140,15 +140,15 @@ export default function BriefHeader({ mode = 'interior' }) {
               type="button"
               className="brief-search-btn"
               data-testid="brief-search-trigger"
-              aria-label="Search the knowledge base (press Cmd-K)"
+              aria-label="Search the knowledge base"
+              title="Search (⌘K)"
               onClick={() => { if (window.__openSearchModal) window.__openSearchModal(); }}
               onMouseEnter={() => setOpenMega(null)}
             >
-              <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
                 <line x1="11" y1="11" x2="14.5" y2="14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-              <span className="brief-search-kbd" aria-hidden="true">⌘K</span>
             </button>
             <Link
               to="/contact"
@@ -425,40 +425,32 @@ const styles = `
   }
   .brief-nav-link.cta:hover { background: ${GOLD_BRIGHT}; color: ${NAVY}; }
 
-  /* Search trigger — magnifying glass + ⌘K hint chip. Subtle in
-     the default nav row, brightens to copper on hover, opens the
-     global SearchModal via window.__openSearchModal. */
+  /* Search trigger — icon-only magnifying glass that sits as a
+     peer to the other nav links rather than a bordered UI chip.
+     Native title="Search (⌘K)" tooltip surfaces the shortcut on
+     hover for power users without taking up nav real estate. */
   .brief-search-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     background: transparent;
-    border: 1px solid rgba(232, 147, 70, 0.25);
+    border: 0;
     color: #f3f0e8;
-    padding: 8px 10px 8px 12px;
-    font-family: inherit;
-    font-size: 12px;
+    padding: 0;
     cursor: pointer;
-    opacity: 0.78;
-    transition: color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+    opacity: 0.72;
+    transition: color 160ms ease, opacity 160ms ease;
   }
   .brief-search-btn:hover {
     color: ${GOLD_BRIGHT};
-    border-color: ${GOLD_BRIGHT};
     opacity: 1;
   }
-  .brief-search-kbd {
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    color: rgba(243, 240, 232, 0.6);
-    padding: 1px 5px;
-    border: 1px solid rgba(243, 240, 232, 0.18);
-    border-radius: 2px;
-    transition: color 160ms ease, border-color 160ms ease;
-  }
-  .brief-search-btn:hover .brief-search-kbd {
-    color: ${GOLD_BRIGHT};
-    border-color: rgba(232, 147, 70, 0.4);
+  .brief-search-btn:focus-visible {
+    outline: 2px solid ${GOLD_BRIGHT};
+    outline-offset: 3px;
+    opacity: 1;
   }
   /* Mobile drawer search trigger — matches .brief-drawer-section
      baseline (font, border, padding) but renders as a button so it
