@@ -1,47 +1,987 @@
-import React from 'react';
-import LegacyPage from '../components/LegacyPage';
+import React, { useMemo, useRef, useState } from 'react';
+import BriefHeader from '../components/BriefHeader';
+import BriefFooter from '../components/BriefFooter';
 import SEO from '../components/SEO';
+import BriefDocStyles, {
+  useInViewClass, NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
+} from '../components/BriefDocStyles';
+import { insights, WP_SEARCH_BASE } from '../data/insights';
+import { knowledgeBase } from '../data/knowledgeBase';
 
-const CSS = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      font-family: 'proxima-nova','Proxima Nova',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
-      background: #ffffff;
-      min-height: 100vh;
-    }
-    body { padding-top: 84px; }
-    .nav-desktop { display: flex !important; }
-    .nav-mobile  { display: none !important; }
-    .nav-tagline { display: inline !important; }
-    @media (max-width: 767px) {
-      .nav-desktop { display: none !important; }
-      .nav-mobile  { display: flex !important; }
-      .nav-tagline { display: none !important; }
-    }`;
+/* ╔══════════════════════════════════════════════════════════════════
+   ║  Insights Hub — POWERS blog aggregator + Knowledge Base hub.
+   ║
+   ║  Six rows, in order:
+   ║    1. Hero                ─ "Decades of operational insights…"
+   ║                             + 5-discipline italic stack + cross-
+   ║                             cutting dimensions sub-stack
+   ║    2. Knowledge Base row  ─ 5 destination cards with promo blurbs
+   ║                             (Mastery / KPIs / Glossary / FAQs /
+   ║                             Downloadables) — placed here per
+   ║                             2026-06-29 architectural decision
+   ║                             (no floating side rail).
+   ║    3. Featured + Top      ─ 1 large featured card (left) + 2
+   ║                             stacked smaller cards (right). Real
+   ║                             article images for editorial weight.
+   ║    4. Search bar          ─ keyword/phrase input, client-side
+   ║                             filter on local cards, with an
+   ║                             explicit escape hatch to the WP
+   ║                             full-archive search. No category
+   ║                             filter (content isn't catalogued).
+   ║    5. Standard grid       ─ 3-up card grid, 9 per page, Load
+   ║                             More batches of 9. Image + meta +
+   ║                             title + Read CTA per card.
+   ║    6. Footer              ─ canonical BriefFooter
+   ║
+   ║  Article links go to the live legacy URLs on
+   ║  thepowerscompany.com/resources/{slug}/ — preserves WP SEO
+   ║  authority while the native React article-detail template is
+   ║  still pending.
+   ║
+   ║  All selectors `ih-` prefixed (Insights Hub).
+   ╚══════════════════════════════════════════════════════════════════ */
 
-const HTML = `<section style="background:#183a61;">
-  <div style="max-width:1280px;margin:0 auto;width:100%;padding:120px 48px;min-height:600px;display:flex;flex-direction:column;justify-content:center;">
-    <div style="font-size:12px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#eabb71;font-family:inherit;margin-bottom:24px;">Insights</div>
-    <h1 style="font-size:clamp(36px,4.2vw,56px);font-weight:800;line-height:1.08;color:#ffffff;letter-spacing:-0.01em;font-family:inherit;max-width:920px;text-wrap:balance;">The Ideas Behind the Work.</h1>
-  </div>
-</section>`;
+const STANDARD_PAGE_SIZE = 9;
+const LOAD_MORE_INCREMENT = 9;
 
-const SCRIPT = ``;
+const SORTED = [...insights].sort((a, b) =>
+  (b.dateISO || '').localeCompare(a.dateISO || '')
+);
+
+/* Discipline-tinted gradient fallback for placeholder cards (until
+   WP supplies real images). Same family as Company News card
+   fallback — but keyed to the five POWERS disciplines instead of
+   news categories. Stays muted so it never competes with real
+   article photography next to it. */
+const DISCIPLINE_GRADIENTS = {
+  'Operational Discipline': `linear-gradient(135deg, ${NAVY} 0%, #1a3a5f 100%)`,
+  'Frontline Leadership':   `linear-gradient(135deg, #8a5024 0%, #b87338 100%)`,
+  'Equipment Reliability':  `linear-gradient(135deg, #2a4a3a 0%, #3d6b52 100%)`,
+  'Workforce Capability':   `linear-gradient(135deg, #4a3a6f 0%, #6b5a8f 100%)`,
+  'Daily Accountability':   `linear-gradient(135deg, #5a4520 0%, #8a6d34 100%)`,
+};
+
+function ArticleImage({ article, ratio = '16 / 9' }) {
+  if (article.image) {
+    return (
+      <div className="ih-card-image" style={{ aspectRatio: ratio }}>
+        <img src={article.image} alt="" loading="lazy" decoding="async" />
+      </div>
+    );
+  }
+  return (
+    <div
+      className="ih-card-image ih-card-image--fallback"
+      style={{
+        aspectRatio: ratio,
+        background: DISCIPLINE_GRADIENTS[article.discipline] || DISCIPLINE_GRADIENTS['Operational Discipline'],
+      }}
+      aria-hidden="true"
+    >
+      <span className="ih-card-image-mark">{article.discipline}</span>
+    </div>
+  );
+}
+
+function ArticleLink({ article, className, children, ...rest }) {
+  return (
+    <a
+      className={className}
+      href={article.externalUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-testid={`ih-card-${article.slug}`}
+      {...rest}
+    >
+      {children}
+    </a>
+  );
+}
+
+function FeaturedLarge({ article }) {
+  return (
+    <ArticleLink article={article} className="ih-card ih-card--featured-large">
+      <ArticleImage article={article} ratio="16 / 10" />
+      <div className="ih-card-body">
+        <div className="ih-card-meta">
+          <span className="ih-card-date">{article.date}</span>
+          <span className="ih-card-divider" aria-hidden="true" />
+          <span className="ih-card-discipline">{article.discipline}</span>
+        </div>
+        <h3 className="ih-card-title ih-card-title--xl">{article.title}</h3>
+        <p className="ih-card-excerpt">{article.excerpt}</p>
+        <div className="ih-card-foot">
+          <span className="ih-card-byline">By {article.author}</span>
+          <span className="ih-card-cta">
+            Read the article <span aria-hidden="true" className="ih-card-arrow">&rarr;</span>
+          </span>
+        </div>
+      </div>
+    </ArticleLink>
+  );
+}
+
+function FeaturedStacked({ article }) {
+  return (
+    <ArticleLink article={article} className="ih-card ih-card--featured-stacked">
+      <ArticleImage article={article} ratio="16 / 9" />
+      <div className="ih-card-body">
+        <div className="ih-card-meta">
+          <span className="ih-card-date">{article.date}</span>
+          <span className="ih-card-divider" aria-hidden="true" />
+          <span className="ih-card-discipline">{article.discipline}</span>
+        </div>
+        <h3 className="ih-card-title ih-card-title--md">{article.title}</h3>
+        <div className="ih-card-foot">
+          <span className="ih-card-byline">By {article.author}</span>
+          <span className="ih-card-cta">
+            Read <span aria-hidden="true" className="ih-card-arrow">&rarr;</span>
+          </span>
+        </div>
+      </div>
+    </ArticleLink>
+  );
+}
+
+function StandardCard({ article }) {
+  return (
+    <ArticleLink article={article} className="ih-card ih-card--standard">
+      <ArticleImage article={article} ratio="16 / 9" />
+      <div className="ih-card-body">
+        <div className="ih-card-meta">
+          <span className="ih-card-date">{article.date}</span>
+          <span className="ih-card-divider" aria-hidden="true" />
+          <span className="ih-card-discipline">{article.discipline}</span>
+        </div>
+        <h3 className="ih-card-title ih-card-title--sm">{article.title}</h3>
+        <span className="ih-card-byline">By {article.author}</span>
+        <span className="ih-card-cta">
+          Read <span aria-hidden="true" className="ih-card-arrow">&rarr;</span>
+        </span>
+      </div>
+    </ArticleLink>
+  );
+}
+
+function KnowledgeBaseCard({ destination, index }) {
+  return (
+    <a
+      className="ih-kb-card"
+      href={destination.externalUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-testid={`ih-kb-${destination.slug}`}
+    >
+      <span className="ih-kb-num" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+      <div className="ih-kb-body">
+        <div className="ih-kb-badge">{destination.badge}</div>
+        <h3 className="ih-kb-label">{destination.label}</h3>
+        <p className="ih-kb-blurb">{destination.blurb}</p>
+      </div>
+      <span className="ih-kb-cta" aria-hidden="true">
+        Open <span className="ih-kb-arrow">&rarr;</span>
+      </span>
+    </a>
+  );
+}
 
 export default function Insights() {
+  const heroRef     = useRef(null); useInViewClass(heroRef);
+  const kbRef       = useRef(null); useInViewClass(kbRef, 0.10);
+  const featuredRef = useRef(null); useInViewClass(featuredRef, 0.18);
+  const searchRef   = useRef(null); useInViewClass(searchRef, 0.22);
+  const gridRef     = useRef(null); useInViewClass(gridRef, 0.10);
+
+  const [q, setQ] = useState('');
+  const [visible, setVisible] = useState(STANDARD_PAGE_SIZE);
+
+  /* Featured = top 3 most recent across the unfiltered dataset.
+     The editorial top of the page is editorially fixed — searches
+     filter the standard grid below, not the featured set. */
+  const featured = SORTED.slice(0, 3);
+  const featuredSlugs = useMemo(
+    () => new Set(featured.map(a => a.slug)),
+    [featured]
+  );
+
+  /* Standard pool = everything else. Search applies here. */
+  const standardAll = useMemo(() => {
+    const pool = SORTED.filter(a => !featuredSlugs.has(a.slug));
+    const query = q.trim().toLowerCase();
+    if (!query) return pool;
+    return pool.filter(a => {
+      const hay = `${a.title} ${a.excerpt} ${a.author} ${a.discipline}`.toLowerCase();
+      return hay.includes(query);
+    });
+  }, [q, featuredSlugs]);
+
+  const standardVisible = standardAll.slice(0, visible);
+  const hasMore = visible < standardAll.length;
+
+  const onSearchChange = (e) => {
+    setQ(e.target.value);
+    setVisible(STANDARD_PAGE_SIZE);
+  };
+  const clearSearch = () => {
+    setQ('');
+    setVisible(STANDARD_PAGE_SIZE);
+  };
+
+  const wpSearchUrl = q.trim()
+    ? `${WP_SEARCH_BASE}${encodeURIComponent(q.trim())}`
+    : 'https://www.thepowerscompany.com/manufacturing-productivity-insights-blog/';
+
   return (
-    <>
+    <div className="brief-doc" style={{ background: PAPER, fontFamily: TYPE.sans, color: NAVY }}>
       <SEO
-        title="Manufacturing Operations Insights & Articles | POWERS"
-        description="POWERS insights — practitioner perspectives on operational discipline, frontline leadership, and the manufacturing performance gap from senior operators in the field."
+        title="Manufacturing Operations Insights & Knowledge Base | POWERS"
+        description="Decades of operational insights from POWERS — articles, deep-dive series, KPIs, glossary, FAQs, and downloadables on the disciplines that drive sustained manufacturing performance."
         path="/insights"
       />
-      <LegacyPage
-        css={CSS}
-        html={HTML}
-        script={SCRIPT}
-        title={`Manufacturing Operations Insights & Articles | POWERS`}
-        metaDescription={``}
-      />
-    </>
+      <BriefDocStyles />
+      <BriefHeader mode="interior" />
+      <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
+
+        {/* ─── ROW 1 ─ Hero ────────────────────────────────────── */}
+        <section ref={heroRef} className="brief-page-hero">
+          <div className="brief-doc-inner">
+            <div className="brief-doc-col">
+              <div className="station-index wipe" style={{ marginBottom: 24 }}>Insights Hub</div>
+              <h1 className="brief-doc-h1 wipe wipe-d1" data-testid="ih-hero-h1">
+                <span>Decades of operational insights.</span>
+                <span className="accent">Stronger execution. Stronger performance.</span>
+              </h1>
+              <div className="brief-doc-rule-gold wipe wipe-d3" style={{ marginTop: 48, marginBottom: 36 }} />
+              <p className="brief-doc-lede wipe wipe-d4">
+                We&rsquo;ve been writing on what we&rsquo;ve observed and executed on thousands of shop floors, solving the most embedded operational challenges manufacturers face.
+              </p>
+
+              <div className="ih-hero-pillars wipe wipe-d4" data-testid="ih-hero-pillars">
+                <div className="ih-hero-pillar-label">The disciplines that drive sustainable performance.</div>
+                <ul className="ih-hero-stack">
+                  <li>Operational Discipline.</li>
+                  <li>Frontline Leadership.</li>
+                  <li>Equipment Reliability.</li>
+                  <li>Workforce Capability.</li>
+                  <li>Daily Accountability.</li>
+                </ul>
+              </div>
+
+              <div className="ih-hero-dims wipe wipe-d5">
+                <div className="ih-hero-pillar-label">And the dimensions that cut across all five.</div>
+                <p className="ih-hero-dims-line">
+                  Continuous improvement. Cost reduction. Capacity utilization. Root cause analysis. Profitability.
+                </p>
+              </div>
+
+              <p className="brief-doc-lede wipe wipe-d6" style={{ marginTop: 36, maxWidth: 720 }}>
+                Browse the latest below, search by topic, or jump to the broader resource library at any time.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── ROW 2 ─ Knowledge Base ─────────────────────────── */}
+        <section ref={kbRef} className="brief-doc-station ih-kb-station" style={{ background: NAVY }}>
+          <div className="brief-doc-inner">
+            <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Knowledge Base</div>
+            <h2 className="brief-doc-h2 wipe wipe-d1 ih-kb-h2">
+              <span style={{ color: PAPER }}>Structured resources.</span>
+              <span className="pivot">Built by practitioners, for practitioners.</span>
+            </h2>
+            <div className="brief-doc-rule-gold wipe wipe-d2" />
+
+            <div className="ih-kb-grid" data-testid="ih-kb-grid">
+              {knowledgeBase.map((d, i) => (
+                <div key={d.slug} className={`wipe wipe-d${Math.min(6, i + 3)}`}>
+                  <KnowledgeBaseCard destination={d} index={i} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── ROW 3 ─ Featured + Top Stories ──────────────────── */}
+        <section ref={featuredRef} className="brief-doc-station ih-featured-row" style={{ background: PAPER_DEEP }}>
+          <div className="brief-doc-inner">
+            <div className="station-index wipe">Featured</div>
+            <h2 className="brief-doc-h2 wipe wipe-d1">
+              <span>The latest from the field,</span>
+              <span className="pivot">and the conversations operators are having now.</span>
+            </h2>
+            <div className="brief-doc-rule-gold wipe wipe-d2" />
+
+            <div className="ih-featured-grid" data-testid="ih-featured-grid">
+              <div className="ih-featured-large wipe wipe-d3">
+                <FeaturedLarge article={featured[0]} />
+              </div>
+              <div className="ih-featured-stack">
+                <div className="wipe wipe-d4">
+                  <FeaturedStacked article={featured[1]} />
+                </div>
+                <div className="wipe wipe-d5">
+                  <FeaturedStacked article={featured[2]} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── ROW 4 ─ Search Bar ───────────────────────────── */}
+        <section ref={searchRef} className="ih-search-band" data-testid="ih-search-band">
+          <div className="brief-doc-inner">
+            <label htmlFor="ih-search-input" className="ih-search-label wipe">
+              Search the insights
+            </label>
+            <div className="ih-search-row wipe wipe-d1">
+              <div className="ih-search-input-wrap">
+                <span className="ih-search-icon" aria-hidden="true">&#x2315;</span>
+                <input
+                  id="ih-search-input"
+                  type="search"
+                  className="ih-search-input"
+                  placeholder="Search insights by topic, keyword, or phrase…"
+                  value={q}
+                  onChange={onSearchChange}
+                  data-testid="ih-search-input"
+                  autoComplete="off"
+                />
+                {q && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="ih-search-clear"
+                    aria-label="Clear search"
+                    data-testid="ih-search-clear"
+                  >
+                    &times;
+                  </button>
+                )}
+              </div>
+              <a
+                className="ih-search-archive"
+                href={wpSearchUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="ih-search-archive"
+              >
+                Search the full archive <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+            <p className="ih-search-help wipe wipe-d2">
+              Searching across the {SORTED.length - featured.length} most recent articles. The full archive has hundreds more.
+            </p>
+          </div>
+        </section>
+
+        {/* ─── ROW 5 ─ Standard Article Grid ──────────────────── */}
+        <section ref={gridRef} className="brief-doc-station ih-grid-station" style={{ background: PAPER }}>
+          <div className="brief-doc-inner">
+            <div className="ih-grid-meta wipe">
+              <span className="ih-grid-count" data-testid="ih-grid-count">
+                {standardAll.length} {standardAll.length === 1 ? 'article' : 'articles'}
+                {q.trim() && (
+                  <> matching <em>&ldquo;{q.trim()}&rdquo;</em></>
+                )}
+              </span>
+            </div>
+
+            {standardVisible.length === 0 ? (
+              <div className="ih-empty" data-testid="ih-empty">
+                <p>No articles in the local cache match <em>&ldquo;{q.trim()}&rdquo;</em>.</p>
+                <a
+                  className="ih-empty-archive"
+                  href={wpSearchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="ih-empty-archive"
+                >
+                  Search the full archive on POWERS.com <span aria-hidden="true">&rarr;</span>
+                </a>
+              </div>
+            ) : (
+              <div className="ih-grid" data-testid="ih-grid">
+                {standardVisible.map((a, i) => (
+                  <div key={a.slug} className={`wipe wipe-d${Math.min(6, (i % 6) + 1)}`}>
+                    <StandardCard article={a} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {hasMore && (
+              <div className="ih-load-more-wrap">
+                <button
+                  type="button"
+                  className="ih-load-more"
+                  onClick={() => setVisible(v => v + LOAD_MORE_INCREMENT)}
+                  data-testid="ih-load-more"
+                >
+                  Load More <span aria-hidden="true" className="ih-load-more-arrow">&rarr;</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+      <BriefFooter />
+
+      <style>{`
+        /* ── Hero pillars ─────────────────────────────────────── */
+        .ih-hero-pillars { margin-top: 36px; }
+        .ih-hero-pillar-label {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.26em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          margin-bottom: 14px;
+        }
+        .ih-hero-stack {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: grid;
+          gap: 10px;
+        }
+        .ih-hero-stack li {
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-weight: 400;
+          font-size: clamp(20px, 2.0vw, 24px);
+          line-height: 1.32;
+          color: ${NAVY};
+          padding-left: 22px;
+          position: relative;
+          letter-spacing: -0.005em;
+        }
+        .ih-hero-stack li::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0.85em;
+          width: 12px;
+          height: 1px;
+          background: ${GOLD_BRIGHT};
+        }
+        .ih-hero-dims {
+          margin-top: 36px;
+        }
+        .ih-hero-dims-line {
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-size: clamp(17px, 1.6vw, 19px);
+          line-height: 1.45;
+          color: ${TEXT_BODY};
+          margin: 0;
+        }
+
+        /* ── Knowledge Base row (dark, premium) ────────────────
+           Five typographic "shelves" — numbered, with a small
+           badge over the label, a long descriptive blurb, and a
+           gold arrow CTA. The dark navy background sets KB apart
+           visually from the article-aggregator rows above and
+           below, signalling "this is structural content, not the
+           news stream." */
+        .ih-kb-station {
+          color: ${PAPER};
+        }
+        .ih-kb-h2 .pivot { color: ${GOLD_BRIGHT}; }
+        .ih-kb-grid {
+          margin-top: 56px;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 0;
+          border-top: 1px solid rgba(232, 147, 70, 0.20);
+        }
+        .ih-kb-card {
+          display: grid;
+          grid-template-columns: 64px 1fr auto;
+          gap: 28px;
+          align-items: center;
+          padding: 28px 0;
+          border-bottom: 1px solid rgba(232, 147, 70, 0.20);
+          color: ${PAPER};
+          text-decoration: none;
+          position: relative;
+          transition: background 220ms ease, padding-left 220ms ease;
+        }
+        .ih-kb-card::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 3px;
+          background: ${GOLD_BRIGHT};
+          transform: scaleY(0);
+          transform-origin: top center;
+          transition: transform 320ms cubic-bezier(.2,.6,.2,1);
+        }
+        .ih-kb-card:hover {
+          background: rgba(232, 147, 70, 0.06);
+          padding-left: 16px;
+        }
+        .ih-kb-card:hover::before { transform: scaleY(1); }
+        .ih-kb-card:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 4px;
+        }
+        .ih-kb-num {
+          font-family: ${TYPE.mono};
+          font-size: 13px;
+          letter-spacing: 0.18em;
+          color: ${GOLD_BRIGHT};
+          opacity: 0.75;
+        }
+        .ih-kb-body { min-width: 0; }
+        .ih-kb-badge {
+          display: inline-block;
+          font-family: ${TYPE.mono};
+          font-size: 10px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          padding: 3px 8px;
+          border: 1px solid rgba(232, 147, 70, 0.40);
+          margin-bottom: 10px;
+        }
+        .ih-kb-label {
+          font-family: ${TYPE.sans};
+          font-weight: 700;
+          font-size: clamp(22px, 2.2vw, 28px);
+          line-height: 1.18;
+          letter-spacing: -0.012em;
+          color: ${PAPER};
+          margin: 0 0 8px;
+        }
+        .ih-kb-blurb {
+          font-family: ${TYPE.sans};
+          font-size: 15px;
+          line-height: 1.55;
+          color: rgba(251, 250, 246, 0.72);
+          font-weight: 300;
+          margin: 0;
+          max-width: 720px;
+        }
+        .ih-kb-cta {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          white-space: nowrap;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .ih-kb-arrow {
+          font-size: 14px;
+          letter-spacing: 0;
+          transition: transform 200ms ease;
+        }
+        .ih-kb-card:hover .ih-kb-arrow { transform: translateX(4px); }
+
+        /* ── Featured + Top Stories row ──────────────────────── */
+        .ih-featured-grid {
+          margin-top: 56px;
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 28px;
+          align-items: stretch;
+        }
+        .ih-featured-large,
+        .ih-featured-stack { display: flex; flex-direction: column; }
+        .ih-featured-stack { gap: 28px; }
+        .ih-featured-stack > div { flex: 1; display: flex; }
+
+        /* ── Shared article card ────────────────────────────── */
+        .ih-card {
+          display: block;
+          width: 100%;
+          background: ${PAPER};
+          border: 1px solid rgba(13, 36, 66, 0.10);
+          color: ${NAVY};
+          text-decoration: none;
+          overflow: hidden;
+          position: relative;
+          transition: transform 220ms cubic-bezier(.2,.6,.2,1),
+                      border-color 220ms ease,
+                      box-shadow 220ms ease;
+        }
+        .ih-card--featured-large,
+        .ih-card--featured-stacked { height: 100%; display: flex; flex-direction: column; }
+        .ih-card:hover {
+          transform: translateY(-3px);
+          border-color: rgba(232, 147, 70, 0.55);
+          box-shadow: 0 18px 38px -22px rgba(13, 36, 66, 0.30);
+        }
+        .ih-card:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 3px;
+        }
+
+        .ih-card-image {
+          width: 100%;
+          background: ${PAPER_DEEP};
+          overflow: hidden;
+          position: relative;
+        }
+        .ih-card-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 600ms cubic-bezier(.2,.6,.2,1);
+        }
+        .ih-card:hover .ih-card-image img { transform: scale(1.035); }
+        .ih-card-image--fallback {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .ih-card-image-mark {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.28em;
+          color: rgba(255, 255, 255, 0.65);
+          text-transform: uppercase;
+          padding: 0 12px;
+          text-align: center;
+        }
+
+        .ih-card-body {
+          padding: 22px 24px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          flex: 1;
+        }
+        .ih-card--featured-large .ih-card-body {
+          padding: 32px 36px 34px;
+          gap: 16px;
+        }
+
+        .ih-card-meta {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.20em;
+          color: ${TEXT_BODY};
+          text-transform: uppercase;
+          flex-wrap: wrap;
+        }
+        .ih-card-date { white-space: nowrap; }
+        .ih-card-divider {
+          width: 14px;
+          height: 1px;
+          background: rgba(13, 36, 66, 0.30);
+        }
+        .ih-card-discipline {
+          color: ${GOLD_BRIGHT};
+          font-weight: 600;
+          letter-spacing: 0.22em;
+        }
+
+        .ih-card-title {
+          font-family: ${TYPE.sans};
+          font-weight: 700;
+          color: ${NAVY};
+          margin: 0;
+          letter-spacing: -0.010em;
+        }
+        .ih-card-title--xl {
+          font-size: clamp(24px, 2.3vw, 30px);
+          line-height: 1.20;
+        }
+        .ih-card-title--md {
+          font-size: 17px;
+          line-height: 1.28;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+        }
+        .ih-card-title--sm {
+          font-size: 17px;
+          line-height: 1.28;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+          min-height: 3.84em;
+        }
+
+        .ih-card-excerpt {
+          margin: 0;
+          font-family: ${TYPE.sans};
+          font-size: 15px;
+          line-height: 1.6;
+          color: ${TEXT_BODY};
+          font-weight: 300;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+        }
+
+        .ih-card-foot {
+          margin-top: auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding-top: 6px;
+          border-top: 1px solid rgba(13, 36, 66, 0.08);
+        }
+        .ih-card-byline {
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-size: 13px;
+          color: ${TEXT_BODY};
+          letter-spacing: -0.003em;
+        }
+        .ih-card-cta {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .ih-card-arrow {
+          font-size: 14px;
+          letter-spacing: 0;
+          transition: transform 200ms ease;
+        }
+        .ih-card:hover .ih-card-arrow { transform: translateX(4px); }
+
+        /* Standard cards: byline + CTA stack vertically (no foot rule). */
+        .ih-card--standard .ih-card-body { gap: 10px; }
+        .ih-card--standard .ih-card-byline { margin-top: 2px; }
+        .ih-card--standard .ih-card-cta { margin-top: auto; padding-top: 6px; }
+
+        /* ── Search band ─────────────────────────────────────── */
+        .ih-search-band {
+          padding: 56px 0 48px;
+          background: ${PAPER_DEEP};
+          border-top: 1px solid rgba(13, 36, 66, 0.08);
+          border-bottom: 1px solid rgba(13, 36, 66, 0.08);
+        }
+        .ih-search-label {
+          display: block;
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.30em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          margin-bottom: 16px;
+        }
+        .ih-search-row {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 28px;
+          align-items: center;
+        }
+        .ih-search-input-wrap {
+          position: relative;
+          background: ${PAPER};
+          border: 1px solid rgba(13, 36, 66, 0.15);
+          transition: border-color 200ms ease, box-shadow 200ms ease;
+        }
+        .ih-search-input-wrap:focus-within {
+          border-color: ${GOLD_BRIGHT};
+          box-shadow: 0 0 0 3px rgba(232, 147, 70, 0.18);
+        }
+        .ih-search-icon {
+          position: absolute;
+          left: 18px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 18px;
+          color: ${TEXT_BODY};
+          pointer-events: none;
+        }
+        .ih-search-input {
+          width: 100%;
+          padding: 18px 52px 18px 50px;
+          border: none;
+          background: transparent;
+          font-family: ${TYPE.sans};
+          font-size: 16px;
+          color: ${NAVY};
+          outline: none;
+          letter-spacing: -0.005em;
+        }
+        .ih-search-input::placeholder { color: rgba(86, 99, 119, 0.7); }
+        .ih-search-input::-webkit-search-cancel-button { display: none; }
+        .ih-search-clear {
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          appearance: none;
+          background: transparent;
+          border: none;
+          font-size: 22px;
+          line-height: 1;
+          color: ${TEXT_BODY};
+          cursor: pointer;
+          padding: 4px 8px;
+          transition: color 200ms ease;
+        }
+        .ih-search-clear:hover { color: ${NAVY}; }
+        .ih-search-archive {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          text-decoration: none;
+          white-space: nowrap;
+          border-bottom: 1px solid transparent;
+          padding-bottom: 2px;
+          transition: border-color 200ms ease;
+        }
+        .ih-search-archive:hover { border-bottom-color: ${GOLD_BRIGHT}; }
+        .ih-search-help {
+          margin: 16px 0 0;
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-size: 14px;
+          color: ${TEXT_BODY};
+        }
+
+        /* ── Standard grid ──────────────────────────────────── */
+        .ih-grid-station { padding-top: clamp(48px, 6vh, 72px) !important; }
+        .ih-grid-meta {
+          margin-bottom: 28px;
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          letter-spacing: 0.24em;
+          color: ${TEXT_BODY};
+          text-transform: uppercase;
+        }
+        .ih-grid-count em {
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-weight: 500;
+          color: ${GOLD_BRIGHT};
+          letter-spacing: 0.02em;
+          text-transform: none;
+          font-size: 14px;
+        }
+        .ih-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 28px;
+          align-items: stretch;
+        }
+        .ih-grid > div { display: flex; }
+
+        .ih-empty {
+          padding: 64px 32px;
+          text-align: center;
+          background: ${PAPER_DEEP};
+          border: 1px dashed rgba(13, 36, 66, 0.18);
+        }
+        .ih-empty p {
+          margin: 0 0 16px;
+          font-family: ${TYPE.serif};
+          font-style: italic;
+          font-size: 18px;
+          color: ${TEXT_BODY};
+        }
+        .ih-empty-archive {
+          font-family: ${TYPE.mono};
+          font-size: 12px;
+          letter-spacing: 0.28em;
+          color: ${GOLD_BRIGHT};
+          text-transform: uppercase;
+          text-decoration: none;
+          padding: 8px 0;
+          border-bottom: 1px solid ${GOLD_BRIGHT};
+        }
+        .ih-empty-archive:hover { color: ${NAVY}; border-bottom-color: ${NAVY}; }
+
+        .ih-load-more-wrap {
+          margin-top: 56px;
+          display: flex;
+          justify-content: center;
+        }
+        .ih-load-more {
+          appearance: none;
+          font-family: ${TYPE.mono};
+          font-size: 12px;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: ${NAVY};
+          background: transparent;
+          border: 2px solid ${NAVY};
+          padding: 16px 36px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          transition: background 200ms ease, color 200ms ease, transform 200ms ease;
+        }
+        .ih-load-more:hover {
+          background: ${NAVY};
+          color: ${PAPER};
+          transform: translateY(-1px);
+        }
+        .ih-load-more:focus-visible { outline: 2px solid ${GOLD_BRIGHT}; outline-offset: 3px; }
+        .ih-load-more-arrow { font-size: 16px; }
+
+        /* ── Tablet ────────────────────────────────────────── */
+        @media (max-width: 1099px) {
+          .ih-kb-card { grid-template-columns: 48px 1fr; }
+          .ih-kb-card .ih-kb-cta {
+            grid-column: 2 / -1;
+            margin-top: 6px;
+            justify-self: start;
+          }
+          .ih-featured-grid { grid-template-columns: 1fr; gap: 24px; }
+          .ih-featured-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+          .ih-grid { grid-template-columns: repeat(2, 1fr); }
+          .ih-search-row { grid-template-columns: 1fr; gap: 14px; }
+          .ih-search-archive { justify-self: start; }
+        }
+        /* ── Mobile ────────────────────────────────────────── */
+        @media (max-width: 639px) {
+          .ih-hero-stack li { font-size: 18px; }
+          .ih-kb-card {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            padding: 22px 0;
+          }
+          .ih-kb-num { font-size: 11px; }
+          .ih-card--featured-large .ih-card-body { padding: 24px 22px 26px; }
+          .ih-card-body { padding: 18px 20px 22px; }
+          .ih-featured-stack { grid-template-columns: 1fr; }
+          .ih-grid { grid-template-columns: 1fr; gap: 22px; }
+          .ih-search-input { padding: 16px 50px 16px 46px; font-size: 15px; }
+          .ih-load-more { padding: 14px 28px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ih-card-image img,
+          .ih-card-arrow,
+          .ih-kb-arrow,
+          .ih-kb-card,
+          .ih-card,
+          .ih-load-more {
+            transition: none !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
+    </div>
   );
 }

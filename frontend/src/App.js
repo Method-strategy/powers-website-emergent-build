@@ -57,6 +57,7 @@ function App() {
           <Route path="/workforce-capability" element={<WorkforceCapability />} />
           <Route path="/daily-accountability" element={<DailyAccountability />} />
           <Route path="/company-news" element={<CompanyNews />} />
+          <Route path="/insights" element={<Insights />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
 
@@ -66,7 +67,6 @@ function App() {
           <Route path="/industries-served/:slug" element={<IndustryPage />} />
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/case-studies/aerospace-defense-on-time-delivery" element={<CaseStudyDefenseAerospaceOTD />} />
-          <Route path="/insights" element={<Insights />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
