@@ -3,6 +3,7 @@ import { caseStudies } from '../data/caseStudies';
 import { caseStudiesLibraryStyles } from '../components/caseStudy/caseStudiesLibraryStyles';
 import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
 import BriefDocStyles, { useInViewClass, PAPER } from '../components/BriefDocStyles';
+import LogoCrawl from '../components/LogoCrawl';
 import SEO from '../components/SEO';
 
 /**
@@ -139,8 +140,18 @@ export default function CaseStudies() {
               <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
                 Real operations. Real pressure. Measurable results. Every case below is an operation that had to execute and perform under conditions like yours. The proof is in what we built side by side with our clients. A resilient execution capability. And the lasting results it produced. Search by industry, service type, or operational challenge.
               </p>
-              <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
             </div>
+            {/* Client logo crawl — same row, same logos, same
+                sequence, same size as the homepage "Where We Work"
+                marquee. Lives OUTSIDE the 900px reading column so
+                it can span the full brief-doc-inner frame (up to
+                1240px), matching the homepage's gridColumn: '1 / -1'
+                breakout. Wrapped in a wipe so it sweeps into place
+                with the rest of the hero cascade (delay d3). */}
+            <div className="wipe wipe-d3" style={{ marginTop: 48 }}>
+              <LogoCrawl eyebrow="Trusted By" />
+            </div>
+            <div className="brief-doc-rule wipe wipe-d3" style={{ marginTop: 56 }} />
           </div>
         </section>
 

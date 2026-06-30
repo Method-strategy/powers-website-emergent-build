@@ -937,3 +937,51 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 - `/app/frontend/src/index.css` (.brief-skip-link styles)
 
 **Note on image format optimization:** Project policy is to handle `.webp` conversion on the hosting side rather than via per-image `<picture>` elements in React markup. No source changes needed — confirmed with the team.
+
+
+## 2026-02-14 — Case Studies hero: "Trusted By" logo crawl
+
+Replicated the homepage's "Where We Work" client logo marquee into the
+Case Studies hero with the eyebrow label changed to **TRUSTED BY**.
+Same 18 logos, same sequence, same 56px logo height, same 72s marquee,
+same grayscale + multiply blend treatment, same hover-to-color, same
+paper-fade edges, same `prefers-reduced-motion` opt-out.
+
+**Refactor for single source of truth:**
+- `CLIENT_LOGOS` + `logoSrc` extracted from `Home.jsx` to a shared
+  data module: `/app/frontend/src/data/clientLogos.js`. When the
+  client provides final brand-asset SVGs (P2 backlog), update only
+  this file and both pages refresh.
+- New reusable component: `/app/frontend/src/components/LogoCrawl.jsx`.
+  Self-contained — ships its own scoped `<style>` with the marquee
+  CSS so it works on any host page. Accepts `eyebrow` prop
+  (defaults to "Trusted By"; homepage passes "Shoulder to shoulder
+  with") and optional `style` (homepage uses `gridColumn: '1 / -1'`
+  to break out of its two-column Station layout).
+- `Home.jsx`: dropped its local `CLIENT_LOGOS` / `LOGO_DEV_TOKEN` /
+  `logoSrc` declarations and now imports from the shared data file.
+  Inline JSX render still lives in `IndustriesBeat` (uses page-level
+  `<style>` rules); not converted to `<LogoCrawl />` yet to keep the
+  diff minimal — could be a follow-up cleanup once client confirms
+  the crawl is final.
+- `CaseStudies.jsx`: renders `<LogoCrawl eyebrow="Trusted By" />`
+  inside `.brief-doc-inner` (full 1240px frame, not the 900px reading
+  column) wrapped in a `.wipe .wipe-d3` so it sweeps into place with
+  the hero cascade.
+
+**Files touched:**
+- `/app/frontend/src/data/clientLogos.js` (new)
+- `/app/frontend/src/components/LogoCrawl.jsx` (new)
+- `/app/frontend/src/pages/Home.jsx` (data import only, no visual delta)
+- `/app/frontend/src/pages/CaseStudies.jsx` (render LogoCrawl in hero)
+
+**Open / next:**
+- P1: Find placement for the "Behlen video testimonial" — user is
+  considering a "Partner Spotlight" row of its own on the Case Studies
+  page (not yet locked).
+- P2: Swap in final approved client logos when client review comes
+  back. Edit only `data/clientLogos.js`.
+- P2: Wire Case Studies DB/taxonomy (Patrik). UI ready to receive
+  shape per existing `caseStudies.js`.
+- P3: Launch SEO checklist — remove `noindex` from `index.html`,
+  swap staging block in `robots.txt`.

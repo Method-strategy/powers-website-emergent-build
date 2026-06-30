@@ -35,6 +35,7 @@ import { Link } from 'react-router-dom';
 import { TYPE } from '../lib/designSpec';
 import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
 import { caseStudies } from '../data/caseStudies';
+import { CLIENT_LOGOS, logoSrc } from '../data/clientLogos';
 import SEO from '../components/SEO';
 import BriefFooter from '../components/BriefFooter';
 
@@ -70,42 +71,12 @@ const HERO_LINES = [
   { text: 'Regardless of conditions.', accent: true },
 ];
 
-/* Client logo crawl for Beat VI (Where We Work). First-draft brand
- * list provided by the client. Each entry pairs a display name with
- * the domain we hand to logo.dev's free CDN — logos are pulled at
- * runtime, then knocked down to a flat dark-navy silhouette via a
- * CSS grayscale + brightness(0) + opacity filter so all 18 marks
- * read as a single cohesive set rather than a brand-color carnival.
- * Hover restores the original brand color + full opacity. */
-const CLIENT_LOGOS = [
-  { name: 'Kraft Heinz',  local: '/uploads/client-logos/kraft-heinz.png' },
-  { name: 'ADM',          local: '/uploads/client-logos/adm.png' },
-  { name: 'Alcoa',        local: '/uploads/client-logos/alcoa.png' },
-  { name: 'BAE Systems',  local: '/uploads/client-logos/bae-systems.svg' },
-  { name: 'BMW',          local: '/uploads/client-logos/bmw.svg' },
-  { name: 'Volkswagen',   local: '/uploads/client-logos/volkswagen.png' },
-  { name: 'Corning',      local: '/uploads/client-logos/corning.png' },
-  { name: 'Simplot',      local: '/uploads/client-logos/simplot.svg' },
-  { name: 'RJ Reynolds',  local: '/uploads/client-logos/rjreynolds.png' },
-  { name: 'Cargill',      local: '/uploads/client-logos/cargill.png' },
-  { name: 'Mitsubishi',   local: '/uploads/client-logos/mitsubishi.svg' },
-  { name: 'Bain Capital', local: '/uploads/client-logos/bain-capital.svg' },
-  { name: 'Medline',      local: '/uploads/client-logos/medline.png' },
-  { name: 'Blackstone',   local: '/uploads/client-logos/blackstone.png' },
-  { name: 'Givaudan',     local: '/uploads/client-logos/givaudan.png' },
-  { name: 'KKR',          local: '/uploads/client-logos/kkr.svg' },
-  { name: 'Costco',       local: '/uploads/client-logos/costco.png' },
-  { name: 'Agropur',      local: '/uploads/client-logos/agropur.svg' },
-];
-/* logo.dev free public token — fine for prototype + client review.
- * For production, swap each remaining `domain` entry above for a
- * locally-hosted SVG path (like the three `local` entries above) so
- * we own the CDN with no rate-limit risk. */
-const LOGO_DEV_TOKEN = 'pk_X-1ZO13GSgeOoUrIuJ6GMQ';
-const logoSrc = (l) =>
-  l.local
-    ? l.local
-    : `https://img.logo.dev/${l.domain}?token=${LOGO_DEV_TOKEN}&size=400&format=png&retina=true`;
+/* Client logo crawl (Beat VI — Where We Work) and its `logoSrc`
+ * helper now live in /app/frontend/src/data/clientLogos.js. That
+ * file is the single source of truth so the Case Studies hero
+ * ("Trusted By") and this homepage beat ("Shoulder to shoulder
+ * with") render the same logos, same sequence, same treatment.
+ * Imported above. */
 
 function Home() {
   /* SEO title — broad-category term for the homepage. The on-page
