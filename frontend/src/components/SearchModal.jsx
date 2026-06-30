@@ -91,6 +91,11 @@ export default function SearchModal() {
   const [recents, setRecents] = useState(() => loadRecent());
   const inputRef = useRef(null);
   const listRef = useRef(null);
+  const modalRef = useRef(null);
+  // Tracks the element that had focus before the modal opened so
+  // we can restore it on close — basic dialog-pattern hygiene that
+  // keeps keyboard / screen-reader users from losing their place.
+  const previouslyFocusedRef = useRef(null);
   const navigate = useNavigate();
 
   const results = useMemo(() => searchCorpus(query, 40), [query]);
@@ -130,6 +135,13 @@ export default function SearchModal() {
   }, [grouped, query, recents]);
 
   const open = useCallback(() => {
+    // Capture whatever currently has focus so we can hand it back
+    // when the modal closes. Skip when focus was on body to avoid
+    // a no-op restore.
+    const active = document.activeElement;
+    if (active && active !== document.body) {
+      previouslyFocusedRef.current = active;
+    }
     setIsOpen(true);
     setActiveIdx(0);
   }, []);
@@ -137,6 +149,17 @@ export default function SearchModal() {
     setIsOpen(false);
     setQuery('');
     setActiveIdx(0);
+    // Restore focus to the element that triggered the modal so a
+    // keyboard / screen-reader user lands back where they were.
+    const target = previouslyFocusedRef.current;
+    if (target && typeof target.focus === 'function') {
+      // Defer one frame so React has finished unmounting the modal
+      // before we move focus.
+      requestAnimationFrame(() => {
+        try { target.focus(); } catch (_) { /* element gone — non-fatal */ }
+      });
+    }
+    previouslyFocusedRef.current = null;
   }, []);
 
   // Expose `open()` to the rest of the app (BriefHeader search button).
@@ -149,7 +172,8 @@ export default function SearchModal() {
 
   // Global keyboard listener — ⌘K / Ctrl+K open, "/" open (unless
   // user is typing in an input/textarea/contenteditable already),
-  // Esc close.
+  // Esc close. When the modal is open, Tab is constrained inside
+  // it so focus never wanders to elements behind the overlay.
   useEffect(() => {
     const onKey = (e) => {
       const meta = e.metaKey || e.ctrlKey;
@@ -161,6 +185,26 @@ export default function SearchModal() {
       if (e.key === 'Escape' && isOpen) {
         e.preventDefault();
         close();
+        return;
+      }
+      // Tab trap — only relevant while open.
+      if (isOpen && e.key === 'Tab' && modalRef.current) {
+        const focusables = modalRef.current.querySelectorAll(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey) {
+          if (active === first || !modalRef.current.contains(active)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
         return;
       }
       if (!isOpen && e.key === '/') {
@@ -265,7 +309,7 @@ export default function SearchModal() {
       role="presentation"
       onMouseDown={(e) => { if (e.target.classList.contains('omn-overlay')) close(); }}
     >
-      <div className="omn-modal" role="dialog" aria-modal="true" aria-label="Search">
+      <div ref={modalRef} className="omn-modal" role="dialog" aria-modal="true" aria-label="Search">
         <div className="omn-input-row">
           <SearchIcon className="omn-input-icon" />
           <input
@@ -307,7 +351,12 @@ export default function SearchModal() {
                       const idx = indexById.get(`recent:${r}`);
                       const isActive = idx === activeIdx;
                       return (
-                        <li key={r} data-idx={idx}>
+                        <li key={r} data-idx={idx} className="omn-recent-row">
+                          {/* Two sibling buttons — clicking the
+                              row reloads the query; the × button
+                              removes the entry. Sibling layout
+                              keeps activation targets unambiguous
+                              for assistive tech. */}
                           <button
                             type="button"
                             className={`omn-quick omn-quick-recent ${isActive ? 'is-active' : ''}`}
@@ -316,20 +365,14 @@ export default function SearchModal() {
                           >
                             <SearchIcon className="omn-quick-icon" />
                             <span className="omn-quick-label">{r}</span>
-                            <span
-                              className="omn-quick-remove"
-                              role="button"
-                              tabIndex={0}
-                              aria-label={`Remove "${r}" from recent searches`}
-                              onClick={(e) => { e.stopPropagation(); removeRecent(r); }}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault(); e.stopPropagation();
-                                  removeRecent(r);
-                                }
-                              }}
-                            >×</span>
                           </button>
+                          <button
+                            type="button"
+                            className="omn-quick-remove"
+                            aria-label={`Remove "${r}" from recent searches`}
+                            title="Remove"
+                            onClick={() => removeRecent(r)}
+                          >×</button>
                         </li>
                       );
                     })}
@@ -435,7 +478,10 @@ export default function SearchModal() {
           <span><kbd>↵</kbd> open</span>
           <span><kbd>esc</kbd> close</span>
           <span className="omn-foot-spacer" />
-          <span className="omn-foot-count">
+          {/* Polite live region: announces result-count changes
+              for screen readers as the user types. aria-atomic
+              ensures the whole region is announced together. */}
+          <span className="omn-foot-count" aria-live="polite" aria-atomic="true">
             {results.length > 0 ? `${results.length} result${results.length === 1 ? '' : 's'}` : ''}
           </span>
         </footer>
@@ -568,21 +614,36 @@ export default function SearchModal() {
           border-left-color: ${GOLD_BRIGHT};
         }
 
-        /* Recent-search rows: [search-icon] [label .........] [×] */
+        /* Recent-search row — two sibling buttons inside an <li>.
+           The recent button takes the full row; remove × sits as
+           an absolutely-positioned trailing control so the layout
+           reads identical to before the de-nesting refactor. */
+        .omn-recent-row {
+          position: relative;
+          margin: 0;
+        }
         .omn-quick-recent {
-          grid-template-columns: 16px 1fr 22px;
+          grid-template-columns: 16px 1fr;
+          padding-right: 56px; /* reserve space for the remove × */
         }
         .omn-quick-icon { color: rgba(13, 36, 66, 0.42); }
         .omn-quick-recent.is-active .omn-quick-icon { color: ${GOLD_BRIGHT}; }
         .omn-quick-remove {
-          width: 22px; height: 22px;
+          position: absolute;
+          top: 50%;
+          right: 16px;
+          transform: translateY(-50%);
+          width: 32px;
+          height: 32px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           font-family: ${TYPE.sans};
-          font-size: 18px;
+          font-size: 22px;
           line-height: 1;
           color: rgba(13, 36, 66, 0.35);
+          background: transparent;
+          border: 0;
           border-radius: 50%;
           transition: color 160ms ease, background 160ms ease;
           cursor: pointer;
@@ -590,6 +651,10 @@ export default function SearchModal() {
         .omn-quick-remove:hover {
           color: ${NAVY};
           background: rgba(13, 36, 66, 0.08);
+        }
+        .omn-quick-remove:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 2px;
         }
 
         /* Jump-to rows: [arrow] [label]  [subtitle .........] */

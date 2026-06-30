@@ -206,8 +206,10 @@ export default function Insights() {
 
   /* Featured = top 3 most recent across the unfiltered dataset.
      The editorial top of the page is editorially fixed — searches
-     filter the standard grid below, not the featured set. */
-  const featured = SORTED.slice(0, 3);
+     filter the standard grid below, not the featured set. Hoisted
+     into a single useMemo so the identity stays stable across
+     re-renders and downstream useMemos don't invalidate. */
+  const featured = useMemo(() => SORTED.slice(0, 3), []);
   const featuredSlugs = useMemo(
     () => new Set(featured.map(a => a.slug)),
     [featured]

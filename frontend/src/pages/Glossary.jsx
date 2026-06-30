@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link as RRLink } from 'react-router-dom';
 import KbPageShell from '../components/KbPageShell';
 import {
   NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
 import { glossarySections } from '../data/glossary';
+import { useHashScroll } from '../hooks/useHashScroll';
 
 /**
  * Glossary — /glossary
@@ -50,15 +51,19 @@ function useFiltered(query) {
 }
 
 // Inline highlighter for matched substrings. Splits the source on a
-// case-insensitive query and wraps every hit in a <mark>.
+// case-insensitive query and wraps every hit in a <mark>. Uses a
+// fresh non-global RegExp for the .test() check so the global-flag
+// `lastIndex` state can't leak across calls.
 function Highlight({ text, query }) {
   if (!query) return text;
   const q = query.trim();
   if (!q) return text;
-  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig');
-  const parts = text.split(re);
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const splitter = new RegExp(`(${esc})`, 'ig');
+  const testOne = new RegExp(`^${esc}$`, 'i');
+  const parts = text.split(splitter);
   return parts.map((part, i) =>
-    re.test(part) ? <mark key={i} className="gl-mark">{part}</mark> : <React.Fragment key={i}>{part}</React.Fragment>
+    testOne.test(part) ? <mark key={i} className="gl-mark">{part}</mark> : <React.Fragment key={i}>{part}</React.Fragment>
   );
 }
 
@@ -101,6 +106,8 @@ export default function Glossary() {
   const [query, setQuery] = useState('');
   const [copiedSlug, setCopiedSlug] = useState(null);
   const [flashSlug, setFlashSlug] = useState(null);
+  const copyTimerRef = useRef(null);
+  const flashTimerRef = useRef(null);
 
   const { sections, total, filtered } = useFiltered(query);
 
@@ -112,25 +119,28 @@ export default function Glossary() {
     []
   );
 
-  // Honor incoming #slug hash on mount + on hashchange. We scroll
-  // the matching term into view and apply a brief gold flash so the
-  // reader's eye lands on it immediately.
-  useEffect(() => {
-    const applyHash = () => {
-      const hash = (window.location.hash || '').replace(/^#/, '');
-      if (!hash) return;
+  // Honor incoming #slug hash on mount + on hashchange via the
+  // shared hook. Apply a brief gold flash so the eye lands on the
+  // matching row immediately. Flash timer is tracked in a ref so
+  // we can cancel it on unmount.
+  useHashScroll({
+    resolveId: (hash) => {
       const el = document.getElementById(`term-${hash}`);
-      if (!el) return;
-      requestAnimationFrame(() => {
-        const top = el.getBoundingClientRect().top + window.scrollY - 130;
-        window.scrollTo({ top, behavior: 'smooth' });
-        setFlashSlug(hash);
-        setTimeout(() => setFlashSlug((s) => (s === hash ? null : s)), 2200);
-      });
-    };
-    applyHash();
-    window.addEventListener('hashchange', applyHash);
-    return () => window.removeEventListener('hashchange', applyHash);
+      if (!el) return null;
+      setFlashSlug(hash);
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = setTimeout(() => {
+        setFlashSlug((s) => (s === hash ? null : s));
+      }, 2200);
+      return `term-${hash}`;
+    },
+  });
+
+  // Cancel any pending timers when the page unmounts so we never
+  // setState on an unmounted component.
+  useEffect(() => () => {
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
   }, []);
 
   const handleCopy = async (slug) => {
@@ -149,7 +159,10 @@ export default function Glossary() {
     // resolves to the right spot.
     window.history.replaceState(null, '', `#${slug}`);
     setCopiedSlug(slug);
-    setTimeout(() => setCopiedSlug((s) => (s === slug ? null : s)), 1800);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => {
+      setCopiedSlug((s) => (s === slug ? null : s));
+    }, 1800);
   };
 
   // JSON-LD DefinedTermSet — gives Google a structured map of every
@@ -244,7 +257,10 @@ export default function Glossary() {
 
           {sections.map((section) => (
             <div key={section.slug} className="gl-block">
-              <div className="station-index">{section.title}</div>
+              {/* Section title is a real <h2> so the heading
+                  outline reads h1 → h2 → h3 with no gaps. Visual
+                  treatment via .station-index stays unchanged. */}
+              <h2 className="station-index gl-block-title">{section.title}</h2>
               <p className="gl-block-intro">{section.intro}</p>
               <div className="gl-list">
                 {section.terms.map((t) => (
@@ -261,6 +277,20 @@ export default function Glossary() {
             </div>
           ))}
 
+          {/* Polite live regions — announce search result counts
+              and copy confirmation to assistive tech without
+              hijacking focus. */}
+          <div aria-live="polite" aria-atomic="true" className="gl-sr-only">
+            {filtered
+              ? (total === 0
+                  ? `No glossary terms match ${query}.`
+                  : `Showing ${total} of ${corpusSize} glossary terms.`)
+              : ''}
+          </div>
+          <div aria-live="polite" aria-atomic="true" className="gl-sr-only">
+            {copiedSlug ? 'Link to glossary term copied to clipboard.' : ''}
+          </div>
+
           <div className="gl-closer">
             <div className="station-index">Need a definition we haven&rsquo;t covered?</div>
             <h2 className="brief-doc-h2 gl-closer-h2">
@@ -276,6 +306,35 @@ export default function Glossary() {
 
       <style>{`
         .gl-section { padding-top: clamp(40px, 6vh, 80px); }
+
+        /* Section title rendered as <h2> for heading outline,
+           styled as the brief eyebrow. Resets browser default
+           h2 sizing/margins so the visual matches .station-index. */
+        .gl-block-title {
+          font-family: ${TYPE.mono};
+          font-size: 11px;
+          font-weight: 400;
+          line-height: 1.4;
+          letter-spacing: 0.24em;
+          text-transform: uppercase;
+          color: ${GOLD_BRIGHT};
+          margin: 0 0 8px;
+        }
+
+        /* Visually-hidden but available to assistive tech — used
+           for the polite live regions announcing search result
+           count changes and copy-link confirmation. */
+        .gl-sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
 
         /* Sticky search bar at the top of the body so the reader can
            filter without scrolling back up. The fixed BriefHeader is
@@ -413,7 +472,7 @@ export default function Glossary() {
           outline-offset: 3px;
         }
         @media (max-width: 880px) {
-          .gl-copy { opacity: 1; } /* always visible on touch */
+          .gl-copy { opacity: 1; width: 44px; height: 44px; } /* always visible + 44×44 touch target on mobile */
         }
 
         .gl-term-def {

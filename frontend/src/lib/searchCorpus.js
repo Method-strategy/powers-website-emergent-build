@@ -23,22 +23,7 @@ import { masterySeries } from '../data/masterySeries';
 import { downloadables } from '../data/downloadables';
 import { kpiCategories } from '../data/kpis';
 import { insights } from '../data/insights';
-
-// FAQs are inlined inside the page module. We mirror the slug → label
-// map here so we don't have to import a JSX module from a data util.
-const FAQ_ENTRIES = [
-  { slug: 'consulting-difference', q: 'How is POWERS different from a typical management consulting firm?' },
-  { slug: 'how-we-work',           q: 'How does POWERS work?' },
-  { slug: 'cost',                  q: 'What does it cost? And how do you charge?' },
-  { slug: 'timeline',              q: 'How long does an engagement take?' },
-  { slug: 'engagement-start',      q: 'Where do POWERS engagements start?' },
-  { slug: 'industries',            q: 'What industries does POWERS work in?' },
-  { slug: 'size',                  q: 'What size operations does POWERS work with?' },
-  { slug: 'guarantee',             q: 'Do you guarantee results?' },
-  { slug: 'internal-ci-opex',      q: 'How is POWERS different from our internal continuous improvement or operational excellence team?' },
-  { slug: 'after-engagement',      q: 'What happens after the engagement ends?' },
-  { slug: 'name',                  q: 'Why "POWERS"?' },
-];
+import { faqs } from '../data/faqs';
 
 function snippet(text, n = 110) {
   if (!text) return '';
@@ -64,7 +49,7 @@ glossarySections.forEach((section) => {
 });
 
 // 2. FAQs — 11
-FAQ_ENTRIES.forEach((f) => {
+faqs.forEach((f) => {
   corpus.push({
     id: `faq:${f.slug}`,
     group: 'FAQs',
@@ -72,7 +57,7 @@ FAQ_ENTRIES.forEach((f) => {
     label: f.q,
     subtitle: 'Frequently asked question',
     to: `/frequently-asked-questions-faqs#${f.slug}`,
-    keywords: f.q.toLowerCase(),
+    keywords: `${f.q} ${f.a}`.toLowerCase(),
   });
 });
 

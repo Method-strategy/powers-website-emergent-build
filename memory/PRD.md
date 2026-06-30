@@ -866,3 +866,34 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 - `/app/frontend/src/components/SearchModal.jsx`
 
 **Verified:** clean cold-start, search-and-Enter saves to recents, reopen restores recents at top with first item active, individual × remove + bulk Clear both work, jump-to clicks don't pollute recents, keyboard nav (↑/↓/Enter) unified across all empty-state rows.
+
+
+## 2026-02-13 (final pass) — Pre-launch code review + a11y / performance fixes
+
+**5 MEDIUM accessibility findings resolved:**
+1. **`SearchModal` focus management** — captures `document.activeElement` on open, restores it on close via `requestAnimationFrame` (verified: closing the modal returns focus to the header search trigger). Added Tab trap inside the dialog: pressing Tab past the last focusable element wraps to the first; Shift+Tab past the first wraps to the last.
+2. **Glossary heading hierarchy** — section titles ("POWERS' Core Terms", "Industry Standard Terms") promoted from `<div className="station-index">` to real `<h2 className="station-index gl-block-title">` with browser h2 defaults reset so the visual is unchanged. Page outline now reads h1 → h2 (×3) → h3 (×30) cleanly. (Verified: 1 h1, 3 h2s, 30 h3s, no skipped levels.)
+3. **Nested interactive controls** — both the FAQ copy-link and the Cmd-K Recent-Search remove × were `<span role=button>` inside a real `<button>`. Restructured both to sibling `<button>` siblings (FAQ uses a new `.faq-q-row` grid wrapper; recent search uses an `<li class="omn-recent-row">` with absolutely-positioned remove ×). Verified via DOM scrape: 0 copies still nested.
+4. **Live regions for dynamic feedback** — added `aria-live="polite"` for: (a) Cmd-K result-count footer, (b) Glossary search-result-count + copy-link confirmation, (c) FAQ copy-link confirmation. Screen-reader users now hear "Showing N of 31 terms", "Link copied to clipboard", and "16 results" as they type.
+5. **Closed mega panels + drawer no longer tab-reachable** — added `inert={true}` (React 19 native boolean prop) to both `.brief-mega` panels when their dropdown is closed, and to `.brief-drawer` when the mobile drawer is closed. Body scroll-locked while drawer open. Verified Tab chain on /glossary: Logo → Results → About → Insights → Search → Let's Talk → page content — zero stops inside hidden menus.
+
+**LOW issues addressed:**
+- `useHashScroll` hook extracted to `/hooks/useHashScroll.js`. Consumed by `FAQs`, `Glossary`, and `KPIs` — eliminates 3 near-identical hash-on-mount + hashchange-listener `useEffect`s.
+- FAQ source-of-truth deduplicated: `/data/faqs.js` is the single canonical dataset, imported by both `FAQs.jsx` and `searchCorpus.js`. Future edits sync automatically.
+- `setTimeout` cleanup added in `FAQs.jsx` and `Glossary.jsx` via `useRef` timers + unmount-effect cleanup. Eliminates the "setState on unmounted component" risk pattern.
+- `Highlight` component in `Glossary.jsx` no longer reuses a global-flag RegExp for `.test()` calls (which carries stateful `lastIndex`). Uses a separate non-global anchored regex for the predicate check.
+- `Insights.jsx` `featured` array hoisted into a `useMemo([])` — stable identity stops cascade-invalidating downstream `featuredSlugs` and `standardAll` memos.
+- Glossary mobile copy button bumped 28px → 44×44 to meet WCAG 2.5.5 touch-target minimum on phones. Cmd-K remove × bumped 22px → 32px (still tappable; outline-offset focus indicator added).
+
+**LOW deferred (P2 backlog):**
+- `App.js` route splitting via `React.lazy()` — largest Lighthouse perf win but a meaningful refactor (and risks breaking the cinematic route-transition rule). Worth doing as a focused launch-prep task.
+- `SearchModal` on-screen-keyboard avoidance on viewports <520px (corner case; can revisit if reported).
+
+**New files:**
+- `/app/frontend/src/data/faqs.js`
+- `/app/frontend/src/hooks/useHashScroll.js`
+
+**Files touched:**
+- `/app/frontend/src/pages/FAQs.jsx`, `/app/frontend/src/pages/Glossary.jsx`, `/app/frontend/src/pages/KPIs.jsx`, `/app/frontend/src/pages/Insights.jsx`, `/app/frontend/src/components/SearchModal.jsx`, `/app/frontend/src/components/BriefHeader.jsx`, `/app/frontend/src/lib/searchCorpus.js`
+
+**Lint status:** ESLint clean across every touched file.

@@ -77,6 +77,15 @@ export default function BriefHeader({ mode = 'interior' }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [mobileNavOpen]);
 
+  // Lock body scroll while the off-canvas drawer is open so the
+  // page behind it doesn't slide around under the touch.
+  useEffect(() => {
+    if (!mobileNavOpen) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [mobileNavOpen]);
+
   return (
     <>
       <style>{styles}</style>
@@ -179,7 +188,11 @@ export default function BriefHeader({ mode = 'interior' }) {
           onMouseLeave={schedClose}
         >
           {/* Results — 2-column */}
-          <div className="brief-mega" aria-hidden={openMega !== 'results'}>
+          <div
+            className="brief-mega"
+            aria-hidden={openMega !== 'results'}
+            inert={openMega !== 'results'}
+          >
             <div
               className="brief-mega-panel"
               data-open={openMega === 'results'}
@@ -204,7 +217,11 @@ export default function BriefHeader({ mode = 'interior' }) {
           </div>
 
           {/* About — single column */}
-          <div className="brief-mega" aria-hidden={openMega !== 'about'}>
+          <div
+            className="brief-mega"
+            aria-hidden={openMega !== 'about'}
+            inert={openMega !== 'about'}
+          >
             <div
               className="brief-mega-panel"
               data-open={openMega === 'about'}
@@ -234,6 +251,7 @@ export default function BriefHeader({ mode = 'interior' }) {
         data-open={mobileNavOpen}
         data-testid="brief-drawer"
         aria-hidden={!mobileNavOpen}
+        inert={!mobileNavOpen}
       >
         <div className="brief-drawer-inner">
           <button
