@@ -250,15 +250,17 @@ export default function Insights() {
             <div className="brief-doc-col">
               <div className="station-index wipe" style={{ marginBottom: 24 }}>Insights Hub</div>
               <h1 className="brief-doc-h1 wipe wipe-d1" data-testid="ih-hero-h1">
-                <span>Decades of operational insights.</span>
-                <span className="accent">Stronger execution. Stronger performance.</span>
+                <span>Decades of operational insights driving</span>
+                <span className="accent">stronger execution. Stronger performance.</span>
               </h1>
               <div className="brief-doc-rule-gold wipe wipe-d3" style={{ marginTop: 48, marginBottom: 36 }} />
               <p className="brief-doc-lede wipe wipe-d4">
                 We&rsquo;ve been writing on what we&rsquo;ve observed and executed on thousands of shop floors, solving the most embedded operational challenges manufacturers face.
               </p>
+            </div>
 
-              <div className="ih-hero-pillars wipe wipe-d4" data-testid="ih-hero-pillars">
+            <div className="ih-hero-foundations wipe wipe-d5" data-testid="ih-hero-foundations">
+              <div className="ih-hero-foundations-col">
                 <div className="ih-hero-pillar-label">The disciplines that drive sustainable performance.</div>
                 <ul className="ih-hero-stack">
                   <li>Operational Discipline.</li>
@@ -268,42 +270,21 @@ export default function Insights() {
                   <li>Daily Accountability.</li>
                 </ul>
               </div>
-
-              <div className="ih-hero-dims wipe wipe-d5">
+              <div className="ih-hero-foundations-col">
                 <div className="ih-hero-pillar-label">And the dimensions that cut across all five.</div>
-                <p className="ih-hero-dims-line">
-                  Continuous improvement. Cost reduction. Capacity utilization. Root cause analysis. Profitability.
-                </p>
+                <ul className="ih-hero-stack">
+                  <li>Continuous improvement.</li>
+                  <li>Cost reduction.</li>
+                  <li>Capacity utilization.</li>
+                  <li>Root cause analysis.</li>
+                  <li>Profitability.</li>
+                </ul>
               </div>
-
-              <p className="brief-doc-lede wipe wipe-d6" style={{ marginTop: 36, maxWidth: 720 }}>
-                Browse the latest below, search by topic, or jump to the broader resource library at any time.
-              </p>
             </div>
           </div>
         </section>
 
-        {/* ─── ROW 2 ─ Knowledge Base ─────────────────────────── */}
-        <section ref={kbRef} className="brief-doc-station ih-kb-station" style={{ background: NAVY }}>
-          <div className="brief-doc-inner">
-            <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Knowledge Base</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1 ih-kb-h2">
-              <span style={{ color: PAPER }}>Structured resources.</span>
-              <span className="pivot">Built by practitioners, for practitioners.</span>
-            </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
-
-            <div className="ih-kb-grid" data-testid="ih-kb-grid">
-              {knowledgeBase.map((d, i) => (
-                <div key={d.slug} className={`wipe wipe-d${Math.min(6, i + 3)}`}>
-                  <KnowledgeBaseCard destination={d} index={i} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ─── ROW 3 ─ Featured + Top Stories ──────────────────── */}
+        {/* ─── ROW 2 ─ Featured + Top Stories (moved up per client) ── */}
         <section ref={featuredRef} className="brief-doc-station ih-featured-row" style={{ background: PAPER_DEEP }}>
           <div className="brief-doc-inner">
             <div className="station-index wipe">Featured</div>
@@ -326,16 +307,60 @@ export default function Insights() {
                 </div>
               </div>
             </div>
+
+            {/* In-page anchor jump: lets the visitor skip past the
+                Knowledge Base + search and dive straight into the
+                full article archive below. */}
+            <div className="ih-featured-jump wipe wipe-d6">
+              <a
+                href="#insights-archive"
+                className="ih-featured-jump-link"
+                data-testid="ih-featured-jump"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('insights-archive')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              >
+                Browse the full insights archive
+                <span aria-hidden="true" className="ih-featured-jump-arrow">&darr;</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── ROW 3 ─ Knowledge Base (moved down from Row 2) ─── */}
+        <section ref={kbRef} className="brief-doc-station ih-kb-station" style={{ background: NAVY }}>
+          <div className="brief-doc-inner">
+            <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Knowledge Base</div>
+            <h2 className="brief-doc-h2 wipe wipe-d1 ih-kb-h2">
+              <span style={{ color: PAPER }}>Structured resources.</span>
+              <span className="pivot">Built by practitioners, for practitioners.</span>
+            </h2>
+            <div className="brief-doc-rule-gold wipe wipe-d2" />
+
+            <div className="ih-kb-grid" data-testid="ih-kb-grid">
+              {knowledgeBase.map((d, i) => (
+                <div key={d.slug} className={`wipe wipe-d${Math.min(6, i + 3)}`}>
+                  <KnowledgeBaseCard destination={d} index={i} />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* ─── ROW 4 ─ Search Bar ───────────────────────────── */}
-        <section ref={searchRef} className="ih-search-band" data-testid="ih-search-band">
+        {/* NOTE: children intentionally do NOT use the .wipe entrance
+            animation. The .wipe reveal selector keys off
+            `.brief-doc-station.is-in` / `.brief-page-hero.is-in`
+            (see BriefDocStyles.jsx line ~355). This section uses its
+            own .ih-search-band class, so wipe children would stay
+            permanently clipped. Render the search controls statically. */}
+        <section ref={searchRef} className="ih-search-band" data-testid="ih-search-band" id="insights-archive">
           <div className="brief-doc-inner">
-            <label htmlFor="ih-search-input" className="ih-search-label wipe">
+            <label htmlFor="ih-search-input" className="ih-search-label">
               Search the insights
             </label>
-            <div className="ih-search-row wipe wipe-d1">
+            <div className="ih-search-row">
               <div className="ih-search-input-wrap">
                 <span className="ih-search-icon" aria-hidden="true">&#x2315;</span>
                 <input
@@ -370,7 +395,7 @@ export default function Insights() {
                 Search the full archive <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
-            <p className="ih-search-help wipe wipe-d2">
+            <p className="ih-search-help">
               Searching across the {SORTED.length - featured.length} most recent articles. The full archive has hundreds more.
             </p>
           </div>
@@ -379,7 +404,14 @@ export default function Insights() {
         {/* ─── ROW 5 ─ Standard Article Grid ──────────────────── */}
         <section ref={gridRef} className="brief-doc-station ih-grid-station" style={{ background: PAPER }}>
           <div className="brief-doc-inner">
-            <div className="ih-grid-meta wipe">
+            <div className="station-index wipe">More Insights</div>
+            <h2 className="brief-doc-h2 wipe wipe-d1">
+              <span>More from the field.</span>
+              <span className="pivot">Practitioner perspectives on what makes operations actually perform.</span>
+            </h2>
+            <div className="brief-doc-rule-gold wipe wipe-d2" />
+
+            <div className="ih-grid-meta wipe wipe-d3">
               <span className="ih-grid-count" data-testid="ih-grid-count">
                 {standardAll.length} {standardAll.length === 1 ? 'article' : 'articles'}
                 {q.trim() && (
@@ -429,15 +461,25 @@ export default function Insights() {
       <BriefFooter />
 
       <style>{`
-        /* ── Hero pillars ─────────────────────────────────────── */
-        .ih-hero-pillars { margin-top: 36px; }
+        /* ── Hero foundations (2-column grid below the lede) ─
+           Tightens the hero vertically by setting the disciplines
+           list and cross-cutting dimensions list side-by-side. Sits
+           OUTSIDE .brief-doc-col so it spans the full inner width. */
+        .ih-hero-foundations {
+          margin-top: 48px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 56px;
+          align-items: start;
+        }
+        .ih-hero-foundations-col {}
         .ih-hero-pillar-label {
           font-family: ${TYPE.mono};
           font-size: 11px;
           letter-spacing: 0.26em;
           color: ${GOLD_BRIGHT};
           text-transform: uppercase;
-          margin-bottom: 14px;
+          margin-bottom: 18px;
         }
         .ih-hero-stack {
           list-style: none;
@@ -450,7 +492,7 @@ export default function Insights() {
           font-family: ${TYPE.serif};
           font-style: italic;
           font-weight: 400;
-          font-size: clamp(20px, 2.0vw, 24px);
+          font-size: clamp(18px, 1.6vw, 21px);
           line-height: 1.32;
           color: ${NAVY};
           padding-left: 22px;
@@ -466,16 +508,49 @@ export default function Insights() {
           height: 1px;
           background: ${GOLD_BRIGHT};
         }
-        .ih-hero-dims {
-          margin-top: 36px;
+
+        /* ── Featured row — jump to archive ──────────────────
+           At the end of the featured row, a soft typographic CTA
+           that scrolls past the Knowledge Base + search and lands
+           on the standard article grid. Keeps the editorial top of
+           the page strong while letting the article-hungry visitor
+           skip the structural content cleanly. */
+        .ih-featured-jump {
+          margin-top: 56px;
+          display: flex;
+          justify-content: center;
         }
-        .ih-hero-dims-line {
-          font-family: ${TYPE.serif};
-          font-style: italic;
-          font-size: clamp(17px, 1.6vw, 19px);
-          line-height: 1.45;
-          color: ${TEXT_BODY};
-          margin: 0;
+        .ih-featured-jump-link {
+          font-family: ${TYPE.mono};
+          font-size: 12px;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: ${NAVY};
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 14px;
+          padding: 14px 28px;
+          border-top: 1px solid rgba(13, 36, 66, 0.20);
+          border-bottom: 1px solid rgba(13, 36, 66, 0.20);
+          transition: color 200ms ease, border-color 200ms ease;
+        }
+        .ih-featured-jump-link:hover {
+          color: ${GOLD_BRIGHT};
+          border-top-color: ${GOLD_BRIGHT};
+          border-bottom-color: ${GOLD_BRIGHT};
+        }
+        .ih-featured-jump-link:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 4px;
+        }
+        .ih-featured-jump-arrow {
+          font-size: 16px;
+          letter-spacing: 0;
+          transition: transform 220ms cubic-bezier(.2,.6,.2,1);
+        }
+        .ih-featured-jump-link:hover .ih-featured-jump-arrow {
+          transform: translateY(3px);
         }
 
         /* ── Knowledge Base row (dark, premium) ────────────────
@@ -941,6 +1016,7 @@ export default function Insights() {
 
         /* ── Tablet ────────────────────────────────────────── */
         @media (max-width: 1099px) {
+          .ih-hero-foundations { grid-template-columns: 1fr; gap: 32px; }
           .ih-kb-card { grid-template-columns: 48px 1fr; }
           .ih-kb-card .ih-kb-cta {
             grid-column: 2 / -1;
