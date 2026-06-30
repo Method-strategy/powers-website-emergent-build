@@ -18,6 +18,21 @@ export default function BriefFooter() {
   return (
     <footer className="brief-footer" style={{ background: '#0f2a47', fontFamily: TYPE.sans, borderTop: '1px solid #e89346' }}>
       <style>{`
+        /* Defensive resets — BriefFooter is now used inside Home.jsx,
+           which has page-scoped CSS that uppercases + center-aligns
+           anchors / paragraphs across its hero/beat sections. Lock the
+           footer's typographic treatment so no host page can bleed
+           into it. */
+        .brief-footer,
+        .brief-footer * {
+          text-transform: none;
+          text-align: left;
+          letter-spacing: normal;
+        }
+        .brief-footer .brief-foot-head {
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
         .brief-footer-grid {
           max-width: 1240px;
           margin: 0 auto;
