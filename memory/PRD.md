@@ -766,3 +766,27 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 - FAQs + Glossary KB pages — blocked on user-supplied rewritten copy.
 - KPI rail active-section can drift one item ahead on very tall viewports (>2000px) right after a click before the IO settles — noted by testing agent, functional today; clamp-active-on-click debounce can land later if user reports it as visible.
 
+
+
+## 2026-02-13 (later) — FAQs page ported to React + KPI rail sticky fix + Downloadables H1 tweak
+
+**Implemented:**
+- **`/frequently-asked-questions-faqs` (`FAQs.jsx`)** — 11 Q&A pairs sourced verbatim from `POWERS_FAQs_Page_Full_Draft.docx`. Single-open radio accordion: numbered mono eyebrow (01–11) + sans question + plus-toggle that rotates 45° to × on open. Smooth `grid-template-rows: 0fr → 1fr` expand. First question opens by default so the page lands with an editorial beat instead of 11 closed bars. Closer band ("Still have a question? / The contact page is / the right next step.") wraps to a gold "Let's talk" CTA routed to `/contact`. Honors `prefers-reduced-motion`.
+- **`knowledgeBase.js`** — FAQs entry flipped from `internal: false` to `internal: true` with `path: '/frequently-asked-questions-faqs'`. The Insights hub's KB destination card now SPA-routes instead of opening the legacy WP URL in a new tab. Legacy WP slug preserved exactly for path-proxy compatibility.
+- **`App.js`** — new route `/frequently-asked-questions-faqs` wired under `<HomeLayout>`.
+
+**KPI sticky-rail fix (same session):**
+- `.kpi-shell` no longer paints a `PAPER_DEEP` background — was creating a tall empty strip behind the rail.
+- `position: sticky; top: 140px; align-self: start` moved from `.kpi-nav` to `.kpi-rail` itself (the grid item). Rail now sticks at 140px below the fixed header while the body column scrolls past.
+
+**Downloadables H1:** pivot copy "Built for the floor." → "Built for operations leaders." per user direction.
+
+**Files added/touched:**
+- `/app/frontend/src/pages/FAQs.jsx` (new — 11-item accordion + closer CTA)
+- `/app/frontend/src/App.js` (route added)
+- `/app/frontend/src/data/knowledgeBase.js` (faqs flipped to internal)
+- `/app/frontend/src/pages/KPIs.jsx` (sticky-rail root-cause fix)
+- `/app/frontend/src/pages/Downloadables.jsx` (H1 pivot update)
+
+**Still open (P1):**
+- Glossary KB page — blocked on user-supplied rewritten copy. Once delivered, the last KB destination (`knowledgeBase.js` glossary entry) gets flipped to internal and the Insights hub becomes fully SPA-internal for all 5 destinations.
