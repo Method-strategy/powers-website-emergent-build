@@ -790,3 +790,16 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 
 **Still open (P1):**
 - Glossary KB page — blocked on user-supplied rewritten copy. Once delivered, the last KB destination (`knowledgeBase.js` glossary entry) gets flipped to internal and the Insights hub becomes fully SPA-internal for all 5 destinations.
+
+## 2026-02-13 (later still) — FAQ deep-linking
+
+**Implemented:**
+- Each of the 11 FAQ items now has a stable short slug (`consulting-difference`, `how-we-work`, `cost`, `timeline`, `engagement-start`, `industries`, `size`, `guarantee`, `internal-ci-opex`, `after-engagement`, `name`) wired into `id="faq-<slug>"`.
+- On mount and on `hashchange`, the page reads `location.hash`, finds the matching slug, opens that accordion, and `scrollTo`s the row to ~130px below the fixed header. Sales reps can drop a prospect onto any single answer with a URL like `/frequently-asked-questions-faqs#cost`.
+- Opening any question via click mirrors the slug back into the URL via `history.replaceState` (no history pollution; back button still leaves the page in one step). Closing the open question clears the hash.
+- Per-question copy-link affordance: a small subtle icon between the question text and the plus toggle. Hidden until the row is hovered (or the question is open / focused). Click writes `${origin}${pathname}#${slug}` to the clipboard via `navigator.clipboard.writeText`, swaps the icon to a gold checkmark for 1.8s as confirmation, then reverts. Fallback `document.execCommand('copy')` covers any browser without async clipboard.
+- Mobile: copy icons stay always-visible (no hover state on touch); narrower grid columns + smaller icon size.
+
+**Files touched:**
+- `/app/frontend/src/pages/FAQs.jsx` (slugs + hash-on-mount + hashchange listener + replaceState on toggle + per-question copy button + checkmark feedback)
+
