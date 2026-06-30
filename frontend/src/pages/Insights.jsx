@@ -41,8 +41,8 @@ import { knowledgeBase } from '../data/knowledgeBase';
    ║  All selectors `ih-` prefixed (Insights Hub).
    ╚══════════════════════════════════════════════════════════════════ */
 
-const STANDARD_PAGE_SIZE = 9;
-const LOAD_MORE_INCREMENT = 9;
+const STANDARD_PAGE_SIZE = 12;   // 3 rows × 4 cols — a natural visual page
+const LOAD_MORE_INCREMENT = 12;
 
 const SORTED = [...insights].sort((a, b) =>
   (b.dateISO || '').localeCompare(a.dateISO || '')
@@ -257,29 +257,9 @@ export default function Insights() {
               <p className="brief-doc-lede wipe wipe-d4">
                 We&rsquo;ve been writing on what we&rsquo;ve observed and executed on thousands of shop floors, solving the most embedded operational challenges manufacturers face.
               </p>
-            </div>
-
-            <div className="ih-hero-foundations wipe wipe-d5" data-testid="ih-hero-foundations">
-              <div className="ih-hero-foundations-col">
-                <div className="ih-hero-pillar-label">The disciplines that drive sustainable performance.</div>
-                <ul className="ih-hero-stack">
-                  <li>Operational Discipline.</li>
-                  <li>Frontline Leadership.</li>
-                  <li>Equipment Reliability.</li>
-                  <li>Workforce Capability.</li>
-                  <li>Daily Accountability.</li>
-                </ul>
-              </div>
-              <div className="ih-hero-foundations-col">
-                <div className="ih-hero-pillar-label">And the dimensions that cut across all five.</div>
-                <ul className="ih-hero-stack">
-                  <li>Continuous improvement.</li>
-                  <li>Cost reduction.</li>
-                  <li>Capacity utilization.</li>
-                  <li>Root cause analysis.</li>
-                  <li>Profitability.</li>
-                </ul>
-              </div>
+              <p className="brief-doc-lede wipe wipe-d5" style={{ marginTop: 24 }}>
+                The disciplines that drive sustainable performance &mdash; operational discipline, frontline leadership, equipment reliability, workforce capability, daily accountability &mdash; and the dimensions that cut across all five: continuous improvement, cost reduction, capacity utilization, root cause analysis, profitability.
+              </p>
             </div>
           </div>
         </section>
@@ -396,7 +376,7 @@ export default function Insights() {
               </a>
             </div>
             <p className="ih-search-help">
-              Searching across the {SORTED.length - featured.length} most recent articles. The full archive has hundreds more.
+              Search across the most recent articles below. The full archive on POWERS.com has hundreds more.
             </p>
           </div>
         </section>
@@ -407,15 +387,16 @@ export default function Insights() {
             <div className="station-index wipe">More Insights</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
               <span>More from the field.</span>
-              <span className="pivot">Practitioner perspectives on what makes operations actually perform.</span>
+              <span className="pivot">Practitioner perspectives on why building execution capability is a competitive advantage.</span>
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
             <div className="ih-grid-meta wipe wipe-d3">
               <span className="ih-grid-count" data-testid="ih-grid-count">
-                {standardAll.length} {standardAll.length === 1 ? 'article' : 'articles'}
-                {q.trim() && (
-                  <> matching <em>&ldquo;{q.trim()}&rdquo;</em></>
+                {q.trim() ? (
+                  <>{standardAll.length} {standardAll.length === 1 ? 'article' : 'articles'} matching <em>&ldquo;{q.trim()}&rdquo;</em></>
+                ) : (
+                  <>Showing the most recent articles &mdash; hundreds more in the full archive</>
                 )}
               </span>
             </div>
@@ -837,8 +818,9 @@ export default function Insights() {
         }
         .ih-card:hover .ih-card-arrow { transform: translateX(4px); }
 
-        /* Standard cards: byline + CTA stack vertically (no foot rule). */
-        .ih-card--standard .ih-card-body { gap: 10px; }
+        /* ── Standard cards in 4-up grid get tighter padding so
+           three lines of title don't crush the byline + CTA. */
+        .ih-card--standard .ih-card-body { padding: 20px 22px 22px; gap: 10px; }
         .ih-card--standard .ih-card-byline { margin-top: 2px; }
         .ih-card--standard .ih-card-cta { margin-top: auto; padding-top: 6px; }
 
@@ -954,8 +936,8 @@ export default function Insights() {
         }
         .ih-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 28px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
           align-items: stretch;
         }
         .ih-grid > div { display: flex; }
@@ -1015,6 +997,9 @@ export default function Insights() {
         .ih-load-more-arrow { font-size: 16px; }
 
         /* ── Tablet ────────────────────────────────────────── */
+        @media (max-width: 1199px) {
+          .ih-grid { grid-template-columns: repeat(3, 1fr); }
+        }
         @media (max-width: 1099px) {
           .ih-hero-foundations { grid-template-columns: 1fr; gap: 32px; }
           .ih-kb-card { grid-template-columns: 48px 1fr; }
@@ -1025,9 +1010,11 @@ export default function Insights() {
           }
           .ih-featured-grid { grid-template-columns: 1fr; gap: 24px; }
           .ih-featured-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-          .ih-grid { grid-template-columns: repeat(2, 1fr); }
           .ih-search-row { grid-template-columns: 1fr; gap: 14px; }
           .ih-search-archive { justify-self: start; }
+        }
+        @media (max-width: 879px) {
+          .ih-grid { grid-template-columns: repeat(2, 1fr); }
         }
         /* ── Mobile ────────────────────────────────────────── */
         @media (max-width: 639px) {
