@@ -61,10 +61,10 @@ const DISCIPLINE_GRADIENTS = {
   'Daily Accountability':   `linear-gradient(135deg, #5a4520 0%, #8a6d34 100%)`,
 };
 
-function ArticleImage({ article, ratio = '16 / 9' }) {
+function ArticleImage({ article }) {
   if (article.image) {
     return (
-      <div className="ih-card-image" style={{ aspectRatio: ratio }}>
+      <div className="ih-card-image">
         <img src={article.image} alt="" loading="lazy" decoding="async" />
       </div>
     );
@@ -73,7 +73,6 @@ function ArticleImage({ article, ratio = '16 / 9' }) {
     <div
       className="ih-card-image ih-card-image--fallback"
       style={{
-        aspectRatio: ratio,
         background: DISCIPLINE_GRADIENTS[article.discipline] || DISCIPLINE_GRADIENTS['Operational Discipline'],
       }}
       aria-hidden="true"
@@ -101,7 +100,7 @@ function ArticleLink({ article, className, children, ...rest }) {
 function FeaturedLarge({ article }) {
   return (
     <ArticleLink article={article} className="ih-card ih-card--featured-large">
-      <ArticleImage article={article} ratio="16 / 10" />
+      <ArticleImage article={article} />
       <div className="ih-card-body">
         <div className="ih-card-meta">
           <span className="ih-card-date">{article.date}</span>
@@ -124,7 +123,7 @@ function FeaturedLarge({ article }) {
 function FeaturedStacked({ article }) {
   return (
     <ArticleLink article={article} className="ih-card ih-card--featured-stacked">
-      <ArticleImage article={article} ratio="16 / 9" />
+      <ArticleImage article={article} />
       <div className="ih-card-body">
         <div className="ih-card-meta">
           <span className="ih-card-date">{article.date}</span>
@@ -146,7 +145,7 @@ function FeaturedStacked({ article }) {
 function StandardCard({ article }) {
   return (
     <ArticleLink article={article} className="ih-card ih-card--standard">
-      <ArticleImage article={article} ratio="16 / 9" />
+      <ArticleImage article={article} />
       <div className="ih-card-body">
         <div className="ih-card-meta">
           <span className="ih-card-date">{article.date}</span>
@@ -684,11 +683,17 @@ export default function Insights() {
           background: ${PAPER_DEEP};
           overflow: hidden;
           position: relative;
+          /* Match the legacy WP thumbnail crop (1200x627 → 768x401 → 1.91:1)
+             so object-fit: contain doesn't letterbox the typical article
+             image. contain is used so that any non-conforming future
+             upload still renders fully — no embedded headline ever gets
+             cropped. */
+          aspect-ratio: 1.91 / 1;
         }
         .ih-card-image img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           display: block;
           transition: transform 600ms cubic-bezier(.2,.6,.2,1);
         }
