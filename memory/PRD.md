@@ -897,3 +897,21 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 - `/app/frontend/src/pages/FAQs.jsx`, `/app/frontend/src/pages/Glossary.jsx`, `/app/frontend/src/pages/KPIs.jsx`, `/app/frontend/src/pages/Insights.jsx`, `/app/frontend/src/components/SearchModal.jsx`, `/app/frontend/src/components/BriefHeader.jsx`, `/app/frontend/src/lib/searchCorpus.js`
 
 **Lint status:** ESLint clean across every touched file.
+
+
+## 2026-02-13 (last) — Route splitting + EBITDA voice fix
+
+**Route-level `React.lazy()` shipped:**
+- All 21 page components in `App.js` are now lazy-loaded via `React.lazy(() => import('./pages/…'))`. The initial JS bundle now ships only Home + chrome (Layout / HomeLayout / RouteTransitionRule / SearchModal) + dynamic helpers (LeaderBio, IndustryPage, NotFound).
+- `<Suspense fallback={<RouteFallback />}>` wraps all routes. Fallback renders a full-viewport cream pane (`#fbfaf6` PAPER) with 112px top padding to reserve space for the fixed BriefHeader band — no white flash, no layout shift during chunk swaps.
+- Verified: 3 distinct JS chunks request during a Home → Insights → Glossary nav sequence. Cinematic CSS wipe transitions continue to fire correctly (they live in `RouteTransitionRule` + per-page IntersectionObserver, both unaffected by Suspense boundaries).
+- Cmd-K modal remains globally mounted (it's eagerly imported alongside chrome) so the search shortcut still works from any chunk.
+
+**EBITDA voice fix (KPI Cost & Profitability):**
+- Title reformatted from acronym-only "EBITDA" → "Earnings Before Interest, Taxes, Depreciation, and Amortization (EBITDA)" to match the established Manufacturing KPIs pattern (RONA, FTR, PMP, etc).
+- Description no longer opens with the spelled-out form; now starts with "A measure of operational profitability that strips out financing and accounting decisions a buyer might restructure post-close…"
+- Formula unchanged. Slug (`name` substring "EBITDA") still preserved so Cmd-K and KPI category search continue to surface this row on any EBITDA query.
+
+**Files touched:**
+- `/app/frontend/src/App.js` (full rewrite — lazy imports + Suspense wrapper)
+- `/app/frontend/src/data/kpis.js` (EBITDA row reformatted)
