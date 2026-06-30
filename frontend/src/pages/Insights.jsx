@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { Link as RRLink } from 'react-router-dom';
 import BriefHeader from '../components/BriefHeader';
 import BriefFooter from '../components/BriefFooter';
 import SEO from '../components/SEO';
@@ -163,14 +164,13 @@ function StandardCard({ article }) {
 }
 
 function KnowledgeBaseCard({ destination, index }) {
-  return (
-    <a
-      className="ih-kb-card"
-      href={destination.externalUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-testid={`ih-kb-${destination.slug}`}
-    >
+  const isInternal = destination.internal === true;
+  const commonProps = {
+    className: 'ih-kb-card',
+    'data-testid': `ih-kb-${destination.slug}`,
+  };
+  const inner = (
+    <>
       <span className="ih-kb-num" aria-hidden="true">
         {String(index + 1).padStart(2, '0')}
       </span>
@@ -182,6 +182,14 @@ function KnowledgeBaseCard({ destination, index }) {
       <span className="ih-kb-cta" aria-hidden="true">
         Open <span className="ih-kb-arrow">&rarr;</span>
       </span>
+    </>
+  );
+  if (isInternal) {
+    return <RRLink to={destination.path} {...commonProps}>{inner}</RRLink>;
+  }
+  return (
+    <a href={destination.externalUrl} target="_blank" rel="noopener noreferrer" {...commonProps}>
+      {inner}
     </a>
   );
 }
