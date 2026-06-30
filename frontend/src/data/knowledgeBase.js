@@ -23,6 +23,13 @@ export const knowledgeBase = [
     badge: '150 articles',
   },
   {
+    slug: 'downloadables',
+    label: 'Downloadables',
+    blurb: 'Field-ready guides, frameworks, and reference materials.',
+    externalUrl: 'https://www.thepowerscompany.com/downloadables/',
+    badge: 'Guides & frameworks',
+  },
+  {
     slug: 'manufacturing-kpis',
     label: 'Manufacturing KPIs',
     blurb: 'The metrics operations leaders actually use. Defined, contextualized, and tied to what they move.',
@@ -42,12 +49,5 @@ export const knowledgeBase = [
     blurb: 'The questions operations leaders ask before engaging POWERS. Answered directly.',
     externalUrl: 'https://www.thepowerscompany.com/frequently-asked-questions-faqs/',
     badge: 'Direct answers',
-  },
-  {
-    slug: 'downloadables',
-    label: 'Downloadables',
-    blurb: 'Field-ready guides, frameworks, and reference materials.',
-    externalUrl: 'https://www.thepowerscompany.com/downloadables/',
-    badge: 'Guides & frameworks',
   },
 ];
