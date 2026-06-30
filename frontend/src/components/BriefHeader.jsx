@@ -84,7 +84,19 @@ export default function BriefHeader({ mode = 'interior' }) {
       <header className="brief-header" data-mode={mode}>
         <div className="brief-header-inner">
           <div className="brief-header-mark">
-            <Link to="/" className="brief-logo" aria-label="POWERS">
+            {/* Logo always returns to /. The explicit onClick also
+                scrolls the window to top when the user is already on
+                / — React Router treats same-pathname clicks as a
+                no-op, so the layout's useEffect-on-pathname wouldn't
+                fire. This restores the "click logo to go home AND
+                land at the top" behavior users expect. */}
+            <Link
+              to="/"
+              className="brief-logo"
+              aria-label="POWERS — Home"
+              data-testid="brief-header-logo"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
             </Link>
             <span className="brief-header-tagline" aria-hidden="true">

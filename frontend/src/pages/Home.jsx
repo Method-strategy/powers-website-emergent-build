@@ -31,6 +31,7 @@
  *  served at /v5 for client review. Routing not changed in this file. */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { TYPE } from '../lib/designSpec';
 import CaseStudyCard from '../components/caseStudy/CaseStudyCard';
 import { caseStudies } from '../data/caseStudies';
@@ -1427,9 +1428,20 @@ function Home() {
       <header className="brief-header">
         <div className="brief-header-inner">
           <div className="brief-header-mark">
-            <a href="/" className="brief-logo" aria-label="POWERS">
+            {/* React Router <Link>, not <a href>: avoids a full
+                page reload when the user is already on /. The
+                explicit onClick scrolls window to top in the
+                same-route case where pathname-keyed effects
+                don't refire. */}
+            <Link
+              to="/"
+              className="brief-logo"
+              aria-label="POWERS — Home"
+              data-testid="home-header-logo"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
-            </a>
+            </Link>
             {/* Tagline — appears only on the homepage, only on
                 desktop, and only after the reader has scrolled past
                 the hero. Narrative continuity device: the hero H1
