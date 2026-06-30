@@ -1,0 +1,78 @@
+{
+  "summary": "Frontend-only smoke + integration testing of 3 new Knowledge Base landing pages: /manufacturing-mastery-series, /downloadables, /manufacturing-metrics. All 5 review criteria pass with 0 console errors.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "1_mastery_series": {
+      "status": "PASS",
+      "eyebrow": "Knowledge Base · Mastery Series",
+      "h1": "15 deep dives. / One operational thesis at a time.",
+      "series_rows": 15,
+      "first_series": "Operational Agility (December 3, 2024)",
+      "first_pillar_href": "https://www.thepowerscompany.com/resources/operational-agility/",
+      "first_series_part_links": 10,
+      "total_pillar_links": 15,
+      "total_part_links": 145,
+      "bad_pillar_links": 0,
+      "bad_part_links": 0,
+      "notes": "All 15 pillar + 145 part anchors have target=_blank, rel=noopener noreferrer, and href starting with https://www.thepowerscompany.com/resources/. Console errors: 0."
+    },
+    "2_downloadables": {
+      "status": "PASS",
+      "h1": "Field-ready tools. / Built for the floor.",
+      "cards_rendered": 16,
+      "first_card_eyebrow": "PDF · Download 01",
+      "first_card_title": "Demand Readiness Checklist",
+      "bad_card_links": 0,
+      "clip_path_after_scroll": "inset(-6.4px 0px -8px)",
+      "parent_has_is_in": true,
+      "notes": "All 16 card anchors point to https://www.thepowerscompany.com/wp-content/uploads/ with target=_blank + rel=noopener noreferrer. After scroll + 2.5s wait, .brief-doc-station has .is-in and .dl-card clip-path resolves to visible inset state (not the initial inset-with-100%-right). Console errors: 0."
+    },
+    "3_kpis": {
+      "status": "PASS",
+      "h1": "The metrics that move. / Operations leaders actually use.",
+      "rail_items": 10,
+      "kpi_sections": 10,
+      "formula_font_family": "SF Mono, Menlo, Consolas, Liberation Mono, monospace",
+      "kpi_row_grid_columns": "3-col (201.984px 330.547px 275.453px) - name / def / formula",
+      "smooth_scroll_on_click": true,
+      "scroll_y_after_click_3rd": 6913,
+      "is_active_updates": true,
+      "notes": "Rail click triggers smooth window.scrollTo and is-active updates as the IntersectionObserver fires. On the test viewport (1920x4000) the active section can land one item ahead because the rootMargin '-40% 0px -45% 0px' active band sits at viewport y≈1600-2200, which is below the section just scrolled to (top=130). On real viewports (~900px tall) this resolves to the expected section. Not a bug. Console errors: 0."
+    },
+    "4_shared_chrome": {
+      "status": "PASS",
+      "header_present_on_all_3": true,
+      "footer_present_on_all_3": true,
+      "insights_header_link_navigates": "/insights (SPA, no console error)"
+    },
+    "5_insights_to_kb_wiring": {
+      "status": "PASS",
+      "mastery_series_card_href": "/manufacturing-mastery-series (internal SPA)",
+      "downloadables_card_href": "/downloadables (internal SPA)",
+      "manufacturing_kpis_card_href": "/manufacturing-metrics (internal SPA)",
+      "faqs_card": "https://www.thepowerscompany.com/frequently-asked-questions-faqs/ target=_blank rel=noopener noreferrer",
+      "glossary_card": "https://www.thepowerscompany.com/glossary/ target=_blank rel=noopener noreferrer",
+      "spa_navigations_verified": ["/insights → /manufacturing-mastery-series", "/insights → /downloadables", "/insights → /manufacturing-metrics", "header Insights link → /insights"]
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "KPIs.jsx StickyNav IntersectionObserver rootMargin '-40% 0px -45% 0px' is sensitive to viewport height — on tall viewports (>2000px) the active band can drift one section ahead after a click. Consider clamping the active section to the clicked one for a short window after the jump (debounced setActive override) for a cleaner UX, but functional today.",
+    "Downloadables.jsx uses 'wipe-d1..wipe-d4' staggered on index % 5 — index 0 maps to '' (no delay bucket) which is fine but mildly asymmetric. Cosmetic only.",
+    "MasterySeries.jsx pillar image alt is empty (alt='') by design — acceptable since the link's aria-label carries the meaningful description."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (frontend-only request)", "frontend": "100%" },
+  "test_credentials": "N/A",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 3 KB pages render correctly, all legacy WP URLs are preserved with target=_blank + rel=noopener noreferrer, the KPI sticky-rail scroll-spy + smooth-scroll work, Downloadables wipe clip-path animation completes after IntersectionObserver fires, and the /insights hub correctly wires its 3 internal cards to the new SPA routes (FAQs + Glossary remain external). No console errors on any of the 3 pages.",
+  "rca of the issue": "N/A — no issues found."
+}
