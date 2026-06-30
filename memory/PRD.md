@@ -852,3 +852,17 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 - Internal hash-deep-link routing works: `cost` → Enter → `/frequently-asked-questions-faqs#cost` opens the FAQ on the correct row. `oee` → Enter → glossary or insight rows resolve correctly.
 - External rows open in new tab with `noopener,noreferrer`.
 - Lint clean, zero console errors on every route.
+
+
+## 2026-02-13 (afternoon) — Cmd-K empty state: Jump-to + Recents
+
+**Implemented:**
+- **Jump-to section** in the empty state — 8 curated top-level destinations (Approach, Discovery Process, Industries Served, Case Studies, Insights, Leadership, Careers, Contact). Each row: copper arrow icon + bold label + right-aligned subtitle. Click or Enter routes via React Router; modal closes.
+- **Recent searches section** — last 8 queries persisted to `localStorage` under key `powers:recentSearches`. Only typed searches get persisted (Jump-to clicks don't pollute the list). Most-recent-first ordering. Each row has its own × to remove individually + a "Clear" affordance in the section header to wipe all. Click on a recent row repopulates the search input.
+- **Unified keyboard navigation** — `flat` list is dynamic: search results when typing, or `recents + jumps` when empty. ↑/↓ traverse both states; Enter triggers the right action per row kind (search-result → navigate + save, recent → reload query, jump → route only).
+- **Type-safe persistence** — `loadRecent()` validates payload (array of non-empty strings, clipped to 8) and silently no-ops on corrupted JSON or disabled storage.
+
+**Files touched:**
+- `/app/frontend/src/components/SearchModal.jsx`
+
+**Verified:** clean cold-start, search-and-Enter saves to recents, reopen restores recents at top with first item active, individual × remove + bulk Clear both work, jump-to clicks don't pollute recents, keyboard nav (↑/↓/Enter) unified across all empty-state rows.

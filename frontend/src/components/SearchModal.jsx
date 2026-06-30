@@ -26,6 +26,38 @@ const GROUP_ORDER = [
   'Glossary', 'FAQs', 'Insights', 'Mastery Series', 'Downloadables', 'Manufacturing KPIs',
 ];
 
+// Curated "Jump to" destinations for the empty-state. Top-level
+// navigational targets a returning visitor most often wants to land
+// on without typing — order matches typical visit flow.
+const JUMP_TO = [
+  { label: 'Approach',          subtitle: 'How POWERS works',          to: '/approach' },
+  { label: 'Discovery Process', subtitle: 'Engagement starting point', to: '/discovery-process' },
+  { label: 'Industries Served', subtitle: '14 industry verticals',     to: '/industries-served' },
+  { label: 'Case Studies',      subtitle: 'Proven results',            to: '/case-studies' },
+  { label: 'Insights',          subtitle: 'Field notes + KB hub',      to: '/insights' },
+  { label: 'Leadership',        subtitle: 'The POWERS team',           to: '/leadership' },
+  { label: 'Careers',           subtitle: 'Join the firm',             to: '/careers' },
+  { label: 'Contact',           subtitle: 'Start the conversation',    to: '/contact' },
+];
+
+const RECENT_KEY = 'powers:recentSearches';
+const RECENT_MAX = 8;
+
+function loadRecent() {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.filter((s) => typeof s === 'string' && s.trim()).slice(0, RECENT_MAX) : [];
+  } catch {
+    return [];
+  }
+}
+function saveRecent(list) {
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_MAX))); }
+  catch { /* localStorage disabled — non-fatal */ }
+}
+
 // A small icon set used inline so the modal stays self-contained.
 function SearchIcon({ className }) {
   return (
@@ -56,6 +88,7 @@ export default function SearchModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIdx, setActiveIdx] = useState(0);
+  const [recents, setRecents] = useState(() => loadRecent());
   const inputRef = useRef(null);
   const listRef = useRef(null);
   const navigate = useNavigate();
@@ -85,8 +118,16 @@ export default function SearchModal() {
       .sort((a, b) => b._max - a._max || canonicalIndex(a.group) - canonicalIndex(b.group));
   }, [results]);
 
-  // Flat list for ↑/↓ navigation — must mirror render order exactly.
-  const flat = useMemo(() => grouped.flatMap((g) => g.items), [grouped]);
+  // Flat list for ↑/↓ navigation. When the user is typing, this is
+  // the search results; when the input is empty, the list becomes
+  // the recents + jump-to chain so arrow keys can drive both states.
+  const flat = useMemo(() => {
+    if (query.trim()) return grouped.flatMap((g) => g.items);
+    const empty = [];
+    recents.forEach((r) => empty.push({ id: `recent:${r}`, kind: 'recent', label: r }));
+    JUMP_TO.forEach((j) => empty.push({ id: `jump:${j.to}`, kind: 'jump', ...j }));
+    return empty;
+  }, [grouped, query, recents]);
 
   const open = useCallback(() => {
     setIsOpen(true);
@@ -166,13 +207,24 @@ export default function SearchModal() {
   };
 
   const goTo = (r) => {
+    if (r.kind === 'recent') {
+      // Recent-search row: repopulate the query, keep modal open.
+      setQuery(r.label);
+      inputRef.current?.focus();
+      return;
+    }
+    // Search-result or jump-to row: navigate + close. Persist the
+    // current query into recents only if a user-typed result was
+    // opened (jump-to chips don't count — they aren't searches).
+    if (query.trim() && r.kind !== 'jump') {
+      const q = query.trim();
+      const next = [q, ...recents.filter((x) => x.toLowerCase() !== q.toLowerCase())].slice(0, RECENT_MAX);
+      setRecents(next);
+      saveRecent(next);
+    }
     close();
     if (r.to) {
-      // Use react-router for internal SPA navigation.
       navigate(r.to);
-      // navigate doesn't always handle hash + scroll on the same path
-      // perfectly — if we're already on the target path, force a
-      // hashchange so the destination page's listener re-applies.
       requestAnimationFrame(() => {
         const [path, hash] = r.to.split('#');
         if (hash && window.location.pathname === path) {
@@ -182,6 +234,16 @@ export default function SearchModal() {
     } else if (r.href) {
       window.open(r.href, '_blank', 'noopener,noreferrer');
     }
+  };
+
+  const removeRecent = (q) => {
+    const next = recents.filter((x) => x !== q);
+    setRecents(next);
+    saveRecent(next);
+  };
+  const clearAllRecents = () => {
+    setRecents([]);
+    saveRecent([]);
   };
 
   // Scroll the active result into view as the user arrows down.
@@ -229,21 +291,90 @@ export default function SearchModal() {
         <div className="omn-body" ref={listRef}>
           {!query.trim() ? (
             <div className="omn-empty">
-              <div className="omn-empty-eyebrow">Type to search across</div>
-              <ul className="omn-empty-list">
-                {GROUP_ORDER.map((g) => (
-                  <li key={g}>
-                    <span className="omn-empty-dot" />
-                    {g}
-                    <span className="omn-empty-count">
-                      {SEARCH_CORPUS.filter((r) => r.group === g).length}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <div className="omn-empty-hint">
-                <kbd>↑</kbd> <kbd>↓</kbd> navigate &nbsp;·&nbsp; <kbd>↵</kbd> open &nbsp;·&nbsp; <kbd>esc</kbd> close
-              </div>
+              {recents.length > 0 && (
+                <section className="omn-empty-section">
+                  <header className="omn-empty-head">
+                    <span>Recent searches</span>
+                    <button
+                      type="button"
+                      className="omn-empty-clear"
+                      onClick={clearAllRecents}
+                      aria-label="Clear all recent searches"
+                    >Clear</button>
+                  </header>
+                  <ul className="omn-empty-rows">
+                    {recents.map((r) => {
+                      const idx = indexById.get(`recent:${r}`);
+                      const isActive = idx === activeIdx;
+                      return (
+                        <li key={r} data-idx={idx}>
+                          <button
+                            type="button"
+                            className={`omn-quick omn-quick-recent ${isActive ? 'is-active' : ''}`}
+                            onMouseEnter={() => setActiveIdx(idx)}
+                            onClick={() => goTo({ kind: 'recent', label: r })}
+                          >
+                            <SearchIcon className="omn-quick-icon" />
+                            <span className="omn-quick-label">{r}</span>
+                            <span
+                              className="omn-quick-remove"
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`Remove "${r}" from recent searches`}
+                              onClick={(e) => { e.stopPropagation(); removeRecent(r); }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault(); e.stopPropagation();
+                                  removeRecent(r);
+                                }
+                              }}
+                            >×</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              )}
+
+              <section className="omn-empty-section">
+                <header className="omn-empty-head">Jump to</header>
+                <ul className="omn-empty-rows">
+                  {JUMP_TO.map((j) => {
+                    const idx = indexById.get(`jump:${j.to}`);
+                    const isActive = idx === activeIdx;
+                    return (
+                      <li key={j.to} data-idx={idx}>
+                        <button
+                          type="button"
+                          className={`omn-quick omn-quick-jump ${isActive ? 'is-active' : ''}`}
+                          onMouseEnter={() => setActiveIdx(idx)}
+                          onClick={() => goTo({ kind: 'jump', to: j.to })}
+                        >
+                          <span className="omn-quick-arrow"><ArrowIcon /></span>
+                          <span className="omn-quick-label">{j.label}</span>
+                          <span className="omn-quick-sub">{j.subtitle}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+
+              <section className="omn-empty-section">
+                <header className="omn-empty-head">Type to search across</header>
+                <ul className="omn-empty-list">
+                  {GROUP_ORDER.map((g) => (
+                    <li key={g}>
+                      <span className="omn-empty-dot" />
+                      {g}
+                      <span className="omn-empty-count">
+                        {SEARCH_CORPUS.filter((r) => r.group === g).length}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             </div>
           ) : results.length === 0 ? (
             <div className="omn-zero">
@@ -389,23 +520,117 @@ export default function SearchModal() {
         }
 
         .omn-empty {
-          padding: 28px 22px 32px;
+          padding: 20px 0 28px;
         }
-        .omn-empty-eyebrow {
+        .omn-empty-section { padding: 0 0 6px; }
+        .omn-empty-section + .omn-empty-section { padding-top: 14px; }
+        .omn-empty-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           font-family: ${TYPE.mono};
           font-size: 10.5px;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: ${GOLD_BRIGHT};
-          margin-bottom: 14px;
+          padding: 10px 22px 6px;
         }
+        .omn-empty-clear {
+          background: transparent;
+          border: 0;
+          padding: 0;
+          color: ${TEXT_BODY};
+          font-family: ${TYPE.mono};
+          font-size: 10.5px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: color 160ms ease;
+        }
+        .omn-empty-clear:hover { color: ${GOLD_BRIGHT}; }
+        .omn-empty-rows { list-style: none; margin: 0; padding: 0; }
+
+        .omn-quick {
+          display: grid;
+          align-items: center;
+          width: 100%;
+          padding: 10px 22px;
+          background: transparent;
+          border: 0;
+          border-left: 2px solid transparent;
+          cursor: pointer;
+          text-align: left;
+          gap: 12px;
+          transition: background 120ms ease, border-color 120ms ease;
+        }
+        .omn-quick.is-active {
+          background: rgba(232, 147, 70, 0.08);
+          border-left-color: ${GOLD_BRIGHT};
+        }
+
+        /* Recent-search rows: [search-icon] [label .........] [×] */
+        .omn-quick-recent {
+          grid-template-columns: 16px 1fr 22px;
+        }
+        .omn-quick-icon { color: rgba(13, 36, 66, 0.42); }
+        .omn-quick-recent.is-active .omn-quick-icon { color: ${GOLD_BRIGHT}; }
+        .omn-quick-remove {
+          width: 22px; height: 22px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-family: ${TYPE.sans};
+          font-size: 18px;
+          line-height: 1;
+          color: rgba(13, 36, 66, 0.35);
+          border-radius: 50%;
+          transition: color 160ms ease, background 160ms ease;
+          cursor: pointer;
+        }
+        .omn-quick-remove:hover {
+          color: ${NAVY};
+          background: rgba(13, 36, 66, 0.08);
+        }
+
+        /* Jump-to rows: [arrow] [label]  [subtitle .........] */
+        .omn-quick-jump {
+          grid-template-columns: 14px auto 1fr;
+        }
+        .omn-quick-jump .omn-quick-arrow {
+          color: ${GOLD_BRIGHT};
+          opacity: 0.55;
+          transition: opacity 160ms ease, transform 160ms ease;
+        }
+        .omn-quick-jump.is-active .omn-quick-arrow { opacity: 1; transform: translateX(2px); }
+
+        .omn-quick-label {
+          font-family: ${TYPE.sans};
+          font-size: 14.5px;
+          font-weight: 600;
+          color: ${NAVY};
+          line-height: 1.4;
+        }
+        .omn-quick-sub {
+          font-family: ${TYPE.sans};
+          font-size: 12.5px;
+          font-weight: 300;
+          color: ${TEXT_BODY};
+          line-height: 1.4;
+          justify-self: end;
+          text-align: right;
+        }
+        @media (max-width: 520px) {
+          .omn-quick-jump { grid-template-columns: 14px 1fr; }
+          .omn-quick-sub { display: none; }
+        }
+
         .omn-empty-list {
           list-style: none;
-          margin: 0;
+          margin: 6px 22px 0;
           padding: 0;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 10px 24px;
+          gap: 8px 24px;
         }
         @media (max-width: 520px) {
           .omn-empty-list { grid-template-columns: 1fr; }
@@ -415,7 +640,7 @@ export default function SearchModal() {
           align-items: center;
           gap: 10px;
           font-family: ${TYPE.sans};
-          font-size: 14px;
+          font-size: 13.5px;
           font-weight: 500;
           color: ${NAVY};
         }
@@ -429,14 +654,6 @@ export default function SearchModal() {
           margin-left: auto;
           font-family: ${TYPE.mono};
           font-size: 11px;
-          color: ${TEXT_BODY};
-        }
-        .omn-empty-hint {
-          margin-top: 26px;
-          font-family: ${TYPE.mono};
-          font-size: 11px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
           color: ${TEXT_BODY};
         }
 
@@ -544,8 +761,7 @@ export default function SearchModal() {
         }
         .omn-foot-spacer { flex: 1; }
         .omn-foot-count { color: ${NAVY}; }
-        .omn-foot kbd,
-        .omn-empty-hint kbd {
+        .omn-foot kbd {
           display: inline-block;
           font-family: ${TYPE.mono};
           font-size: 10px;
