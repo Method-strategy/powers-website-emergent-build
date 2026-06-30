@@ -375,7 +375,7 @@ export default function Insights() {
               </a>
             </div>
             <p className="ih-search-help">
-              Search across the most recent articles below. The full archive on POWERS.com has hundreds more.
+              Search across our full archive of insightful, practical articles on what it takes to build stronger execution in your operation.
             </p>
           </div>
         </section>
