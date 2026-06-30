@@ -270,7 +270,7 @@ export default function Insights() {
             <div className="station-index wipe">Featured</div>
             <h2 className="brief-doc-h2 wipe wipe-d1">
               <span>The latest from the field,</span>
-              <span className="pivot">and the conversations operators are having now.</span>
+              <span className="pivot">and the conversations ops leaders are having now.</span>
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
