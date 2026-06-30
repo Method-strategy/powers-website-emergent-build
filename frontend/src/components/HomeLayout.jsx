@@ -23,8 +23,15 @@ export default function HomeLayout() {
      the .brief-header gold-rule wipe driven by RouteTransitionRule
      for a single coordinated 700ms page transition. */
   return (
-    <div key={pathname} className="brief-route-fader">
-      <Outlet />
-    </div>
+    <>
+      {/* WCAG 2.4.1 — skip-to-content link is the first focusable
+          element. Visually hidden until it receives keyboard focus,
+          then anchors to the page's <main> content (the keyed
+          wrapper below has id="main-content"). */}
+      <a href="#main-content" className="brief-skip-link">Skip to main content</a>
+      <div key={pathname} id="main-content" className="brief-route-fader" tabIndex={-1}>
+        <Outlet />
+      </div>
+    </>
   );
 }

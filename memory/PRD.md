@@ -915,3 +915,25 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 **Files touched:**
 - `/app/frontend/src/App.js` (full rewrite — lazy imports + Suspense wrapper)
 - `/app/frontend/src/data/kpis.js` (EBITDA row reformatted)
+
+
+## 2026-02-13 (best-practice closing pass) — head + a11y hardening
+
+**Added to `public/index.html`:**
+- `viewport-fit=cover` — iPhone notch / safe-area inset utilities work; pages can use `env(safe-area-inset-*)` without losing tap targets under the home indicator.
+- `color-scheme: light` — explicit light-mode declaration so the browser doesn't apply dark-mode UA defaults to form controls / scrollbars in conflict with the cream PAPER design token.
+- **Preconnect to `https://www.thepowerscompany.com`** — Insights cards + Mastery Series pillars all load thumbnails from the legacy WP CDN at this origin; preconnecting at `<head>` warms TCP / TLS so the first card image starts fetching ~150ms earlier on cold loads. `<link rel="dns-prefetch">` fallback for older clients.
+- **`<link rel="preload" as="style">`** for both critical font stylesheets (Typekit Proxima Nova kit + Google Fonts Inter fallback). Parsing starts before main JS blocks; first paint can use the brand fonts on every cold load.
+
+**Skip-to-content link added (WCAG 2.4.1):**
+- Both `HomeLayout.jsx` and `Layout.jsx` now render an `<a href="#main-content" className="brief-skip-link">` as the first focusable element. Target is `<main id="main-content" tabIndex={-1}>` (HomeLayout uses the route-fader div with the same id).
+- CSS in `index.css` keeps it visually hidden via `transform: translateY(-110%)` until it receives keyboard focus, then slides into the top-left corner with gold-on-navy treatment. Honors `prefers-reduced-motion`.
+- Activating the link routes to `#main-content` and shifts focus to the `<main>` element. Verified end-to-end: first Tab on every interior page lands on "Skip to main content", Enter routes correctly + moves focus.
+
+**Files touched:**
+- `/app/frontend/public/index.html` (head best-practices)
+- `/app/frontend/src/components/HomeLayout.jsx` (skip link + main id)
+- `/app/frontend/src/components/Layout.jsx` (skip link + `<main id="main-content">` wrapper)
+- `/app/frontend/src/index.css` (.brief-skip-link styles)
+
+**Note on image format optimization:** Project policy is to handle `.webp` conversion on the hosting side rather than via per-image `<picture>` elements in React markup. No source changes needed — confirmed with the team.

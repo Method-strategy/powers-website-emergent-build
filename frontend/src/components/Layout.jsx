@@ -37,10 +37,16 @@ export default function Layout() {
      the transition. */
   return (
     <>
+      {/* WCAG 2.4.1 — skip-to-content link is the first focusable
+          element. Visually hidden until it receives keyboard focus.
+          Anchors to id="main-content" below. */}
+      <a href="#main-content" className="brief-skip-link">Skip to main content</a>
       <BriefHeader mode="interior" />
-      <div key={pathname} className="brief-route-fader">
-        <Outlet />
-      </div>
+      <main id="main-content" tabIndex={-1}>
+        <div key={pathname} className="brief-route-fader">
+          <Outlet />
+        </div>
+      </main>
       <BriefFooter />
     </>
   );

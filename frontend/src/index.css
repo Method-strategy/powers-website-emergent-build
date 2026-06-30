@@ -164,3 +164,40 @@ body.pw-has-fixed-header { padding-top: 84px; }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   WCAG 2.4.1 — Skip to main content
+   First focusable element on every page. Visually hidden until
+   it receives focus, then slides into view at top-left with the
+   gold accent. Lets keyboard / screen-reader users bypass the
+   fixed BriefHeader nav on every page load.
+   ───────────────────────────────────────────────────────────── */
+.brief-skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 12px 18px;
+  background: #0d2442;
+  color: #e89346;
+  font-family: 'proxima-nova', 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid #e89346;
+  /* Hidden off-screen until focused. translate keeps the element
+     in the accessibility tree (unlike display:none) so it remains
+     focusable via keyboard. */
+  transform: translateY(-110%);
+  transition: transform 200ms cubic-bezier(.2, .8, .2, 1);
+}
+.brief-skip-link:focus {
+  transform: translateY(0);
+  outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brief-skip-link { transition: none; }
+}
+

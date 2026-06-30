@@ -2,7 +2,15 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- viewport-fit=cover so iPhone notch / safe-area inset
+             utilities (env(safe-area-inset-*)) work; pages can opt
+             into edge-to-edge layouts without losing tap targets
+             under the home indicator. -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- Explicit color-scheme so the browser doesn't apply a
+             dark-mode form-control default that would clash with
+             the cream PAPER design token. -->
+        <meta name="color-scheme" content="light" />
         <!--
             ╔══════════════════════════════════════════════════════════════════
             ║  ROBOTS — staging mode
@@ -39,10 +47,28 @@
         <meta name="twitter:image" content="https://thepowerscompany.com/uploads/powers-banner-2026-v2-poster.jpg" />
 
         <link rel="canonical" href="https://thepowerscompany.com/" />
+        <!-- Preconnect: critical 3rd-party origins.
+             - fonts.googleapis.com / fonts.gstatic.com  → Inter fallback face
+             - use.typekit.net / p.typekit.net           → Adobe Proxima Nova kit
+             - www.thepowerscompany.com                  → legacy WP image CDN
+               (Insights cards + Mastery Series pillars all load thumbnails
+               from /wp-content/uploads/* — preconnecting at <head> warms
+               TCP/TLS so the first card image starts ~150ms earlier on
+               cold loads). -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="preconnect" href="https://use.typekit.net" />
         <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+        <link rel="preconnect" href="https://www.thepowerscompany.com" crossorigin />
+        <!-- DNS-only fallback for older clients that skip preconnect -->
+        <link rel="dns-prefetch" href="https://www.thepowerscompany.com" />
+        <!-- Preload critical CSS stylesheets so the browser starts
+             parsing font-face declarations before main script tags
+             block the parser. Each <link rel="preload" as="style">
+             is paired with the actual stylesheet link below so the
+             style sheet activates as soon as it's downloaded. -->
+        <link rel="preload" as="style" href="https://use.typekit.net/dhv8kja.css" />
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
         <!-- Inter as a comprehensive fallback for Proxima Nova; ALL body/display weights -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="all" />
         <!-- Adobe Fonts (Typekit) — Proxima Nova, per CLAUDE.md design tokens. media="all" is explicit so the stylesheet loads in BOTH screen and print contexts (Playwright PDF generation otherwise can miss the print-only path). -->
