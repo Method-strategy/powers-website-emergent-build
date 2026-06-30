@@ -136,6 +136,20 @@ export default function BriefHeader({ mode = 'interior' }) {
               data-testid="brief-nav-insights"
               onMouseEnter={() => setOpenMega(null)}
             >Insights</Link>
+            <button
+              type="button"
+              className="brief-search-btn"
+              data-testid="brief-search-trigger"
+              aria-label="Search the knowledge base (press Cmd-K)"
+              onClick={() => { if (window.__openSearchModal) window.__openSearchModal(); }}
+              onMouseEnter={() => setOpenMega(null)}
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+                <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                <line x1="11" y1="11" x2="14.5" y2="14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+              <span className="brief-search-kbd" aria-hidden="true">⌘K</span>
+            </button>
             <Link
               to="/contact"
               className="brief-nav-link cta"
@@ -276,6 +290,21 @@ export default function BriefHeader({ mode = 'interior' }) {
           </div>
 
           <Link to="/insights"  className="brief-drawer-section"  onClick={() => setMobileNavOpen(false)}>Insights</Link>
+          <button
+            type="button"
+            className="brief-drawer-section brief-drawer-search"
+            data-testid="brief-drawer-search-trigger"
+            onClick={() => {
+              setMobileNavOpen(false);
+              setTimeout(() => { if (window.__openSearchModal) window.__openSearchModal(); }, 200);
+            }}
+          >
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" style={{ marginRight: 10, verticalAlign: '-2px' }}>
+              <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="11" y1="11" x2="14.5" y2="14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            Search
+          </button>
           <Link to="/contact"   className="brief-drawer-cta"      onClick={() => setMobileNavOpen(false)}>Let&rsquo;s Talk</Link>
         </div>
       </aside>
@@ -395,6 +424,59 @@ const styles = `
     letter-spacing: 0.02em;
   }
   .brief-nav-link.cta:hover { background: ${GOLD_BRIGHT}; color: ${NAVY}; }
+
+  /* Search trigger — magnifying glass + ⌘K hint chip. Subtle in
+     the default nav row, brightens to copper on hover, opens the
+     global SearchModal via window.__openSearchModal. */
+  .brief-search-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid rgba(232, 147, 70, 0.25);
+    color: #f3f0e8;
+    padding: 8px 10px 8px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.78;
+    transition: color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+  }
+  .brief-search-btn:hover {
+    color: ${GOLD_BRIGHT};
+    border-color: ${GOLD_BRIGHT};
+    opacity: 1;
+  }
+  .brief-search-kbd {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: rgba(243, 240, 232, 0.6);
+    padding: 1px 5px;
+    border: 1px solid rgba(243, 240, 232, 0.18);
+    border-radius: 2px;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+  .brief-search-btn:hover .brief-search-kbd {
+    color: ${GOLD_BRIGHT};
+    border-color: rgba(232, 147, 70, 0.4);
+  }
+  /* Mobile drawer search trigger — matches .brief-drawer-section
+     baseline (font, border, padding) but renders as a button so it
+     can fire the SearchModal trigger instead of navigating. */
+  .brief-drawer-search {
+    background: transparent;
+    color: inherit;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    width: 100%;
+  }
+  @media (max-width: 900px) {
+    /* Mobile drawer surfaces its own search affordance — hide the
+       desktop button so the hamburger row stays clean. */
+    .brief-search-btn { display: none; }
+  }
 
   .brief-burger {
     display: none;

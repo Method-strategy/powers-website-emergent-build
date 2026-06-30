@@ -827,3 +827,28 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 - `/app/frontend/src/data/knowledgeBase.js` (glossary flipped to internal)
 
 **Knowledge Base status:** **COMPLETE.** All 5 destinations (Mastery Series, Downloadables, Manufacturing KPIs, FAQs, Glossary) now live in React with consistent KbPageShell chrome, legacy URLs preserved, and the Insights Hub fully SPA-internal.
+
+
+## 2026-02-13 (final pass) — Global Cmd-K omni-search
+
+**Implemented:**
+- **`/app/frontend/src/lib/searchCorpus.js`** — unified search index built once at module load from every KB data source. 269 searchable entries: 30 glossary terms + 11 FAQs + 42 insights + 15 mastery-series pillars + 145 mastery-series parts + 16 downloadables + 10 KPI categories. Each entry normalized into `{ id, group, groupOrder, label, subtitle, to|href, keywords, external }`. Scoring favors label-start matches (100) > label-word-boundary (60) > label-substring (40) > keyword-substring (20). Token-AND so multi-word queries require every token to hit somewhere.
+- **`/app/frontend/src/components/SearchModal.jsx`** — centered editorial modal mounted once at App level. Opens on **⌘K / Ctrl+K** (global), `/` (when not typing in an input), or via the new header search button. Esc closes; ↑/↓ navigate the result list; Enter opens the highlighted result (SPA `navigate()` for internal, `window.open` for external WP / PDF links). Body scroll-locked while open, backdrop blur, drop-fade-in animation, honors `prefers-reduced-motion`.
+- **Grouped results** with copper section eyebrows. Groups are sorted by the score of their top item so the most semantically-relevant section floats up (e.g. searching `cost` surfaces the Insights cost-reduction article first, then the FAQ "What does it cost?", then the glossary entries that incidentally mention cost). Items inside each group are score-ordered.
+- **Empty state** (no query yet) shows a 2-col list of all 6 sources with counts — gives the reader an at-a-glance sense of corpus size. Zero-results state offers a routed "contact page" escape.
+- **Result rows** show label + subtitle with `<mark>` highlights on every query token in both. External rows carry a small mono `WP` (WordPress) or `PDF` badge so it's clear which results will open in a new tab.
+- **Header search button** added to `BriefHeader.jsx` between Insights and Let's Talk — magnifying-glass icon + `⌘K` kbd chip, hidden ≤900px (mobile drawer carries its own "Search" row instead). Both triggers call `window.__openSearchModal` which `SearchModal` exposes on mount.
+
+**Files added/touched:**
+- `/app/frontend/src/lib/searchCorpus.js` (NEW)
+- `/app/frontend/src/components/SearchModal.jsx` (NEW)
+- `/app/frontend/src/App.js` (SearchModal mounted globally inside BrowserRouter)
+- `/app/frontend/src/components/BriefHeader.jsx` (desktop search button + mobile drawer search row + matching styles)
+
+**Verified:**
+- ⌘K opens modal from any route (homepage included, even though homepage uses its own inline header).
+- Header button opens modal on every interior page.
+- Esc closes; ↑/↓ moves highlight; Enter navigates.
+- Internal hash-deep-link routing works: `cost` → Enter → `/frequently-asked-questions-faqs#cost` opens the FAQ on the correct row. `oee` → Enter → glossary or insight rows resolve correctly.
+- External rows open in new tab with `noopener,noreferrer`.
+- Lint clean, zero console errors on every route.
