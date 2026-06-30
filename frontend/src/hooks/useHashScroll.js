@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * useHashScroll — when a page mounts (or `location.hash` changes
@@ -12,30 +12,39 @@ import { useEffect } from 'react';
  * Replaces three near-identical useEffects in FAQs.jsx,
  * Glossary.jsx, and KPIs.jsx — DRYs the hash deep-link mechanic
  * without changing any user-visible behavior.
+ *
+ * Implementation note: the consumer-supplied callbacks live in a
+ * ref so the `hashchange` listener can be attached exactly once,
+ * yet always read the latest closure. This sidesteps the
+ * exhaustive-deps lint complaint without an eslint-disable and
+ * without re-binding the listener on every render.
  */
 export function useHashScroll({
   resolveId = (hash) => hash,
   topOffset = 130,
   onMatch,
 } = {}) {
+  const optsRef = useRef({ resolveId, topOffset, onMatch });
+  // Keep the ref current. Cheap; runs after every render.
+  optsRef.current = { resolveId, topOffset, onMatch };
+
   useEffect(() => {
     const applyHash = () => {
       const hash = (window.location.hash || '').replace(/^#/, '');
       if (!hash) return;
-      const id = resolveId(hash);
+      const { resolveId: rid, topOffset: top, onMatch: cb } = optsRef.current;
+      const id = rid(hash);
       if (!id) return;
       const el = document.getElementById(id);
       if (!el) return;
       requestAnimationFrame(() => {
-        const top = el.getBoundingClientRect().top + window.scrollY - topOffset;
-        window.scrollTo({ top, behavior: 'smooth' });
-        if (onMatch) onMatch(hash);
+        const y = el.getBoundingClientRect().top + window.scrollY - top;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        if (cb) cb(hash);
       });
     };
     applyHash();
     window.addEventListener('hashchange', applyHash);
     return () => window.removeEventListener('hashchange', applyHash);
-    // Empty deps intentional — listener installed once for the
-    // lifetime of the consumer.
   }, []);
 }
