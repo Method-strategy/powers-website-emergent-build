@@ -131,8 +131,13 @@ downloadables.forEach((d) => {
   });
 });
 
-// 6. KPI categories (in-page anchor jump)
+// 6. KPI categories (in-page anchor jump). Keywords include every
+// KPI's name, definition, and formula so a search for "earnings"
+// or "downtime cost" etc finds the right category jump-target.
 kpiCategories.forEach((c) => {
+  const body = c.kpis
+    .map((k) => `${k.name} ${k.def || ''} ${k.formula || ''}`)
+    .join(' ');
   corpus.push({
     id: `kpi:${c.slug}`,
     group: 'Manufacturing KPIs',
@@ -140,7 +145,7 @@ kpiCategories.forEach((c) => {
     label: c.title,
     subtitle: snippet(c.intro, 130),
     to: `/manufacturing-metrics#kpi-${c.slug}`,
-    keywords: `${c.title} ${c.intro} ${c.kpis.map((k) => k.name).join(' ')}`.toLowerCase(),
+    keywords: `${c.title} ${c.intro} ${body}`.toLowerCase(),
   });
 });
 

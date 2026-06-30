@@ -104,6 +104,26 @@ function StickyNav() {
 }
 
 export default function KPIs() {
+  // Hash-on-mount: when the page is opened via Cmd-K or any
+  // external deep-link like /manufacturing-metrics#kpi-cost-profitability,
+  // scroll the matching section just below the 112px fixed header.
+  // Defers one frame so the section DOM is in place first.
+  useEffect(() => {
+    const applyHash = () => {
+      const hash = (window.location.hash || '').replace(/^#/, '');
+      if (!hash) return;
+      const el = document.getElementById(hash);
+      if (!el) return;
+      requestAnimationFrame(() => {
+        const top = el.getBoundingClientRect().top + window.scrollY - 130;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, []);
+
   return (
     <KbPageShell
       eyebrow="Knowledge Base · Manufacturing KPIs"
