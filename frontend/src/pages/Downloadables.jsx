@@ -56,7 +56,7 @@ export default function Downloadables() {
     <KbPageShell
       eyebrow="Knowledge Base · Downloadables"
       titleTop="Field-ready tools."
-      titlePivot="Built for the floor."
+      titlePivot="Built for operations leaders."
       lede={
         <>
           One-page checklists, audits, and frameworks you can put to work on the

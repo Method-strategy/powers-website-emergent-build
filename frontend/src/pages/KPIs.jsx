@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import KbPageShell from '../components/KbPageShell';
 import {
-  useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
+  useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
 import { kpiCategories } from '../data/kpis';
 
@@ -121,7 +121,7 @@ export default function KPIs() {
       seoDescription="A categorized reference library of manufacturing KPIs — definitions and formulas for efficiency, cost, quality, maintenance, lean, and more."
       path="/manufacturing-metrics"
     >
-      <div className="kpi-shell" style={{ background: PAPER_DEEP }}>
+      <div className="kpi-shell">
         <div className="kpi-shell-inner">
           <aside className="kpi-rail">
             <StickyNav />
@@ -150,12 +150,16 @@ export default function KPIs() {
           }
         }
 
-        .kpi-rail { padding-top: clamp(56px, 8vh, 96px); }
-        @media (max-width: 1023px) { .kpi-rail { display: none; } }
-        .kpi-nav {
+        .kpi-rail {
+          padding-top: clamp(56px, 8vh, 96px);
           position: sticky;
           top: 140px;
+          align-self: start;
+          max-height: calc(100vh - 140px);
+          overflow-y: auto;
         }
+        @media (max-width: 1023px) { .kpi-rail { display: none; } }
+        .kpi-nav {}
         .kpi-nav-eyebrow {
           font-family: ${TYPE.mono};
           font-size: 10.5px;
