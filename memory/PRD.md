@@ -731,3 +731,38 @@ User direction: the legacy Company News page at thepowerscompany.com/news needs 
 
 **At launch — swap to WordPress data layer:**
 Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-build fetch) that hits the WP REST `/wp/v2/posts` endpoint, returning objects with the same field shape. Featured-grid + filter + card grid + Load More all work unchanged.
+
+
+## 2026-02-13 — Knowledge Base landing pages ported to React (Mastery Series + Downloadables + KPIs)
+
+**Implemented:**
+
+- **`KbPageShell.jsx`** wired up as the shared chrome for the 3 KB landing pages: BriefHeader (interior) → editorial hero (eyebrow + H1 with gold-accent pivot + gold rule + lede) → page body via `children` → BriefFooter. `useInViewClass` triggers the hero's `.wipe` choreography. SEO meta tags injected via shared `<SEO />`.
+
+- **`/manufacturing-mastery-series` (`MasterySeries.jsx`)** — 15 multi-part series rendered as stacked editorial rows. Each row: mono publication-date eyebrow + sans series title + descriptive intro + 2-col split (pillar card with image + 'Read the pillar' CTA on the left, numbered parts list 01–10 on the right). At ≥1200px the parts list flows into a 2-column inner grid for compact stacking. All 15 pillar + 145 part anchors point to legacy `https://www.thepowerscompany.com/resources/...` URLs with `target="_blank"` + `rel="noopener noreferrer"` — link authority preserved per the launch architecture.
+
+- **`/downloadables` (`Downloadables.jsx`)** — responsive grid of 16 PDF cards. Each card carries a `PDF · DOWNLOAD` mono eyebrow + numbered index (01–16), 19px title, description, and a 'DOWNLOAD' CTA with download-arrow SVG. Cards link to legacy WP CDN PDFs (`/wp-content/uploads/...`) with `target=_blank + rel=noopener noreferrer`. Section-level `useInViewClass` triggers `.wipe` reveals on all 16 cards with `wipe-d1…d4` staggered delays.
+
+- **`/manufacturing-metrics` (`KPIs.jsx`)** — 10 KPI category sections with a sticky left-rail scroll-spy nav. Body rows render as 3-column grids (`name | def | formula`), with the formula column set in `JetBrains Mono` per the brief spec. Rail uses an IntersectionObserver (`rootMargin: -40% 0 -45% 0`) to highlight the active category and exposes smooth `window.scrollTo` jumps on click. At ≤1023px the rail collapses and rows stack to single-column.
+
+- **Routes wired in `App.js`** under the `<HomeLayout>` group (these pages supply their own BriefHeader + BriefFooter via `KbPageShell`).
+
+**Verification (testing agent iteration_19): 100% pass / 5 of 5 review criteria.**
+- 15 Mastery Series rows, 15 pillar links, 145 part links — every anchor opens in a new tab to the canonical legacy URL. Bad links: 0.
+- 16 Downloadables cards, all linking to legacy WP CDN PDFs. Wipe clip-path resolves to visible state after IntersectionObserver fires.
+- 10 KPI rail items + 10 sections + 3-col rows with monospace formula column. Smooth-scroll + is-active state update verified.
+- Shared BriefHeader/BriefFooter present on all 3 pages. Insights nav link navigates SPA-side. 0 console errors.
+- /insights → 3 KB destination cards correctly wired to the new internal SPA routes (`/manufacturing-mastery-series`, `/downloadables`, `/manufacturing-metrics`). FAQs + Glossary remain external (target=_blank).
+
+**Files added:**
+- `/app/frontend/src/pages/MasterySeries.jsx`
+- `/app/frontend/src/pages/Downloadables.jsx`
+- `/app/frontend/src/pages/KPIs.jsx`
+
+**Files touched:**
+- `/app/frontend/src/App.js` (3 new routes + 3 imports)
+
+**Still open (P1):**
+- FAQs + Glossary KB pages — blocked on user-supplied rewritten copy.
+- KPI rail active-section can drift one item ahead on very tall viewports (>2000px) right after a click before the IO settles — noted by testing agent, functional today; clamp-active-on-click debounce can land later if user reports it as visible.
+
