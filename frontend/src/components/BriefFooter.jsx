@@ -24,16 +24,21 @@ export default function BriefFooter() {
           padding: 72px 48px 64px;
           display: grid;
           gap: 56px 32px;
-          grid-template-columns: minmax(340px, 1.7fr) repeat(3, minmax(140px, 1fr));
+          grid-template-columns: minmax(300px, 1.6fr) repeat(4, minmax(140px, 1fr));
           box-sizing: border-box;
         }
-        @media (max-width: 980px) {
+        @media (max-width: 1099px) {
           .brief-footer-grid {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            grid-template-columns: minmax(280px, 1.4fr) repeat(2, minmax(140px, 1fr));
             gap: 48px 32px;
           }
         }
-        @media (max-width: 560px) {
+        @media (max-width: 720px) {
+          .brief-footer-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          }
+        }
+        @media (max-width: 480px) {
           .brief-footer-grid { grid-template-columns: 1fr; }
         }
         .brief-foot-link {
@@ -87,15 +92,30 @@ export default function BriefFooter() {
           <div className="brief-foot-head">Results</div>
           <Link className="brief-foot-link" to="/approach">Approach</Link>
           <Link className="brief-foot-link" to="/discovery-process">Discovery Process</Link>
-          <Link className="brief-foot-link" to="/operational-readiness">What We Build</Link>
           <Link className="brief-foot-link" to="/industries-served">Industries Served</Link>
           <Link className="brief-foot-link" to="/case-studies">Case Studies</Link>
+        </div>
+
+        {/* "What We Build" mirrors the main-nav dropdown: the parent
+            label is a category (not a route), the children are the 5
+            discipline pages. Keeping the parent as a non-link <div>
+            here is intentional — it's honest about the structure and
+            avoids the 404 the old /operational-readiness link
+            was producing. */}
+        <div>
+          <div className="brief-foot-head" aria-hidden="false">What We Build</div>
+          <Link className="brief-foot-link" to="/operational-discipline">Operational Discipline</Link>
+          <Link className="brief-foot-link" to="/frontline-leadership">Frontline Leadership</Link>
+          <Link className="brief-foot-link" to="/equipment-reliability">Equipment Reliability</Link>
+          <Link className="brief-foot-link" to="/workforce-capability">Workforce Capability</Link>
+          <Link className="brief-foot-link" to="/daily-accountability">Daily Accountability</Link>
         </div>
 
         <div>
           <div className="brief-foot-head">About</div>
           <Link className="brief-foot-link" to="/history">History</Link>
           <Link className="brief-foot-link" to="/leadership">Leadership</Link>
+          <Link className="brief-foot-link" to="/insights">Insights</Link>
           <Link className="brief-foot-link" to="/company-news">Company News</Link>
           <Link className="brief-foot-link" to="/careers">Careers</Link>
         </div>
