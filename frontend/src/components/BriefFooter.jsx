@@ -1,24 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GOLD_BRIGHT, TYPE } from '../lib/briefTokens';
 
 /**
- * BriefFooter — reusable footer for every page using the "Operating
- * Brief" design language.
+ * BriefFooter — single shared site footer.
  *
- * Lifted verbatim from HomeV5's SiteFooter so the visual treatment
- * (navy strip, 4-column grid: brand / Results / About / Let's Talk,
- * gold legal-bar rule, italic tagline) stays consistent across the
- * homepage and every interior page that adopts the brief.
+ * Used by every page (Home, brief-language pages, layout-group pages).
+ * Single source of truth for the navy footer band, link columns, and
+ * legal bar.
  *
- * In-app routes use React Router <Link>; tel/mailto/external stay
- * as <a>.
+ * "What We Build" sits inside the Results column as a non-link
+ * category header (mirrors the main-nav dropdown). On click it
+ * expands an inline accordion of the five discipline pages —
+ * no extra footer column, no extra depth.
  */
 export default function BriefFooter() {
+  const [buildOpen, setBuildOpen] = useState(false);
+
   return (
     <footer className="brief-footer" style={{ background: '#0f2a47', fontFamily: TYPE.sans, borderTop: '1px solid #e89346' }}>
       <style>{`
-        /* Defensive resets — BriefFooter is now used inside Home.jsx,
+        /* Defensive resets — BriefFooter is used inside Home.jsx,
            which has page-scoped CSS that uppercases + center-aligns
            anchors / paragraphs across its hero/beat sections. Lock the
            footer's typographic treatment so no host page can bleed
@@ -39,23 +41,19 @@ export default function BriefFooter() {
           padding: 72px 48px 64px;
           display: grid;
           gap: 56px 32px;
-          grid-template-columns: minmax(300px, 1.6fr) repeat(4, minmax(140px, 1fr));
+          grid-template-columns: minmax(340px, 1.7fr) repeat(3, minmax(140px, 1fr));
           box-sizing: border-box;
         }
-        @media (max-width: 1099px) {
+        @media (max-width: 980px) {
           .brief-footer-grid {
-            grid-template-columns: minmax(280px, 1.4fr) repeat(2, minmax(140px, 1fr));
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 48px 32px;
           }
         }
-        @media (max-width: 720px) {
-          .brief-footer-grid {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-          }
-        }
-        @media (max-width: 480px) {
+        @media (max-width: 560px) {
           .brief-footer-grid { grid-template-columns: 1fr; }
         }
+
         .brief-foot-link {
           font-family: ${TYPE.sans};
           font-size: 13px;
@@ -75,6 +73,81 @@ export default function BriefFooter() {
           letter-spacing: 0.04em;
           text-transform: uppercase;
           margin-bottom: 14px;
+        }
+
+        /* ── Accordion toggle for "What We Build" ──────────────
+           Styled to read as a sibling to the regular footer links
+           (same font, color, padding). The only ornament is a
+           small chevron that rotates 180° on open. */
+        .brief-foot-accordion-btn {
+          font-family: ${TYPE.sans};
+          font-size: 13px;
+          font-weight: 300;
+          color: rgba(255,255,255,0.70);
+          background: transparent;
+          border: 0;
+          padding: 4px 0;
+          margin: 0;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          cursor: pointer;
+          transition: color 140ms ease;
+        }
+        .brief-foot-accordion-btn:hover { color: ${GOLD_BRIGHT}; }
+        .brief-foot-accordion-btn:focus-visible {
+          outline: 2px solid ${GOLD_BRIGHT};
+          outline-offset: 2px;
+        }
+        .brief-foot-accordion-chev {
+          display: inline-block;
+          font-size: 10px;
+          line-height: 1;
+          opacity: 0.85;
+          transition: transform 220ms cubic-bezier(.2,.6,.2,1);
+        }
+        .brief-foot-accordion-btn[aria-expanded="true"] .brief-foot-accordion-chev {
+          transform: rotate(180deg);
+        }
+        /* Expanding panel — uses grid-template-rows trick so the
+           open/close transition is smooth without measuring heights. */
+        .brief-foot-accordion-panel {
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: grid-template-rows 260ms cubic-bezier(.2,.6,.2,1);
+        }
+        .brief-foot-accordion-panel.is-open { grid-template-rows: 1fr; }
+        .brief-foot-accordion-inner {
+          overflow: hidden;
+          min-height: 0;
+        }
+        .brief-foot-accordion-link {
+          font-family: ${TYPE.sans};
+          font-size: 12.5px;
+          font-weight: 300;
+          color: rgba(255,255,255,0.58);
+          text-decoration: none;
+          padding: 4px 0 4px 14px;
+          display: block;
+          position: relative;
+          transition: color 140ms ease;
+        }
+        .brief-foot-accordion-link::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0.95em;
+          width: 6px;
+          height: 1px;
+          background: ${GOLD_BRIGHT};
+          opacity: 0.55;
+        }
+        .brief-foot-accordion-link:hover { color: ${GOLD_BRIGHT}; }
+        @media (prefers-reduced-motion: reduce) {
+          .brief-foot-accordion-panel,
+          .brief-foot-accordion-chev { transition: none !important; }
         }
       `}</style>
 
@@ -107,23 +180,38 @@ export default function BriefFooter() {
           <div className="brief-foot-head">Results</div>
           <Link className="brief-foot-link" to="/approach">Approach</Link>
           <Link className="brief-foot-link" to="/discovery-process">Discovery Process</Link>
+
+          {/* "What We Build" — accordion toggle. Parent label is not
+              a link (no /operational-readiness route exists); clicking
+              it expands the 5 discipline destinations inline. Mirrors
+              the main-nav dropdown without adding a fifth column. */}
+          <button
+            type="button"
+            className="brief-foot-accordion-btn"
+            aria-expanded={buildOpen}
+            aria-controls="brief-foot-build-panel"
+            onClick={() => setBuildOpen(o => !o)}
+            data-testid="brief-foot-build-toggle"
+          >
+            <span>What We Build</span>
+            <span className="brief-foot-accordion-chev" aria-hidden="true">&#9662;</span>
+          </button>
+          <div
+            id="brief-foot-build-panel"
+            className={`brief-foot-accordion-panel ${buildOpen ? 'is-open' : ''}`}
+            data-testid="brief-foot-build-panel"
+          >
+            <div className="brief-foot-accordion-inner">
+              <Link className="brief-foot-accordion-link" to="/operational-discipline">Operational Discipline</Link>
+              <Link className="brief-foot-accordion-link" to="/frontline-leadership">Frontline Leadership</Link>
+              <Link className="brief-foot-accordion-link" to="/equipment-reliability">Equipment Reliability</Link>
+              <Link className="brief-foot-accordion-link" to="/workforce-capability">Workforce Capability</Link>
+              <Link className="brief-foot-accordion-link" to="/daily-accountability">Daily Accountability</Link>
+            </div>
+          </div>
+
           <Link className="brief-foot-link" to="/industries-served">Industries Served</Link>
           <Link className="brief-foot-link" to="/case-studies">Case Studies</Link>
-        </div>
-
-        {/* "What We Build" mirrors the main-nav dropdown: the parent
-            label is a category (not a route), the children are the 5
-            discipline pages. Keeping the parent as a non-link <div>
-            here is intentional — it's honest about the structure and
-            avoids the 404 the old /operational-readiness link
-            was producing. */}
-        <div>
-          <div className="brief-foot-head" aria-hidden="false">What We Build</div>
-          <Link className="brief-foot-link" to="/operational-discipline">Operational Discipline</Link>
-          <Link className="brief-foot-link" to="/frontline-leadership">Frontline Leadership</Link>
-          <Link className="brief-foot-link" to="/equipment-reliability">Equipment Reliability</Link>
-          <Link className="brief-foot-link" to="/workforce-capability">Workforce Capability</Link>
-          <Link className="brief-foot-link" to="/daily-accountability">Daily Accountability</Link>
         </div>
 
         <div>
