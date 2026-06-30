@@ -803,3 +803,27 @@ Replace `/app/frontend/src/data/companyNews.js` with a `useQuery` (or static-bui
 **Files touched:**
 - `/app/frontend/src/pages/FAQs.jsx` (slugs + hash-on-mount + hashchange listener + replaceState on toggle + per-question copy button + checkmark feedback)
 
+
+
+## 2026-02-13 (later still) — Glossary page ported + FAQPage JSON-LD
+
+**Implemented:**
+- **`/glossary` (`Glossary.jsx`)** — 30 terms (11 POWERS Core, 19 Industry Standard) sourced verbatim from `POWERS_Glossary_Page_Full_Draft.docx`. Layout: hero (KbPageShell) → sticky search bar (`top: 120px`, sticks just under the 112px fixed header) → 2 section blocks with mono eyebrows + section intros → 30 term rows (2-col `name | definition` at ≥880px, stacked on mobile). Closer band ("Need a definition we haven't covered?") → gold "Start a conversation" CTA → /contact.
+- **Search**: client-side substring match on term name + definition, case-insensitive. `<mark>` highlights every match in both columns with a soft-gold tint. Live count meta updates ("Showing N of 30 terms" / "No terms match"). Clear button (×) inside the input. Empty state shows the original 2-section layout.
+- **Deep-linking**: every term has a kebab-case slug (`#oee`, `#tpm`, `#dps`, `#operational-discipline`, …). On mount + `hashchange`, the page scrolls the matching `#term-<slug>` row to ~130px below the header and applies a brief gold-tinted flash (`is-flash`, 2.2s) so the eye lands on the right row.
+- **Copy-link affordance** on every term: subtle icon that fades in on row hover (always visible on mobile). Click writes `${origin}${pathname}#${slug}` via async clipboard with `execCommand` fallback, mirrors the slug into `history.replaceState`, and swaps the icon to a gold checkmark for 1.8s.
+- **JSON-LD `DefinedTermSet`** injected — feeds Google a structured map of all 30 terms with their canonical URLs (`/glossary#<slug>`). Free SERP surface for ops leaders searching "OEE definition", "TPM manufacturing", etc.
+- **`knowledgeBase.js`** glossary entry flipped from `internal: false` to `internal: true` with `path: '/glossary'`. All 5 Insights Hub destination cards are now fully SPA-internal. Legacy `/glossary/` slug preserved per path-proxy architecture.
+- **`App.js`** — new `/glossary` route wired under `<HomeLayout>`.
+
+**FAQs JSON-LD `FAQPage`:**
+- Injected at the top of the FAQs page body (inside KbPageShell children). Maps all 11 Q→A pairs into the schema.org `FAQPage` / `Question` / `Answer` shape. Verified via DOM scrape: `type: 'FAQPage', mainEntity.length: 11, first_q matches`. Google may surface this as a rich result (collapsible Q&A in SERP) for high-intent operational consulting queries.
+
+**Files added/touched:**
+- `/app/frontend/src/data/glossary.js` (new — 2 sections × 30 terms)
+- `/app/frontend/src/pages/Glossary.jsx` (new — search + deep-link + copy + JSON-LD)
+- `/app/frontend/src/pages/FAQs.jsx` (FAQPage JSON-LD injection)
+- `/app/frontend/src/App.js` (route added)
+- `/app/frontend/src/data/knowledgeBase.js` (glossary flipped to internal)
+
+**Knowledge Base status:** **COMPLETE.** All 5 destinations (Mastery Series, Downloadables, Manufacturing KPIs, FAQs, Glossary) now live in React with consistent KbPageShell chrome, legacy URLs preserved, and the Insights Hub fully SPA-internal.

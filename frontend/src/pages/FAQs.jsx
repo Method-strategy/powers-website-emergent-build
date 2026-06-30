@@ -265,6 +265,25 @@ export default function FAQs() {
       seoDescription="Direct answers to the questions operations leaders ask before engaging POWERS — how we work, what we cost, how long it takes, and how we're different."
       path="/frequently-asked-questions-faqs"
     >
+      {/* JSON-LD FAQPage schema — gives Google a structured map of
+          every Q&A so the page can be surfaced as a rich result in
+          SERP. Same dataset, no design impact. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQS.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: f.a.replace(/\n\n/g, ' '),
+            },
+          })),
+        }) }}
+      />
+
       <section className="brief-doc-station faq-section" style={{ background: PAPER }}>
         <div className="brief-doc-inner">
           <ol className="faq-list">

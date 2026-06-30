@@ -24,6 +24,7 @@ import MasterySeries from './pages/MasterySeries';
 import Downloadables from './pages/Downloadables';
 import KPIs from './pages/KPIs';
 import FAQs from './pages/FAQs';
+import Glossary from './pages/Glossary';
 import Contact from './pages/Contact';
 import LeaderBio from './components/LeaderBio';
 import CaseStudyDefenseAerospaceOTD from './pages/CaseStudyDefenseAerospaceOTD';import NotFound from './pages/NotFound';
@@ -66,6 +67,7 @@ function App() {
           <Route path="/downloadables" element={<Downloadables />} />
           <Route path="/manufacturing-metrics" element={<KPIs />} />
           <Route path="/frequently-asked-questions-faqs" element={<FAQs />} />
+          <Route path="/glossary" element={<Glossary />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
 
