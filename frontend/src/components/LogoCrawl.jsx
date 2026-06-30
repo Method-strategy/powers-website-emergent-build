@@ -39,7 +39,7 @@
 
 import React from 'react';
 import { CLIENT_LOGOS, logoSrc } from '../data/clientLogos';
-import { PAPER, GOLD_BRIGHT, TYPE } from '../lib/briefTokens';
+import { GOLD_BRIGHT, TYPE } from '../lib/briefTokens';
 
 export default function LogoCrawl({
   eyebrow = 'Trusted By',
@@ -69,6 +69,30 @@ export default function LogoCrawl({
           overflow: hidden;
           padding: 4px 0;
           min-width: 0;
+          /* Edge soft-fade via mask (not a colored overlay).
+             Earlier draft layered two PAPER-colored gradient divs
+             on top of the marquee — that approach assumes the
+             surface behind the crawl is exactly PAPER (#fbfaf6).
+             Worked on the homepage (where Beat VI sits on solid
+             cream). Broke on the Case Studies hero, which renders
+             a ghosted shop-floor photograph + cream wash beneath
+             the hero — the PAPER overlay no longer matched the
+             composited surface, so the fade boxes were visible as
+             two pale rectangles flanking the marquee. Mask-image
+             fades the LOGOS to alpha 0 at each edge instead, so
+             whatever's behind the crawl shows through cleanly with
+             no color matching required. Works on any host surface,
+             including the photo. */
+          -webkit-mask-image: linear-gradient(to right,
+            transparent 0,
+            #000 80px,
+            #000 calc(100% - 80px),
+            transparent 100%);
+                  mask-image: linear-gradient(to right,
+            transparent 0,
+            #000 80px,
+            #000 calc(100% - 80px),
+            transparent 100%);
         }
         .industries-logos-row .logo-crawl-track {
           display: flex;
@@ -114,22 +138,6 @@ export default function LogoCrawl({
           opacity: 1;
           transform: translateY(-1px);
         }
-        .industries-logos-row .logo-crawl-fade {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 80px;
-          z-index: 2;
-          pointer-events: none;
-        }
-        .industries-logos-row .logo-crawl-fade-l {
-          left: 0;
-          background: linear-gradient(to right, ${PAPER} 0%, rgba(251,250,246,0) 100%);
-        }
-        .industries-logos-row .logo-crawl-fade-r {
-          right: 0;
-          background: linear-gradient(to left, ${PAPER} 0%, rgba(251,250,246,0) 100%);
-        }
         @media (prefers-reduced-motion: reduce) {
           .industries-logos-row .logo-crawl-row { animation: none; }
         }
@@ -138,8 +146,6 @@ export default function LogoCrawl({
         <div className="industries-logos-label">{eyebrow}</div>
       ) : null}
       <div className="logo-crawl" data-testid="logo-crawl">
-        <div className="logo-crawl-fade logo-crawl-fade-l" aria-hidden="true" />
-        <div className="logo-crawl-fade logo-crawl-fade-r" aria-hidden="true" />
         <div className="logo-crawl-track">
           <div className="logo-crawl-row">
             {CLIENT_LOGOS.map((l, i) => (
