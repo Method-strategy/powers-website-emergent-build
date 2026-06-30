@@ -830,6 +830,11 @@ export default function Insights() {
           background: ${PAPER_DEEP};
           border-top: 1px solid rgba(13, 36, 66, 0.08);
           border-bottom: 1px solid rgba(13, 36, 66, 0.08);
+          /* Offset for the fixed BriefHeader (~112px) so the
+             "Browse the full insights archive ↓" jump lands with
+             the SEARCH THE INSIGHTS eyebrow fully visible, not
+             hidden under the header. */
+          scroll-margin-top: 120px;
         }
         .ih-search-label {
           display: block;
