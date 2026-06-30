@@ -104,6 +104,14 @@ export default function Glossary() {
 
   const { sections, total, filtered } = useFiltered(query);
 
+  // Total term count across all sections — kept dynamic so adding
+  // or removing terms in /data/glossary.js doesn't require touching
+  // the page chrome copy.
+  const corpusSize = useMemo(
+    () => glossarySections.reduce((n, s) => n + s.terms.length, 0),
+    []
+  );
+
   // Honor incoming #slug hash on mount + on hashchange. We scroll
   // the matching term into view and apply a brief gold flash so the
   // reader's eye lands on it immediately.
@@ -199,7 +207,7 @@ export default function Glossary() {
               </svg>
               <input
                 type="search"
-                placeholder="Search 30 terms by name or definition"
+                placeholder={`Search ${corpusSize} terms by name or definition`}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Search the glossary"
@@ -225,11 +233,11 @@ export default function Glossary() {
                   </span>
                 ) : (
                   <span>
-                    Showing <strong>{total}</strong> of 30 terms.
+                    Showing <strong>{total}</strong> of {corpusSize} terms.
                   </span>
                 )
               ) : (
-                <span>30 terms across two sections.</span>
+                <span>{corpusSize} terms across two sections.</span>
               )}
             </div>
           </div>
