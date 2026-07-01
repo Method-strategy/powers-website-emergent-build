@@ -1759,7 +1759,18 @@ function Home() {
       {/* ── Beat VI — Industries ────────────────────────────────── */}
       <IndustriesBeat />
 
-      {/* ── Beat VII — Results (case study entry point) ─────────────
+      {/* ── Beat VII — In Our Client's Words (Behlen testimonial) ────
+         Editorial voice-of-customer beat that sits between the
+         industries logo crawl (breadth) and the featured case
+         studies (outcome). Fills the "human proof" register —
+         readers get partnership language + hard operational
+         numbers in typography before the numeric card grid below.
+         Pull-quote-forward with a facade-pattern YouTube embed
+         on the right, so the reader gets the punch without a
+         6:45 video commitment.  See TestimonialBeat below. */}
+      <TestimonialBeat />
+
+      {/* ── Beat VIII — Results (case study entry point) ─────────────
          Showcases three featured case studies using the canonical
          <CaseStudyCard /> component — same design + field schema
          already approved on the /case-studies page (and the same
@@ -1768,7 +1779,7 @@ function Home() {
          `featured: true` flag (or curated list) is wired in. */}
       <FeaturedCaseStudiesBeat />
 
-      {/* ── Beat VIII — Insights (blog entry point) ─────────────── */}
+      {/* ── Beat IX — Insights (blog entry point) ──────────────── */}
       <CardsBeat
         index="Field Notes"
         headline="Dig deeper into the"
@@ -2173,7 +2184,353 @@ function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration
   return <span>{prefix}{display}{suffix}</span>;
 }
 
-/* ── Beat VII: Featured Case Studies ─────────────────────────────
+/* ── Beat VII: In Our Client's Words (Behlen testimonial) ────────
+ * Editorial voice-of-customer beat. Pull-quote-forward with a
+ * facade-pattern YouTube embed on the right — because the video
+ * runs 6:45 and no homepage visitor will commit to that cold;
+ * the typography lets them get the punch in five seconds and
+ * invites the full watch if they want it.
+ *
+ * Layout:
+ *   ├─ eyebrow "IN OUR CLIENT'S WORDS"
+ *   ├─ H2 subhead (H2 with a gold pivot on "built to stay")
+ *   ├─ lede (2-3 sentences ending in a watch invitation)
+ *   └─ two-column grid: pull quotes left, video facade right
+ *      (stacks on mobile — quotes above video)
+ *
+ * Facade pattern: on first render, we show a static poster image
+ * (YouTube's maxresdefault thumb, sourceable via
+ * https://img.youtube.com/vi/{ID}/maxresdefault.jpg — free, no
+ * OEmbed request) with an "Operating Brief"-styled play button
+ * on top. Clicking the button swaps the poster + button out for
+ * the actual YouTube iframe with autoplay=1 so the video starts
+ * immediately without a second interaction. This has three wins
+ * over a bare <iframe>:
+ *   1. No YouTube JavaScript loads until the user clicks
+ *      (Lighthouse: significant PSI wins, ~500KB not shipped
+ *      on cold homepage load).
+ *   2. Design register: the "Operating Brief" print aesthetic
+ *      collides violently with YouTube's default player chrome
+ *      + thumbnail. The facade lets us mount our own play button
+ *      + caption + poster crop, so the beat reads as part of
+ *      the document until the user opts in.
+ *   3. Analytics-friendly: because the poster→iframe swap is a
+ *      user gesture, we can drop a page-view / play event on
+ *      the same handler if a marketing team ever wants that.
+ *
+ * Attribution: TITLES-ONLY placeholders sit under each quote.
+ * Real names will be swapped in post-client-review. Chose title-
+ * only so the beat reads finished during review rather than
+ * showing obvious "[NAME_TBD]" gaps to reviewers. */
+const BEHLEN_YT_ID = '--lWGIInBeU';
+const BEHLEN_POSTER = `https://img.youtube.com/vi/${BEHLEN_YT_ID}/maxresdefault.jpg`;
+function TestimonialBeat() {
+  const ref = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
+      { root: document.querySelector('.brief-page'), threshold: 0.30 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <section ref={ref} className="brief-station testimonial-beat" style={{ gridTemplateColumns: '1fr' }} data-testid="testimonial-beat">
+      <style>{testimonialBeatScopedCss}</style>
+      <span className="station-divider" aria-hidden="true" />
+      <span className="brief-tick" aria-hidden="true" />
+      <div style={{ marginBottom: 36 }}>
+        <div className="station-index wipe" style={{ marginBottom: 14 }} data-testid="testimonial-eyebrow">In Our Client&rsquo;s Words</div>
+        <h2 className="station-h2 wipe wipe-d1">
+          <span>Behlen Country. Twenty-six weeks.</span>
+          <span className="pivot">Execution capability, built to stay.</span>
+        </h2>
+      </div>
+      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 48, maxWidth: 760 }}>
+        Twenty-six weeks on the floor. Scheduling rebuilt. Downtime cut in fourths. Welders producing 50% more per hour. An execution capability that didn&rsquo;t exist before — running itself by the time we left. In their own voices, executive to welder, here&rsquo;s what that felt like from the inside.
+      </p>
+
+      <div className="wipe wipe-d3 testimonial-grid">
+        {/* LEFT: two pull quotes stacked, each with title-only attribution */}
+        <div className="testimonial-quotes" data-testid="testimonial-quotes">
+          <figure className="testimonial-quote">
+            <blockquote>
+              <p>
+                <span className="q-mark" aria-hidden="true">“</span>They were more than just consultants. They were <em>— and still are —</em> our friends.<span className="q-mark q-mark-close" aria-hidden="true">”</span>
+              </p>
+            </blockquote>
+            <figcaption>Plant Leadership, Behlen Country</figcaption>
+          </figure>
+
+          <hr className="testimonial-quote-rule" aria-hidden="true" />
+
+          <figure className="testimonial-quote">
+            <blockquote>
+              <p>
+                <span className="q-mark" aria-hidden="true">“</span>We went from 2,180 minutes of downtime a month to about 500. Welders went from four per hour to six.<span className="q-mark q-mark-close" aria-hidden="true">”</span>
+              </p>
+            </blockquote>
+            <figcaption>Production Supervisor, Mesh Line</figcaption>
+          </figure>
+        </div>
+
+        {/* RIGHT: facade → YouTube iframe swap */}
+        <div className="testimonial-video" data-testid="testimonial-video">
+          {!playing ? (
+            <button
+              type="button"
+              className="testimonial-facade"
+              onClick={() => setPlaying(true)}
+              aria-label="Play Behlen Country testimonial video, 6 minutes 45 seconds"
+              data-testid="testimonial-play-btn"
+            >
+              <img
+                src={BEHLEN_POSTER}
+                alt="Behlen Country testimonial — click to play"
+                className="testimonial-poster"
+                loading="lazy"
+              />
+              <span className="testimonial-poster-wash" aria-hidden="true" />
+              <span className="testimonial-play-mark" aria-hidden="true">
+                <svg viewBox="0 0 64 64" width="64" height="64">
+                  <circle cx="32" cy="32" r="31" fill="rgba(8, 22, 42, 0.72)" stroke="#e89346" strokeWidth="1.4" />
+                  <path d="M26 20 L46 32 L26 44 Z" fill="#fbfaf6" />
+                </svg>
+              </span>
+              <span className="testimonial-play-caption">
+                <span className="tpc-line">Watch · 6:45</span>
+                <span className="tpc-sub">Behlen Country — full testimonial</span>
+              </span>
+            </button>
+          ) : (
+            <div className="testimonial-iframe-wrap">
+              <iframe
+                src={`https://www.youtube.com/embed/${BEHLEN_YT_ID}?autoplay=1&rel=0&modestbranding=1&color=white`}
+                title="Behlen Country testimonial"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+                data-testid="testimonial-iframe"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Scoped styles for the testimonial beat. Kept alongside the
+ * component so styles + markup travel together — matches the
+ * pattern used by FeaturedCaseStudiesBeat below. */
+const testimonialBeatScopedCss = `
+  .testimonial-beat {
+    /* Section gets a slightly deeper cream tint to visually mark it
+       as a distinct beat between the pure-cream Industries row and
+       the featured-case-studies row. Very subtle — 2-3% depth. */
+    background: ${PAPER_DEEP};
+  }
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(48px, 6vw, 88px);
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .testimonial-grid {
+      grid-template-columns: 1fr;
+      gap: clamp(40px, 8vh, 64px);
+    }
+  }
+
+  /* ── Pull quotes ─────────────────────────────────────────── */
+  .testimonial-quotes {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .testimonial-quote {
+    margin: 0;
+  }
+  .testimonial-quote blockquote {
+    margin: 0;
+    padding: 0;
+  }
+  .testimonial-quote blockquote p {
+    font-family: ${TYPE.serif};
+    font-style: italic;
+    font-weight: 400;
+    /* Editorial pull-quote scale — big, but not headline-big. Sits
+       one step below the H2 so the reader-eye keeps hierarchy. */
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.28;
+    letter-spacing: -0.005em;
+    color: ${NAVY_DEEP};
+    text-wrap: pretty;
+    margin: 0;
+  }
+  .testimonial-quote blockquote em {
+    /* Interior em is a rhythmic aside — nudged to gold so the
+       reader sees the beat inside the sentence. */
+    color: ${GOLD_BRIGHT};
+    font-style: italic;
+  }
+  /* Print-tradition open/close quote marks in gold. The opening
+     mark hangs slightly outside the text column so the paragraph
+     itself stays flush-left with the rest of the composition —
+     that's the "hanging punctuation" convention from book design.  */
+  .testimonial-quote .q-mark {
+    font-family: ${TYPE.serif};
+    color: ${GOLD_BRIGHT};
+    font-style: normal;
+    font-weight: 500;
+    margin-right: 2px;
+    display: inline-block;
+    transform: translateY(2px);
+  }
+  .testimonial-quote .q-mark-close {
+    margin-right: 0;
+    margin-left: 2px;
+  }
+  .testimonial-quote figcaption {
+    font-family: ${TYPE.mono};
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: ${GOLD_BRIGHT};
+    margin-top: 18px;
+  }
+  /* Divider hairline between the two quotes — same visual grammar
+     as the brief-doc-rule elsewhere on the site. Kept short (60px)
+     so it reads as an editorial separator, not a section break. */
+  .testimonial-quote-rule {
+    border: 0;
+    border-top: 1px solid rgba(8, 22, 42, 0.16);
+    width: 60px;
+    margin: 4px 0;
+  }
+
+  /* ── Video facade ───────────────────────────────────────── */
+  .testimonial-video {
+    position: relative;
+    width: 100%;
+  }
+  .testimonial-facade {
+    /* Reset button defaults so this can be a genuine <button> for
+       accessibility (keyboard focus, screen-reader semantics) while
+       looking like an editorial figure. */
+    all: unset;
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    cursor: pointer;
+    overflow: hidden;
+    background: ${NAVY_DEEP};
+    /* Sharp rectangular frame — matches print-document register.
+       No rounded corners. */
+    border: 1px solid rgba(8, 22, 42, 0.32);
+    box-shadow: 0 12px 28px rgba(8, 22, 42, 0.12);
+    transition: transform 260ms cubic-bezier(.2,.7,.2,1),
+                box-shadow 260ms cubic-bezier(.2,.7,.2,1);
+  }
+  .testimonial-facade:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 42px rgba(8, 22, 42, 0.18);
+  }
+  .testimonial-facade:focus-visible {
+    outline: 2px solid ${GOLD_BRIGHT};
+    outline-offset: 4px;
+  }
+  .testimonial-poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Slight duotone treatment so the YouTube-thumbnail palette
+       cohabits with the site's warm navy/gold. Same recipe as the
+       homepage hero video — sepia + saturate + hue-rotate, but
+       lighter here so the speaker's face is still readable. */
+    filter: sepia(0.35) saturate(1.15) hue-rotate(-6deg) contrast(1.04) brightness(0.92);
+  }
+  .testimonial-poster-wash {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(8, 22, 42, 0.10) 0%,
+      rgba(8, 22, 42, 0.35) 60%,
+      rgba(8, 22, 42, 0.62) 100%
+    );
+    pointer-events: none;
+  }
+  .testimonial-play-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: transform 260ms cubic-bezier(.2,.7,.2,1);
+  }
+  .testimonial-facade:hover .testimonial-play-mark {
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+  .testimonial-play-caption {
+    position: absolute;
+    left: 24px;
+    bottom: 22px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    pointer-events: none;
+    text-align: left;
+  }
+  .testimonial-play-caption .tpc-line {
+    font-family: ${TYPE.mono};
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: ${GOLD_BRIGHT};
+  }
+  .testimonial-play-caption .tpc-sub {
+    font-family: ${TYPE.sans};
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(251, 250, 246, 0.82);
+    letter-spacing: 0.005em;
+  }
+
+  /* ── Iframe (post-click state) ───────────────────────────── */
+  .testimonial-iframe-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: ${NAVY_DEEP};
+    border: 1px solid rgba(8, 22, 42, 0.32);
+    box-shadow: 0 12px 28px rgba(8, 22, 42, 0.12);
+    overflow: hidden;
+  }
+  .testimonial-iframe-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+`;
+
+
+/* ── Beat VIII: Featured Case Studies ────────────────────────────
  * Renders three featured studies from the canonical caseStudies
  * dataset using the same <CaseStudyCard /> component that powers
  * the /case-studies library. The card design, field schema, and
