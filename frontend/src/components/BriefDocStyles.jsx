@@ -101,6 +101,42 @@ const briefDocCss = `
      stays identical across static and motion heros.
   */
   .brief-page-hero-bg {
+    /* Ghosted background photograph — DISABLED sitewide Feb 2026.
+     *
+     * Original intent: mirror the homepage's transparent-video
+     * pattern with a still shop-floor image on interior page
+     * heroes. At 16% opacity + sepia + multiply blend under a
+     * radial cream wash, the photo was supposed to read as an
+     * atmospheric warm tint on the cream paper — not a visible
+     * photograph.
+     *
+     * Reality (caught by the print-designer review, Feb 2026):
+     * Even at very low effective opacity, the photograph carries
+     * differential tonal weight across its frame (e.g. lighter
+     * top-left with sky/ambient light vs. darker right-of-center
+     * where the workers stand). That differential composites as
+     * a light→dark gradient bleeding out of the right edge of
+     * every hero on every interior page. Reviewer initially
+     * assumed it was an Emergent preview-embed watermark; it
+     * wasn't, it was our own photo layer. A stronger uniform
+     * cream wash (0.92 alpha) knocked the photo back to ~1.3%
+     * effective opacity but the differential still read as a
+     * ghost gradient to a trained eye.
+     *
+     * Fix: display: none. No photograph = no differential = no
+     * gradient. The cream PAPER surface + the ::after fractal
+     * noise grain on the wash still supply the tactile "paper
+     * stock" feel the photo was meant to warm. The <img> element
+     * itself is left in the JSX (harmless, and easy to re-enable
+     * per-page later by removing this rule on a specific hero).
+     *
+     * If you re-enable this on any single page, either:
+     *   (a) crop/edit the image so its tonal weight is uniform
+     *       side-to-side (an even wash of texture, not a scene
+     *       with subjects clustered on one side), or
+     *   (b) accept that the "gradient" is intentional atmosphere.
+     */
+    display: none !important;
     position: absolute;
     inset: 0;
     width: 100%;
@@ -138,14 +174,15 @@ const briefDocCss = `
     background: rgba(251, 250, 246, 0.92);
   }
   .brief-page-hero-wash::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.18;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    background-size: 240px 240px;
+    /* Fractal-noise grain overlay — DISABLED alongside the photo
+     * (Feb 2026, print-designer review). Was a subtle "newsprint
+     * grit" texture atop the ghosted photo; with the photo now
+     * hidden, the noise sits directly over the cream PAPER with
+     * mix-blend-mode: overlay, which could contribute imperceptible
+     * tonal shifts to a trained eye. Disabling to guarantee a
+     * mathematically uniform cream surface across every hero.
+     * Re-enable per-page if a specific hero wants extra grit. */
+    content: none;
   }
   @media (max-width: 720px) {
     /* Mobile: same uniform-cream treatment as desktop above; the
