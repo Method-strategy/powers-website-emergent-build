@@ -115,27 +115,27 @@ const briefDocCss = `
     user-select: none;
   }
   /* Cream wash sitting between the image and the hero content.
-     Knocks the photo back another stop on the left (where the
-     headline + lede sit) and lets it read more freely on the right.
-     Identical math to the homepage .brief-hero-wash so the two
-     surfaces feel like the same document. The ::after pseudo
-     stacked on top is an inline-SVG fractal-noise grain — gives
-     the hero that subtle "newsprint / silver halide" grit so the
-     ghosted photo feels candid and tactile instead of a flat
-     stock image. Data-URI = zero HTTP, scales infinitely, mix-blend
-     'overlay' lets the grain darken the photo and lighten the
-     paper in one pass without tinting either. */
+     Historical treatment (v1) was a radial gradient centered at
+     20% 50% that faded to 0% alpha at 100% — deliberately letting
+     the ghosted photograph read through on the right side of the
+     hero as "atmosphere." A print designer on the review side
+     called it correctly Feb 2026: what reads as intentional
+     atmosphere on a rich photograph reads as an unwanted gray/
+     black gradient bleeding out of the right edge on a cream
+     surface, especially at desktop widths where the darker photo
+     shadows sit exactly where the eye lands after finishing the
+     H1. Fixed by making the wash a UNIFORM near-opaque cream
+     across the entire hero — the photograph now contributes only
+     as a very faint underlying tone (opacity 0.16 × cream 0.92
+     over ≈ 1–2% visible), and the ::after noise overlay handles
+     the tactile paper-stock feel on its own. No visible gradient
+     anywhere on the surface. */
   .brief-page-hero-wash {
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background:
-      radial-gradient(1100px 700px at 20% 50%,
-        rgba(251, 250, 246, 0.86) 0%,
-        rgba(251, 250, 246, 0.55) 45%,
-        rgba(251, 250, 246, 0.26) 80%,
-        rgba(251, 250, 246, 0.00) 100%);
+    background: rgba(251, 250, 246, 0.92);
   }
   .brief-page-hero-wash::after {
     content: "";
@@ -148,15 +148,15 @@ const briefDocCss = `
     background-size: 240px 240px;
   }
   @media (max-width: 720px) {
-    /* On phones the radial recenters and gets a bit denser so the
-       portrait crop of the image doesn't overwhelm the text. */
+    /* Mobile: same uniform-cream treatment as desktop above; the
+       previous mobile-specific radial-with-falloff was solving a
+       problem (portrait-crop photo dominating text) that the
+       uniform wash already solves outright — the photo is now
+       ~99% suppressed everywhere, so no per-viewport variant is
+       needed. Kept the block as a hook in case a future page
+       wants a mobile-only override. */
     .brief-page-hero-wash {
-      background:
-        radial-gradient(900px 600px at 30% 40%,
-          rgba(251, 250, 246, 0.94) 0%,
-          rgba(251, 250, 246, 0.70) 50%,
-          rgba(251, 250, 246, 0.34) 85%,
-          rgba(251, 250, 246, 0.00) 100%);
+      background: rgba(251, 250, 246, 0.94);
     }
   }
 
