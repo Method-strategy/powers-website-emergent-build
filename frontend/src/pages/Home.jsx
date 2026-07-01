@@ -2250,7 +2250,7 @@ function TestimonialBeat() {
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" aria-hidden="true" />
       <div style={{ marginBottom: 36 }}>
-        <div className="station-index wipe" style={{ marginBottom: 14 }} data-testid="testimonial-eyebrow">In Our Client&rsquo;s Words</div>
+        <div className="station-index wipe" style={{ marginBottom: 14 }} data-testid="testimonial-eyebrow">In Our Clients&rsquo; Words</div>
         <h2 className="station-h2 wipe wipe-d1">
           <span>Behlen Country. Twenty-six weeks.</span>
           <span className="pivot">Execution capability, built to last.</span>
