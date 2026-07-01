@@ -155,7 +155,20 @@ body.pw-has-fixed-header { padding-top: 84px; }
    dedicated `.print-doc` still drives the 2-page PDF. */
 @media print {
   [data-testid="site-header"],
-  [data-testid="site-footer"] {
+  [data-testid="site-footer"],
+  /* Mobile hamburger drawer + backdrop — always position:fixed on
+     the right edge with a navy background. Chrome's print engine
+     can miss the closed-state transform and paint the drawer in-
+     flow, producing a vertical navy band down the right edge of
+     printed pages. Explicit display:none guarantees it stays out
+     of every printed document. */
+  .brief-drawer,
+  .brief-drawer-backdrop,
+  /* WCAG skip-to-main-content link — has no place in printed output. */
+  .brief-skip-link,
+  /* Emergent preview-embed badge suppression for print / PDF export
+     from any preview URL. Not present on production Netlify. */
+  #emergent-badge {
     display: none !important;
   }
   body.pw-has-fixed-header { padding-top: 0 !important; }

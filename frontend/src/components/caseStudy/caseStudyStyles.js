@@ -666,8 +666,34 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     .brief-header,
     .brief-footer,
     footer,
-    .brief-mobile-drawer,
-    .brief-mobile-drawer-scrim,
+    /* Mobile hamburger drawer + backdrop. Historical typo: this
+       block previously listed .brief-mobile-drawer / .brief-mobile-
+       drawer-scrim, which are class names that don't exist anywhere
+       in the codebase — the actual classes are .brief-drawer and
+       .brief-drawer-backdrop (see BriefHeader.jsx). Result: the
+       drawer element (position: fixed; right: 0; background: navy;
+       height: 100dvh) kept painting during print, producing a full-
+       height navy vertical band on the right edge of every printed
+       page with the drawer's gold hairline border showing as a slim
+       vertical rectangle inside it. It also cut off the print-doc
+       footer band from bleeding to the right edge. Fixed by using
+       the real class names below. */
+    .brief-drawer,
+    .brief-drawer-backdrop,
+    /* WCAG skip-to-main-content link. Normally hidden via
+       transform: translateY(-110%) off-screen at the top, but
+       Chrome's print engine can be inconsistent about honoring
+       transforms on position: fixed elements — the link was
+       painting somewhere on the printed page (user reported it
+       showing near the bottom-left of page 1). No skip-links
+       belong in printed collateral regardless. */
+    .brief-skip-link,
+    /* Emergent preview-embed badge — only present on the authoring/
+       preview URL (not on production Netlify), but shows up when
+       previewing / test-printing from the emergentagent.com host.
+       Suppress it in print so review PDFs read as clean brand
+       collateral. */
+    #emergent-badge,
     .cs-hero,
     .cs-hero-dense,
     .cs-actions,
