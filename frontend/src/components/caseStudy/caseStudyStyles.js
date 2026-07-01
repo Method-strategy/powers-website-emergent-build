@@ -638,18 +638,58 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
   /* ════════════════════════════════════════════
      PRINT LAYOUT — letter size, designed document
      ════════════════════════════════════════════ */
+  /* @page defines the printed sheet itself. Locked to explicit
+     8.5in x 11in dimensions (not the "letter" keyword) so every
+     browser resolves to the exact same physical size — Chrome,
+     Safari, Firefox, and Edge each interpret keyword sizes
+     slightly differently in edge cases, but a numeric width x
+     height is unambiguous.
+
+     margin: 0 = full-bleed. The design intent is that the navy
+     masthead + stat block + footer band all extend to the paper
+     edge. When end users physically print (rather than share the
+     PDF digitally), the browser print dialog offers a "Fit to
+     printable area" or "Shrink to fit" option — that's the
+     industry-standard workflow for full-bleed layouts on
+     consumer printers that can't actually print to the sheet
+     edge. We are optimizing for the digital PDF; physical print
+     is handled by the user's print settings.
+
+     :first / :left / :right variants explicitly duplicate the
+     rule so mixed-context printing (e.g. duplex, book-mode)
+     can't fall back to a browser default margin on secondary
+     page classes. */
   @page {
-    size: letter;
+    size: 8.5in 11in;
     margin: 0;
   }
+  @page :first { size: 8.5in 11in; margin: 0; }
+  @page :left  { size: 8.5in 11in; margin: 0; }
+  @page :right { size: 8.5in 11in; margin: 0; }
 
   @media print {
-    body {
+    /* Kill every possible source of browser-injected margin so the
+       .print-page's 8.5x11 dimensions land at the true sheet corners
+       across Chrome, Safari, Firefox, and Edge. Each browser has
+       slightly different defaults for html + body in print context;
+       this block normalizes all four. */
+    html, body {
       background: var(--white) !important;
       padding: 0 !important;
       margin: 0 !important;
+      width: 8.5in !important;
+      min-width: 0 !important;
+      max-width: none !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    /* The .print-doc wrapper stacks .print-page children — flatten
+       any margin/padding here too so pages hit the sheet cleanly. */
+    .print-doc {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: var(--white) !important;
     }
     /* Hide all screen chrome — both legacy (#site-header-root /
        #site-footer-root) and the current Brief* layout (.brief-header,
@@ -739,16 +779,50 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
   }
 
   .print-page {
+    /* Locked physical dimensions — 8.5in x 11in US Letter. Explicit
+       numeric width/height (not the CSS "letter" keyword) so every
+       print engine renders identically. */
     width: 8.5in;
     height: 11in;
+    /* min-* / max-* pinning prevents any parent flexbox/grid from
+       squeezing or expanding the page element during print layout
+       — a real gotcha on Safari where an ancestor with min-height
+       or flex-grow can bleed into the print-page's sizing. */
+    min-width: 8.5in;
+    max-width: 8.5in;
+    min-height: 11in;
+    max-height: 11in;
     padding: 0;          /* full-bleed page; sections control their own padding */
     box-sizing: border-box;
     background: var(--white);
     position: relative;
+    /* Force each .print-page onto its own physical sheet. break-*
+       is the modern CSS Fragmentation Level 3 property; page-break-*
+       is the legacy fallback still needed by Safari (which as of
+       2026 still ships without full break-* support). Both together
+       covers every current-gen browser. */
+    break-after: page;
     page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    /* Clip any accidental over-flow content so it can't push onto
+       an unwanted 3rd page. If the case-study copy ever grows past
+       the 11in box, overflow:hidden absorbs it and a designer sees
+       the truncation immediately on the printed proof — better
+       than a silent blank third page. */
     overflow: hidden;
+    /* Belt-and-suspenders color fidelity per Chrome + Safari + FF
+       (Firefox added print-color-adjust in v97). Backgrounds and
+       shadows print exactly as designed instead of being stripped
+       by the browser's default ink-saving pass. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
   }
-  .print-page:last-child { page-break-after: auto; }
+  .print-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
 
   /* Inner content area — every non-bleed section sits inside this padding */
   .pp-content {
