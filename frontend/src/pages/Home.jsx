@@ -2245,7 +2245,7 @@ function TestimonialBeat() {
         <div className="station-index wipe" style={{ marginBottom: 14 }} data-testid="testimonial-eyebrow">In Our Client&rsquo;s Words</div>
         <h2 className="station-h2 wipe wipe-d1">
           <span>Behlen Country. Twenty-six weeks.</span>
-          <span className="pivot">Execution capability, built to stay.</span>
+          <span className="pivot">Execution capability, built to last.</span>
         </h2>
       </div>
       <p className="station-lede wipe wipe-d2" style={{ marginBottom: 48, maxWidth: 760 }}>
