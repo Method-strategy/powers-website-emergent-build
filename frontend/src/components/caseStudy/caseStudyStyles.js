@@ -753,6 +753,27 @@ export const caseStudyStyles = `*, *::before, *::after { box-sizing: border-box;
     width: auto;
     display: block;
   }
+  /* Brand group on the left of the masthead — logo + running
+     tagline. Flex row so the tagline sits baseline-aligned
+     immediately to the right of the logo, matching the homepage
+     header treatment (Stronger Execution. Stronger Performance.).
+     14px gutter between the two marks. */
+  .pp-mast-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+  .pp-mast-tagline {
+    font-family: 'proxima-nova', 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: rgba(243, 240, 232, 0.68);
+    white-space: nowrap;
+  }
   .pp-mast-meta {
     display: flex;
     align-items: center;

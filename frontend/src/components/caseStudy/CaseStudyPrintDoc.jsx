@@ -48,8 +48,22 @@ export default function CaseStudyPrintDoc({ data }) {
       {/* ── PAGE 1 ── */}
       <div className="print-page">
         <div className="pp-mast">
-          <div className="pp-mast-logo">
-            <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" />
+          <div className="pp-mast-brand">
+            <div className="pp-mast-logo">
+              <img src="/uploads/powers-logo-refined-for-dark-backgrounds-2026.png" alt="POWERS" />
+            </div>
+            {/* Brand tagline — same voice as the homepage running
+                header ("Stronger Execution. Stronger Performance.").
+                Adding it to the download makes the PDF read as a
+                branded piece rather than an anonymous case doc —
+                every printed page carries the promise the site
+                delivers on. Italic sans in a warm cream at 68%
+                alpha reads clearly on the navy masthead without
+                competing with the gold "CASE STUDY | INDUSTRY"
+                mark on the right. */}
+            <span className="pp-mast-tagline">
+              Stronger Execution. Stronger Performance.
+            </span>
           </div>
           <div className="pp-mast-meta">
             <span className="pp-tag">Case Study</span>
