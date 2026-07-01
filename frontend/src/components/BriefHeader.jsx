@@ -523,14 +523,33 @@ const styles = `
     width: min(360px, 84vw); height: 100dvh;
     background: ${NAVY};
     border-left: 1px solid rgba(232,147,70, 0.22);
-    box-shadow: -16px 0 48px rgba(8, 22, 42, 0.55);
+    /* Shadow moved to the [data-open="true"] state below.
+     *
+     * The drawer is a fixed-position panel pinned to right:0 that
+     * hides via transform: translateX(100%) — i.e. it sits off-
+     * screen to the right when closed. box-shadow, however, is a
+     * paint effect that ignores transform-based positioning: the
+     * shadow bleeds back INTO the viewport from the (invisible)
+     * drawer's left edge regardless of the translate. On a 360px
+     * drawer with a -16px x-offset + 48px blur, ~32-48px of soft
+     * navy shadow sat pinned to the right edge of every page,
+     * running top-to-bottom (100dvh) at z-index 301 — visible on
+     * every route, over every section, including the header and
+     * footer. Reads as an unwanted "dark right-edge gradient" that
+     * looks like watermarking. Gating the shadow on the open state
+     * removes it when the drawer is closed while preserving the
+     * intended depth cue when it slides in. */
     transform: translateX(100%);
-    transition: transform 280ms cubic-bezier(.6,.2,.2,1);
+    transition: transform 280ms cubic-bezier(.6,.2,.2,1),
+                box-shadow 280ms cubic-bezier(.6,.2,.2,1);
     z-index: 301;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  .brief-drawer[data-open="true"] { transform: translateX(0); }
+  .brief-drawer[data-open="true"] {
+    transform: translateX(0);
+    box-shadow: -16px 0 48px rgba(8, 22, 42, 0.55);
+  }
   .brief-drawer-inner {
     padding: 96px 24px 32px;
     display: flex; flex-direction: column;

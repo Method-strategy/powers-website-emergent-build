@@ -1100,14 +1100,22 @@ function Home() {
           height: 100dvh;
           background: ${NAVY};
           border-left: 1px solid rgba(232,147,70, 0.22);
-          box-shadow: -16px 0 48px rgba(8, 22, 42, 0.55);
+          /* box-shadow gated on data-open below — box-shadow paints
+             regardless of the closed-state translateX(100%), so the
+             navy shadow leaked ~32-48px back into the right edge of
+             every homepage viewport (top to bottom, over the header)
+             at z-index 301. Same bug as BriefHeader.jsx; same fix. */
           transform: translateX(100%);
-          transition: transform 280ms cubic-bezier(.6,.2,.2,1);
+          transition: transform 280ms cubic-bezier(.6,.2,.2,1),
+                      box-shadow 280ms cubic-bezier(.6,.2,.2,1);
           z-index: 301;
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
         }
-        .brief-drawer[data-open="true"] { transform: translateX(0); }
+        .brief-drawer[data-open="true"] {
+          transform: translateX(0);
+          box-shadow: -16px 0 48px rgba(8, 22, 42, 0.55);
+        }
         .brief-drawer-inner {
           padding: 96px 24px 32px;
           display: flex;
