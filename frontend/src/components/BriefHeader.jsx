@@ -94,17 +94,25 @@ export default function BriefHeader({ mode = 'interior' }) {
         <div className="brief-header-inner">
           <div className="brief-header-mark">
             {/* Logo always returns to /. The explicit onClick also
-                scrolls the window to top when the user is already on
-                / — React Router treats same-pathname clicks as a
-                no-op, so the layout's useEffect-on-pathname wouldn't
-                fire. This restores the "click logo to go home AND
-                land at the top" behavior users expect. */}
+                resets scroll to top when the user is already on / —
+                React Router treats same-pathname clicks as a no-op,
+                so the layout's useEffect-on-pathname wouldn't fire.
+                Two scroll targets are reset because interior pages
+                scroll the window while the homepage snap-scrolls
+                an internal .brief-page container (window stays at 0
+                on the homepage, so window.scrollTo alone was a no-op
+                there and users reported the logo "did nothing" on
+                the homepage — this restores the expected behavior). */}
             <Link
               to="/"
               className="brief-logo"
               aria-label="POWERS — Home"
               data-testid="brief-header-logo"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const briefPage = document.querySelector('.brief-page');
+                if (briefPage) briefPage.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
             </Link>

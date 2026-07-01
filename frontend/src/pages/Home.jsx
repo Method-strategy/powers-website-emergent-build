@@ -1409,15 +1409,23 @@ function Home() {
           <div className="brief-header-mark">
             {/* React Router <Link>, not <a href>: avoids a full
                 page reload when the user is already on /. The
-                explicit onClick scrolls window to top in the
+                explicit onClick resets scroll to top in the
                 same-route case where pathname-keyed effects
-                don't refire. */}
+                don't refire. Two scroll targets are reset because
+                the homepage uses an internal snap-scroll container
+                (.brief-page) — window.scrollTo alone is a no-op
+                here since window scroll never leaves 0 on the
+                homepage; the real scroll lives inside .brief-page. */}
             <Link
               to="/"
               className="brief-logo"
               aria-label="POWERS — Home"
               data-testid="home-header-logo"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const briefPage = document.querySelector('.brief-page');
+                if (briefPage) briefPage.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               <img src="/uploads/powers-logo-dark.png" alt="POWERS" />
             </Link>
