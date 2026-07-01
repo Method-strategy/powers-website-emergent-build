@@ -72,7 +72,7 @@ export const companyNews = [
     externalUrl: 'https://www.thepowerscompany.com/resources/powers-reengaged-food-manufacturer-capacity-utilization/',
   },
   {
-    slug: 'powers-partners-defense-aerospace-security',
+    slug: 'powers-partners-aerospace-defense-security',
     title: 'POWERS Partners with Global Leader in the Defense, Aerospace, and Security Sector to Strengthen Productivity in Critical Manufacturing Operations',
     date: 'January 15, 2026',
     dateISO: '2026-01-15',

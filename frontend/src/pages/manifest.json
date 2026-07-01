@@ -101,7 +101,7 @@
   },
   {
     "file": "case-study-defense-aerospace-otd.html",
-    "component": "CaseStudyDefenseAerospaceOTD",
+    "component": "CaseStudyAerospaceDefenseOTD",
     "route": "/case-studies/aerospace-defense-on-time-delivery"
   }
 ]

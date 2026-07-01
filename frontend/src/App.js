@@ -37,7 +37,7 @@ const KPIs                        = lazy(() => import('./pages/KPIs'));
 const FAQs                        = lazy(() => import('./pages/FAQs'));
 const Glossary                    = lazy(() => import('./pages/Glossary'));
 const Contact                     = lazy(() => import('./pages/Contact'));
-const CaseStudyDefenseAerospaceOTD = lazy(() => import('./pages/CaseStudyDefenseAerospaceOTD'));
+const CaseStudyAerospaceDefenseOTD = lazy(() => import('./pages/CaseStudyAerospaceDefenseOTD'));
 
 // Suspense fallback — a full-viewport cream pane that matches the
 // site's PAPER background so any chunk-load state looks like the
@@ -106,7 +106,7 @@ function App() {
             <Route path="/industries-served" element={<IndustriesServed />} />
             <Route path="/industries-served/:slug" element={<IndustryPage />} />
             <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/case-studies/aerospace-defense-on-time-delivery" element={<CaseStudyDefenseAerospaceOTD />} />
+            <Route path="/case-studies/aerospace-defense-on-time-delivery" element={<CaseStudyAerospaceDefenseOTD />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

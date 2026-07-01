@@ -180,13 +180,24 @@ const briefAlignmentOverlay = `
 `;
 
 /**
- * CaseStudyDefenseAerospaceOTD — case-study detail route at
+ * CaseStudyAerospaceDefenseOTD — case-study detail route at
  *   /case-studies/aerospace-defense-on-time-delivery
  * Prototype layout for all future case studies. Three parametric
  * components rendered from the canonical caseStudies record;
  * structure preserved. Brief alignment via overlay only.
+ *
+ * NAMING NOTE (Feb 2026): The industry is written "Aerospace &
+ * Defense" everywhere it appears to a human — that's the correct
+ * colloquial order and the target-search order. Every internal
+ * identifier that surfaces to users (URL slug, page title, meta
+ * description, component name) uses `aerospace-defense` /
+ * `AerospaceDefense`. The legacy source HTML file the client zip
+ * shipped was named `case-study-defense-aerospace-otd.html`;
+ * that legacy name is preserved only as a converter-script input
+ * key in `routes.js` + `manifest.json` + a 301 rule in
+ * `_redirects` — nothing SEO-facing.
  */
-export default function CaseStudyDefenseAerospaceOTD() {
+export default function CaseStudyAerospaceDefenseOTD() {
   const data = getCaseStudy('aerospace-defense-on-time-delivery');
 
   if (!data) {
@@ -197,7 +208,7 @@ export default function CaseStudyDefenseAerospaceOTD() {
     <>
       <SEO
         title="Aerospace & Defense On-Time Delivery Case Study | POWERS"
-        description={data.summary || 'POWERS case study: how a defense and aerospace manufacturer rebuilt on-time delivery performance under fixed-price contract pressure.'}
+        description={data.summary || 'POWERS case study: how an aerospace and defense manufacturer rebuilt on-time delivery performance under fixed-price contract pressure.'}
         path="/case-studies/aerospace-defense-on-time-delivery"
         type="article"
       />
