@@ -69,10 +69,19 @@
              style sheet activates as soon as it's downloaded. -->
         <link rel="preload" as="style" href="https://use.typekit.net/dhv8kja.css" />
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;1,400;1,500&display=swap" />
         <!-- Inter as a comprehensive fallback for Proxima Nova; ALL body/display weights -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="all" />
         <!-- Adobe Fonts (Typekit) — Proxima Nova, per CLAUDE.md design tokens. media="all" is explicit so the stylesheet loads in BOTH screen and print contexts (Playwright PDF generation otherwise can miss the print-only path). -->
         <link rel="stylesheet" href="https://use.typekit.net/dhv8kja.css" media="all" />
+        <!-- Google Fonts — Newsreader italic (weights 400 + 500) and normal 500.
+             Used for the italic-serif "pivot" clause inside H2 station headlines
+             site-wide (.station-h2 .pivot, .brief-h2 .pivot, .cs-h2 em, testimonial
+             pull quotes). Loaded here at the base HTML level (rather than being
+             code-split with a component chunk) so every route sees the @font-face,
+             not just routes that happen to ship the testimonial or case-study CSS.
+             Without this, interior page pivots silently fall back to Georgia. -->
+        <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;1,400;1,500&display=swap" rel="stylesheet" media="all" />
         <!-- Tabler Icons — used by the case-study detail hero stat tiles (cs-hd-stat-icon, cs-result-icon, etc.) -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.0/dist/tabler-icons.min.css" media="all" />
         <!--
