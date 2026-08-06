@@ -2118,12 +2118,18 @@ function EvidenceBeat() {
       {/* ── Top row: H2 left · Behlen sidebar right ──────────── */}
       <div className="ev-top-grid wipe wipe-d1">
 
-        {/* LEFT: subhead */}
+        {/* LEFT: subhead + lede */}
         <div className="ev-h2-col">
           <h2 className="station-h2">
             <span>Decades of partnership.</span>
             <span className="pivot">Outcomes that last.</span>
           </h2>
+          <p className="ev-lede">
+            For decades, POWERS has partnered with operators who don't just want a fix. They want the capability to run without us. We build it on their floor, on their shifts, and we stay until it holds.
+          </p>
+          <p className="ev-lede">
+            Behlen Country is the perfect example. We rebuilt how the plant executed, welder by welder and shift by shift, until the operation was stronger than the day we arrived and could hold that gain on its own. The engagement ended. The partnership didn't.
+          </p>
         </div>
 
         {/* RIGHT: Behlen testimonial sidebar */}
@@ -2166,14 +2172,15 @@ function EvidenceBeat() {
           <div className="it-sidebar-footer">
             <img src={BEHLEN_LOGO} alt="Behlen Country" className="it-behlen-logo" />
             <p className="it-sidebar-lede">
-              Behlen Country is what that looks like on one floor. Scheduling rebuilt. Downtime cut to a fourth, from 2,180 minutes a month to about 500. Welders producing 50% more per hour, four to six. An execution capability that did not exist before, running itself by the time we left.
+              Scheduling rebuilt. Downtime cut to a fourth, from 2,180 minutes a month to about 500. Welders producing 50% more per hour, four to six. An execution capability that did not exist before, running itself by the time we left.
             </p>
           </div>
         </aside>
       </div>
 
       {/* ── Bottom row: full-width stats grid ────────────────── */}
-      <div className="wipe wipe-d2" style={{
+      <div className="station-index wipe wipe-d2" style={{ marginTop: 48, marginBottom: 20 }}>Across every partnership, it adds up to</div>
+      <div className="wipe wipe-d3" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
         gap: '40px 48px',
@@ -2376,7 +2383,7 @@ const itBeatCss = `
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     column-gap: clamp(40px, 5.5vw, 88px);
-    align-items: end;
+    align-items: start;
     width: 100%;
     margin-bottom: 0;
   }
@@ -2390,7 +2397,17 @@ const itBeatCss = `
   .ev-h2-col {
     display: flex;
     flex-direction: column;
+    gap: 20px;
     padding-bottom: 2px;
+  }
+  .ev-lede {
+    font-family: ${TYPE.sans};
+    font-size: clamp(15px, 1.15vw, 17px);
+    font-weight: 400;
+    line-height: 1.65;
+    color: ${TEXT_BODY};
+    margin: 0;
+    text-wrap: pretty;
   }
 
   /* ── ANY INDUSTRY lede column (right col) ───────────────────── */
