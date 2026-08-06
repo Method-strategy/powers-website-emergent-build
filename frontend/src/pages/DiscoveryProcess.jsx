@@ -19,11 +19,11 @@ const STUDY_AREAS = [
 ];
 
 const DELIVERABLES = [
-  { num: '01', h: 'Where Is Execution Being Lost?',           body: 'POWERS conducts formal operating studies and documents what our practitioners observe across the operation. We work alongside your leaders and frontline teams to understand how work is actually performed—not simply how procedures, systems, or reports suggest it should be performed. The assessment identifies execution strengths, bottlenecks, chronic losses, performance variation, leadership gaps, and best practices across production and the supporting functions that influence results. Each material finding is connected to its operational impact, likely root cause, and financial significance.' },
-  { num: '02', h: 'What Should the Future State Look Like?',  body: 'Where appropriate, Discovery defines the future-state operating architecture required to improve and sustain execution. This may include the processes, KPIs, meeting rhythms, visual-management tools, leader routines, communication structures, escalation paths, and accountability mechanisms needed to translate business priorities into consistent daily action. The future state is not a standardized consulting template. It is designed around your products, customers, workforce, leadership structure, shift patterns, systems, culture, and operating environment—and built with your team, not imposed on it.' },
-  { num: '03', h: 'What Performance Is Realistically Achievable?', body: 'Discovery establishes what the operation could realistically achieve if the identified execution gaps were addressed. Using observed performance, operating data, measured losses, available capacity, and financial information, POWERS works with your operational and financial leaders to define an achievable future-state performance profile across throughput and capacity, labor productivity, equipment uptime and reliability, quality, inventory and working capital, planning and schedule adherence, service performance, and operating cost.' },
-  { num: '04', h: 'What Is the Opportunity Worth?',            body: 'POWERS connects the identified execution gaps to their operational and financial impact. The resulting opportunity model shows leadership where performance is being lost, how much those losses are costing the business, and what value could be created by closing the gaps. Where the data and scope support it, this analysis may form the basis of a Project Savings Commitment that POWERS is prepared to stand behind during Implementation. This moves the discussion beyond recommendations and estimates—it creates a measurable financial case that can be reviewed with your team and used to govern performance if the engagement moves forward.' },
-  { num: '05', h: 'What Will It Take to Capture the Opportunity?', body: 'Discovery defines the practical path from the current state to the desired future state. This may include a prioritized opportunity register, implementation roadmap, Key Event Schedule, recommended sequencing, governance structure, resource requirements, shift coverage, leadership involvement, and expected timing. The roadmap separates immediate execution opportunities from foundational system changes and longer-term capability requirements. It identifies what should happen first, what must be built before other improvements can succeed, and where leadership ownership is required.' },
+  { num: '01', h: 'Where Is Execution Being Lost?',           teaser: 'Formal operating studies documenting how work actually happens across every shift.', body: 'POWERS conducts formal operating studies and documents what our practitioners observe across the operation. We work alongside your leaders and frontline teams to understand how work is actually performed—not simply how procedures, systems, or reports suggest it should be performed. The assessment identifies execution strengths, bottlenecks, chronic losses, performance variation, leadership gaps, and best practices across production and the supporting functions that influence results. Each material finding is connected to its operational impact, likely root cause, and financial significance.' },
+  { num: '02', h: 'What Should the Future State Look Like?',  teaser: 'The future-state operating architecture, designed around your business — not a template.', body: 'Where appropriate, Discovery defines the future-state operating architecture required to improve and sustain execution. This may include the processes, KPIs, meeting rhythms, visual-management tools, leader routines, communication structures, escalation paths, and accountability mechanisms needed to translate business priorities into consistent daily action. The future state is not a standardized consulting template. It is designed around your products, customers, workforce, leadership structure, shift patterns, systems, culture, and operating environment—and built with your team, not imposed on it.' },
+  { num: '03', h: 'What Performance Is Realistically Achievable?', teaser: 'A defensible performance profile across throughput, productivity, uptime, quality, and cost.', body: 'Discovery establishes what the operation could realistically achieve if the identified execution gaps were addressed. Using observed performance, operating data, measured losses, available capacity, and financial information, POWERS works with your operational and financial leaders to define an achievable future-state performance profile across throughput and capacity, labor productivity, equipment uptime and reliability, quality, inventory and working capital, planning and schedule adherence, service performance, and operating cost.' },
+  { num: '04', h: 'What Is the Opportunity Worth?',            teaser: 'Execution gaps connected to financial impact — the basis for a Project Savings Commitment.', body: 'POWERS connects the identified execution gaps to their operational and financial impact. The resulting opportunity model shows leadership where performance is being lost, how much those losses are costing the business, and what value could be created by closing the gaps. Where the data and scope support it, this analysis may form the basis of a Project Savings Commitment that POWERS is prepared to stand behind during Implementation. This moves the discussion beyond recommendations and estimates—it creates a measurable financial case that can be reviewed with your team and used to govern performance if the engagement moves forward.' },
+  { num: '05', h: 'What Will It Take to Capture the Opportunity?', teaser: 'A prioritized roadmap, sequenced Key Event Schedule, and defined ownership.', body: 'Discovery defines the practical path from the current state to the desired future state. This may include a prioritized opportunity register, implementation roadmap, Key Event Schedule, recommended sequencing, governance structure, resource requirements, shift coverage, leadership involvement, and expected timing. The roadmap separates immediate execution opportunities from foundational system changes and longer-term capability requirements. It identifies what should happen first, what must be built before other improvements can succeed, and where leadership ownership is required.' },
 ];
 
 export default function DiscoveryProcess() {
@@ -266,11 +266,19 @@ function Deliverables() {
         <ol className="deliv-list">
           {DELIVERABLES.map((d, i) => (
             <li key={d.num} className="deliv-row" style={{ ['--i']: i }}>
-              <div className="deliv-num">{d.num}</div>
-              <div>
-                <h3 className="deliv-h">{d.h}</h3>
-                <p className="deliv-body">{d.body}</p>
-              </div>
+              <details className="brief-accordion">
+                <summary>
+                  <span className="deliv-num">{d.num}</span>
+                  <span className="brief-accordion-title">
+                    <span className="deliv-h">{d.h}</span>
+                    <span className="brief-accordion-teaser">{d.teaser}</span>
+                  </span>
+                  <span className="brief-accordion-toggle" aria-hidden="true">+</span>
+                </summary>
+                <div className="brief-accordion-panel">
+                  <p className="deliv-body">{d.body}</p>
+                </div>
+              </details>
             </li>
           ))}
         </ol>
@@ -484,21 +492,69 @@ function DiscoveryStyles() {
         gap: 32px;
       }
       .deliv-row {
-        display: grid;
-        grid-template-columns: 80px 1fr;
-        gap: 24px;
-        align-items: start;
+        display: block;
         opacity: 0;
         transform: translateY(-10px);
         transition: opacity 380ms cubic-bezier(.2,.85,.25,1), transform 380ms cubic-bezier(.2,.85,.25,1);
         transition-delay: calc(420ms + var(--i, 0) * 70ms);
-        padding-bottom: 28px;
-        border-bottom: 1px solid rgba(13,36,66,0.10);
       }
       .deliv-row:last-child { border-bottom: 0; }
       .brief-doc-station.is-in .deliv-row { opacity: 1; transform: translateY(0); }
-      @media (max-width: 720px) { .deliv-row { grid-template-columns: 1fr; gap: 8px; } }
-      .deliv-num {
+
+      /* ── Shared editorial accordion (mirrored from Approach.jsx) ──
+         Native <details>/<summary>. Gold hairline dividers, gold mono
+         +/× toggle, keyboard-native, zero JS. Same pattern used by
+         the Four Elements of Execution on the Approach page. */
+      .brief-accordion { border-top: 1px solid rgba(232,147,70,0.30); }
+      .deliv-list li:last-child .brief-accordion { border-bottom: 1px solid rgba(232,147,70,0.30); }
+      .brief-accordion > summary {
+        list-style: none;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 78px 1fr auto;
+        gap: 24px;
+        align-items: baseline;
+        padding: 26px 4px 26px 0;
+        outline: none;
+        user-select: none;
+      }
+      .brief-accordion > summary::-webkit-details-marker,
+      .brief-accordion > summary::marker { display: none; }
+      .brief-accordion > summary:hover .deliv-h { color: ${GOLD_BRIGHT}; }
+      .brief-accordion > summary:focus-visible { outline: 2px solid ${GOLD_BRIGHT}; outline-offset: 4px; border-radius: 2px; }
+      .brief-accordion-title { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+      .brief-accordion-teaser {
+        font-family: ${TYPE.sans};
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 1.4;
+        color: ${TEXT_BODY};
+        font-style: italic;
+      }
+      .brief-accordion-toggle {
+        font-family: ${TYPE.mono};
+        font-size: 22px;
+        font-weight: 400;
+        color: ${GOLD_BRIGHT};
+        line-height: 1;
+        transition: transform 240ms cubic-bezier(.2,.7,.2,1);
+        padding-top: 4px;
+      }
+      details[open] > summary .brief-accordion-toggle { transform: rotate(45deg); }
+      .brief-accordion-panel {
+        padding: 0 4px 30px 102px;
+        animation: accordion-fade 300ms cubic-bezier(.2,.7,.2,1);
+      }
+      @keyframes accordion-fade {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @media (max-width: 720px) {
+        .brief-accordion > summary { grid-template-columns: 56px 1fr auto; gap: 16px; padding: 22px 0; }
+        .brief-accordion-panel { padding-left: 72px; padding-right: 0; padding-bottom: 24px; }
+      }
+      .brief-accordion .deliv-num {
+        margin-top: 4px;
         font-family: ${TYPE.mono};
         font-size: 28px;
         font-weight: 700;
@@ -506,21 +562,23 @@ function DiscoveryStyles() {
         color: ${GOLD_BRIGHT};
         line-height: 1;
       }
-      .deliv-h {
-        font-family: ${TYPE.sans};
-        font-size: 19px;
-        font-weight: 700;
+      .brief-accordion .deliv-h {
+        margin: 0;
+        font-family: ${TYPE.serif};
+        font-style: italic;
+        font-weight: 500;
+        font-size: clamp(20px, 2vw, 25px);
+        line-height: 1.25;
         color: ${NAVY};
-        margin: 0 0 8px;
-        line-height: 1.3;
+        letter-spacing: -0.005em;
       }
-      .deliv-body {
+      .brief-accordion .deliv-body {
+        margin: 0;
         font-family: ${TYPE.sans};
         font-size: 15px;
         font-weight: 300;
         line-height: 1.65;
         color: ${TEXT_BODY};
-        margin: 0;
       }
 
       /* Skin in the Game — stats row */

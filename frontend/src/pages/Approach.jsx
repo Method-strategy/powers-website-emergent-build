@@ -18,41 +18,32 @@ const DISCIPLINES = [
   {
     num: '01',
     h: 'Processes',
+    teaser: 'How work, materials, information, and decisions move through the operation.',
     body: 'Processes define how work, materials, information, and decisions move through the operation. POWERS works with your team to identify where flow breaks down, capacity is lost, handoffs fail, and unnecessary complexity creates cost and delay. We establish practical standard work, operating routines, daily management processes, escalation paths, and performance controls that reduce variation and make execution more predictable. The objective is not simply to document how the process should work. It is to build processes that continue working when demand changes, schedules tighten, staffing shifts, or unexpected problems occur.',
   },
   {
     num: '02',
     h: 'Systems',
+    teaser: 'The management structure that converts business priorities into daily execution.',
     body: 'Systems create the management structure that converts business priorities into daily execution. POWERS designs or strengthens a custom Management Operating System that reflects how your business actually runs. This may include KPI ownership, daily and weekly performance reviews, reliability systems, communication flows, escalation routines, decision rights, and accountability structures. The system creates a consistent operating cadence from the frontline to senior leadership, makes performance visible, establishes who owns each result, and ensures that gaps trigger action rather than becoming accepted as part of the operation.',
   },
   {
     num: '03',
     h: 'Tools',
-    /* Body is rendered via JSX to support the inline DPS link */
+    teaser: 'Real-time visibility so leaders and teams can manage execution as it happens.',
     body: null,
     bodyJsx: (
       <>
         Tools give leaders and teams the real-time visibility required to manage execution. Depending on the needs of the operation, this may include visual performance boards, SQDC management, hour-by-hour tracking, leader standard work, short-interval controls, action tracking, and structured root-cause problem solving. POWERS also integrates digital performance management through our{' '}
-        <a
-          href="https://www.powersdps.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="brief-inline-link"
-          data-testid="approach-link-dps"
-        >Digital Production System</a>
-        {' '}(<a
-          href="https://www.powersdps.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="brief-inline-link"
-          data-testid="approach-link-dps-full"
-        >DPS</a>), which reinforces operating discipline in real time by connecting frontline activity, performance visibility, action ownership, and management accountability. The objective is not to add more dashboards or reports. It is to give the frontline, plant leadership, and executive team a common operational truth so decisions are made from the same facts and performance drift is identified before it compounds.
+        <a href="https://www.powersdps.com" target="_blank" rel="noopener noreferrer" className="brief-inline-link" data-testid="approach-link-dps">Digital Production System</a>
+        {' '}(<a href="https://www.powersdps.com" target="_blank" rel="noopener noreferrer" className="brief-inline-link" data-testid="approach-link-dps-full">DPS</a>), which reinforces operating discipline in real time by connecting frontline activity, performance visibility, action ownership, and management accountability. The objective is not to add more dashboards or reports. It is to give the frontline, plant leadership, and executive team a common operational truth so decisions are made from the same facts and performance drift is identified before it compounds.
       </>
     ),
   },
   {
     num: '04',
     h: 'Behaviors',
+    teaser: 'The daily leadership and frontline discipline that makes the rest hold up.',
     body: 'Processes, systems, and tools only create results when leaders and employees consistently execute them. POWERS works with frontline supervisors, middle managers, and senior leaders to strengthen ownership, coaching, accountability, problem solving, and execution discipline. We help leaders develop the skills, routines, and confidence required to manage performance consistently across every shift. This is not a standalone training event. Leadership capability is built through daily application in the actual work environment—leaders learn while managing live performance, solving real problems, and reinforcing the operating standards the organization needs to sustain.',
   },
 ];
@@ -155,31 +146,37 @@ function TheMechanism() {
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: PAPER_DEEP }}>
       <div className="brief-doc-inner">
-        <div className="brief-doc-split">
-          <div>
-            <div className="station-index wipe">Four Elements of Execution</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>Better execution requires</span>
-              <span className="pivot">an integrated operating architecture.</span>
-            </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
-            <div className="brief-doc-body wipe wipe-d3">
-              <p>Processes, systems, tools, and behaviors cannot be improved independently and expected to produce sustainable results. A well-designed process will still fail without a management system that reinforces it. A strong management system will not produce results if leaders lack the tools or capability to use it. Technology will not improve performance if it only reports problems after they occur. Training will not change behavior if the operating environment does not reinforce what was taught.</p>
-              <p><em>POWERS strengthens all four execution elements together. We build them with your team, on the floor, until the organization produces results through disciplined execution rather than individual effort.</em></p>
-            </div>
+        <div>
+          <div className="station-index wipe">Four Elements of Execution</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>Better execution requires</span>
+            <span className="pivot">an integrated operating architecture.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3" style={{ maxWidth: 820, marginBottom: 40 }}>
+            <p>Processes, systems, tools, and behaviors cannot be improved independently and expected to produce sustainable results. A well-designed process will still fail without a management system that reinforces it. A strong management system will not produce results if leaders lack the tools or capability to use it. Technology will not improve performance if it only reports problems after they occur. Training will not change behavior if the operating environment does not reinforce what was taught.</p>
+            <p><em>POWERS strengthens all four execution elements together. We build them with your team, on the floor, until the organization produces results through disciplined execution rather than individual effort.</em></p>
           </div>
-          <ol className="approach-mech-list">
-            {DISCIPLINES.map((d, i) => (
-              <li key={d.num} className="approach-mech-block wipe" style={{ ['--i']: i, transitionDelay: `${360 + i*90}ms` }}>
-                <div className="approach-mech-num">{d.num}</div>
-                <div>
-                  <h3 className="approach-mech-h">{d.h}</h3>
+        </div>
+        <ol className="approach-mech-list">
+          {DISCIPLINES.map((d, i) => (
+            <li key={d.num} className="approach-mech-block wipe" style={{ ['--i']: i, transitionDelay: `${360 + i*90}ms` }}>
+              <details className="brief-accordion">
+                <summary>
+                  <span className="approach-mech-num">{d.num}</span>
+                  <span className="brief-accordion-title">
+                    <span className="approach-mech-h">{d.h}</span>
+                    <span className="brief-accordion-teaser">{d.teaser}</span>
+                  </span>
+                  <span className="brief-accordion-toggle" aria-hidden="true">+</span>
+                </summary>
+                <div className="brief-accordion-panel">
                   <p className="approach-mech-body">{d.bodyJsx || d.body}</p>
-                </div>
+                  </div>
+                </details>
               </li>
             ))}
           </ol>
-        </div>
       </div>
     </section>
   );
@@ -252,16 +249,23 @@ function TheEngagement() {
                 data-testid="approach-link-discovery-engagement"
               >Discovery</Link>. The engagement may include:
             </p>
-            <ul className="approach-engagement-list">
-              <li>A defined implementation roadmap and Key Event Schedule</li>
-              <li>Clear scope, priorities, and ownership</li>
-              <li>Dedicated senior practitioners working on-site</li>
-              <li>Appropriate shift and functional coverage</li>
-              <li>Weekly operational and financial performance tracking</li>
-              <li>Leadership coaching and capability building</li>
-              <li>Implementation of management routines, tools, and controls</li>
-              <li>A defined partnership duration and sustainment plan</li>
-            </ul>
+            <details className="brief-list-details brief-list-details--on-dark">
+              <summary>
+                <span className="brief-list-summary">Engagement scope elements</span>
+                <span className="brief-list-count">8</span>
+                <span className="brief-list-toggle" aria-hidden="true">+</span>
+              </summary>
+              <ul className="approach-engagement-list">
+                <li>A defined implementation roadmap and Key Event Schedule</li>
+                <li>Clear scope, priorities, and ownership</li>
+                <li>Dedicated senior practitioners working on-site</li>
+                <li>Appropriate shift and functional coverage</li>
+                <li>Weekly operational and financial performance tracking</li>
+                <li>Leadership coaching and capability building</li>
+                <li>Implementation of management routines, tools, and controls</li>
+                <li>A defined partnership duration and sustainment plan</li>
+              </ul>
+            </details>
             <p style={{ color: '#ffffff' }}><em>POWERS does not hand your organization a plan and leave your team to execute it alone. We work with your people until the new operating architecture is installed, leaders can manage it, and performance is moving against the agreed objectives.</em></p>
           </div>
           <div style={{ marginTop: 40 }} className="wipe wipe-d4">
@@ -294,17 +298,24 @@ function Durability() {
             <p>Performance improvement only creates lasting value when the organization can sustain it without depending on outside support. During the Sustainability phase, POWERS works with your leaders to reinforce the new operating architecture, transfer ownership, close remaining gaps, and verify that the improvements are producing measurable operational and financial results.</p>
             <p>Success is evaluated against your operating data and your financial performance—not against activity, presentation quality, or the number of consulting hours delivered. Where the engagement includes a validated savings model or Project Savings Commitment, performance is measured against the baseline and methodology agreed with your operational and financial leaders.</p>
             <p>Depending on the engagement, results validation may include:</p>
-            <ul className="approach-engagement-list">
-              <li>Performance against established operational KPIs</li>
-              <li>Annualized savings and profit improvement</li>
-              <li>Return on investment</li>
-              <li>Weekly or monthly cash-flow impact</li>
-              <li>Progress against the agreed savings model</li>
-              <li>Project cost reconciled against measurable value delivered</li>
-              <li>Leadership adoption and Management Operating System adherence</li>
-              <li>Sustainment risks and remaining capability gaps</li>
-              <li>Final results compared with the agreed commitment</li>
-            </ul>
+            <details className="brief-list-details">
+              <summary>
+                <span className="brief-list-summary">Results validation measures</span>
+                <span className="brief-list-count">9</span>
+                <span className="brief-list-toggle" aria-hidden="true">+</span>
+              </summary>
+              <ul className="approach-engagement-list">
+                <li>Performance against established operational KPIs</li>
+                <li>Annualized savings and profit improvement</li>
+                <li>Return on investment</li>
+                <li>Weekly or monthly cash-flow impact</li>
+                <li>Progress against the agreed savings model</li>
+                <li>Project cost reconciled against measurable value delivered</li>
+                <li>Leadership adoption and Management Operating System adherence</li>
+                <li>Sustainment risks and remaining capability gaps</li>
+                <li>Final results compared with the agreed commitment</li>
+              </ul>
+            </details>
             <p><em>The objective is not simply to demonstrate that performance improved during the engagement. It is to confirm that the organization has the leadership capability, management discipline, processes, systems, and tools required to continue producing and improving those results.</em></p>
           </div>
         </div>
@@ -338,16 +349,98 @@ function ApproachStyles() {
   return (
     <style>{`
       /* Mechanism — 4-block list on right of the split */
-      .approach-mech-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 28px; }
-      .approach-mech-block { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start; }
+      .approach-mech-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+      .approach-mech-block { position: relative; }
+
+      /* ── Shared editorial accordion pattern ──────────────────────
+         Native <details>/<summary> so it's semantic, keyboard-driven,
+         SEO-visible, and requires zero JavaScript. Styled to match
+         the print-document register: a gold mono +/− marker on the
+         right (NOT a chevron), a hairline gold divider between rows,
+         and the same numbered eyebrow + serifed title treatment used
+         when the sections were rendered inline as text walls. */
+      .brief-accordion { border-top: 1px solid rgba(232,147,70,0.30); }
+      .approach-mech-list li:last-child .brief-accordion { border-bottom: 1px solid rgba(232,147,70,0.30); }
+      .brief-accordion > summary {
+        list-style: none;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 78px 1fr auto;
+        gap: 24px;
+        align-items: baseline;
+        padding: 26px 4px 26px 0;
+        outline: none;
+        user-select: none;
+      }
+      .brief-accordion > summary::-webkit-details-marker,
+      .brief-accordion > summary::marker { display: none; }
+      .brief-accordion > summary:hover .approach-mech-h { color: ${GOLD_BRIGHT}; }
+      .brief-accordion > summary:focus-visible { outline: 2px solid ${GOLD_BRIGHT}; outline-offset: 4px; border-radius: 2px; }
+      .brief-accordion-title { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+      .brief-accordion-teaser {
+        font-family: ${TYPE.sans};
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 1.4;
+        color: ${TEXT_BODY};
+        font-style: italic;
+      }
+      .brief-accordion-toggle {
+        font-family: ${TYPE.mono};
+        font-size: 22px;
+        font-weight: 400;
+        color: ${GOLD_BRIGHT};
+        line-height: 1;
+        transition: transform 240ms cubic-bezier(.2,.7,.2,1);
+        padding-top: 4px;
+      }
+      details[open] > summary .brief-accordion-toggle {
+        transform: rotate(45deg); /* + becomes × */
+      }
+      .brief-accordion-panel {
+        padding: 0 4px 30px 102px;
+        animation: accordion-fade 300ms cubic-bezier(.2,.7,.2,1);
+      }
+      @keyframes accordion-fade {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @media (max-width: 720px) {
+        .brief-accordion > summary { grid-template-columns: 56px 1fr auto; gap: 16px; padding: 22px 0; }
+        .brief-accordion-panel { padding-left: 72px; padding-right: 0; padding-bottom: 24px; }
+      }
+      .brief-accordion > summary .approach-mech-num { margin-top: 4px; }
+      /* Reset numbered num/h/body sizing so the accordion looks
+         intentional rather than "the old grid squeezed into a row" */
+      .brief-accordion .approach-mech-h {
+        margin: 0;
+        font-family: ${TYPE.serif};
+        font-style: italic;
+        font-weight: 500;
+        font-size: clamp(22px, 2.2vw, 28px);
+        line-height: 1.2;
+        color: ${NAVY};
+        letter-spacing: -0.005em;
+      }
+      .brief-accordion .approach-mech-body {
+        margin: 0;
+        font-family: ${TYPE.sans};
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.6;
+        color: ${TEXT_BODY};
+      }
+      /* Legacy .approach-mech-block was a 2-col grid (num + content)
+         from before the accordion refactor. Now the <li> contains
+         a single <details> whose own summary handles the 3-col grid.
+         Setting display: block prevents a nested grid crush. */
+      .approach-mech-block { display: block; }
       .approach-mech-num {
         font-family: ${TYPE.mono};
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.18em;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.20em;
         color: ${GOLD_BRIGHT};
-        padding-top: 6px;
-        border-top: 1px solid ${GOLD_BRIGHT};
       }
       .approach-mech-h {
         font-family: ${TYPE.sans};
@@ -434,6 +527,63 @@ function ApproachStyles() {
         color: ${TEXT_BODY};
       }
       .approach-arc-cap em { font-style: italic; color: ${NAVY}; }
+
+      /* Collapsible bulleted lists (Phase Two + Phase Three).
+         Sits inside a station's body prose — reader reads the
+         narrative uninterrupted, then drills into the specifics
+         only if they want the deep list. Editorial gold rules and
+         mono toggle in keeping with the print-document register. */
+      .brief-list-details {
+        margin: 12px 0 24px;
+        border-top: 1px solid rgba(232,147,70,0.30);
+        border-bottom: 1px solid rgba(232,147,70,0.30);
+      }
+      .brief-list-details > summary {
+        list-style: none;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 20px;
+        align-items: baseline;
+        padding: 16px 4px;
+        outline: none;
+        user-select: none;
+      }
+      .brief-list-details > summary::-webkit-details-marker,
+      .brief-list-details > summary::marker { display: none; }
+      .brief-list-details > summary:focus-visible { outline: 2px solid ${GOLD_BRIGHT}; outline-offset: 4px; border-radius: 2px; }
+      .brief-list-summary {
+        font-family: ${TYPE.mono};
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: ${GOLD_BRIGHT};
+      }
+      .brief-list-count {
+        font-family: ${TYPE.mono};
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        color: rgba(13,36,66,0.5);
+      }
+      .brief-list-toggle {
+        font-family: ${TYPE.mono};
+        font-size: 18px;
+        font-weight: 400;
+        color: ${GOLD_BRIGHT};
+        transition: transform 240ms cubic-bezier(.2,.7,.2,1);
+        line-height: 1;
+      }
+      details[open] > summary .brief-list-toggle { transform: rotate(45deg); }
+      .brief-list-details[open] .approach-engagement-list {
+        margin-top: 12px;
+        margin-bottom: 20px;
+      }
+      /* On-dark variant for the navy Phase Two station */
+      .brief-list-details--on-dark { border-color: rgba(232,147,70,0.40); }
+      .brief-list-details--on-dark .brief-list-count { color: rgba(255,255,255,0.55); }
+      .brief-list-details--on-dark .approach-engagement-list li { color: rgba(255,255,255,0.86); }
 
       /* Bulleted lists inside station bodies (Phase Two + Phase Three).
          Kept minimal — the bullets are gold hairline squares, the text
