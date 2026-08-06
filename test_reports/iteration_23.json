@@ -1,0 +1,37 @@
+{
+  "summary": "Tested all 14 industry detail pages for the 2026 lean copy rewrite. All pages load correctly with new 4-section structure. All required content checks pass.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "test_credentials": "None required",
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 14 industry pages verified. New lean 4-section structure (Hero, Pressures, What We Build, Why POWERS, CTA) working correctly. All data comes from /app/frontend/src/data/industries.js via /app/frontend/src/components/IndustryPage.jsx.",
+  "test_results": {
+    "all_14_pages_load": true,
+    "no_blank_screens": true,
+    "no_js_errors": true,
+    "food_bev_h1": "Food & Beverage Manufacturing (correct plain name, no split headline)",
+    "food_bev_hero_lede_start": "High-volume production. Demand that never stops.",
+    "food_bev_pressures_h2": "The pressures / you already know. (two-tone correct)",
+    "meat_poultry_what_we_build_h2": "What we build, and why / it's the work we know best. (correct)",
+    "why_powers_headline_on_all_pages": "We work when and where value gets won or lost. (confirmed on all pages)",
+    "cta_buttons_on_all_pages": "Start a Conversation + See the Case Studies present on all 14 pages",
+    "back_link_on_all_pages": "← Return to Industries Served present on all 14 pages",
+    "no_bullet_lists": "0 bullet/numbered list items found on any page",
+    "private_equity_cta": "execute against the plan. (correct), by result and industry (correct)",
+    "hub_page_industry_cards": "14 industry links confirmed on /industries-served hub page"
+  }
+}
