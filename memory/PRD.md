@@ -987,7 +987,7 @@ paper-fade edges, same `prefers-reduced-motion` opt-out.
 - `/app/frontend/src/pages/Home.jsx` (link added after logo crawl div)
 
 **Open / next:**
-- P1: Swap placeholder attribution names on Behlen testimonial once client provides speaker names.
+
 - P1: Provide Next.js `<head>` Newsreader font snippets to colleague Patrik for production deployment.
 - P2: Print/PDF layout versions of Approach and Discovery pages.
 - P2: Refactor `.brief-accordion` CSS shared between `Approach.jsx` + `DiscoveryProcess.jsx`.
