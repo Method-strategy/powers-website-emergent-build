@@ -130,8 +130,8 @@ export default function IndustryPage() {
         <Section dark>
           <div className="station-index wipe" style={{ color: GOLD_BRIGHT }}>Why POWERS for {data.name}</div>
           <h2 className="brief-doc-h2 wipe wipe-d1" style={{ color: '#ffffff' }}>
-            <span>We work</span>
-            <span className="pivot">where and when value gets won or lost.</span>
+            <span>We work when and where value gets</span>
+            <span className="pivot">won or lost.</span>
           </h2>
           <div className="brief-doc-rule-gold wipe wipe-d2" />
           <div className="brief-doc-body wipe wipe-d3" style={{ color: 'rgba(255,255,255,0.82)', marginTop: 24 }}>
