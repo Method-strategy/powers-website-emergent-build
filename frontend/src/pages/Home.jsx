@@ -2370,6 +2370,24 @@ function IndustriesAndTestimonialBeat() {
           </div>
         </div>
       </div>
+      <a
+        href="/industries-served"
+        data-testid="industries-jump-link"
+        style={{
+          display: 'inline-block',
+          marginTop: 36,
+          fontFamily: TYPE.sans,
+          fontSize: 14,
+          fontWeight: 600,
+          color: GOLD,
+          textDecoration: 'none',
+          letterSpacing: '0.04em',
+          borderBottom: '1px solid ' + GOLD,
+          paddingBottom: 2,
+        }}
+      >
+        Explore Industries We&rsquo;ve Served &rarr;
+      </a>
     </section>
   );
 }

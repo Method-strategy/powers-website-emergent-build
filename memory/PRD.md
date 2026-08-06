@@ -975,13 +975,22 @@ paper-fade edges, same `prefers-reduced-motion` opt-out.
 - `/app/frontend/src/pages/Home.jsx` (data import only, no visual delta)
 - `/app/frontend/src/pages/CaseStudies.jsx` (render LogoCrawl in hero)
 
+## 2026-02-XX — "Any Industry. Any Floor." jump link (Home.jsx)
+
+- Added "Explore Industries We've Served →" jump link immediately below
+  the client logo crawl in `IndustriesAndTestimonialBeat` (`Home.jsx`).
+- Styling matches the sitewide CTA pattern: 14px, bold sans (`TYPE.sans`),
+  gold (#e89346) color + 1px gold border-bottom, 0.04em letter-spacing.
+- Routes to `/industries-served`. `data-testid="industries-jump-link"`.
+
+**Files touched:**
+- `/app/frontend/src/pages/Home.jsx` (link added after logo crawl div)
+
 **Open / next:**
-- P1: Find placement for the "Behlen video testimonial" — user is
-  considering a "Partner Spotlight" row of its own on the Case Studies
-  page (not yet locked).
-- P2: Swap in final approved client logos when client review comes
-  back. Edit only `data/clientLogos.js`.
-- P2: Wire Case Studies DB/taxonomy (Patrik). UI ready to receive
-  shape per existing `caseStudies.js`.
-- P3: Launch SEO checklist — remove `noindex` from `index.html`,
-  swap staging block in `robots.txt`.
+- P1: Swap placeholder attribution names on Behlen testimonial once client provides speaker names.
+- P1: Provide Next.js `<head>` Newsreader font snippets to colleague Patrik for production deployment.
+- P2: Print/PDF layout versions of Approach and Discovery pages.
+- P2: Refactor `.brief-accordion` CSS shared between `Approach.jsx` + `DiscoveryProcess.jsx`.
+- P2: Swap in final approved client logos (`data/clientLogos.js`).
+- P2: Wire Case Studies DB/taxonomy (Patrik).
+- P3: Launch SEO checklist — remove `noindex` from `index.html`, swap staging block in `robots.txt`.
