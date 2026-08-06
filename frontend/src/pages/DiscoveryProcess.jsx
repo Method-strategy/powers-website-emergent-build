@@ -77,7 +77,8 @@ function Hero() {
         <div className="brief-doc-col">
           <div className="station-index wipe" style={{ marginBottom: 24 }}>POWERS Operational Execution Discovery</div>
           <h1 className="brief-doc-h1 wipe wipe-d1">
-            <span>Find the truth. Quantify the opportunity.</span>
+            <span>Find the truth.</span>
+            <span>Quantify the opportunity.</span>
             <span className="accent">Build the path to better execution.</span>
           </h1>
           <p className="brief-doc-lede wipe wipe-d2" style={{ marginTop: 28, maxWidth: 760 }}>
