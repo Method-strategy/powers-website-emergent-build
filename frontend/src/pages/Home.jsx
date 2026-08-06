@@ -1753,7 +1753,7 @@ function Home() {
 
       {/* ── Beat IV — Mechanism ─────────────────────────────────── */}
       <Station
-        index="Our Work Ethic"
+        index="Boots on the Ground"
         headline="We work where and when value gets"
         pivot="won or lost."
         body="Most consulting firms diagnose, recommend, and leave. They’re out the door at 3pm and don’t work Fridays. The slide decks are sharp. The results don’t last. Our approach is very different. We build the disciplines where the work actually happens and value is created. On the floor. In the shifts. Inside the standards, the supplier relationships, the AP/AR process. We put skin in the game — paid on results, not recommendations."
