@@ -346,6 +346,22 @@ function Home() {
           scroll-snap-align: end;
           scroll-snap-stop: always;
         }
+
+        /* ── Mobile: disable snap so tall stacked sections can be
+           read in full. On narrow viewports each beat is taller
+           than the viewport; mandatory snap + stop:always
+           skips content before the user can read it. Free-scroll
+           is the right UX below 1024px. */
+        @media (max-width: 1024px) {
+          .brief-page {
+            scroll-snap-type: none;
+          }
+          .brief-page > section,
+          .brief-page > footer {
+            scroll-snap-align: none;
+            scroll-snap-stop: unset;
+          }
+        }
         .brief-station {
           align-content: center;
         }
