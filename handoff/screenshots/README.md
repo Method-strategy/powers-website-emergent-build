@@ -1,6 +1,6 @@
 # Canonical Screenshots — Visual Ground Truth
 
-Captured at 1920×900 desktop viewport on 2026-05-29 from `https://web-forge-1197.preview.emergentagent.com/`.
+Captured at 1920×900 desktop viewport on 2026-05-29 from `https://operating-brief.preview.emergentagent.com/`.
 
 These are the **stakeholder-approved final state** of each section. If a build doesn't match these, something has regressed.
 
