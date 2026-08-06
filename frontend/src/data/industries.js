@@ -85,8 +85,8 @@ const INDUSTRIES = [
     workH2: { top: 'Built for the conditions', pivot: 'food and beverage operations run under.' },
     workIntro: "Our practitioners work inside food and beverage plants — on the floor, within your production rhythms, inside the food safety architecture your operation is already running. The capability we build is specific to your environment, not transferred from outside it. In this sector, operational performance and compliance have to advance together.",
     disciplines: [
-      { h: 'Execution standards that hold under audit.',              body: 'Food and beverage operations depend on consistency. We build the operating standards that produce the same result shift after shift — under routine production and under the scrutiny of SQF, BRC, and customer inspection.' },
       { h: 'Leadership that performs under production pressure.',     body: "The supervisors running your lines carry more operational weight than most organizations formally acknowledge. We build management capability that shows up in production outcomes — not just in compliance documentation." },
+      { h: 'Execution standards that hold under audit.',              body: 'Food and beverage operations depend on consistency. We build the operating standards that produce the same result shift after shift — under routine production and under the scrutiny of SQF, BRC, and customer inspection.' },
       { h: 'Asset performance that protects throughput.',            body: 'On high-volume lines, unplanned downtime is never just a maintenance event — it is a production shortfall and a potential compliance issue. We help operations get more reliable output from the assets they already own.' },
       { h: 'Workforce performance at the line level.',               body: "What happens on your production floor is determined by the people on it. We build operator capability and working standards that hold quality and food safety in place without depending on constant oversight." },
       { h: 'A daily operating rhythm that drives performance.',      body: "Plants that consistently hit their numbers have a daily operating rhythm that connects production, quality, food safety, and sanitation in the same conversation. We build and sustain that rhythm." },
@@ -127,8 +127,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied where yield, throughput, and safety converge.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In meat and poultry processing, every discipline has to honor yield economics, USDA inspection, and live supply variability simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that survive USDA inspection. Yield-discipline routines documented to consistent execution. The structural elimination of variation in environments where every basis point of yield translates to bottom-line impact.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage live supply variability, run a yield conversation with the line, and hold the standard during inspection. The shift superintendent role carries more operational weight in protein than almost any other manufacturing category.' },
+      { h: 'Operational Discipline:', body: 'Standards that survive USDA inspection. Yield-discipline routines documented to consistent execution. The structural elimination of variation in environments where every basis point of yield translates to bottom-line impact.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around continuous processing lines, sanitation cycles, and the throughput demands protein operations carry. Uptime is yield. Sanitation status is compliance.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the yield standard, train the next shift, and own the outcome in environments where labor execution is one of the largest variables in margin.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on yield, throughput, food safety, and labor in the same daily rhythm. Four streams of accountability, one operating system.' },
@@ -169,8 +169,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied where retail meets the production floor.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In CPG, every discipline has to honor brand commitments, retail expectations, and multi-plant consistency at the same time.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that produce the same product at the same quality across plants, shifts, and regions. The structural elimination of variation in environments where brand consistency is the customer commitment.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage a SKU changeover, hold the brand standard, and run an operational conversation that aligns with corporate operating cadence.' },
+      { h: 'Operational Discipline:', body: 'Standards that produce the same product at the same quality across plants, shifts, and regions. The structural elimination of variation in environments where brand consistency is the customer commitment.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around high-mix production, packaging line uptime, and the operational tempo CPG retail commitments require.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the standard across SKUs, train the next shift, and own the outcome in environments where the outcome reaches the consumer at retail.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, quality, customer fill rate, and cost in the same daily rhythm.' },
@@ -211,8 +211,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to feed manufacturing realities.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In animal nutrition, every discipline has to honor batch precision, ingredient cost discipline, and customer-specific formulation requirements.',
     disciplines: [
-      { h: 'Operational Discipline:', body: "Standards that produce consistent batch precision across shifts, mills, and operators. The structural elimination of variation in environments where formulation accuracy reaches the customer's herd or flock." },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage a formulation change, hold the standard during a customer audit, and run a yield conversation with the mill.' },
+      { h: 'Operational Discipline:', body: "Standards that produce consistent batch precision across shifts, mills, and operators. The structural elimination of variation in environments where formulation accuracy reaches the customer's herd or flock." },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around pellet mills, mixers, conditioners, and the operational tempo feed mills require. Uptime is throughput. Throughput is customer service.' },
       { h: 'Workforce Capability:',   body: "Operators who hold the precision standard, train the next shift, and own the outcome in environments where outcome reaches the customer's animals." },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, quality, ingredient cost, and customer service in the same daily rhythm.' },
@@ -253,8 +253,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to agribusiness operating reality.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In agribusiness, every discipline has to honor commodity flow, seasonal pressure, and the customer commitments downstream depend on.',
     disciplines: [
-      { h: 'Operational Discipline:', body: "Standards that hold during peak season and off season alike. The structural elimination of variation in environments where commodity flow and customer cadence don't pause for executional drift." },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage seasonal labor, run a yield conversation, and hold the standard when conditions and weather and supply all shift at once.' },
+      { h: 'Operational Discipline:', body: "Standards that hold during peak season and off season alike. The structural elimination of variation in environments where commodity flow and customer cadence don't pause for executional drift." },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around processing equipment, storage infrastructure, and transportation loading operations. Uptime determines whether the operation can meet downstream customer commitments.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the standard through seasonal pressure, train the next shift, and own the outcome in environments where rural labor markets carry distinct constraints.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on throughput, yield, quality, and customer service in the same daily rhythm.' },
@@ -295,8 +295,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied where regulation meets operation.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In life sciences manufacturing, every discipline carries a regulatory dimension that has to be honored from day one.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that survive audit. Routines documented to FDA expectations. The structural elimination of variation in environments where deviation has reputational, regulatory, and patient-safety consequences.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can lead a shift, manage a deviation, and run a CAPA conversation with the same fluency they bring to hourly production targets. The behavioral skill set is wider because the consequences run wider.' },
+      { h: 'Operational Discipline:', body: 'Standards that survive audit. Routines documented to FDA expectations. The structural elimination of variation in environments where deviation has reputational, regulatory, and patient-safety consequences.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around qualified equipment, validated processes, and the change-control implications that follow every adjustment. Uptime matters financially. Validation status matters operationally.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the standard during inspection, train the next shift through documented procedures, and own the outcome in environments where the outcome reaches the patient.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, quality, compliance, and safety in the same daily rhythm. Four streams of accountability, one operating system.' },
@@ -337,8 +337,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied where AS9100 meets fixed-price discipline.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In aerospace and defense, every discipline has to honor AS9100 compliance, fixed-price economics, and customer-driven schedule commitments simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that survive customer audit and government inspection. Routines documented to AS9100 and customer-specific quality expectations. The structural elimination of variation in environments where every deviation carries contractual consequence.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage a contract change, hold the standard during a customer audit, and run an operational conversation that drives root cause rather than just activity.' },
+      { h: 'Operational Discipline:', body: 'Standards that survive customer audit and government inspection. Routines documented to AS9100 and customer-specific quality expectations. The structural elimination of variation in environments where every deviation carries contractual consequence.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around high-precision manufacturing, specialized equipment, and the configuration management implications that follow every change.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the quality standard, train the next shift, and own the outcome in environments where skilled aerospace labor is scarce and the customer cares about traceability.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, quality, schedule, and cost in the same daily rhythm.' },
@@ -379,8 +379,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied where OEM cadence meets the production floor.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In automotive, every discipline has to honor OEM expectations, tier qualification, and cost-per-unit discipline simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that survive IATF audit and customer inspection. Routines documented to IATF 16949 and customer-specific quality requirements. The structural elimination of variation in environments where customer commitments compound across thousands of parts per day.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage a changeover, hold the standard during a customer audit, and run a productivity conversation that drives root cause.' },
+      { h: 'Operational Discipline:', body: 'Standards that survive IATF audit and customer inspection. Routines documented to IATF 16949 and customer-specific quality requirements. The structural elimination of variation in environments where customer commitments compound across thousands of parts per day.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around continuous high-volume production, customer-driven schedule pressure, and the changeover demands automotive operations carry.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the quality standard, train the next shift, and own the outcome in environments where customer cadence determines weekly performance.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, quality, schedule, and cost in the same daily rhythm.' },
@@ -421,8 +421,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to industrial manufacturing reality.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In industrial manufacturing, every discipline has to honor cost discipline, schedule attainment, and the operational breadth durable goods require.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that hold across custom runs, configured products, and high-mix production. The structural elimination of variation in environments where every operational handoff is a margin event.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage product-mix complexity, hold the standard during customer inspection, and run an operational conversation that drives root cause rather than just activity.' },
+      { h: 'Operational Discipline:', body: 'Standards that hold across custom runs, configured products, and high-mix production. The structural elimination of variation in environments where every operational handoff is a margin event.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around capital-intensive equipment, configured tooling, and the operational tempo industrial production carries.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the standard across product mix, train the next shift, and own the outcome in environments where skilled labor is scarce.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, quality, schedule, and cost in the same daily rhythm.' },
@@ -463,8 +463,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to heavy industry reality.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In metals and mining, every discipline has to honor safety, environmental compliance, and asset productivity simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that hold across commodity downcycles and upcycles alike. The structural elimination of variation in environments where every operational deviation carries safety, environmental, and financial consequences.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage a safety conversation, hold the standard during operational disruption, and run an asset-productivity conversation that drives root cause.' },
+      { h: 'Operational Discipline:', body: 'Standards that hold across commodity downcycles and upcycles alike. The structural elimination of variation in environments where every operational deviation carries safety, environmental, and financial consequences.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around capital-intensive equipment, mining infrastructure, and the operational tempo heavy industry requires. Uptime is asset productivity. Asset productivity is return on capital.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the safety standard, train the next shift, and own the outcome in environments where skilled heavy-industry labor is increasingly scarce.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, safety, environmental, and cost in the same daily rhythm. Four streams of accountability, one operating system.' },
@@ -505,8 +505,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to oil and gas operating reality.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In oil and gas, every discipline has to honor safety, environmental compliance, capital productivity, and the commodity cycle simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that hold across commodity cycles and operational disruption. The structural elimination of variation in environments where every deviation carries safety, environmental, and financial consequences.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan operations, manage safety, hold the standard during operational disruption, and run a reliability conversation that drives root cause.' },
+      { h: 'Operational Discipline:', body: 'Standards that hold across commodity cycles and operational disruption. The structural elimination of variation in environments where every deviation carries safety, environmental, and financial consequences.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around capital infrastructure, processing equipment, and the operational tempo upstream, midstream, and downstream operations require.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the safety standard, train the next shift, and own the outcome in environments where skilled oil and gas labor is increasingly scarce.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, safety, environmental compliance, and cost in the same daily rhythm.' },
@@ -547,8 +547,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to chemical manufacturing reality.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In chemical manufacturing, every discipline has to honor safety, regulatory compliance, and process integrity simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that survive regulatory inspection and process safety audit. The structural elimination of variation in environments where deviation has safety, environmental, and operational consequences.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage a safety conversation, hold the standard during regulatory inspection, and run a process reliability conversation.' },
+      { h: 'Operational Discipline:', body: 'Standards that survive regulatory inspection and process safety audit. The structural elimination of variation in environments where deviation has safety, environmental, and operational consequences.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around reactor systems, processing equipment, and the operational tempo chemical operations require.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the safety and process standards, train the next shift, and own the outcome in environments where skilled chemical labor is scarce.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on production, safety, environmental compliance, and cost in the same daily rhythm.' },
@@ -589,8 +589,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to distribution operating reality.' },
     workIntro: 'The disciplines we build are the same in every industry. What changes is how they land in the conditions you actually run under. In warehouse and distribution, every discipline has to honor customer service cadence, labor productivity, and accuracy simultaneously.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that hold across shifts, peak periods, and seasonal pressure. The structural elimination of variation in environments where customer service depends on consistent execution.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors who can plan a shift, manage labor coverage, hold the standard during peak operations, and run a productivity conversation that drives root cause rather than just activity.' },
+      { h: 'Operational Discipline:', body: 'Standards that hold across shifts, peak periods, and seasonal pressure. The structural elimination of variation in environments where customer service depends on consistent execution.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices designed around material handling systems, conveyors, sortation equipment, and the operational tempo distribution operations require.' },
       { h: 'Workforce Capability:',   body: 'Operators who hold the accuracy standard, train the next shift, and own the outcome in environments where labor productivity is one of the largest variables in cost per unit.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on throughput, accuracy, productivity, and customer service in the same daily rhythm.' },
@@ -631,8 +631,8 @@ const INDUSTRIES = [
     workH2: { top: 'The five disciplines,', pivot: 'applied to PE-backed platform reality.' },
     workIntro: 'The disciplines we build are the same in every engagement. In PE portfolio operations, those disciplines compress timelines and translate directly into EBITDA expansion, integration acceleration, and exit-multiple protection.',
     disciplines: [
-      { h: 'Operational Discipline:', body: 'Standards that produce the EBITDA expansion the value creation plan committed to. The structural elimination of variation in operations whose performance has to compound through the hold.' },
       { h: 'Frontline Leadership:',   body: 'Supervisors and operating leaders capable of running the operation at the performance level the value creation plan assumed. Building that capability inside the hold is one of the highest-return activities in the engagement.' },
+      { h: 'Operational Discipline:', body: 'Standards that produce the EBITDA expansion the value creation plan committed to. The structural elimination of variation in operations whose performance has to compound through the hold.' },
       { h: 'Equipment Reliability:',  body: 'Maintenance practices that protect asset productivity through the hold period and present well to a buyer at exit.' },
       { h: 'Workforce Capability:',   body: 'Operators and supervisors who hold the standard through ownership transitions, integration disruption, and exit-preparation pressure.' },
       { h: 'Daily Accountability:',   body: 'The cadence, metrics, and structured conversations that close the loop on operational performance and EBITDA contribution in the same daily rhythm the value creation plan tracks.' },

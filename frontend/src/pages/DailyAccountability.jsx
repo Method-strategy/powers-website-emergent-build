@@ -62,8 +62,8 @@ const PHASES = [
 ];
 
 const SISTER_DISCIPLINES = [
-  { slug: 'operational-discipline', num: '01', name: 'Operational Discipline', caption: 'builds the system.',                                summary: 'Without the daily cadence, the system runs without feedback and drift goes undetected until it shows up on the income statement.' },
-  { slug: 'frontline-leadership',   num: '02', name: 'Frontline Leadership',   caption: 'runs the system.',                                   summary: 'The daily cadence is the rhythm frontline leaders run inside. Without it, leadership becomes reactive instead of structured.' },
+  { slug: 'frontline-leadership',   num: '01', name: 'Frontline Leadership',   caption: 'runs the system.',                                   summary: 'The daily cadence is the rhythm frontline leaders run inside. Without it, leadership becomes reactive instead of structured.' },
+  { slug: 'operational-discipline', num: '02', name: 'Operational Discipline', caption: 'builds the system.',                                summary: 'Without the daily cadence, the system runs without feedback and drift goes undetected until it shows up on the income statement.' },
   { slug: 'equipment-reliability',  num: '03', name: 'Equipment Reliability',  caption: 'gives the operation something to run on.',          summary: 'The daily cadence is how reliability gets verified shift by shift. Without it, equipment performance drifts back toward reactive.' },
   { slug: 'workforce-capability',   num: '04', name: 'Workforce Capability',   caption: 'gives the system the skilled hands.',               summary: 'The daily cadence is where capability gets reinforced, practiced, and verified. Without it, training fades.' },
 ];
@@ -155,7 +155,7 @@ export default function DailyAccountability() {
             <div className="brief-doc-rule-gold wipe wipe-d2" />
 
             <div className="brief-doc-body wipe wipe-d3" style={{ marginTop: 48 }}>
-              <p>Operational Discipline builds the system. Frontline Leadership runs it on the floor. Equipment Reliability gives the operation something to run on. Workforce Capability gives it the skilled hands. Each one is essential. None of them sustains itself. Without a daily cadence that surfaces drift before it compounds, the system erodes.</p>
+              <p>Frontline Leadership runs the system on the floor. Operational Discipline builds it. Equipment Reliability gives the operation something to run on. Workforce Capability gives it the skilled hands. Each one is essential. None of them sustains itself. Without a daily cadence that surfaces drift before it compounds, the system erodes.</p>
               <p>Standards held inconsistently from one shift to the next. Decisions delayed because the data showed up too late. Issues that should have been caught at the operator level escalate to the plant manager three days after they mattered. Performance that looked locked in during the engagement quietly degrades back to the baseline within a quarter.</p>
               <p>The cadence is what makes the foundation hold. Pre-shift huddles surface what the team is walking into. Plan-vs-actual reviews catch drift inside the hour, not at end of shift. Tiered escalation routes problems to the right level at the right speed. End-of-shift handoffs protect continuity across shifts and across sites. The rhythm runs every day, on every shift, in every operation that wants its gains to stay built.</p>
             </div>

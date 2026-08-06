@@ -87,8 +87,8 @@ const RESULTS = [
 ];
 
 const SISTER_DISCIPLINES = [
-  { slug: 'operational-discipline', num: '01', name: 'Operational Discipline', caption: 'builds the system.',                                         summary: 'Without reliable equipment, the system holds standards the operation can\u2019t actually meet.' },
-  { slug: 'frontline-leadership',   num: '02', name: 'Frontline Leadership',   caption: 'runs the system.',                                            summary: 'Without reliable equipment, supervisors manage chaos instead of running shifts.' },
+  { slug: 'frontline-leadership',   num: '01', name: 'Frontline Leadership',   caption: 'runs the system.',                                            summary: 'Without reliable equipment, supervisors manage chaos instead of running shifts.' },
+  { slug: 'operational-discipline', num: '02', name: 'Operational Discipline', caption: 'builds the system.',                                         summary: 'Without reliable equipment, the system holds standards the operation can\u2019t actually meet.' },
   { slug: 'workforce-capability',   num: '04', name: 'Workforce Capability',   caption: 'gives the system the skilled hands it needs.',               summary: 'Without reliable equipment, operators can\u2019t develop the skills the work requires because the work itself is unreliable.' },
   { slug: 'daily-accountability',   num: '05', name: 'Daily Accountability',   caption: 'makes the system visible and self-correcting every shift.',  summary: 'Without reliable equipment, accountability becomes accountability for missed targets the assets couldn\u2019t have hit.' },
 ];

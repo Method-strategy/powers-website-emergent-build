@@ -59,7 +59,7 @@ import BriefDocStyles, {
    ╚══════════════════════════════════════════════════════════════════ */
 
 const SISTER_DISCIPLINES = [
-  { slug: 'frontline-leadership',  num: '02', name: 'Frontline Leadership',  caption: 'runs the system on the floor.',                       summary: 'Without leaders to hold the standard with their teams, routines drift the moment we leave.' },
+  { slug: 'frontline-leadership',  num: '01', name: 'Frontline Leadership',  caption: 'runs the system on the floor.',                       summary: 'Without leaders to hold the standard with their teams, routines drift the moment we leave.' },
   { slug: 'equipment-reliability', num: '03', name: 'Equipment Reliability', caption: 'gives the system something to run on.',                summary: 'Without reliable uptime, the best operating system in the world produces no output.' },
   { slug: 'workforce-capability',  num: '04', name: 'Workforce Capability',  caption: 'gives the system the skilled hands it needs.',         summary: 'Without them, the standards on paper don\u2019t translate to standards in practice.' },
   { slug: 'daily-accountability',  num: '05', name: 'Daily Accountability',  caption: 'makes the system visible and self-correcting every shift.', summary: 'Without it, drift goes undetected until it shows up on the income statement.' },
@@ -185,7 +185,7 @@ export default function OperationalDiscipline() {
               </h1>
               <div className="brief-doc-rule-gold wipe wipe-d3" style={{ marginTop: 56, marginBottom: 40 }} />
               <p className="brief-doc-lede wipe wipe-d4">
-                Standards. Routines. Cadence. The structured practices that run through every shift and hold execution together up and down the value chain. From financial discipline to supply chain discipline to shop floor discipline. Operational Discipline is the first of the five disciplines and the one the other four attach to. Without it, the foundation has nothing holding it upright.
+                Standards. Routines. Cadence. The structured practices that run through every shift and hold execution together up and down the value chain. From financial discipline to supply chain discipline to shop floor discipline. Operational Discipline is the second of the five disciplines and the one the other four attach to. Without it, the foundation has nothing holding it upright.
               </p>
             </div>
           </div>
@@ -379,7 +379,7 @@ export default function OperationalDiscipline() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
             <p className="brief-doc-lede wipe wipe-d3">
-              Operational Discipline is the first of the five and the backbone the other four attach to. None of them can do its job without it, and on its own it can&rsquo;t do their jobs either. Build them together and the foundation holds. Build any one of them alone and the operation underperforms.
+              Operational Discipline is the second of the five and the backbone the other four attach to. None of them can do its job without it, and on its own it can&rsquo;t do their jobs either. Build them together and the foundation holds. Build any one of them alone and the operation underperforms.
             </p>
 
             {/* Five-discipline mosaic. The current discipline (01)
@@ -393,7 +393,7 @@ export default function OperationalDiscipline() {
                 data-testid="od-mosaic-current"
                 aria-current="page"
               >
-                <div className="od-mosaic-num">01</div>
+                <div className="od-mosaic-num">02</div>
                 <h3 className="od-mosaic-name">Operational Discipline</h3>
                 <p className="od-mosaic-caption">
                   Standards, routines, cadence. The backbone of the foundation.

@@ -2905,8 +2905,8 @@ function ActionBeat() {
  *    URLs are LOCKED (per direction) — match V4's DISCIPLINES
  *    array verbatim. Each card links to its own page. */
 const DISCIPLINES = [
-  { num: '01', name: 'Operational Discipline', body: 'Standards, routines, and structured practices that make consistent execution the default.', href: '/operational-discipline' },
-  { num: '02', name: 'Frontline Leadership',   body: 'Supervisors who can plan a shift, run a problem to ground, and hold the standard with their team.', href: '/frontline-leadership' },
+  { num: '01', name: 'Frontline Leadership',   body: 'Supervisors who can plan a shift, run a problem to ground, and hold the standard with their team.', href: '/frontline-leadership' },
+  { num: '02', name: 'Operational Discipline', body: 'Standards, routines, and structured practices that make consistent execution the default.', href: '/operational-discipline' },
   { num: '03', name: 'Equipment Reliability',  body: 'Uptime, changeovers, and maintenance practices that make the asset base predictable.', href: '/equipment-reliability' },
   { num: '04', name: 'Workforce Capability',   body: 'Skilled, engaged operators who know the work, own the outcome, and can train the next shift.', href: '/workforce-capability' },
   { num: '05', name: 'Daily Accountability',   body: 'The cadence, metrics, and conversations that close the loop every shift, every day.', href: '/daily-accountability' },

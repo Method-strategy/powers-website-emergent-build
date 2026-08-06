@@ -78,8 +78,8 @@ const GAINS = [
 ];
 
 const SISTER_DISCIPLINES = [
-  { slug: 'operational-discipline', num: '01', name: 'Operational Discipline', caption: 'builds the system.',                                         summary: 'Without capable workers, the system holds standards no one is equipped to meet.' },
-  { slug: 'frontline-leadership',   num: '02', name: 'Frontline Leadership',   caption: 'runs the system.',                                            summary: 'Without capable workers, frontline leaders manage people who can\u2019t do the work.' },
+  { slug: 'frontline-leadership',   num: '01', name: 'Frontline Leadership',   caption: 'runs the system.',                                            summary: 'Without capable workers, frontline leaders manage people who can\u2019t do the work.' },
+  { slug: 'operational-discipline', num: '02', name: 'Operational Discipline', caption: 'builds the system.',                                         summary: 'Without capable workers, the system holds standards no one is equipped to meet.' },
   { slug: 'equipment-reliability',  num: '03', name: 'Equipment Reliability',  caption: 'gives the operation something to run on.',                   summary: 'Without capable technicians, the maintenance practices we build can\u2019t be sustained.' },
   { slug: 'daily-accountability',   num: '05', name: 'Daily Accountability',   caption: 'makes the system visible and self-correcting.',              summary: 'Without capable workers, accountability becomes accountability for outcomes the workforce wasn\u2019t built to produce.' },
 ];

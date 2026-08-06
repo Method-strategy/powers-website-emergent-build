@@ -75,7 +75,7 @@ const GAINS = [
 ];
 
 const SISTER_DISCIPLINES = [
-  { slug: 'operational-discipline', num: '01', name: 'Operational Discipline',  caption: 'builds the system.',                            summary: 'Without frontline leaders capable of running it, the standards on paper don\u2019t translate to standards in practice.' },
+  { slug: 'operational-discipline', num: '02', name: 'Operational Discipline',  caption: 'builds the system.',                            summary: 'Without frontline leaders capable of running it, the standards on paper don\u2019t translate to standards in practice.' },
   { slug: 'equipment-reliability',  num: '03', name: 'Equipment Reliability',   caption: 'gives the operation something to run on.',     summary: 'Frontline leaders enforce the maintenance practices that keep the asset base predictable.' },
   { slug: 'workforce-capability',   num: '04', name: 'Workforce Capability',    caption: 'develops in operators',                         summary: 'when their supervisor is capable of training, coaching, and holding standards with discipline.' },
   { slug: 'daily-accountability',   num: '05', name: 'Daily Accountability',    caption: 'lives or dies through frontline leadership behavior.', summary: 'Without leaders to run the cadence and close the loop, the system runs blind.' },
@@ -392,7 +392,7 @@ export default function FrontlineLeadership() {
             </h2>
             <div className="brief-doc-rule-gold wipe wipe-d2" />
             <p className="brief-doc-lede wipe wipe-d3">
-              Frontline Leadership is the second of the five and the one that runs every other discipline on the floor. Without capable leaders, Operational Discipline drifts. Equipment Reliability slips. Workforce Capability stalls. Daily Accountability breaks down. Build them together and the foundation holds. Build any one of them alone and the operation underperforms.
+              Frontline Leadership is the first of the five and the one that runs every other discipline on the floor. Without capable leaders, Operational Discipline drifts. Equipment Reliability slips. Workforce Capability stalls. Daily Accountability breaks down. Build them together and the foundation holds. Build any one of them alone and the operation underperforms.
             </p>
 
             <div className="fl-mosaic" data-testid="fl-mosaic">
@@ -416,7 +416,7 @@ export default function FrontlineLeadership() {
                 data-testid="fl-mosaic-current"
                 aria-current="page"
               >
-                <div className="fl-mosaic-num">02</div>
+                <div className="fl-mosaic-num">01</div>
                 <h3 className="fl-mosaic-name">Frontline Leadership</h3>
                 <p className="fl-mosaic-caption">
                   Supervisors who plan shifts, coach teams, run problems to ground, and hold the standard every day.
