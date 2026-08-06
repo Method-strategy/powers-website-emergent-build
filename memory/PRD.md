@@ -994,3 +994,17 @@ paper-fade edges, same `prefers-reduced-motion` opt-out.
 - P2: Swap in final approved client logos (`data/clientLogos.js`).
 - P2: Wire Case Studies DB/taxonomy (Patrik).
 - P3: Launch SEO checklist — remove `noindex` from `index.html`, swap staging block in `robots.txt`.
+
+## 2026-02-XX — All 14 Industry Pages Lean Copy Rewrite
+
+- Completely rewrote all 14 individual industry landing pages with new approved copy from POWERS_Industry_Pages_Rewrite.docx.
+- Both `IndustryPage.jsx` (component) and the INDUSTRIES array in `industries.js` were fully rewritten.
+- New lean 4-section structure: Hero (plain-name H1 + lede), Pressures (two-tone H2 + paragraph), What We Build (two-tone H2 + paragraph), Why POWERS (dark navy + paragraph), CTA.
+- Old sections removed: numbered pressures list, disciplines list, Outcomes, Sub-segments.
+- Each page has a unique pressures sub-heading per the doc's design intent; `INDUSTRY_GROUPS` and hub page unchanged.
+- 100% pass — testing agent iteration_23.json.
+
+**Files touched:**
+- `/app/frontend/src/components/IndustryPage.jsx` (full rewrite)
+- `/app/frontend/src/data/industries.js` (INDUSTRIES array rewritten, INDUSTRY_GROUPS preserved)
+
