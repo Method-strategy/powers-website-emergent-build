@@ -1780,19 +1780,8 @@ function Home() {
       {/* ── Beat V — Evidence (metrics) ─────────────────────────── */}
       <EvidenceBeat />
 
-      {/* ── Beat VI — Industries ────────────────────────────────── */}
-      <IndustriesBeat />
-
-      {/* ── Beat VII — In Our Client's Words (Behlen testimonial) ────
-         Editorial voice-of-customer beat that sits between the
-         industries logo crawl (breadth) and the featured case
-         studies (outcome). Fills the "human proof" register —
-         readers get partnership language + hard operational
-         numbers in typography before the numeric card grid below.
-         Pull-quote-forward with a facade-pattern YouTube embed
-         on the right, so the reader gets the punch without a
-         6:45 video commitment.  See TestimonialBeat below. */}
-      <TestimonialBeat />
+      {/* ── Beat VI — Industries + Behlen Testimonial (combined) ──── */}
+      <IndustriesAndTestimonialBeat />
 
       {/* ── Beat VIII — Results (case study entry point) ─────────────
          Showcases three featured case studies using the canonical
@@ -2248,204 +2237,164 @@ function CountUp({ run, target, prefix = '', suffix = '', decimals = 0, duration
  * showing obvious "[NAME_TBD]" gaps to reviewers. */
 const BEHLEN_YT_ID = '--lWGIInBeU';
 const BEHLEN_POSTER = `https://img.youtube.com/vi/${BEHLEN_YT_ID}/maxresdefault.jpg`;
-function TestimonialBeat() {
+const BEHLEN_LOGO   = '/behlen-country-logo.png';
+function IndustriesAndTestimonialBeat() {
   const ref = useRef(null);
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
-      { root: document.querySelector('.brief-page'), threshold: 0.30 }
+      { root: document.querySelector('.brief-page'), threshold: 0.20 }
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
   return (
-    <section ref={ref} className="brief-station testimonial-beat" style={{ gridTemplateColumns: '1fr' }} data-testid="testimonial-beat">
-      <style>{testimonialBeatScopedCss}</style>
+    <section
+      ref={ref}
+      className="brief-station it-beat"
+      style={{ gridTemplateColumns: '1fr', alignItems: 'start' }}
+      data-testid="industries-testimonial-beat"
+    >
+      <style>{itBeatCss}</style>
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" aria-hidden="true" />
-      <div style={{ marginBottom: 36 }}>
-        <div className="station-index wipe" style={{ marginBottom: 14 }} data-testid="testimonial-eyebrow">In Our Clients&rsquo; Words</div>
-        <h2 className="station-h2 wipe wipe-d1">
-          <span>Behlen Country. Twenty-six weeks.</span>
-          <span className="pivot">Execution capability, built to last.</span>
-        </h2>
-      </div>
-      <p className="station-lede wipe wipe-d2" style={{ marginBottom: 48, maxWidth: 760 }}>
-        Twenty-six weeks on the floor. Scheduling rebuilt. Downtime cut in fourths. Welders producing 50% more per hour. An execution capability that didn&rsquo;t exist before — running itself by the time we left. In their own voices, executive to welder, here&rsquo;s what that felt like from the inside.
-      </p>
 
-      <div className="wipe wipe-d3 testimonial-grid">
-        {/* LEFT: two pull quotes stacked, each with title-only attribution */}
-        <div className="testimonial-quotes" data-testid="testimonial-quotes">
-          <figure className="testimonial-quote">
-            <blockquote>
-              <p>
-                <span className="q-mark" aria-hidden="true">“</span>They were more than just consultants. They were <em>— and still are —</em> our friends.<span className="q-mark q-mark-close" aria-hidden="true">”</span>
-              </p>
-            </blockquote>
-            <figcaption>Plant Leadership, Behlen Country</figcaption>
-          </figure>
+      {/* ── Two-column editorial body ─────────────────────────── */}
+      <div className="it-body-grid">
 
-          <hr className="testimonial-quote-rule" aria-hidden="true" />
-
-          <figure className="testimonial-quote">
-            <blockquote>
-              <p>
-                <span className="q-mark" aria-hidden="true">“</span>We went from 2,180 minutes of downtime a month to about 500. Welders went from four per hour to six.<span className="q-mark q-mark-close" aria-hidden="true">”</span>
-              </p>
-            </blockquote>
-            <figcaption>Production Supervisor, Mesh Line</figcaption>
-          </figure>
+        {/* LEFT: main editorial copy */}
+        <div className="it-main wipe">
+          <div className="station-index">Any Industry. Any Floor.</div>
+          <h2 className="station-h2">
+            <span>What comes off the line changes.</span>
+            <span className="pivot">The execution capability we build doesn&rsquo;t.</span>
+          </h2>
+          <p className="station-lede" style={{ marginTop: 28 }}>
+            We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. Food and beverage and protein processing, automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. The same financial result: stronger margins, faster recovery, gains that compound.
+          </p>
         </div>
 
-        {/* RIGHT: facade → YouTube iframe swap */}
-        <div className="testimonial-video" data-testid="testimonial-video">
-          {!playing ? (
-            <button
-              type="button"
-              className="testimonial-facade"
-              onClick={() => setPlaying(true)}
-              aria-label="Play Behlen Country testimonial video, 6 minutes 45 seconds"
-              data-testid="testimonial-play-btn"
-            >
-              <img
-                src={BEHLEN_POSTER}
-                alt="Behlen Country testimonial — click to play"
-                className="testimonial-poster"
-                loading="lazy"
-              />
-              <span className="testimonial-poster-wash" aria-hidden="true" />
-              <span className="testimonial-play-mark" aria-hidden="true">
-                <svg viewBox="0 0 64 64" width="64" height="64">
-                  <circle cx="32" cy="32" r="31" fill="rgba(8, 22, 42, 0.72)" stroke="#e89346" strokeWidth="1.4" />
-                  <path d="M26 20 L46 32 L26 44 Z" fill="#fbfaf6" />
-                </svg>
-              </span>
-              <span className="testimonial-play-caption">
-                <span className="tpc-line">Watch · 6:45</span>
-                <span className="tpc-sub">Behlen Country — full testimonial</span>
-              </span>
-            </button>
-          ) : (
-            <div className="testimonial-iframe-wrap">
-              <iframe
-                src={`https://www.youtube.com/embed/${BEHLEN_YT_ID}?autoplay=1&rel=0&modestbranding=1&color=white`}
-                title="Behlen Country testimonial"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                loading="lazy"
-                data-testid="testimonial-iframe"
-              />
+        {/* RIGHT: Behlen testimonial sidebar */}
+        <aside className="it-sidebar wipe wipe-d1" aria-label="Behlen Country case highlight" data-testid="testimonial-beat">
+          <div className="it-video">
+            {!playing ? (
+              <button
+                type="button"
+                className="it-facade"
+                onClick={() => setPlaying(true)}
+                aria-label="Play Behlen Country testimonial video, 6 minutes 45 seconds"
+                data-testid="testimonial-play-btn"
+              >
+                <img
+                  src={BEHLEN_POSTER}
+                  alt="Behlen Country testimonial — click to play"
+                  className="it-poster"
+                  loading="lazy"
+                />
+                <span className="it-poster-wash" aria-hidden="true" />
+                <span className="it-play-mark" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" width="64" height="64">
+                    <circle cx="32" cy="32" r="31" fill="rgba(8,22,42,0.72)" stroke="#e89346" strokeWidth="1.4" />
+                    <path d="M26 20 L46 32 L26 44 Z" fill="#fbfaf6" />
+                  </svg>
+                </span>
+                <span className="it-play-caption">
+                  <span className="tpc-line">Watch · 6:45</span>
+                  <span className="tpc-sub">Behlen Country — full testimonial</span>
+                </span>
+              </button>
+            ) : (
+              <div className="it-iframe-wrap">
+                <iframe
+                  src={`https://www.youtube.com/embed/${BEHLEN_YT_ID}?autoplay=1&rel=0&modestbranding=1&color=white`}
+                  title="Behlen Country testimonial"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  data-testid="testimonial-iframe"
+                />
+              </div>
+            )}
+          </div>
+          <div className="it-sidebar-footer">
+            <img src={BEHLEN_LOGO} alt="Behlen Country" className="it-behlen-logo" />
+            <p className="it-sidebar-lede">
+              Behlen Country is what that looks like on one floor. Scheduling rebuilt. Downtime cut to a fourth, from 2,180 minutes a month to about 500. Welders producing 50% more per hour, four to six. An execution capability that did not exist before, running itself by the time we left.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      {/* ── Full-width logo crawl ─────────────────────────────── */}
+      <div className="industries-logos-row wipe wipe-d2" style={{ marginTop: 56 }}>
+        <div className="industries-logos-label">We&rsquo;ve worked shoulder to shoulder with</div>
+        <div className="logo-crawl" data-testid="logo-crawl">
+          <div className="logo-crawl-fade logo-crawl-fade-l" aria-hidden="true" />
+          <div className="logo-crawl-fade logo-crawl-fade-r" aria-hidden="true" />
+          <div className="logo-crawl-track">
+            <div className="logo-crawl-row">
+              {CLIENT_LOGOS.map((l, i) => (
+                <span key={i} className="logo-crawl-item" title={l.name}>
+                  <img src={logoSrc(l)} alt={l.name} loading="lazy" />
+                </span>
+              ))}
             </div>
-          )}
+            <div className="logo-crawl-row" aria-hidden="true">
+              {CLIENT_LOGOS.map((l, i) => (
+                <span key={'b' + i} className="logo-crawl-item">
+                  <img src={logoSrc(l)} alt="" loading="lazy" />
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* Scoped styles for the testimonial beat. Kept alongside the
- * component so styles + markup travel together — matches the
- * pattern used by FeaturedCaseStudiesBeat below. */
-const testimonialBeatScopedCss = `
-  .testimonial-beat {
-    /* Section gets a slightly deeper cream tint to visually mark it
-       as a distinct beat between the pure-cream Industries row and
-       the featured-case-studies row. Very subtle — 2-3% depth. */
-    background: ${PAPER_DEEP};
-  }
-  .testimonial-grid {
+/* Scoped styles for the combined Industries + Testimonial beat. */
+const itBeatCss = `
+  /* ── Two-column body grid ──────────────────────────────────── */
+  .it-body-grid {
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
-    gap: clamp(48px, 6vw, 88px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    column-gap: clamp(40px, 5.5vw, 88px);
     align-items: start;
+    width: 100%;
   }
   @media (max-width: 900px) {
-    .testimonial-grid {
+    .it-body-grid {
       grid-template-columns: 1fr;
-      gap: clamp(40px, 8vh, 64px);
+      row-gap: 48px;
     }
   }
 
-  /* ── Pull quotes ─────────────────────────────────────────── */
-  .testimonial-quotes {
+  /* ── Main editorial column ──────────────────────────────────── */
+  .it-main {
     display: flex;
     flex-direction: column;
-    gap: 28px;
-  }
-  .testimonial-quote {
-    margin: 0;
-  }
-  .testimonial-quote blockquote {
-    margin: 0;
-    padding: 0;
-  }
-  .testimonial-quote blockquote p {
-    font-family: ${TYPE.serif};
-    font-style: italic;
-    font-weight: 400;
-    /* Editorial pull-quote scale — big, but not headline-big. Sits
-       one step below the H2 so the reader-eye keeps hierarchy. */
-    font-size: clamp(22px, 2.6vw, 30px);
-    line-height: 1.28;
-    letter-spacing: -0.005em;
-    color: ${NAVY_DEEP};
-    text-wrap: pretty;
-    margin: 0;
-  }
-  .testimonial-quote blockquote em {
-    /* Interior em is a rhythmic aside — nudged to gold so the
-       reader sees the beat inside the sentence. */
-    color: ${GOLD_BRIGHT};
-    font-style: italic;
-  }
-  /* Print-tradition open/close quote marks in gold. The opening
-     mark hangs slightly outside the text column so the paragraph
-     itself stays flush-left with the rest of the composition —
-     that's the "hanging punctuation" convention from book design.  */
-  .testimonial-quote .q-mark {
-    font-family: ${TYPE.serif};
-    color: ${GOLD_BRIGHT};
-    font-style: normal;
-    font-weight: 500;
-    margin-right: 2px;
-    display: inline-block;
-    transform: translateY(2px);
-  }
-  .testimonial-quote .q-mark-close {
-    margin-right: 0;
-    margin-left: 2px;
-  }
-  .testimonial-quote figcaption {
-    font-family: ${TYPE.mono};
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: ${GOLD_BRIGHT};
-    margin-top: 18px;
-  }
-  /* Divider hairline between the two quotes — same visual grammar
-     as the brief-doc-rule elsewhere on the site. Kept short (60px)
-     so it reads as an editorial separator, not a section break. */
-  .testimonial-quote-rule {
-    border: 0;
-    border-top: 1px solid rgba(8, 22, 42, 0.16);
-    width: 60px;
-    margin: 4px 0;
   }
 
-  /* ── Video facade ───────────────────────────────────────── */
-  .testimonial-video {
-    position: relative;
-    width: 100%;
+  /* ── Testimonial sidebar ──────────────────────────────────── */
+  .it-sidebar {
+    background: #f3f0e8;
+    border: 1px solid rgba(13, 36, 66, 0.09);
+    border-top: 2px solid #e89346;
+    padding: 24px;
+    box-shadow: 0 6px 28px rgba(13, 36, 66, 0.055);
   }
-  .testimonial-facade {
-    /* Reset button defaults so this can be a genuine <button> for
-       accessibility (keyboard focus, screen-reader semantics) while
-       looking like an editorial figure. */
+
+  .it-video {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  /* ── Video facade ─────────────────────────────────────────── */
+  .it-facade {
     all: unset;
     display: block;
     position: relative;
@@ -2453,35 +2402,29 @@ const testimonialBeatScopedCss = `
     aspect-ratio: 16 / 9;
     cursor: pointer;
     overflow: hidden;
-    background: ${NAVY_DEEP};
-    /* Sharp rectangular frame — matches print-document register.
-       No rounded corners. */
-    border: 1px solid rgba(8, 22, 42, 0.32);
-    box-shadow: 0 12px 28px rgba(8, 22, 42, 0.12);
+    background: #0a1e36;
+    border: 1px solid rgba(8, 22, 42, 0.28);
+    box-shadow: 0 8px 22px rgba(8, 22, 42, 0.10);
     transition: transform 260ms cubic-bezier(.2,.7,.2,1),
                 box-shadow 260ms cubic-bezier(.2,.7,.2,1);
   }
-  .testimonial-facade:hover {
+  .it-facade:hover {
     transform: translateY(-1px);
-    box-shadow: 0 18px 42px rgba(8, 22, 42, 0.18);
+    box-shadow: 0 14px 36px rgba(8, 22, 42, 0.16);
   }
-  .testimonial-facade:focus-visible {
-    outline: 2px solid ${GOLD_BRIGHT};
+  .it-facade:focus-visible {
+    outline: 2px solid #e89346;
     outline-offset: 4px;
   }
-  .testimonial-poster {
+  .it-poster {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Slight duotone treatment so the YouTube-thumbnail palette
-       cohabits with the site's warm navy/gold. Same recipe as the
-       homepage hero video — sepia + saturate + hue-rotate, but
-       lighter here so the speaker's face is still readable. */
     filter: sepia(0.35) saturate(1.15) hue-rotate(-6deg) contrast(1.04) brightness(0.92);
   }
-  .testimonial-poster-wash {
+  .it-poster-wash {
     position: absolute;
     inset: 0;
     background: linear-gradient(
@@ -2492,7 +2435,7 @@ const testimonialBeatScopedCss = `
     );
     pointer-events: none;
   }
-  .testimonial-play-mark {
+  .it-play-mark {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -2503,53 +2446,75 @@ const testimonialBeatScopedCss = `
     pointer-events: none;
     transition: transform 260ms cubic-bezier(.2,.7,.2,1);
   }
-  .testimonial-facade:hover .testimonial-play-mark {
+  .it-facade:hover .it-play-mark {
     transform: translate(-50%, -50%) scale(1.06);
   }
-  .testimonial-play-caption {
+  .it-play-caption {
     position: absolute;
-    left: 24px;
-    bottom: 22px;
-    right: 24px;
+    left: 20px;
+    bottom: 18px;
+    right: 20px;
     display: flex;
     flex-direction: column;
     gap: 4px;
     pointer-events: none;
     text-align: left;
   }
-  .testimonial-play-caption .tpc-line {
-    font-family: ${TYPE.mono};
+  .it-play-caption .tpc-line {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: ${GOLD_BRIGHT};
+    color: #e89346;
   }
-  .testimonial-play-caption .tpc-sub {
-    font-family: ${TYPE.sans};
+  .it-play-caption .tpc-sub {
     font-size: 13px;
     font-weight: 400;
     color: rgba(251, 250, 246, 0.82);
     letter-spacing: 0.005em;
   }
 
-  /* ── Iframe (post-click state) ───────────────────────────── */
-  .testimonial-iframe-wrap {
+  /* ── Iframe (post-click state) ────────────────────────────── */
+  .it-iframe-wrap {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: ${NAVY_DEEP};
-    border: 1px solid rgba(8, 22, 42, 0.32);
-    box-shadow: 0 12px 28px rgba(8, 22, 42, 0.12);
+    background: #0a1e36;
+    border: 1px solid rgba(8, 22, 42, 0.28);
     overflow: hidden;
   }
-  .testimonial-iframe-wrap iframe {
+  .it-iframe-wrap iframe {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
     display: block;
+  }
+
+  /* ── Sidebar attribution footer ───────────────────────────── */
+  .it-sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(13, 36, 66, 0.10);
+  }
+  .it-behlen-logo {
+    height: 30px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    object-position: left center;
+    opacity: 0.85;
+  }
+  .it-sidebar-lede {
+    font-style: italic;
+    font-size: clamp(14px, 1.1vw, 16px);
+    line-height: 1.62;
+    color: #0a1e36;
+    margin: 0;
+    text-wrap: pretty;
   }
 `;
 
@@ -3161,65 +3126,6 @@ function ThesisBeat() {
  *   Extends the Station layout with a full-width client logo crawl
  *   row beneath the headline + body. The crawl spans both grid
  *   columns and uses CLIENT_LOGOS (module-level) for the brand list. */
-function IndustriesBeat() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach(e => { el.classList.toggle('is-in', e.isIntersecting); }),
-      { root: document.querySelector('.brief-page'), threshold: 0.30 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <section ref={ref} className="brief-station">
-      <span className="station-divider" aria-hidden="true" />
-      <span className="brief-tick" aria-hidden="true" />
-      <div>
-        <div className="station-index wipe">Where We Work</div>
-        <h2 className="station-h2 wipe wipe-d1">
-          <span>Different industries.</span>
-          <span className="pivot">The same execution discipline.</span>
-        </h2>
-      </div>
-      <div className="wipe wipe-d2">
-        <p className="station-lede">
-          We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. From food and beverage and protein processing to automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. Different products. Different scales. Different pressures. The same financial result: stronger margins, faster recovery, gains that compound.
-        </p>
-      </div>
-      {/* Full-width logo crawl spans both grid columns. */}
-      <div className="industries-logos-row wipe wipe-d3" style={{ gridColumn: '1 / -1' }}>
-        <div className="industries-logos-label">Shoulder to shoulder with</div>
-        <div className="logo-crawl" data-testid="logo-crawl">
-          <div className="logo-crawl-fade logo-crawl-fade-l" aria-hidden="true" />
-          <div className="logo-crawl-fade logo-crawl-fade-r" aria-hidden="true" />
-          <div className="logo-crawl-track">
-            <div className="logo-crawl-row">
-              {CLIENT_LOGOS.map((l, i) => (
-                <span key={i} className="logo-crawl-item" title={l.name}>
-                  <img src={logoSrc(l)} alt={l.name} loading="lazy" />
-                </span>
-              ))}
-            </div>
-            {/* Duplicate set for seamless infinite loop — when the
-                first set finishes at translateX(-100%), the duplicate
-                lands at translateX(0), so the cycle has no visible seam. */}
-            <div className="logo-crawl-row" aria-hidden="true">
-              {CLIENT_LOGOS.map((l, i) => (
-                <span key={'b' + i} className="logo-crawl-item">
-                  <img src={logoSrc(l)} alt="" loading="lazy" />
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ── Station component — every beat below the hero uses this.
  *   `headline` is the sans-navy lead clause. `pivot` is the
