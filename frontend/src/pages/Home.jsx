@@ -2561,6 +2561,7 @@ const itBeatCss = `
   .ev-behlen-link {
     display: inline-block;
     margin-top: 12px;
+    align-self: flex-end;
     opacity: 0.80;
     transition: opacity 200ms ease;
     text-decoration: none;
@@ -2569,11 +2570,11 @@ const itBeatCss = `
     opacity: 1;
   }
   .ev-behlen-logo {
-    height: 28px;
+    height: 32px;
     width: auto;
-    max-width: 160px;
+    max-width: 180px;
     object-fit: contain;
-    object-position: left center;
+    object-position: right center;
     display: block;
   }
   .it-sidebar-lede {
