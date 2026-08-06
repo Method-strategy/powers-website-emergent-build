@@ -2085,13 +2085,12 @@ function PressureBeat() {
 function EvidenceBeat() {
   const ref = useRef(null);
   const [animating, setAnimating] = useState(false);
+  const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => {
         el.classList.toggle('is-in', e.isIntersecting);
-        /* Reset on leave so the stat-number count-up replays each
-         * time the section is scrolled back into view. */
         setAnimating(e.isIntersecting);
       }),
       { root: document.querySelector('.brief-page'), threshold: 0.30 }
@@ -2100,13 +2099,6 @@ function EvidenceBeat() {
     return () => io.disconnect();
   }, []);
   const STATS = [
-    /* $1B+ counts up through real millions ($600M → $700M → $800M
-       → $900M → $1B+) and only swaps the M-denominated string for
-       the brand "$1B+" string at the final frame. Target is 1000
-       (millions), so the rAF tick has 1000 integer steps of
-       visible resolution instead of the previous 0→1 (which only
-       ever rendered two frames). Duration bumped to 1800ms to let
-       the eye actually catch the count happening. */
     { target: 1000, duration: 1800, label: 'Annualized savings produced across all engagements',
       format: (v, t) => (v >= t ? '$1B+' : '$' + Math.round(v) + 'M') },
     { target: 98,  prefix: '',  suffix: '%',   decimals: 0, duration: 1400, label: 'Client retention across nearly thirty years' },
@@ -2115,25 +2107,79 @@ function EvidenceBeat() {
     { target: 30,  prefix: '',  suffix: '+',   decimals: 0, duration: 1400, label: 'Years of frontline operations leadership' },
   ];
   return (
-    <section ref={ref} className="brief-station" style={{
-      gridTemplateColumns: '1fr',
-    }}>
+    <section ref={ref} className="brief-station" style={{ gridTemplateColumns: '1fr', alignItems: 'start' }}>
+      <style>{itBeatCss}</style>
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" aria-hidden="true" />
-      {/* Header takes full station width so neither H2 clause wraps
-          internally; lede below is body-width-constrained (none here
-          — Evidence has no lede paragraph). */}
-      <div style={{ marginBottom: 64 }}>
-        <div className="station-index wipe" style={{ marginBottom: 14 }}>The Ledger</div>
-        <h2 className="station-h2 wipe wipe-d1">
-          <span>Decades of partnership.</span>
-          <span className="pivot">Outcomes that last.</span>
-        </h2>
+
+      {/* ── Full-width eyebrow ────────────────────────────────── */}
+      <div className="station-index wipe" style={{ marginBottom: 40 }}>The Powers Experience: Shop Floor to Top Floor</div>
+
+      {/* ── Top row: H2 left · Behlen sidebar right ──────────── */}
+      <div className="ev-top-grid wipe wipe-d1">
+
+        {/* LEFT: subhead */}
+        <div className="ev-h2-col">
+          <h2 className="station-h2">
+            <span>Decades of partnership.</span>
+            <span className="pivot">Outcomes that last.</span>
+          </h2>
+        </div>
+
+        {/* RIGHT: Behlen testimonial sidebar */}
+        <aside className="it-sidebar" aria-label="Behlen Country case highlight" data-testid="testimonial-beat">
+          <div className="it-video">
+            {!playing ? (
+              <button
+                type="button"
+                className="it-facade"
+                onClick={() => setPlaying(true)}
+                aria-label="Play Behlen Country testimonial video, 6 minutes 45 seconds"
+                data-testid="testimonial-play-btn"
+              >
+                <img src={BEHLEN_POSTER} alt="Behlen Country testimonial — click to play" className="it-poster" loading="lazy" />
+                <span className="it-poster-wash" aria-hidden="true" />
+                <span className="it-play-mark" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" width="64" height="64">
+                    <circle cx="32" cy="32" r="31" fill="rgba(8,22,42,0.72)" stroke="#e89346" strokeWidth="1.4" />
+                    <path d="M26 20 L46 32 L26 44 Z" fill="#fbfaf6" />
+                  </svg>
+                </span>
+                <span className="it-play-caption">
+                  <span className="tpc-line">Watch · 6:45</span>
+                  <span className="tpc-sub">Behlen Country — full testimonial</span>
+                </span>
+              </button>
+            ) : (
+              <div className="it-iframe-wrap">
+                <iframe
+                  src={`https://www.youtube.com/embed/${BEHLEN_YT_ID}?autoplay=1&rel=0&modestbranding=1&color=white`}
+                  title="Behlen Country testimonial"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  data-testid="testimonial-iframe"
+                />
+              </div>
+            )}
+          </div>
+          <div className="it-sidebar-footer">
+            <img src={BEHLEN_LOGO} alt="Behlen Country" className="it-behlen-logo" />
+            <p className="it-sidebar-lede">
+              Behlen Country is what that looks like on one floor. Scheduling rebuilt. Downtime cut to a fourth, from 2,180 minutes a month to about 500. Welders producing 50% more per hour, four to six. An execution capability that did not exist before, running itself by the time we left.
+            </p>
+          </div>
+        </aside>
       </div>
+
+      {/* ── Bottom row: full-width stats grid ────────────────── */}
       <div className="wipe wipe-d2" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
         gap: '40px 48px',
+        paddingTop: 56,
+        borderTop: '1px solid rgba(13,36,66,0.10)',
+        marginTop: 12,
       }}>
         {STATS.map((s, i) => (
           <div key={i}>
@@ -2240,7 +2286,6 @@ const BEHLEN_POSTER = `https://img.youtube.com/vi/${BEHLEN_YT_ID}/maxresdefault.
 const BEHLEN_LOGO   = '/behlen-country-logo.png';
 function IndustriesAndTestimonialBeat() {
   const ref = useRef(null);
-  const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(
@@ -2258,74 +2303,26 @@ function IndustriesAndTestimonialBeat() {
       style={{ gridTemplateColumns: '1fr', alignItems: 'start' }}
       data-testid="industries-testimonial-beat"
     >
-      <style>{itBeatCss}</style>
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" aria-hidden="true" />
 
-      {/* ── Two-column editorial body ─────────────────────────── */}
+      {/* ── 2-column body: eyebrow + H2 left · lede right ─────── */}
       <div className="it-body-grid">
-
-        {/* LEFT: main editorial copy */}
+        {/* LEFT: eyebrow + H2 */}
         <div className="it-main wipe">
           <div className="station-index">Any Industry. Any Floor.</div>
           <h2 className="station-h2">
             <span>What comes off the line changes.</span>
             <span className="pivot">The execution capability we build doesn&rsquo;t.</span>
           </h2>
-          <p className="station-lede" style={{ marginTop: 28 }}>
+        </div>
+
+        {/* RIGHT: lede paragraph */}
+        <div className="it-lede-col wipe wipe-d1">
+          <p className="station-lede">
             We work with multi-site operators, PE-backed platforms, and organizations in active growth or integration. Food and beverage and protein processing, automotive, aerospace and defense, pharmaceuticals and medical devices, consumer packaged goods, agriculture, metals and mining, chemicals, oil and gas, and the private equity firms behind many of them. The same financial result: stronger margins, faster recovery, gains that compound.
           </p>
         </div>
-
-        {/* RIGHT: Behlen testimonial sidebar */}
-        <aside className="it-sidebar wipe wipe-d1" aria-label="Behlen Country case highlight" data-testid="testimonial-beat">
-          <div className="it-video">
-            {!playing ? (
-              <button
-                type="button"
-                className="it-facade"
-                onClick={() => setPlaying(true)}
-                aria-label="Play Behlen Country testimonial video, 6 minutes 45 seconds"
-                data-testid="testimonial-play-btn"
-              >
-                <img
-                  src={BEHLEN_POSTER}
-                  alt="Behlen Country testimonial — click to play"
-                  className="it-poster"
-                  loading="lazy"
-                />
-                <span className="it-poster-wash" aria-hidden="true" />
-                <span className="it-play-mark" aria-hidden="true">
-                  <svg viewBox="0 0 64 64" width="64" height="64">
-                    <circle cx="32" cy="32" r="31" fill="rgba(8,22,42,0.72)" stroke="#e89346" strokeWidth="1.4" />
-                    <path d="M26 20 L46 32 L26 44 Z" fill="#fbfaf6" />
-                  </svg>
-                </span>
-                <span className="it-play-caption">
-                  <span className="tpc-line">Watch · 6:45</span>
-                  <span className="tpc-sub">Behlen Country — full testimonial</span>
-                </span>
-              </button>
-            ) : (
-              <div className="it-iframe-wrap">
-                <iframe
-                  src={`https://www.youtube.com/embed/${BEHLEN_YT_ID}?autoplay=1&rel=0&modestbranding=1&color=white`}
-                  title="Behlen Country testimonial"
-                  allow="autoplay; encrypted-media; picture-in-picture"
-                  allowFullScreen
-                  loading="lazy"
-                  data-testid="testimonial-iframe"
-                />
-              </div>
-            )}
-          </div>
-          <div className="it-sidebar-footer">
-            <img src={BEHLEN_LOGO} alt="Behlen Country" className="it-behlen-logo" />
-            <p className="it-sidebar-lede">
-              Behlen Country is what that looks like on one floor. Scheduling rebuilt. Downtime cut to a fourth, from 2,180 minutes a month to about 500. Welders producing 50% more per hour, four to six. An execution capability that did not exist before, running itself by the time we left.
-            </p>
-          </div>
-        </aside>
       </div>
 
       {/* ── Full-width logo crawl ─────────────────────────────── */}
@@ -2356,6 +2353,7 @@ function IndustriesAndTestimonialBeat() {
   );
 }
 
+
 /* Scoped styles for the combined Industries + Testimonial beat. */
 const itBeatCss = `
   /* ── Two-column body grid ──────────────────────────────────── */
@@ -2371,6 +2369,38 @@ const itBeatCss = `
       grid-template-columns: 1fr;
       row-gap: 48px;
     }
+  }
+
+  /* ── Ledger beat top row (H2 left · Behlen right) ──────────── */
+  .ev-top-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    column-gap: clamp(40px, 5.5vw, 88px);
+    align-items: end;
+    width: 100%;
+    margin-bottom: 0;
+  }
+  @media (max-width: 900px) {
+    .ev-top-grid {
+      grid-template-columns: 1fr;
+      row-gap: 40px;
+      align-items: start;
+    }
+  }
+  .ev-h2-col {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2px;
+  }
+
+  /* ── ANY INDUSTRY lede column (right col) ───────────────────── */
+  .it-lede-col {
+    display: flex;
+    align-items: center;
+    min-height: 100%;
+  }
+  .it-lede-col .station-lede {
+    margin: 0;
   }
 
   /* ── Main editorial column ──────────────────────────────────── */
