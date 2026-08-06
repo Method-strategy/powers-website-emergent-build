@@ -1,0 +1,52 @@
+{
+  "summary": "Frontend-only testing of the 'Powers Experience' section changes: Behlen logo move, sidebar caption update, layout tightening. All 6 acceptance criteria verified at 1440x900 viewport via Playwright DOM inspection and visual screenshots.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "1_behlen_logo_in_left_column": {
+      "status": "PASS",
+      "detail": "data-testid=behlen-logo-link is inside .ev-h2-col (left column), grandparent is 'ev-top-grid wipe wipe-d1'. isInsideSidebar=false, isInsideEvH2Col=true. Logo /behlen-country-logo.png loads correctly."
+    },
+    "2_behlen_logo_link_new_window": {
+      "status": "PASS",
+      "detail": "href=https://www.behlencountry.com/, target=_blank, rel=noopener noreferrer. Link confirmed via DOM property check."
+    },
+    "3_sidebar_caption_text": {
+      "status": "PASS",
+      "detail": "it-sidebar-footer text: 'Scheduling rebuilt. Downtime down 77%. Output per welder up 50%. An execution capability that didn't exist now runs itself.' — exact match. No img elements inside sidebar footer (sidebarFooterImgs=0)."
+    },
+    "4_no_border_top_on_sidebar_footer": {
+      "status": "PASS",
+      "detail": "Computed border-top-width=0px, border-top-style=solid (none on CSS). CSS reads: .it-sidebar-footer { padding-top: 10px; } — no border-top rule present."
+    },
+    "5_section_fits_single_viewport_1440x900": {
+      "status": "PASS",
+      "detail": "Section height=788px, scroll container clientHeight=900px, viewport innerHeight=900px. fitsInViewport=true, overflow=0px. Section from eyebrow through stats fits entirely in one snap viewport at 1440x900."
+    },
+    "6_five_stats_visible": {
+      "status": "PASS",
+      "detail": "Stats grid (5 children confirmed). Final values counted up: $1B+, 98%, 5 wks, 500+, 30+. Screenshot confirms all 5 stat labels (Annualized savings, Client retention, Median time, Operations strengthened, Years of frontline leadership) visible."
+    },
+    "7_play_button_functional": {
+      "status": "PASS",
+      "detail": "data-testid=testimonial-play-btn visible. After click with scroll-into-view, data-testid=testimonial-iframe appears and is visible. YouTube shows 'Video unavailable' in preview env due to domain restriction — expected behavior, not an app bug. Confirmed working in iteration_21 manual test."
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "All 6 acceptance criteria pass. No regressions found against iteration_21 test results.",
+    "Section height 788px at 1440x900 gives ~112px breathing room below the stats — comfortable one-viewport fit."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A", "frontend": "100%" },
+  "test_credentials": "N/A — homepage is public",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration_22: All 6 acceptance criteria for the Powers Experience section changes pass at 1440x900. Behlen logo: left column (ev-h2-col), linked to behlencountry.com in _blank. Sidebar: caption-only (no logo), correct text, no border-top. Section height 788px fits in 900px viewport. 5 stats ($1B+, 98%, 5wks, 500+, 30+) all visible. Play button triggers YouTube iframe."
+}

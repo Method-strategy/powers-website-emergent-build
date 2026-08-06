@@ -2107,13 +2107,18 @@ function EvidenceBeat() {
     { target: 30,  prefix: '',  suffix: '+',   decimals: 0, duration: 1400, label: 'Years of frontline operations leadership' },
   ];
   return (
-    <section ref={ref} className="brief-station" style={{ gridTemplateColumns: '1fr', alignItems: 'start' }}>
+    <section ref={ref} className="brief-station" style={{
+      gridTemplateColumns: '1fr',
+      alignItems: 'start',
+      paddingTop: 'clamp(28px, 4vh, 48px)',
+      paddingBottom: 'clamp(28px, 4vh, 48px)',
+    }}>
       <style>{itBeatCss}</style>
       <span className="station-divider" aria-hidden="true" />
       <span className="brief-tick" aria-hidden="true" />
 
       {/* ── Full-width eyebrow ────────────────────────────────── */}
-      <div className="station-index wipe" style={{ marginBottom: 40 }}>The Powers Experience: Shop Floor to Top Floor</div>
+      <div className="station-index wipe" style={{ marginBottom: 20 }}>The Powers Experience: Shop Floor to Top Floor</div>
 
       {/* ── Top row: H2 left · Behlen sidebar right ──────────── */}
       <div className="ev-top-grid wipe wipe-d1">
@@ -2130,6 +2135,16 @@ function EvidenceBeat() {
           <p className="ev-lede">
             Behlen Country is the perfect example. We rebuilt how the plant executed, welder by welder and shift by shift, until the operation was stronger than the day we arrived and could hold that gain on its own. The engagement ended. The partnership didn't.
           </p>
+          <a
+            href="https://www.behlencountry.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ev-behlen-link"
+            data-testid="behlen-logo-link"
+            aria-label="Visit Behlen Country website"
+          >
+            <img src={BEHLEN_LOGO} alt="Behlen Country" className="ev-behlen-logo" />
+          </a>
         </div>
 
         {/* RIGHT: Behlen testimonial sidebar */}
@@ -2170,23 +2185,22 @@ function EvidenceBeat() {
             )}
           </div>
           <div className="it-sidebar-footer">
-            <img src={BEHLEN_LOGO} alt="Behlen Country" className="it-behlen-logo" />
             <p className="it-sidebar-lede">
-              Scheduling rebuilt. Downtime cut to a fourth, from 2,180 minutes a month to about 500. Welders producing 50% more per hour, four to six. An execution capability that did not exist before, running itself by the time we left.
+              Scheduling rebuilt. Downtime down 77%. Output per welder up 50%. An execution capability that didn't exist now runs itself.
             </p>
           </div>
         </aside>
       </div>
 
       {/* ── Bottom row: full-width stats grid ────────────────── */}
-      <div className="station-index wipe wipe-d2" style={{ marginTop: 48, marginBottom: 20 }}>Across every partnership, it adds up to</div>
+      <div className="station-index wipe wipe-d2" style={{ marginTop: 24, marginBottom: 12 }}>Across every partnership, it adds up to</div>
       <div className="wipe wipe-d3" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: '40px 48px',
-        paddingTop: 56,
+        gap: '20px 48px',
+        paddingTop: 28,
         borderTop: '1px solid rgba(13,36,66,0.10)',
-        marginTop: 12,
+        marginTop: 4,
       }}>
         {STATS.map((s, i) => (
           <div key={i}>
@@ -2539,21 +2553,28 @@ const itBeatCss = `
     display: block;
   }
 
-  /* ── Sidebar attribution footer ───────────────────────────── */
+  /* ── Sidebar attribution footer (caption only, no logo) ─────── */
   .it-sidebar-footer {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(13, 36, 66, 0.10);
+    padding-top: 10px;
   }
-  .it-behlen-logo {
-    height: 30px;
+  /* ── Behlen logo in left column ─────────────────────────────── */
+  .ev-behlen-link {
+    display: inline-block;
+    margin-top: 12px;
+    opacity: 0.80;
+    transition: opacity 200ms ease;
+    text-decoration: none;
+  }
+  .ev-behlen-link:hover {
+    opacity: 1;
+  }
+  .ev-behlen-logo {
+    height: 28px;
     width: auto;
     max-width: 160px;
     object-fit: contain;
     object-position: left center;
-    opacity: 0.85;
+    display: block;
   }
   .it-sidebar-lede {
     font-style: italic;
