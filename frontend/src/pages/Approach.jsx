@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, NAVY_DEEP, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
+import BriefAccordionStyles from '../components/BriefAccordionStyles';
 
 /* Approach — new copy (2026-02-24 client draft). 7 rows. Two
    link targets:
@@ -65,6 +66,7 @@ export default function Approach() {
         path="/approach"
       />
       <BriefDocStyles />
+      <BriefAccordionStyles />
       <ApproachStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
@@ -352,63 +354,11 @@ function ApproachStyles() {
       .approach-mech-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
       .approach-mech-block { position: relative; }
 
-      /* ── Shared editorial accordion pattern ──────────────────────
-         Native <details>/<summary> so it's semantic, keyboard-driven,
-         SEO-visible, and requires zero JavaScript. Styled to match
-         the print-document register: a gold mono +/− marker on the
-         right (NOT a chevron), a hairline gold divider between rows,
-         and the same numbered eyebrow + serifed title treatment used
-         when the sections were rendered inline as text walls. */
-      .brief-accordion { border-top: 1px solid rgba(232,147,70,0.30); }
+      /* ── Approach-page accordion tokens ─────────────────────────
+         Structural / interaction rules live in BriefAccordionStyles.
+         Only the page-specific num/heading/body type tokens are here. */
       .approach-mech-list li:last-child .brief-accordion { border-bottom: 1px solid rgba(232,147,70,0.30); }
-      .brief-accordion > summary {
-        list-style: none;
-        cursor: pointer;
-        display: grid;
-        grid-template-columns: 78px 1fr auto;
-        gap: 24px;
-        align-items: baseline;
-        padding: 26px 4px 26px 0;
-        outline: none;
-        user-select: none;
-      }
-      .brief-accordion > summary::-webkit-details-marker,
-      .brief-accordion > summary::marker { display: none; }
       .brief-accordion > summary:hover .approach-mech-h { color: ${GOLD_BRIGHT}; }
-      .brief-accordion > summary:focus-visible { outline: 2px solid ${GOLD_BRIGHT}; outline-offset: 4px; border-radius: 2px; }
-      .brief-accordion-title { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-      .brief-accordion-teaser {
-        font-family: ${TYPE.sans};
-        font-size: 15px;
-        font-weight: 300;
-        line-height: 1.4;
-        color: ${TEXT_BODY};
-        font-style: italic;
-      }
-      .brief-accordion-toggle {
-        font-family: ${TYPE.mono};
-        font-size: 22px;
-        font-weight: 400;
-        color: ${GOLD_BRIGHT};
-        line-height: 1;
-        transition: transform 240ms cubic-bezier(.2,.7,.2,1);
-        padding-top: 4px;
-      }
-      details[open] > summary .brief-accordion-toggle {
-        transform: rotate(45deg); /* + becomes × */
-      }
-      .brief-accordion-panel {
-        padding: 0 4px 30px 102px;
-        animation: accordion-fade 300ms cubic-bezier(.2,.7,.2,1);
-      }
-      @keyframes accordion-fade {
-        from { opacity: 0; transform: translateY(-4px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @media (max-width: 720px) {
-        .brief-accordion > summary { grid-template-columns: 56px 1fr auto; gap: 16px; padding: 22px 0; }
-        .brief-accordion-panel { padding-left: 72px; padding-right: 0; padding-bottom: 24px; }
-      }
       .brief-accordion > summary .approach-mech-num { margin-top: 4px; }
       /* Reset numbered num/h/body sizing so the accordion looks
          intentional rather than "the old grid squeezed into a row" */

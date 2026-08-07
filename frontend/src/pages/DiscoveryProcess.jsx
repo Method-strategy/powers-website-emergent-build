@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import BriefDocStyles, {
   useInViewClass, NAVY, PAPER, PAPER_DEEP, GOLD_BRIGHT, TEXT_BODY, TYPE,
 } from '../components/BriefDocStyles';
+import BriefAccordionStyles from '../components/BriefAccordionStyles';
 
 /* Discovery Process — full content rewrite (2026-02-24 client draft).
    10 rows. Internal links to /approach, /case-studies, /contact use
@@ -35,6 +36,7 @@ export default function DiscoveryProcess() {
         path="/discovery-process"
       />
       <BriefDocStyles />
+      <BriefAccordionStyles />
       <DiscoveryStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>
@@ -501,58 +503,11 @@ function DiscoveryStyles() {
       .deliv-row:last-child { border-bottom: 0; }
       .brief-doc-station.is-in .deliv-row { opacity: 1; transform: translateY(0); }
 
-      /* ── Shared editorial accordion (mirrored from Approach.jsx) ──
-         Native <details>/<summary>. Gold hairline dividers, gold mono
-         +/× toggle, keyboard-native, zero JS. Same pattern used by
-         the Four Elements of Execution on the Approach page. */
-      .brief-accordion { border-top: 1px solid rgba(232,147,70,0.30); }
+      /* ── Discovery-page accordion tokens ────────────────────────
+         Structural / interaction rules live in BriefAccordionStyles.
+         Only the page-specific num/heading/body type tokens are here. */
       .deliv-list li:last-child .brief-accordion { border-bottom: 1px solid rgba(232,147,70,0.30); }
-      .brief-accordion > summary {
-        list-style: none;
-        cursor: pointer;
-        display: grid;
-        grid-template-columns: 78px 1fr auto;
-        gap: 24px;
-        align-items: baseline;
-        padding: 26px 4px 26px 0;
-        outline: none;
-        user-select: none;
-      }
-      .brief-accordion > summary::-webkit-details-marker,
-      .brief-accordion > summary::marker { display: none; }
       .brief-accordion > summary:hover .deliv-h { color: ${GOLD_BRIGHT}; }
-      .brief-accordion > summary:focus-visible { outline: 2px solid ${GOLD_BRIGHT}; outline-offset: 4px; border-radius: 2px; }
-      .brief-accordion-title { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-      .brief-accordion-teaser {
-        font-family: ${TYPE.sans};
-        font-size: 15px;
-        font-weight: 300;
-        line-height: 1.4;
-        color: ${TEXT_BODY};
-        font-style: italic;
-      }
-      .brief-accordion-toggle {
-        font-family: ${TYPE.mono};
-        font-size: 22px;
-        font-weight: 400;
-        color: ${GOLD_BRIGHT};
-        line-height: 1;
-        transition: transform 240ms cubic-bezier(.2,.7,.2,1);
-        padding-top: 4px;
-      }
-      details[open] > summary .brief-accordion-toggle { transform: rotate(45deg); }
-      .brief-accordion-panel {
-        padding: 0 4px 30px 102px;
-        animation: accordion-fade 300ms cubic-bezier(.2,.7,.2,1);
-      }
-      @keyframes accordion-fade {
-        from { opacity: 0; transform: translateY(-4px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @media (max-width: 720px) {
-        .brief-accordion > summary { grid-template-columns: 56px 1fr auto; gap: 16px; padding: 22px 0; }
-        .brief-accordion-panel { padding-left: 72px; padding-right: 0; padding-bottom: 24px; }
-      }
       .brief-accordion .deliv-num {
         margin-top: 4px;
         font-family: ${TYPE.mono};

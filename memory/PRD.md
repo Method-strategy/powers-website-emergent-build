@@ -1008,3 +1008,26 @@ paper-fade edges, same `prefers-reduced-motion` opt-out.
 - `/app/frontend/src/components/IndustryPage.jsx` (full rewrite)
 - `/app/frontend/src/data/industries.js` (INDUSTRIES array rewritten, INDUSTRY_GROUPS preserved)
 
+## 2026-02-XX — Accordion CSS Refactor + Newsreader Next.js Snippet
+
+**Accordion refactor:**
+- Created `/app/frontend/src/components/BriefAccordionStyles.jsx` — shared
+  structural/interaction CSS for `.brief-accordion`, `.brief-accordion > summary`,
+  `.brief-accordion-title/teaser/toggle/panel`, `@keyframes accordion-fade`, mobile MQ.
+- Removed duplicated block from `Approach.jsx` (was ~45 lines) and
+  `DiscoveryProcess.jsx` (was ~47 lines). Both now import `BriefAccordionStyles`.
+- Page-specific token rules (`.approach-mech-h/body`, `.deliv-h/num/body`,
+  last-child border, hover state) stay in their respective page files.
+
+**Newsreader Next.js snippet:**
+- Saved complete reference doc at `/app/memory/newsreader-nextjs-snippet.md`.
+- Covers Option A (`_document.tsx` `<link>` tags, Pages Router drop-in) and
+  Option B (`next/font/google`, App Router / Next 13+, self-hosted).
+
+**Files touched:**
+- `/app/frontend/src/components/BriefAccordionStyles.jsx` (new)
+- `/app/frontend/src/pages/Approach.jsx` (import + shared block removed)
+- `/app/frontend/src/pages/DiscoveryProcess.jsx` (import + shared block removed)
+- `/app/memory/newsreader-nextjs-snippet.md` (new, for Patrik)
+
+
