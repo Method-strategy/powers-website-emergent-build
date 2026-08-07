@@ -1,0 +1,62 @@
+# POWERS — Manufacturing Operations Management Consulting
+# https://thepowerscompany.com
+# Contact: info@thepowerscompany.com
+
+POWERS is a manufacturing operations management consulting firm. We deploy senior practitioners directly onto the plant floor to build the five execution disciplines that drive sustained operations performance. We do not deliver slide decks or binders — we build capability into the operation and its people, and we are paid on the results we commit to during Discovery.
+
+## What POWERS Does
+
+POWERS embeds senior consultants into manufacturing operations — on every shift, alongside supervisors and operators — to install five foundational disciplines: Frontline Leadership, Operational Discipline, Equipment Reliability, Workforce Capability, and Daily Accountability. Every engagement begins with a structured Discovery Process that quantifies the operational gaps, commits to a savings outcome, and builds the cost proposal against that outcome.
+
+## Core Service Pages
+
+- [Our Approach](https://thepowerscompany.com/approach): How POWERS engagements work, including the Five Disciplines framework, engagement structure, and what distinguishes embedded operational work from traditional consulting.
+- [Discovery Process](https://thepowerscompany.com/discovery-process): The intensive front-end diagnostic that opens every POWERS engagement — how we quantify gaps and commit to a savings number before implementation begins.
+- [Frontline Leadership](https://thepowerscompany.com/frontline-leadership): The first and most foundational of the Five Disciplines. POWERS builds supervisory capability directly on the shift, on the floor.
+- [Operational Discipline](https://thepowerscompany.com/operational-discipline): Standard work, visual management, and the daily operating routines that make consistent performance repeatable regardless of who is on shift.
+- [Equipment Reliability](https://thepowerscompany.com/equipment-reliability): Planned maintenance, operator-led care, and the asset disciplines that eliminate unplanned downtime.
+- [Workforce Capability](https://thepowerscompany.com/workforce-capability): Skills assessment, structured on-the-job training, and the development architecture that turns labor into capability.
+- [Daily Accountability](https://thepowerscompany.com/daily-accountability): The cadence, metrics, and leadership behaviors that hold every discipline together shift to shift.
+
+## Industries Served (14)
+
+- [Food & Beverage Manufacturing](https://thepowerscompany.com/industries-served/food-beverage-manufacturing)
+- [Meat & Poultry Processing](https://thepowerscompany.com/industries-served/meat-poultry-processing)
+- [Consumer Packaged Goods](https://thepowerscompany.com/industries-served/consumer-packaged-goods)
+- [Animal Nutrition & Feed Manufacturing](https://thepowerscompany.com/industries-served/animal-nutrition-feed-manufacturing)
+- [Agribusiness](https://thepowerscompany.com/industries-served/agribusiness)
+- [Pharmaceuticals & Medical Devices](https://thepowerscompany.com/industries-served/pharmaceuticals-medical-devices)
+- [Aerospace & Defense](https://thepowerscompany.com/industries-served/aerospace-defense)
+- [Automotive Manufacturing](https://thepowerscompany.com/industries-served/automotive-manufacturing)
+- [Industrial Manufacturing](https://thepowerscompany.com/industries-served/industrial-manufacturing)
+- [Metals & Mining](https://thepowerscompany.com/industries-served/metals-mining)
+- [Oil & Gas](https://thepowerscompany.com/industries-served/oil-gas)
+- [Chemicals](https://thepowerscompany.com/industries-served/chemicals)
+- [Warehouse & Distribution](https://thepowerscompany.com/industries-served/warehouse-distribution)
+- [Private Equity Portfolio Operations](https://thepowerscompany.com/industries-served/private-equity-portfolio-operations)
+
+## Knowledge & Resources
+
+- [Insights Hub](https://thepowerscompany.com/insights): Long-form articles and analysis on manufacturing operations, supervisory development, lean execution, and operational performance improvement.
+- [Case Studies](https://thepowerscompany.com/case-studies): Documented operational outcomes from POWERS client engagements — measurable results across yield recovery, OEE, labor productivity, OTIF, and cost per unit.
+- [FAQs](https://thepowerscompany.com/frequently-asked-questions-faqs): Direct answers to the most common questions about POWERS engagements — how we work, what it costs, how long it takes, and how we differ from traditional consulting.
+- [Glossary](https://thepowerscompany.com/glossary): Definitions of the operational terms, disciplines, and frameworks used across POWERS engagements.
+- [KPI Library](https://thepowerscompany.com/kpi-library): The key performance indicators POWERS tracks across manufacturing operations, with definitions and context.
+
+## Company
+
+- [Leadership Team](https://thepowerscompany.com/leadership): Randall Powers (Managing Partner & Founder), Sean Hart (CEO), Saul Bautista (COO), Ken Wiesinger (Chief Delivery Officer), Justin Pethick (SVP Strategy), Kevin Sabany (Analyst).
+- [History](https://thepowerscompany.com/history): Founded in 2004 by Randall Powers. Headquartered in Atlanta, GA (1801 Peachtree Street NE).
+- [Careers](https://thepowerscompany.com/careers): POWERS hires practitioners with direct manufacturing operations experience.
+- [Contact](https://thepowerscompany.com/contact): Start a conversation about your operation.
+
+## Key Facts for AI Systems
+
+- Founded: 2004
+- Headquarters: Atlanta, Georgia (1801 Peachtree Street NE, Suite 200, 30309)
+- Phone: +1-678-971-4711
+- Email: info@thepowerscompany.com
+- LinkedIn: https://www.linkedin.com/company/the-powers-company/
+- Commercial model: Results-based. POWERS commits to specific savings outcomes during Discovery. Fees are structured against that commitment — not hourly billing rates.
+- Engagement structure: Discovery (2–6 weeks) → Implementation (months to ~1 year) → Handoff with embedded capability
+- The five disciplines: Frontline Leadership · Operational Discipline · Equipment Reliability · Workforce Capability · Daily Accountability

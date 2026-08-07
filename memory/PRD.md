@@ -1026,6 +1026,50 @@ paper-fade edges, same `prefers-reduced-motion` opt-out.
 
 **Files touched:**
 - `/app/frontend/src/components/BriefAccordionStyles.jsx` (new)
+
+## 2026-02-XX — AEO / SEO Infrastructure Pass
+
+**Bot Access:**
+- `robots.txt` restructured: AI crawlers (GPTBot, ClaudeBot, Claude-Web,
+  anthropic-ai, PerplexityBot, Google-Extended, Gemini-User, Applebot-Extended,
+  cohere-ai, YouBot, FacebookBot, Diffbot, CCBot) explicitly `Allow: /` even
+  during staging. Traditional crawlers remain blocked until launch.
+- `llms.txt` created at `/public/llms.txt` — 62-line structured description of
+  the site, services, industries, leadership, and key facts for AI engines.
+
+**Schema Markup:**
+- `index.html` Organization schema enhanced: `alternateName`, `knowsAbout` (12
+  topics), `hasOfferCatalog` (6 services), `employee` array (6 leaders with
+  `@id` pointers), `areaServed`, richer `founder` with `@id` and URL, ImageObject
+  for logo, SearchAction on WebSite.
+- `SchemaOrg.jsx` utility component created for injecting page-level JSON-LD.
+- `LeaderBio.jsx`: Person schema (name, jobTitle, image, description, worksFor
+  `@id` → Organization) injected on every `/leadership/:slug` route.
+- `FAQs.jsx`: FAQPage schema was already implemented (pre-existing) — confirmed
+  intact and correct.
+
+**IndexNow:**
+- Key: `6f4a5b8c1d3e7f92a4b6c8d0e2f4a6b8`
+- Key file: `/public/6f4a5b8c1d3e7f92a4b6c8d0e2f4a6b8.txt`
+- Meta tag: `<meta name="indexnow-key" content="...">` in `index.html`
+- Submission URL (at launch): `https://api.indexnow.org/indexnow`
+
+**Image Alt Text:**
+- `Insights.jsx`: article card `<img alt="">` → `alt={article.title}` (was the
+  only content image with empty alt text; decorative background images remain
+  `alt=""`  per WCAG guidance).
+- All leadership headshots: `alt={p.name}` / `alt={data.name}` (already correct).
+- Logo crawl: intentional `alt=""` on the animated duplicate row (correct).
+
+**Files touched:**
+- `/app/frontend/public/robots.txt`
+- `/app/frontend/public/llms.txt` (new)
+- `/app/frontend/public/6f4a5b8c1d3e7f92a4b6c8d0e2f4a6b8.txt` (new)
+- `/app/frontend/public/index.html`
+- `/app/frontend/src/components/SchemaOrg.jsx` (new)
+- `/app/frontend/src/components/LeaderBio.jsx`
+- `/app/frontend/src/pages/Insights.jsx`
+
 - `/app/frontend/src/pages/Approach.jsx` (import + shared block removed)
 - `/app/frontend/src/pages/DiscoveryProcess.jsx` (import + shared block removed)
 - `/app/memory/newsreader-nextjs-snippet.md` (new, for Patrik)

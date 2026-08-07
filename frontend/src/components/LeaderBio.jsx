@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import BriefHeader from './BriefHeader';
 import BriefFooter from './BriefFooter';
 import SEO from './SEO';
+import SchemaOrg from './SchemaOrg';
 import BriefDocStyles, { useInViewClass, NAVY, PAPER, GOLD_BRIGHT, TEXT_BODY, TYPE } from './BriefDocStyles';
 import { getLeader } from '../data/leaders';
 
@@ -41,6 +42,22 @@ export default function LeaderBio() {
         imageAlt={data.name}
         type="profile"
       />
+      <SchemaOrg schema={{
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        '@id': `https://thepowerscompany.com/leadership/${slug}#person`,
+        'name': data.name,
+        'jobTitle': data.title,
+        'url': `https://thepowerscompany.com/leadership/${slug}`,
+        'image': `https://thepowerscompany.com${data.photo}`,
+        'description': data.paragraphs && data.paragraphs[0] ? data.paragraphs[0] : '',
+        'worksFor': {
+          '@type': 'Organization',
+          '@id': 'https://thepowerscompany.com/#organization',
+          'name': 'POWERS',
+        },
+        'sameAs': data.linkedin ? [data.linkedin] : [],
+      }} />
       <BriefDocStyles />
       <BriefHeader mode="interior" />
       <main style={{ paddingTop: 'var(--header-h, 112px)' }}>

@@ -99,9 +99,9 @@
         -->
         <title>POWERS — Manufacturing Operations Management Consulting</title>
 
-        <!-- JSON-LD: Organization + WebSite. Site-wide structured data
-             so search engines surface the brand entity, the corporate
-             address, and the in-site sitelinks search box. -->
+        <!-- JSON-LD: Organization + WebSite + Service.
+             Site-wide structured data so search engines and AI engines
+             surface the brand entity, address, services, and people. -->
         <script type="application/ld+json">
         {
           "@context": "https://schema.org",
@@ -110,13 +110,24 @@
               "@type": "Organization",
               "@id": "https://thepowerscompany.com/#organization",
               "name": "POWERS",
-              "alternateName": "The POWERS Company",
+              "alternateName": ["The POWERS Company", "Powers Management Consulting"],
               "url": "https://thepowerscompany.com/",
-              "logo": "https://thepowerscompany.com/uploads/powers-logo-dark.png",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://thepowerscompany.com/uploads/powers-logo-dark.png",
+                "width": 400,
+                "height": 100
+              },
               "image": "https://thepowerscompany.com/uploads/powers-banner-2026-v2-poster.jpg",
               "description": "POWERS is a manufacturing operations management consulting firm. We build the execution discipline that drives sustained operations performance — on the floor, with the team, where the work actually happens.",
               "foundingDate": "2004",
-              "founder": { "@type": "Person", "name": "Randall Powers" },
+              "founder": {
+                "@type": "Person",
+                "@id": "https://thepowerscompany.com/leadership/randall-powers#person",
+                "name": "Randall Powers",
+                "jobTitle": "Managing Partner",
+                "url": "https://thepowerscompany.com/leadership/randall-powers"
+              },
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "1801 Peachtree Street NE, Suite 200",
@@ -125,14 +136,52 @@
                 "postalCode": "30309",
                 "addressCountry": "US"
               },
+              "areaServed": {
+                "@type": "Country",
+                "name": "United States"
+              },
+              "knowsAbout": [
+                "Manufacturing Operations Consulting",
+                "Operational Excellence",
+                "Lean Manufacturing",
+                "Frontline Leadership Development",
+                "Equipment Reliability",
+                "Workforce Capability",
+                "Daily Accountability Systems",
+                "Food and Beverage Manufacturing",
+                "Meat and Poultry Processing",
+                "Pharmaceutical Manufacturing",
+                "Aerospace and Defense Manufacturing",
+                "Private Equity Portfolio Operations"
+              ],
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Manufacturing Operations Consulting Services",
+                "itemListElement": [
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Frontline Leadership", "url": "https://thepowerscompany.com/frontline-leadership" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Operational Discipline", "url": "https://thepowerscompany.com/operational-discipline" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Equipment Reliability", "url": "https://thepowerscompany.com/equipment-reliability" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Workforce Capability", "url": "https://thepowerscompany.com/workforce-capability" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Daily Accountability", "url": "https://thepowerscompany.com/daily-accountability" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Discovery Process", "url": "https://thepowerscompany.com/discovery-process" } }
+                ]
+              },
               "contactPoint": [{
                 "@type": "ContactPoint",
                 "telephone": "+1-678-971-4711",
                 "email": "info@thepowerscompany.com",
-                "contactType": "sales",
+                "contactType": "customer service",
                 "areaServed": "US",
                 "availableLanguage": ["English"]
               }],
+              "employee": [
+                { "@type": "Person", "@id": "https://thepowerscompany.com/leadership/randall-powers#person", "name": "Randall Powers", "jobTitle": "Managing Partner" },
+                { "@type": "Person", "@id": "https://thepowerscompany.com/leadership/sean-hart#person",     "name": "Sean Hart",     "jobTitle": "Chief Executive Officer" },
+                { "@type": "Person", "@id": "https://thepowerscompany.com/leadership/saul-bautista#person", "name": "Saul Bautista", "jobTitle": "Chief Operating Officer" },
+                { "@type": "Person", "@id": "https://thepowerscompany.com/leadership/ken-wiesinger#person", "name": "Ken Wiesinger", "jobTitle": "Chief Delivery Officer" },
+                { "@type": "Person", "@id": "https://thepowerscompany.com/leadership/justin-pethick#person","name": "Justin Pethick","jobTitle": "Senior Vice President of Strategy and Business Development" },
+                { "@type": "Person", "@id": "https://thepowerscompany.com/leadership/kevin-sabany#person",  "name": "Kevin Sabany",  "jobTitle": "Analyst" }
+              ],
               "sameAs": [
                 "https://www.linkedin.com/company/the-powers-company/"
               ]
@@ -143,11 +192,23 @@
               "url": "https://thepowerscompany.com/",
               "name": "POWERS",
               "publisher": { "@id": "https://thepowerscompany.com/#organization" },
-              "inLanguage": "en-US"
+              "inLanguage": "en-US",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://thepowerscompany.com/?q={search_term_string}"
+                },
+                "query-input": "required name=search_term_string"
+              }
             }
           ]
         }
         </script>
+        <!-- IndexNow — fast indexing key verification.
+             Submission endpoint: https://api.indexnow.org/indexnow
+             Key file served at: /6f4a5b8c1d3e7f92a4b6c8d0e2f4a6b8.txt -->
+        <meta name="indexnow-key" content="6f4a5b8c1d3e7f92a4b6c8d0e2f4a6b8" />
 
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>

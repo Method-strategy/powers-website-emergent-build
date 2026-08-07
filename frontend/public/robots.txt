@@ -1,17 +1,84 @@
 # ═══════════════════════════════════════════════════════════════════
-# STAGING — site is currently set to NOT be crawled.
-# This block is correct for the Netlify preview environment.
+# POWERS — robots.txt
+# https://thepowerscompany.com
+#
+# STAGING MODE: Traditional search engine crawlers are blocked while
+# the site is in pre-launch review. AI training and retrieval crawlers
+# are explicitly ALLOWED at all times — they are welcome to index and
+# represent POWERS content.
+#
+# AT LAUNCH:
+#   1. Delete the staging "User-agent: *  Disallow: /" block below.
+#   2. Uncomment the LAUNCH MODE block.
+#   3. Remove the <meta name="robots" content="noindex,nofollow"> tags
+#      from /public/index.html.
 # ═══════════════════════════════════════════════════════════════════
+
+# ── AI Retrieval & Training Crawlers (always allowed) ────────────────
+# These crawlers power AI assistants, search summaries, and LLM
+# training corpora. POWERS explicitly welcomes them.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Gemini-User
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# ── STAGING MODE — traditional crawlers blocked ──────────────────────
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
 User-agent: *
 Disallow: /
 
-# ═══════════════════════════════════════════════════════════════════
-# LAUNCH — replace the two lines above with the block below at launch.
-# Also remove the noindex/nofollow <meta> in /app/frontend/public/index.html.
-# ═══════════════════════════════════════════════════════════════════
-#
+# ── LAUNCH MODE — uncomment this block and delete staging lines above ─
 # User-agent: *
 # Allow: /
 # Disallow: /404
 #
 # Sitemap: https://thepowerscompany.com/sitemap.xml
+# IndexNow: https://thepowerscompany.com/6f4a5b8c1d3e7f92a4b6c8d0e2f4a6b8.txt
+
+Sitemap: https://thepowerscompany.com/sitemap.xml

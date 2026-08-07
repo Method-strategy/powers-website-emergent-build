@@ -66,7 +66,7 @@ function ArticleImage({ article }) {
   if (article.image) {
     return (
       <div className="ih-card-image">
-        <img src={article.image} alt="" loading="lazy" decoding="async" />
+        <img src={article.image} alt={article.title} loading="lazy" decoding="async" />
       </div>
     );
   }
