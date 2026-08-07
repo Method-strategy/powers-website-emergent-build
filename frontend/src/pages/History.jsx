@@ -131,24 +131,16 @@ function SectionNewChapter() {
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: PAPER }}>
       <div className="brief-doc-inner">
-        <div className="brief-doc-split">
-          <div>
-            <div className="station-index wipe">A New Chapter</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>Atlanta.</span>
-              <span className="pivot">2021.</span>
-            </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
-            <div className="brief-doc-body wipe wipe-d3">
-              <p>In 2021, we relocated corporate headquarters from Gainesville to Atlanta, establishing our offices at 1801 Peachtree Street NE. The move reflected what had been true for years. POWERS had grown into a firm operating at national and global scale, serving manufacturing leaders across industries and geographies, and the home base needed to reflect that ambition.</p>
-              <p>The work still happens on the floor. <em>That has never changed.</em> But Atlanta positions us to attract the caliber of talent the firm&rsquo;s next chapter requires and keeps the firm connected to the broader business and investment community it increasingly serves.</p>
-            </div>
-          </div>
-          <div className="brief-doc-placeholder wipe wipe-d3" aria-hidden="true">
-            <span className="brief-doc-placeholder-label">
-              Atlanta skyline / 1801 Peachtree St NE<br />
-              <em>placeholder</em>
-            </span>
+        <div className="brief-doc-col">
+          <div className="station-index wipe">A New Chapter</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>Atlanta.</span>
+            <span className="pivot">2021.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3">
+            <p>In 2021, we relocated corporate headquarters from Gainesville to Atlanta, establishing our offices at 1801 Peachtree Street NE. The move reflected what had been true for years. POWERS had grown into a firm operating at national and global scale, serving manufacturing leaders across industries and geographies, and the home base needed to reflect that ambition.</p>
+            <p>The work still happens on the floor. <em>That has never changed.</em> But Atlanta positions us to attract the caliber of talent the firm&rsquo;s next chapter requires and keeps the firm connected to the broader business and investment community it increasingly serves.</p>
           </div>
         </div>
       </div>

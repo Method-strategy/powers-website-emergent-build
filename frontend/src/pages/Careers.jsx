@@ -82,24 +82,16 @@ function SectionWhoThrivesHere() {
   return (
     <section ref={ref} className="brief-doc-station" style={{ background: PAPER_DEEP }}>
       <div className="brief-doc-inner">
-        <div className="brief-doc-split">
-          <div>
-            <div className="station-index wipe">Who Thrives Here</div>
-            <h2 className="brief-doc-h2 wipe wipe-d1">
-              <span>We hire people who have been in the operation,</span>
-              <span className="pivot">not just around it.</span>
-            </h2>
-            <div className="brief-doc-rule-gold wipe wipe-d2" />
-            <div className="brief-doc-body wipe wipe-d3">
-              <p>The POWERS team is built from people with real manufacturing operations experience. Former plant managers, operations directors, maintenance leaders, supply chain executives, and frontline supervisors who understand the work because they have done the work.</p>
-              <p>What sets the people who thrive at POWERS apart is not their resume. It is their ability to build trust on a floor quickly, communicate clearly across every level of an organization, and sustain the discipline required to see an engagement through to <em>results that hold after they leave</em>.</p>
-            </div>
-          </div>
-          <div className="brief-doc-placeholder wipe wipe-d3" aria-hidden="true">
-            <span className="brief-doc-placeholder-label">
-              Manufacturing floor /<br/>consultant on shift<br/>
-              <em>placeholder</em>
-            </span>
+        <div className="brief-doc-col">
+          <div className="station-index wipe">Who Thrives Here</div>
+          <h2 className="brief-doc-h2 wipe wipe-d1">
+            <span>We hire people who have been in the operation,</span>
+            <span className="pivot">not just around it.</span>
+          </h2>
+          <div className="brief-doc-rule-gold wipe wipe-d2" />
+          <div className="brief-doc-body wipe wipe-d3">
+            <p>The POWERS team is built from people with real manufacturing operations experience. Former plant managers, operations directors, maintenance leaders, supply chain executives, and frontline supervisors who understand the work because they have done the work.</p>
+            <p>What sets the people who thrive at POWERS apart is not their resume. It is their ability to build trust on a floor quickly, communicate clearly across every level of an organization, and sustain the discipline required to see an engagement through to <em>results that hold after they leave</em>.</p>
           </div>
         </div>
       </div>
